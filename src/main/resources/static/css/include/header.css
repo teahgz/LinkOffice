@@ -1,15 +1,14 @@
 @charset "UTF-8";
 header {
-	width: 100%;
-	background-color: #4E597E; 
-	height : 60px;
-}
-#header_wrap {
-	width: 100%; 
-	margin: 0 auto;
+    width: 100%;
+    background-color: #4E597E; 
+    height : 60px;
 }
 
-.header_logo_img{
-    width: 200px; 
-    height: auto;  
+#header_wrap {
+    padding: 10px;
+}
+
+.header_logo_img {
+    max-height: 40px;
 }

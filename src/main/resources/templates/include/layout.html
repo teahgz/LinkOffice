@@ -3,20 +3,15 @@
 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
-<title>LinkOffice</title>
-<style>
-	body {
-		margin : 0;
-	}
-</style>
-
+<title>LinkOffice</title> 
 </head>
 <body>
-<th:block th:replace="~{include/header :: headerLayout}"></th:block>
-<th:block th:replace="~{include/nav :: navLayout}"></th:block>
-<th:block layout:fragment="content">
-
-</th:block>
-
+    <th:block th:replace="~{include/header :: headerLayout}"></th:block>
+    <div id="main-content">
+        <th:block th:replace="~{include/nav :: navLayout}"></th:block>
+        <th:block layout:fragment="content">
+        </th:block>
+    </div>
+    <th:block th:replace="~{include/footer :: footerLayout}"></th:block>
 </body>
 </html>
