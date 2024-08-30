@@ -1,0 +1,15 @@
+@charset "UTF-8";
+header {
+	width: 100%;
+	background-color: #4E597E; 
+	height : 60px;
+}
+#header_wrap {
+	width: 100%; 
+	margin: 0 auto;
+}
+
+.header_logo_img{
+    width: 200px; 
+    height: auto;  
+}

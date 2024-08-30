@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="headerLayout"> 
+	<link th:href="@{/css/include/header.css}" 
+		rel="stylesheet" type="text/css"> 
+	<header>
+		<div id="header_wrap"> 
+			<div class="header_logo"> 
+				<img th:src="@{/img/linkoffice_logo.png}" alt="LinkOffice Logo" class="header_logo_img"/>
+			</div>
+		</div>
+	</header>
+</th:block>
+</html>
