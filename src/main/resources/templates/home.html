@@ -1,7 +1,5 @@
 <!DOCTYPE html> 
-<html xmlns:th="http://www.thymeleaf.org"
-     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{include/layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{include/layout}">
      <meta charset="UTF-8">
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
@@ -9,7 +7,7 @@
 	<section>
         <div class="left-column">
             <div class="main_item_box left-top custom-height-1">
-            	<a class="main_link" th:href="@{/내 정보 페이지 링크}">
+            	<a class="main_link" th:href="@{/member/mypage}">
 	            	<span class="main_box_title">
 	            		내 정보
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
