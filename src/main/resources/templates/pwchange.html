@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LINK OFFICE</title>
+    <link th:href="@{/css/pwchange.css}" rel="stylesheet" type="text/css">
+    <script src="scripts.js" defer></script> <!-- JavaScript 파일 추가 -->
+</head>
+<body>
+   <div class="login-container">
+        <div class="logo-container">
+            <img th:src="@{/img/linkoffice_logo.png}" alt="LinkOffice Logo" class="login_logo_img"/>
+        </div>
+        <form>
+            <div class="input-group">
+                <label for="userid">아이디(사번)</label>
+                <input type="text" id="userid" name="userid" required>
+            </div>
+            <div class="input-group">
+                <label for="registration-number">주민등록번호</label>
+                <div class="registration-number">
+                    <input type="text" id="registration-number-front" name="registration-number-front" maxlength="6" required>
+                    <span>-</span>
+                    <input type="text" id="registration-number-back" name="registration-number-back" maxlength="7" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="new-password">새로운 비밀번호</label>
+                <input type="password" id="new-password" name="new-password" required>
+            </div>
+            <div class="button-group">
+                <a th:href="@{/}" class="button-link">로그인</a>
+                <button type="submit">비밀번호 변경하기</button>
+            </div>
+        </form>
+    </div>
+    <script src="/js/pwchange.js"></script>
+</body>
+</html>
