@@ -13,7 +13,7 @@
  	
  	<property name="LOG_PATH" value="/log/boot"/>
  	<property name="LOG_FILE_NAME" value="sampleLog"/>
- 
+
 	<!-- 콘솔에 로그 출력 세팅 -->
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">

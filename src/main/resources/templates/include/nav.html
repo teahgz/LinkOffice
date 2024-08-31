@@ -1,12 +1,100 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="navLayout">
-	<link th:href="@{/css/include/nav.css}" 
-	rel="stylesheet" type="text/css">
-	<nav>
-		<div id="nav_wrap">
-        	<h1>side</h1>  
-        </div>
-    </nav>    	
-</th:block> 
+
+	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
+
+	<div id="nav_wrap">
+		<ul>
+			<li>
+				<a href="#">마이페이지</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">내 정보</a></li>
+						<li><a href="#">정보 수정</a></li>
+						<li><a href="#">전자결재 서명 등록</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">근태 조회</a>
+
+			</li>
+			<li>
+				<a href="#">공지사항</a>
+
+			</li>
+			<li>
+				<a href="#">휴가</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">내 정보</a></li>
+						<li><a href="#">정보 수정</a></li>
+						<li><a href="#">전자결재 서명 등록</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">일정</a>
+			</li>
+
+
+			<li>
+				<a href="#">회의실</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">회의실 예약</a></li>
+						<li><a href="#">예약 내역</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">전자결재</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#"></a></li>
+						<li><a href="#">정보 수정</a></li>
+						<li><a href="#">전자결재 서명 등록</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">메신저</a>
+
+			</li>
+			<li>
+				<a href="#">주소록</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">내 정보</a></li>
+						<li><a href="#">정보 수정</a></li>
+						<li><a href="#">전자결재 서명 등록</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">문서함</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">내 정보</a></li>
+						<li><a href="#">정보 수정</a></li>
+						<li><a href="#">전자결재 서명 등록</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">설문</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">내 정보</a></li>
+						<li><a href="#">정보 수정</a></li>
+						<li><a href="#">전자결재 서명 등록</a></li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</div>
+	</nav>
+</th:block>
+
 </html>
