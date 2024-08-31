@@ -1,0 +1,10 @@
+@charset "UTF-8"; 
+footer {
+    width: 100%;
+    background-color: #d0d0d0;
+}
+
+#footer_wrap {
+    padding: 5px;  
+    font-size: 0.8em;   
+} 
