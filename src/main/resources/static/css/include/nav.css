@@ -1,10 +1,69 @@
 @charset "UTF-8";
+
 nav {
     width: 200px;
-    background-color: #f4f4f4; 
-    overflow-y: auto; 
+    background-color: #f4f4f4;
+    overflow-y: auto;
 }
 
 #nav_wrap {
+    width: 250px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+}
+
+#nav_wrap > ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#nav_wrap > ul > li {
+    position: relative;
+    border-bottom: 1px solid #ddd;
+}
+
+#nav_wrap > ul > li > a {
+    display: block;
     padding: 10px;
+    margin-left: 5%;
+    text-decoration: none;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+#nav_wrap > ul > li > a:hover {
+    background-color: #ddd;
+}
+
+.dropdown {
+    display: none;
+    background-color: #f9f9f9;
+}
+
+.dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown li {
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown li a {
+    display: block;
+    padding: 10px;
+    margin-left: 15%;
+    text-decoration: none;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.dropdown li a:hover {
+    background-color: #ddd;
+}
+
+#nav_wrap > ul > li:hover .dropdown {
+    display: block;
 }
