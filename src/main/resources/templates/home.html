@@ -5,10 +5,96 @@
      <meta charset="UTF-8">
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
-       	<section>
-			<div id="section_wrap"> 
-				<h1>home</h1>  
-			</div>
-		</section>
+       	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+	<section>
+        <div class="left-column">
+            <div class="main_item_box left-top custom-height-1">
+            	<a class="main_link" th:href="@{/내 정보 페이지 링크}">
+	            	<span class="main_box_title">
+	            		내 정보
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>사원 정보</h3>
+            </div>
+            <div class="main_item_box left-bottom custom-height-2">
+            	<a class="main_link" th:href="@{/일정 링크}">
+	         	    <span class="main_box_title">
+	            		일정
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>일정</h3>
+            </div>
+        </div>
+        <div class="middle-column">
+            <div class="main_item_box custom-height-3">
+            	<a class="main_link" th:href="@{/근태 조회 링크}">
+	            	<span class="main_box_title">
+	            		근태 조회
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>근태 조회</h3>
+            </div>
+            <div class="main_item_box custom-height-4">
+	            <a class="main_link" th:href="@{/휴가 링크}">
+		            <span class="main_box_title">
+	            		휴가 현황
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>휴가 현황</h3>
+            </div>
+            <div class="main_item_box custom-height-5">
+            	<a class="main_link" th:href="@{/공지사항 링크}">
+	        		<span class="main_box_title">
+	            		공지사항 목록
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>공지사항</h3>
+            </div>
+            <div class="main_item_box custom-height-6">
+                <a class="main_link" th:href="@{/설문 링크}">
+	        		<span class="main_box_title">
+	            		설문 목록
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>설문</h3>
+            </div>
+        </div>
+        <div class="right-column">
+            <div class="right-top"> 
+                <div class="main_item_box custom-height-7">
+                	<a class="main_link" th:href="@{/회의실 링크}">
+	                	<img th:src="@{/img/main_meeting_reservation.png}" alt="meeting reservation" class="meeting_reservation_img"/>
+	                	<h3>회의실 예약</h3>
+	                </a>
+                </div> 
+                <div class="main_item_box custom-height-8">
+                	<a class="main_link" th:href="@{/주소록 링크}">
+	                	<img th:src="@{/img/main_address_book.png}" alt="address_book" class="address_book_img"/>
+	                	<h3>주소록</h3>
+	                </a>
+                </div>  
+            </div>
+            <div class="right-bottom">
+                <div class="main_item_box custom-height-9">
+                <div class="main_box_title">
+            		통합 알림
+            	</div>
+                	<h3>통합 알림</h3>
+                </div>
+                <div class="main_item_box custom-height-10"> 
+                	<h3>점심</h3>
+                </div>
+                <div class="main_item_box custom-height-11"> 
+            		<h3>날씨</h3>
+                </div>
+            </div>
+        </div>
+    </section>
      </th:block>
-</html> 
+</html>
