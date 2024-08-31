@@ -21,6 +21,18 @@ body {
     min-height: 100vh;
 }
 
+#main-wrapper {
+    display: flex;
+    flex: 1;
+}
+
+#content-footer-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+ 
+
 /* 개별 높이 설정 */
 /* 수정하지 마세요 */
 /* .custom-height-1 { height: 200px; }
