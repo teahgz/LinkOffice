@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -27,7 +25,7 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 	    http
-	    
+	    	
 	        .authorizeHttpRequests(authorizeRequests ->
 	            authorizeRequests
 	                .requestMatchers("/", "/css/**", "/img/**", "/js/**").permitAll()
@@ -45,6 +43,7 @@ public class WebSecurityConfig {
 	                .permitAll()
 	                .successHandler(new MyLoginSuccessHandler())
 	                .failureHandler(new MyLoginFailureHandler()))
+	        		
 	        .logout(logout ->
 	            logout.permitAll())
 	        .rememberMe(rememberMe -> 
