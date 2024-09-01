@@ -24,12 +24,12 @@ header {
 }
 
 .session_time {
-    margin-right: 1vw; /* Increase space between session time and user image */
+    margin-right: 1vw; 
 }
 
 #session-time {
-    font-size: 14px; /* Reduce font size of session time */
-    color: rgba(255, 255, 255, 0.8); /* Light gray with slight transparency */
+    font-size: 14px; 
+    color: rgba(255, 255, 255, 0.8); 
 }
 
 .logout_button {
@@ -42,11 +42,11 @@ header {
     display: flex;
     align-items: center;
     padding: 0;
-    margin-left: 0.5vw; /* Space between user image and logout button */
+    margin-left: 0.5vw; 
 }
 
 .logout_button i {
-    font-size: 18px; /* Adjust icon size */
+    font-size: 18px; 
 }
 
 .user_photo {
@@ -55,7 +55,7 @@ header {
     border-radius: 50%;
     cursor: pointer;
     vertical-align: middle;
-    margin-right: 0.6vw; /* Increase space between user image and logout button */
+    margin-right: 0.6vw; 
 }
 
 .user_image {
