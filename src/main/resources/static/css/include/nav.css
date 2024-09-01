@@ -1,13 +1,16 @@
 @charset "UTF-8";
 
+/* 기본 nav 스타일 */
 nav {
     width: 200px;
     background-color: #f4f4f4;
-    overflow-y: auto;
+    overflow-y: auto; /* 수직 스크롤 허용 */
+    overflow-x: hidden; /* 수평 스크롤 숨김 */
+    white-space: nowrap; /* 텍스트가 넘칠 때 줄 바꿈 방지 */
 }
 
 #nav_wrap {
-    width: 250px;
+    width: 100%; /* nav의 가로 길이와 동일하게 설정 */
     background-color: #f4f4f4;
     border: 1px solid #ddd;
 }
@@ -23,6 +26,25 @@ nav {
     border-bottom: 1px solid #ddd;
 }
 
+/* li에 hover 시 a 태그도 hover 효과 적용 */
+#nav_wrap > ul > li:hover,
+#nav_wrap > ul > li:hover > a {
+    background-color: #ddd;
+}
+
+/* 클릭된 li와 a의 배경색 동일하게 설정 */
+#nav_wrap > ul > li.active,
+#nav_wrap > ul > li.active > a {
+    background-color: #ccc;
+    color: #000; /* 텍스트 색상 변경 */
+}
+
+/* 선택된 메뉴는 hover 스타일 적용 안 함 */
+#nav_wrap > ul > li.active:hover,
+#nav_wrap > ul > li.active > a:hover {
+    background-color: #ccc; /* 이미 선택된 항목은 hover 시에도 색상 유지 */
+}
+
 #nav_wrap > ul > li > a {
     display: block;
     padding: 10px;
@@ -32,12 +54,13 @@ nav {
     background-color: #f4f4f4;
 }
 
+/* a 태그에 hover 시 배경색 변경 */
 #nav_wrap > ul > li > a:hover {
     background-color: #ddd;
 }
 
 .dropdown {
-    display: none;
+    display: none; /* 드롭다운 메뉴 기본적으로 숨김 */
     background-color: #f9f9f9;
 }
 
@@ -49,6 +72,12 @@ nav {
 
 .dropdown li {
     border-bottom: 1px solid #ddd;
+}
+
+/* li:hover 시 a 태그에 hover 효과 적용 */
+.dropdown li:hover,
+.dropdown li:hover > a {
+    background-color: #ddd;
 }
 
 .dropdown li a {
@@ -64,6 +93,21 @@ nav {
     background-color: #ddd;
 }
 
-#nav_wrap > ul > li:hover .dropdown {
-    display: block;
+/* 드롭다운 메뉴가 열릴 때 부모 메뉴 항목의 아래선 제거 */
+#nav_wrap > ul > li.active {
+    border-bottom: none; /* 부모 메뉴 항목의 아래선 제거 */
+}
+
+/* 중첩된 dropdown 안에서 a 태그의 커서와 hover 스타일 */
+.dropdown .dropdown li {
+    border-bottom: none;
+    border-top: 1px solid #ddd;
+}
+
+.dropdown .dropdown li a {
+ margin-left:25%;
+}
+
+.dropdown .dropdown li:hover > a {
+    background-color: #ddd;
 }
