@@ -34,7 +34,7 @@ public class SecurityService implements UserDetailsService{
 	 @Override
 	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 	        Member member = memberRepository.findByMemberNumber(username);
-	        
+	         
 	        if (member != null) {
 	        	MemberDto dto = new MemberDto().toDto(member);
 

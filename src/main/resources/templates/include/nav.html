@@ -85,9 +85,9 @@
 				<a href="#">문서함</a>
 				<div class="dropdown">
 					<ul>
-						<li><a href="#">개인 문서함</a></li>
-						<li><a href="#">부서 문서함</a></li>
-						<li><a href="#">사내 문서함</a></li>
+						<li><a href="@{/document/{no}(no=${member.member_no})}">개인 문서함</a></li>
+						<li><a href="@{/document/{no}(no=${member.department_no})}">부서 문서함</a></li>
+						<li><a href="@{/document/company}">사내 문서함</a></li>
 						<li><a href="#">휴지통</a></li>
 					</ul>
 				</div>
