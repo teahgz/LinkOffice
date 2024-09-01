@@ -29,3 +29,17 @@ window.onload = function() {
         })
         .catch(error => console.error('세션 시간 에러', error));
 };
+
+document.getElementById('userImage').addEventListener('click', function(event) {
+   var dropdownMenu = document.getElementById('dropdownMenu');
+   dropdownMenu.classList.toggle('show');
+   event.stopPropagation();
+});
+
+document.addEventListener('click', function(event) {
+   var dropdownMenu = document.getElementById('dropdownMenu');
+    if (!event.target.closest('.user_image')) {
+       dropdownMenu.classList.remove('show');
+    }
+});
+
