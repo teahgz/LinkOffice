@@ -26,8 +26,8 @@ private final DocumentFolderRepository documentFolderRepository;
 		// 폴더 상태 = 0
 		Long document_folder_status = 0L;
 		// repository에 memberNo, documentBoxType, folderStatus를 넘겨줌 
-		List<DocumentFolder> documentFolderList 
-			= documentFolderRepository.findBymemberNoAnddocumentBoxTypeAnddocumentFolderStatus(member_no, document_box_type, document_folder_status);
+		List<DocumentFolder> documentFolderList = documentFolderRepository.findByMemberNoAndDocumentBoxTypeAndDocumentFolderStatus(
+				member_no, document_box_type, document_folder_status);
 		List<DocumentFolderDto> documentFolderDtoList = new ArrayList<DocumentFolderDto>();
 		for(DocumentFolder d : documentFolderList) {
 			DocumentFolderDto folderDto = new DocumentFolderDto().toDto(d);
@@ -43,7 +43,7 @@ private final DocumentFolderRepository documentFolderRepository;
 		Long document_folder_status = 0L;
 		// repository에 departmentNo, documentBoxType, folderStatus를 넘겨줌
 		List<DocumentFolder> documentFolderList 
-			= documentFolderRepository.findBydepartmentNoAnddocumentBoxTypeAnddocumentFolderStatus(
+			= documentFolderRepository.findByDepartmentNoAndDocumentBoxTypeAndDocumentFolderStatus(
 					department_no, document_box_type, document_folder_status);
 		List<DocumentFolderDto> documentFolderDtoList = new ArrayList<DocumentFolderDto>();
 		for(DocumentFolder d : documentFolderList) {
@@ -58,7 +58,7 @@ private final DocumentFolderRepository documentFolderRepository;
 		Long document_folder_status = 0L;
 		// repository에 documentBoxType과 folderStatus를 넘겨줌 
 		List<DocumentFolder> documentFolderList 
-			= documentFolderRepository.findBydocumentBoxType(document_box_type, document_folder_status);
+			= documentFolderRepository.findByDocumentBoxTypeAndDocumentFolderStatus(document_box_type, document_folder_status);
 		List<DocumentFolderDto> documentFolderDtoList = new ArrayList<DocumentFolderDto>();
 		for(DocumentFolder d : documentFolderList) {
 			DocumentFolderDto folderDto = new DocumentFolderDto().toDto(d);

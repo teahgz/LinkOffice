@@ -2,6 +2,8 @@ package com.fiveLink.linkOffice.document.domain;
 
 import java.time.LocalDateTime;
 
+import com.fiveLink.linkOffice.member.domain.Member;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +30,7 @@ public class DocumentFolderDto {
     private Long document_folder_status;       
 
     // DTO를 Entity로 변경
-    public DocumentFolder toEntity() {
+    public DocumentFolder toEntity(Member member) {
         return DocumentFolder.builder()
                 .documentFolderNo(document_folder_no)
                 .documentFolderName(document_folder_name)
@@ -36,7 +38,7 @@ public class DocumentFolderDto {
                 .documentFolderLevel(document_folder_level)
                 .departmentNo(department_no)
                 .documentBoxType(document_box_type)
-                .memberNo(member_no)
+                .member(member)
                 .documentFolderCreateDate(document_folder_create_date)
                 .documentFolderUpdateDate(document_folder_update_date)
                 .documentFolderStatus(document_folder_status)
@@ -52,7 +54,7 @@ public class DocumentFolderDto {
                 .document_folder_level(documentFolder.getDocumentFolderLevel())
                 .department_no(documentFolder.getDepartmentNo())
                 .document_box_type(documentFolder.getDocumentBoxType())
-                .member_no(documentFolder.getMemberNo())
+                .member_no(documentFolder.getMember().getMemberNo())
                 .document_folder_create_date(documentFolder.getDocumentFolderCreateDate())
                 .document_folder_update_date(documentFolder.getDocumentFolderUpdateDate())
                 .document_folder_status(documentFolder.getDocumentFolderStatus())
