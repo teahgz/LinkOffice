@@ -7,10 +7,10 @@ header {
 }
 
 #header_wrap {
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Center vertically */
-    justify-content: space-between; /* Space out elements */
-    padding: 10px 20px; /* Adjust padding for better layout */
+    display: flex; 
+    align-items: center;
+    justify-content: space-between; 
+    padding: 10px 20px;
 }
 
 .header_logo_img {
@@ -18,5 +18,5 @@ header {
 }
 
 .logout_form {
-    margin-left: auto; /* Ensure logout form goes to the right */
+    margin-left: auto;
 }
