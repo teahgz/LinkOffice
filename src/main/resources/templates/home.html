@@ -1,10 +1,10 @@
 <!DOCTYPE html> 
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{include/layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{include/layout}">
      <meta charset="UTF-8">
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
        	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
-	<section>
+	<section sec:authorize="hasAnyAuthority('USER')">
         <div class="left-column">
             <div class="main_item_box left-top custom-height-1">
             	<a class="main_link" th:href="@{/member/mypage}">
@@ -93,6 +93,9 @@
                 </div>
             </div>
         </div>
+    </section>
+    <section sec:authorize="hasAnyAuthority('TOTAL_ADMIN')">
+    hello
     </section>
      </th:block>
 </html>
