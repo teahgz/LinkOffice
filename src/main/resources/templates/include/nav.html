@@ -3,7 +3,7 @@
 <th:block th:fragment="navLayout">
 
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
-
+	<nav>
 	<div id="nav_wrap">
 		<ul>
 			<li>
@@ -28,9 +28,8 @@
 				<a href="#">휴가</a>
 				<div class="dropdown">
 					<ul>
-						<li><a href="#">내 정보</a></li>
-						<li><a href="#">정보 수정</a></li>
-						<li><a href="#">전자결재 서명 등록</a></li>
+						<li><a href="#">휴가 신청하기</a></li>
+						<li><a href="#">휴가 현황</a></li>
 					</ul>
 				</div>
 			</li>
@@ -52,33 +51,44 @@
 				<a href="#">전자결재</a>
 				<div class="dropdown">
 					<ul>
-						<li><a href="#"></a></li>
-						<li><a href="#">정보 수정</a></li>
-						<li><a href="#">전자결재 서명 등록</a></li>
+						<li><a href="#">결재 작성하기</a></li>
+						<li>
+							<a href="#">결재 상신함</a>
+							<div class="dropdown">
+								<ul>
+									<li><a href="#">결재 진행함</a></li>
+									<li><a href="#">결재 반려함</a></li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<a href="#">결재 수신함</a>
+							<div class="dropdown">
+								<ul>
+									<li><a href="#">결재 내역함</a></li>
+									<li><a href="#">결재 참조함</a></li>
+								</ul>
+							</div>
+						</li>
 					</ul>
+
+
 				</div>
 			</li>
 			<li>
 				<a href="#">메신저</a>
 
 			</li>
-			<li>
-				<a href="#">주소록</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">내 정보</a></li>
-						<li><a href="#">정보 수정</a></li>
-						<li><a href="#">전자결재 서명 등록</a></li>
-					</ul>
-				</div>
-			</li>
+			<li><a href="#">주소록</a></li>
+
 			<li>
 				<a href="#">문서함</a>
 				<div class="dropdown">
 					<ul>
-						<li><a href="#">내 정보</a></li>
-						<li><a href="#">정보 수정</a></li>
-						<li><a href="#">전자결재 서명 등록</a></li>
+						<li><a href="#">개인 문서함</a></li>
+						<li><a href="#">부서 문서함</a></li>
+						<li><a href="#">사내 문서함</a></li>
+						<li><a href="#">휴지통</a></li>
 					</ul>
 				</div>
 			</li>
@@ -86,12 +96,61 @@
 				<a href="#">설문</a>
 				<div class="dropdown">
 					<ul>
-						<li><a href="#">내 정보</a></li>
-						<li><a href="#">정보 수정</a></li>
-						<li><a href="#">전자결재 서명 등록</a></li>
+						<li><a href="#">설문 작성</a></li>
+						<li><a href="#">진행중인 설문</a></li>
+						<li><a href="#">내가 만든 설문</a></li>
 					</ul>
 				</div>
 			</li>
+			<li>
+				<a href="#">조직 관리</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">부서 관리</a></li>
+						<li><a href="#">직위 관리</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">사원 관리</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">사원 등록</a></li>
+						<li><a href="#">사원 수정</a></li>
+						<li><a href="#">사원 조회</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">일정 관리</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">사내 일정 목록</a></li>
+						<li><a href="#">월간 사내 일정</a></li>
+						<li><a href="#">일정 범주 관리</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">전자 결재 양식 관리</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">결재 양식함</a></li>
+						<li><a href="#">결재 양식 등록</a></li>
+					</ul>
+				</div>
+			</li>
+			<li>
+				<a href="#">휴가 관리</a>
+				<div class="dropdown">
+					<ul>
+						<li><a href="#">휴가 생성</a></li>
+						<li><a href="#">휴가 기준</a></li>
+					</ul>
+				</div>
+			</li>
+
+			<li><a href="#">통합 권한 관리</a></li>
 		</ul>
 	</div>
 	</nav>
