@@ -1,5 +1,3 @@
-@charset "UTF-8";
-
 header {
     width: 100%;
     background-color: #4E597E;
@@ -7,16 +5,87 @@ header {
 }
 
 #header_wrap {
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Center vertically */
-    justify-content: space-between; /* Space out elements */
-    padding: 10px 20px; /* Adjust padding for better layout */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
 }
 
 .header_logo_img {
     max-height: 40px;
 }
 
-.logout_form {
-    margin-left: auto; /* Ensure logout form goes to the right */
+.user_logout_container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    margin-right: 0.5vw;
+}
+
+.logout_button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin-left: 0.5vw; /* Increase space between image and icon */
+}
+
+.logout_button i {
+    margin-right: 0.5vw; /* Space between icon and text */
+    font-size: 18px; /* Adjust the icon size */
+}
+
+.logout_button span {
+    line-height: 30px; /* Align text with the image height */
+}
+
+.user_photo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 0.6vw;
+}
+
+.user_image {
+    position: relative;
+}
+
+.dropdown_menu {
+    display: none;
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    list-style: none;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 130px;
+    z-index: 1000;
+}
+
+.dropdown_menu.show {
+    display: block;
+}
+
+.dropdown_menu li {
+    margin-bottom: 8px;
+}
+
+.dropdown_menu li:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown_menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
 }
