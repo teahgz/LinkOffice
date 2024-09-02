@@ -25,4 +25,10 @@ public class MyLoginSuccessHandler implements AuthenticationSuccessHandler {
 	    // 성공 시 리다이렉트할 URL 설정
 	    response.sendRedirect("/home");
 	}
+<<<<<<< HEAD
+
+
 }
+=======
+}
+>>>>>>> 2d2929a2ed13f84cd30accb4a12aed8af6c8ec3a

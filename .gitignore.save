@@ -16,7 +16,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
+logs/sampleLog.log
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -25,8 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-**/resources/application.properties
-/logs
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -36,6 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-# Ignore specific log file
-logs/
