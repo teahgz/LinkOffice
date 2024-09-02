@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class VacationViewController {
     @GetMapping("/vacation/addVacation")
-    public String myPage() {
-        return "member/mypage";
+    public String addVaction() {
+        return "admin/addVacation";
     }
 }
 
