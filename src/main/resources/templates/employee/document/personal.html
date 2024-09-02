@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	개인 문서함
-</body>
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/employee/document/personal.css}" rel="stylesheet" type="text/css">
+       <section>
+        개인 문서함
+        <hr>
+        <div class="document_box_type">
+            <table class="document_folder_tree">
+                <thead>
+                    <tr>
+                        <th>폴더 번호</th>
+                        <th>폴더 이름</th>
+                    </tr>
+                </thead>
+                <tbody>
+					<tr th:each="folder : ${folderList}">
+	                    <td th:text="${folder.document_folder_no}">Folder No</td>
+	                    <td th:text="${folder.document_folder_name}">Folder Name</td>
+	                </tr>
+	                <tr th:if="${#lists.isEmpty(folderList)}">
+	                    <td colspan="2">폴더가 없습니다.</td>
+	                </tr>
+                </tbody>
+            </table>
+            <hr>
+            <div class="document_file_list">
+            </div>
+        </div>
+    </section>
+    </th:block>
 </html>
