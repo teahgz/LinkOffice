@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MemberViewController {
 	
-	@GetMapping("/member/mypage")
+	@GetMapping("/employee/member/mypage")
 	public String myPage() {
 		return "employee/member/mypage";
 	}
 	
-	@GetMapping("/member/myedit")
+	@GetMapping("/employee/member/myedit")
 	public String myedit() {
-		return "member/myedit";
+		return "employee/member/myedit";
 	}
 }
