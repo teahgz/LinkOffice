@@ -19,5 +19,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.positionNo = :positionNo")
     List<Member> findByPositionNo(Long positionNo);
->>>>>>> d3c793ac092aa64df6bb90d0381f5e37ae029679
+
 }
