@@ -37,5 +37,4 @@ out/
 .vscode/
 
 # Ignore specific log file
-logs/sampleLog.log
-
+logs/
