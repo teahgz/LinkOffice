@@ -2,9 +2,12 @@ package com.fiveLink.linkOffice.vacation.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name="fl_member")
+@Table(name="fl_vacation")
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 @AllArgsConstructor(access=AccessLevel.PROTECTED)
 @Getter
@@ -15,6 +18,19 @@ public class Vacation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="vacation_no")
     private Long vacationNo;
-    // 디비 컬럼 확인 후 진행
+
+    @Column(name="vacation_year")
+    private int vacationYear;
+
+    @Column(name="vacation_annual_leave")
+    private int vacationAnnualLeave;
+
+    @Column(name="vacation_create_date")
+    @CreationTimestamp
+    private LocalDateTime vacationCreateDate;
+
+    @Column(name="member_no")
+    private Long memberNo;
+
 
 }

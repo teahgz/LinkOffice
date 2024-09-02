@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.inventory.category.domain;
 
-import java.time.LocalDateTime;
+
+import java.util.List;
 
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,4 +32,7 @@ public class InventoryCategory {
 	
 	@Column(name="inventory_category_name")
 	private String inventoryCategoryName;
+	
+	@OneToMany(mappedBy = "inventoryCategory")
+    private List<Inventory> inventory;
 }

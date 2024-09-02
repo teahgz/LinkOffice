@@ -2,6 +2,8 @@ package com.fiveLink.linkOffice.inventory.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,8 @@ import com.fiveLink.linkOffice.inventory.service.InventoryService;
 @Controller
 public class InventoryViewController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryViewController.class);
+
     private final InventoryService inventoryService;
 
     @Autowired
@@ -22,9 +26,12 @@ public class InventoryViewController {
 
     @GetMapping("/inventory/list")
     public String selectInventoryList(Model model) {
-        List<InventoryDto> inventoryList = inventoryService.selectInventoryList();
-        model.addAttribute("inventoryList", inventoryList);
-        System.out.println("Inventory List: " + inventoryList);
+        LOGGER.info("selectInventoryList() called");
+        List<InventoryDto> categorySummaryList = inventoryService.selectCategorySummary();
+        
+        LOGGER.info("Category Summary List: " + categorySummaryList);
+
+        model.addAttribute("categorySummaryList", categorySummaryList);
         return "inventory/list";
     }
 }
