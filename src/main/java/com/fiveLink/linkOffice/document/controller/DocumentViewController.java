@@ -37,6 +37,7 @@ public class DocumentViewController {
 		model.addAttribute("folderList", folderList);
 		return "employee/document/personal";
 	}
+	
 	// 부서 문서함 : 부서 번호를 받아옴 
 	@GetMapping("/employee/document/department")
 	public String documentDepartmentPage(Model model
@@ -48,6 +49,7 @@ public class DocumentViewController {
 		model.addAttribute("folderList", folderList);
 		return "employee/document/department";
 	}
+	
 	// 사내 문서함 : 문서함 타입 = 2 로 지정해서 service에 보내줌 
 	@GetMapping("/employee/document/company")
 	public String documentCompanyPage(Model model) {
