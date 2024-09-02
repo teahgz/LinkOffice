@@ -37,8 +37,8 @@ public class WebSecurityConfig implements HttpSessionListener {
                     .requestMatchers("/", "/css/**", "/img/**", "/js/**").permitAll()
                     .requestMatchers("/pwchange", "/error", "/session-time").permitAll()
                     .requestMatchers("/home").authenticated()
-                    .requestMatchers("/member/**").authenticated()
-                    .requestMatchers("/**").authenticated()
+                    .requestMatchers("/member/**").permitAll()
+                    .requestMatchers("/**").permitAll()
             )
             .formLogin(login ->
                 login
