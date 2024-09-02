@@ -24,7 +24,8 @@ public class DocumentFolderDto {
     private Long document_folder_level;   
     private Long department_no;
     private Long document_box_type;  
-    private Long member_no;          
+//    private Long member_no;      
+    private Long member_no;
     private LocalDateTime document_folder_create_date; 
     private LocalDateTime document_folder_update_date; 
     private Long document_folder_status;       
@@ -38,7 +39,8 @@ public class DocumentFolderDto {
                 .documentFolderLevel(document_folder_level)
                 .departmentNo(department_no)
                 .documentBoxType(document_box_type)
-                .member(member)
+//                .member(member)
+                .memberNo(member_no)
                 .documentFolderCreateDate(document_folder_create_date)
                 .documentFolderUpdateDate(document_folder_update_date)
                 .documentFolderStatus(document_folder_status)
@@ -54,7 +56,8 @@ public class DocumentFolderDto {
                 .document_folder_level(documentFolder.getDocumentFolderLevel())
                 .department_no(documentFolder.getDepartmentNo())
                 .document_box_type(documentFolder.getDocumentBoxType())
-                .member_no(documentFolder.getMember().getMemberNo())
+//                .member_no(documentFolder.getMember().getMemberNo())
+                .member_no(documentFolder.getMemberNo())
                 .document_folder_create_date(documentFolder.getDocumentFolderCreateDate())
                 .document_folder_update_date(documentFolder.getDocumentFolderUpdateDate())
                 .document_folder_status(documentFolder.getDocumentFolderStatus())

@@ -50,9 +50,12 @@ public class DocumentFolder {
     @Column(name = "document_box_type")
     private Long documentBoxType;
     
-    @ManyToOne
-    @JoinColumn(name = "member_no")
-    private Member member;
+//    @ManyToOne
+//    @JoinColumn(name = "member_no")
+//    private Member member;
+    
+    @Column(name = "member_no")
+    private Long memberNo;
 
     @Column(name = "document_folder_create_date")
     private LocalDateTime documentFolderCreateDate;
