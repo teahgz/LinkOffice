@@ -25,8 +25,8 @@
 	<!-- 파일에 로그 출력 -->
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<!-- 파일 경로 설정 -->
-		<!-- <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>  -->
-	    <file>./logs/sampleLog.log</file> 
+		<file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+<!-- 	    <file>./logs/sampleLog.log</file>  -->
 		<!-- 출력 패턴 설정 -->
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${FILE_LOG_PATTERN}</pattern>

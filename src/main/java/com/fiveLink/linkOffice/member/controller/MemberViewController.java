@@ -8,7 +8,7 @@ public class MemberViewController {
 	
 	@GetMapping("/member/mypage")
 	public String myPage() {
-		return "member/mypage";
+		return "employee/member/mypage";
 	}
 	
 	@GetMapping("/member/myedit")

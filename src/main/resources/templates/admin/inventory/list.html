@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inventory List</title>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <style>
+        td.details-control {
+            background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+        }
+    </style>
+</head>
+<body>
+<h1>비품 목록</h1><br>
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th></th> <!-- Detail button column -->
+            <th>번호</th>
+            <th>제품명</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>위치</th>
+            <th>구매 날짜</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="inventory : ${inventoryList}">
+            <td class="details-control"></td> <!-- Detail button -->
+            <td th:text="${inventory.inventory_no}">번호</td>
+            <td th:text="${inventory.inventory_name}">제품명</td>
+            <td th:text="${inventory.inventory_price}">가격</td>
+            <td th:text="${inventory.inventory_quantity}">수량</td>
+            <td th:text="${inventory.inventory_location}">위치</td>
+            <td th:text="${inventory.inventory_purchase_date}">구매 날짜</td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        // Function to format the details row
+        function format(d) {
+            // 임의의 데이터를 출력합니다. 실제 데이터는 이 부분을 수정하여 적용할 수 있습니다.
+            return '<div style="padding-left:40px;">'+
+                '테스트'+
+                '</div>';
+        }
+
+        // DataTables 초기화
+        var table = $('#example').DataTable({
+            "paging": true,          // 페이징 처리
+            "searching": true,       // 검색 기능
+            "ordering": true,        // 정렬 기능
+            "info": true,            // 테이블 정보 표시
+            "autoWidth": false,      // 자동 컬럼 너비 조정 비활성화
+            "columnDefs": [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": '',
+                    "targets": 0
+                }
+            ]
+        });
+
+        // Add event listener for opening and closing details
+        $('#example tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Open this row
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
+    });
+</script>
+</body>
+</html>

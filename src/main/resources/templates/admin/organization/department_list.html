@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}">
+<meta charset="UTF-8">
+    <th:block layout:fragment="content">
+        <section>
+        <div id="main_content_area">
+            <div class="word">
+                <h3>부서 목록</h3>
+            </div><br>
+            <div class="department_list">
+                <table>
+                    <colgroup>
+                        <col width="10%">
+                        <col width="40%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>부서명</th>
+                            <th>상위 부서 번호</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- departments 리스트에서 부서 정보 출력 -->
+                        <th:block th:if="${#lists.isEmpty(departments)}">
+                            <tr>
+                                <td colspan="2">등록된 부서가 없습니다.</td>
+                            </tr>
+                        </th:block>
+                        <th:block th:if="${!#lists.isEmpty(departments)}">
+                            <tr th:each="department : ${departments}">
+                                <td th:text="${department.department_name}"></td>
+                                <td th:text="${department.department_high}"></td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </section>
+    </th:block>
+</html>

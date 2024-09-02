@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	부서 문서함 
-</body>
+    <th:block layout:fragment="content">
+       <section>
+        <div class="document_box_type">
+            <table>
+                <thead>
+                    <tr>
+                        <th>폴더 번호</th>
+                        <th>폴더 이름</th>
+                        <th>부모 폴더 번호</th>
+                        <th>폴더 레벨</th>
+                        <th>부서 번호</th>
+                        <th>문서 박스 타입</th>
+                        <th>사원 번호</th>
+                        <th>생성 날짜</th>
+                        <th>수정 날짜</th>
+                        <th>폴더 상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+					<tr th:each="folder : ${folderList}">
+	                    <td th:text="${folder.document_folder_no}">Folder No</td>
+	                    <td th:text="${folder.document_folder_name}">Folder Name</td>
+	                    <td th:text="${folder.document_folder_parent_no != null ? folder.document_folder_parent_no : 0}">Parent Folder No</td>
+	                    <td th:text="${folder.document_folder_level}">Level</td>
+	                    <td th:text="${folder.department_no}">Department No</td>
+	                    <td th:text="${folder.document_box_type}">Document Box Type</td>
+	                    <td th:text="${folder.member_no}">Member No</td>
+	                    <td th:text="${folder.document_folder_create_date}">Create Date</td>
+	                    <td th:text="${folder.document_folder_update_date}">Update Date</td>
+	                    <td th:text="${folder.document_folder_status}">Folder Status</td>
+	                </tr>
+	                <tr th:if="${#lists.isEmpty(folderList)}">
+	                    <td colspan="10">폴더가 없습니다.</td>
+	                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    </th:block>
 </html>
