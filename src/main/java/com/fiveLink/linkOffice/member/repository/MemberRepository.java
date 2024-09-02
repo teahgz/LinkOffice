@@ -10,12 +10,7 @@ import com.fiveLink.linkOffice.member.domain.Member;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    
-<<<<<<< HEAD
-    Member findByMemberNumber(String memberNumber);
-    
-    
-=======
+
     Member findByMemberNumber(String memberNumber); 
     
     // [서혜원] 조직도
