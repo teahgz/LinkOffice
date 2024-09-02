@@ -10,4 +10,9 @@ public class MemberViewController {
 	public String myPage() {
 		return "member/mypage";
 	}
+	
+	@GetMapping("/member/myedit")
+	public String myedit() {
+		return "member/myedit";
+	}
 }
