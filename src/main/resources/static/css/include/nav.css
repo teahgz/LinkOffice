@@ -4,8 +4,7 @@ nav {
     width: 200px;
     background-color: #f4f4f4;
     overflow-y: auto;
-    overflow-x: hidden;
-    white-space: nowrap;
+    overflow-x: hidden;  
 }
 
 #nav_wrap {

@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<link th:href="@{/css/include/layout.css}" rel="stylesheet" type="text/css">
 <head>
 <meta charset="UTF-8">
 <title>LinkOffice</title>
-    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"/>
 </head>
 <body>
     <th:block th:replace="~{include/header :: headerLayout}"></th:block>
     <div id="main-wrapper">
         <th:block th:replace="~{include/nav :: navLayout}"></th:block>
         <div id="content-footer-wrapper"> 
-            <th:block layout:fragment="content"></th:block> 
+            <th:block layout:fragment="content" id="main_content_area"></th:block> 
             <th:block th:replace="~{include/footer :: footerLayout}"></th:block>
         </div>
     </div>
 </body>
 <script th:src="@{/js/include/nav.js}"></script>
 <script th:src="@{/js/include/header.js}"></script>
+<script th:src="@{/js/admin/vacation/addVacation.js}"></script>
+
 </html>
