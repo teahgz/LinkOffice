@@ -58,14 +58,14 @@ public class Member {
 	private String memberAddress;
 	
 	@Column(name="member_hire_date")
-	private String  memberHireDate;
+	private String memberHireDate;
 	
 	@Column(name="member_end_date")
-	private LocalDateTime  memberEndDate;
+	private LocalDateTime memberEndDate;
 	
 	@Column(name="member_create_date")
 	@CreationTimestamp
-	private LocalDateTime  memberCreateDate;
+	private LocalDateTime memberCreateDate;
 	
 	@Column(name="member_update_date")
 	@UpdateTimestamp
