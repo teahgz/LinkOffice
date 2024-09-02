@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: 'LeferiPoint-BlackA';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#main-wrapper {
+    display: flex;
+    flex: 1;
+}
+
+#content-footer-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.my_profile {
+    position: relative; 
+    padding: 40px; 
+    height: 835px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.my_profile h1 {
+    font-size: 2rem;
+    margin-bottom: 20px; 
+    text-align: left; 
+    position: absolute; 
+    top: 20px; 
+    left: 40px; 
+    width: auto; 
+    max-width: calc(100% - 80px); 
+}
+
+.profile_card {
+    background-color: #f8f9fa;
+    border-radius: 12px; 
+    padding: 40px;  
+    max-width: 1200px; 
+    width: 100%;
+    height: 800px;  
+    margin-top: 60px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px; 
+}
+
+.profile_img {
+    width: 220px; 
+    height: 220px; 
+    border-radius: 50%;
+    background-color: #ddd;
+    align-items: center;
+    overflow: hidden;
+    margin-right: 40px;  
+}
+
+.profile_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+}
+
+.profile-details dt {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 20px;  
+    font-size: 1.1rem; 
+}
+.profile-details dd {
+    margin-left: 0;
+    line-height: 1.8;  
+    font-size: 1.1rem;  
+}

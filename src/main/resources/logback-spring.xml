@@ -13,7 +13,7 @@
  	
  	<property name="LOG_PATH" value="/log/boot"/>
  	<property name="LOG_FILE_NAME" value="sampleLog"/>
- 
+
 	<!-- 콘솔에 로그 출력 세팅 -->
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -25,7 +25,8 @@
 	<!-- 파일에 로그 출력 -->
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<!-- 파일 경로 설정 -->
-		<file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+		<!-- <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>  -->
+	    <file>./logs/sampleLog.log</file> 
 		<!-- 출력 패턴 설정 -->
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${FILE_LOG_PATTERN}</pattern>
@@ -46,7 +47,7 @@
         </rollingPolicy>
 	</appender>
 	
-	<!-- root레벨 설정  이걸 풀면 모든 디버그를 볼 수 있음-->
+	<!-- root레벨 설정 -->
    <!-- <root level="INFO">
        <appender-ref ref="CONSOLE"/>
        <appender-ref ref="FILE"/>
@@ -54,18 +55,17 @@
    
    <logger name="org.springframework" level="INFO">
    		<appender-ref ref="CONSOLE"/>
-       <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE"/>
    </logger>
 
    <!-- 특정패키지 로깅레벨 설정 -->
-   <logger name="com.gn.spring" level="DEBUG">
+   <logger name="com.fiveLink.linkOffice" level="DEBUG">
        <appender-ref ref="CONSOLE"/>
        <appender-ref ref="FILE"/>
    </logger>
-   
    <!-- JPA 쿼리 로그 설정 -->
    <logger name="org.hibernate.SQL" level="DEBUG">
-   	   <appender-ref ref="CONSOLE"/>
-       <appender-ref ref="FILE"/>
+   		<appender-ref ref="CONSOLE"/>
+   		<appender-ref ref="FILE"/>
    </logger>
 </configuration>

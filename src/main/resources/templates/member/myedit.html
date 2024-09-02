@@ -1,0 +1,42 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{include/layout}">
+     <meta charset="UTF-8">
+     <th:block layout:fragment="content">
+       	<link th:href="@{/css/member/myedit.css}" rel="stylesheet" type="text/css">
+       	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+	 <section>
+            <div class="my_profile">
+                <h1>정보 수정</h1>
+                <div class="profile_card">
+                    <div class="profile-header">
+                        <div class="profile_img">
+                            <img th:src="@{/img/user_profile.jpg}" class="user_photo"/>
+                        </div>
+                        <dl class="profile-details">
+                            <dt>사번</dt>
+                            <dd>24089361</dd>
+                            <dt>사용자</dt>
+                            <dd>박지연</dd>
+                            <dt>주민번호</dt>
+                            <dd>000512-*******</dd>
+                            <dt>부서명</dt>
+                            <dd>마케팅</dd>
+                            <dt>직위</dt>
+                            <dd>사원</dd>
+                            <dt>입사일</dt>
+                            <dd>2024-08-23</dd>
+                            <dt>퇴사일</dt>
+                            <dd>-</dd>
+                            <dt>전화번호</dt>
+                            <dd>010-1234-5678</dd>
+                            <dt>내선번호</dt>
+                            <dd>02-123-456</dd>
+                            <dt>주소</dt>
+                            <dd>경기도 부천시 원미로 123번길 ***</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </section>
+     </th:block>
+</html>

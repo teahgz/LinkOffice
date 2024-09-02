@@ -1,0 +1,95 @@
+header {
+    width: 100%;
+    background-color: #4E597E;
+    height: 60px;
+}
+
+#header_wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.header_logo_img {
+    max-height: 40px;
+}
+
+.user_logout_container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    margin-right: 0.5vw;
+}
+
+.session_time {
+    margin-right: 1vw; 
+}
+
+#session-time {
+    font-size: 14px; 
+    color: rgba(255, 255, 255, 0.8); 
+}
+
+.logout_button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin-left: 0.5vw; 
+}
+
+.logout_button i {
+    font-size: 18px; 
+}
+
+.user_photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 0.6vw; 
+}
+
+.user_image {
+    position: relative;
+}
+
+.dropdown_menu {
+    display: none;
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    list-style: none;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 130px;
+    z-index: 1000;
+}
+
+.dropdown_menu.show {
+    display: block;
+}
+
+.dropdown_menu li {
+    margin-bottom: 8px;
+}
+
+.dropdown_menu li:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown_menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
