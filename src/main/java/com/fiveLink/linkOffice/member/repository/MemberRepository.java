@@ -10,8 +10,6 @@ import com.fiveLink.linkOffice.member.domain.Member;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    
-
 
     Member findByMemberNumber(String memberNumber); 
     
