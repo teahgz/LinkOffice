@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+    <th:block layout:fragment="content">
+        <section>
+            <div id="section_wrap">
+                <div class="word">
+                    <a th:href="@{/inventory/list}">비품 목록 보기</a>
+                </div><br>
+            </div>
+        </section>
+    </th:block>
+</html>
