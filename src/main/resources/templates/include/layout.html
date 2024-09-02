@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<link th:href="@{/css/include/layout.css}" rel="stylesheet" type="text/css">
 <head>
 <meta charset="UTF-8">
 <title>LinkOffice</title>
@@ -11,7 +12,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div id="main-wrapper">
         <th:block th:replace="~{include/nav :: navLayout}"></th:block>
         <div id="content-footer-wrapper"> 
-            <th:block layout:fragment="content"></th:block> 
+            <th:block layout:fragment="content" id="main_content_area"></th:block> 
             <th:block th:replace="~{include/footer :: footerLayout}"></th:block>
         </div>
     </div>

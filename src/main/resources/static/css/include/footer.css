@@ -6,6 +6,7 @@ footer {
     color : gray;
     padding: 10px 0;  
     font-family: Arial, sans-serif;  
+    height: 60px;
 }
 
 #footer_wrap {
