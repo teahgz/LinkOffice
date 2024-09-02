@@ -29,6 +29,8 @@ public class MemberDto {
 	private String member_mobile;
 	private Long department_no;
 	private Long position_no;
+	private String department_name;
+	private String position_name;
 	private String member_address;
 	private String member_hire_date;
 	private LocalDateTime member_end_date;

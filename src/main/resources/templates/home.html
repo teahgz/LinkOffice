@@ -7,7 +7,7 @@
 	<section sec:authorize="hasAnyAuthority('USER')">
         <div class="left-column">
             <div class="main_item_box left-top custom-height-1">
-            	<a class="main_link" th:href="@{/employee/member/mypage}">
+            	<a class="main_link" th:href="@{/employee/member/mypage/{no}(no=${memberdto.member_no})}">
 	            	<span class="main_box_title">
 	            		내 정보
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
