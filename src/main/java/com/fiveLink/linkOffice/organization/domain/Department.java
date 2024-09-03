@@ -21,12 +21,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="fl_department")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Builder
 public class Department {
 	@Id
@@ -48,11 +50,12 @@ public class Department {
 	@UpdateTimestamp
 	private LocalDateTime departmentUpdateDate;
 	
-	@Column(name="department_status")
-	private Long departmentStatus;
+	@Column(name="department_status") 
+	private Long departmentStatus ;
+	  
 	
 	// member와 1대다 관계
 	 @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
 	 private List<Member> members;
-	
+	 
 }

@@ -20,17 +20,18 @@ public class MemberViewController {
 	public MemberViewController(MemberService memberService) {
 		this.memberService = memberService;
 	}
-	
+	// 내정보 페이지
 	@GetMapping("/employee/member/mypage/{member_no}")
 	public String myPage(@PathVariable("member_no") Long memberNo, Model model) {
 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
 	    model.addAttribute("memberdto", memberdto);
-	    System.out.println(memberdto);
 	    return "employee/member/mypage";
 	}
-	
-	@GetMapping("/employee/member/myedit")
-	public String myedit() {
+	// 정보 수정 페이지
+	@GetMapping("/employee/member/myedit/{member_no}")
+	public String myedit(@PathVariable("member_no") Long memberNo, Model model) {
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
+	    model.addAttribute("memberdto", memberdto);
 		return "employee/member/myedit";
 	}
 }

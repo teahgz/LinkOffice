@@ -21,14 +21,13 @@ public class VacationFunctionController {
     }
 
 
-    @PostMapping("/addVacationss")
+    @PostMapping("/addVacation")
     @ResponseBody
-    public Map<String, String> addVacation(@RequestParam Map<String, String> params, @RequestParam("member_no") Long memberNo,
+    public Map<String, String> addVacation(@RequestParam Map<String, String> params, @RequestParam("memberNo") Long memberNo,
                                            @ModelAttribute VacationDto dto) {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
-        System.out.println("번호:"+memberNo);
         params.forEach((key, value) -> {
             if (key.startsWith("vacationData[")) {
                 String yearNumber = key.substring("vacationData[".length(), key.length() - 1);
@@ -38,7 +37,8 @@ public class VacationFunctionController {
             }
         });
 
-        // 이후 서비스 계층을 통해 데이터베이스에 저장
+        dto.setMember_no(memberNo);
+
         if (vacationService.addVacation(dto) > 0) {
             resultMap.put("res_code", "200");
             resultMap.put("res_msg", "성공적으로 생성되었습니다.");

@@ -1,102 +1,155 @@
-@charset "UTF-8";
-
-@font-face {
-    font-family: 'LeferiPoint-BlackA';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-#main-wrapper {
-    display: flex;
-    flex: 1;
-}
-
-#content-footer-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
 .my_profile {
-    position: relative; 
-    padding: 40px; 
-    height: 835px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .my_profile h1 {
-    font-size: 2rem;
-    margin-bottom: 20px; 
-    text-align: left; 
-    position: absolute; 
-    top: 20px; 
-    left: 40px; 
-    width: auto; 
-    max-width: calc(100% - 80px); 
+	font-size: 2rem;
+	margin-bottom: 20px;
+	width: auto;
+	align-self: flex-start;
+	margin-left: 100px;
 }
 
 .profile_card {
-    background-color: #f8f9fa;
-    border-radius: 12px; 
-    padding: 40px;  
-    max-width: 1200px; 
-    width: 100%;
-    height: 800px;  
-    margin-top: 60px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	background-color: #f8f9fa;
+	border-radius: 12px;
+	max-width: 800px;
+	width: 100%;
+	min-height: 400px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding: 60px 20px 80px; /* Increased bottom padding to make space for buttons */
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 20px;
+	position: relative; /* Added */
 }
 
-.profile-header {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 30px; 
+.profile_header {
+	display: flex;
+	align-items: flex-start;
+	gap: 28px;
+	margin-right: 290px;
+	margin-bottom: 20px;
 }
 
 .profile_img {
-    width: 220px; 
-    height: 220px; 
-    border-radius: 50%;
-    background-color: #ddd;
-    align-items: center;
-    overflow: hidden;
-    margin-right: 40px;  
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	background-color: #ddd;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
 }
 
 .profile_img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
-.profile-details {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 20px;
+.profile_img input[type="file"] {
+	display: none; 
 }
 
-.profile-details dt {
-    font-weight: bold;
-    text-align: right;
-    padding-right: 20px;  
-    font-size: 1.1rem; 
+.profile_details {
+	display: flex;
+	flex-direction: column;
+	gap: 35px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
 }
-.profile-details dd {
-    margin-left: 0;
-    line-height: 1.8;  
-    font-size: 1.1rem;  
+
+.profile_details li {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 30px;
+}
+
+.divider {
+	width: 100%;
+	border: 0;
+	border-top: 1px solid #ddd;
+}
+
+.profile_details.paired {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 30px 40px;
+	width: 70%;
+	margin-left: 220px;
+}
+
+.profile_details.paired li {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 30px;
+}
+
+.profile_detail_address {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap; 
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	margin-left: 230px; 
+}
+
+.profile_detail_address li {
+	width: 100%;
+}
+
+.profile_detail_address label {
+	margin-right: 20px;
+	margin-bottom: 5px; 
+}
+
+.input_field {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 8px;
+	max-width: 300px;
+}
+
+.form_buttons {
+	display: flex;
+	gap: 10px;
+	position: absolute;
+	bottom: 20px;
+	left: auto; 
+	right: 20px; 
+	margin-left: 30px;
+}
+
+.btn_address, .btn_update, .btn_cancel {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.btn_address {
+	background-color: #B1C2DD;
+	color: #fff;
+}
+
+.btn_update {
+	background-color: #B1C2DD;
+	color: #fff;
+}
+
+.btn_cancel {
+	background-color: #C0C0C0;
+	color: #fff;
 }

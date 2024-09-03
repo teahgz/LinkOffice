@@ -39,6 +39,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-# Ignore specific log file
-logs/
