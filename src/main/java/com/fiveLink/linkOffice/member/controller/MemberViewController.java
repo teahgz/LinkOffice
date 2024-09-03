@@ -34,4 +34,12 @@ public class MemberViewController {
 	    model.addAttribute("memberdto", memberdto);
 		return "employee/member/myedit";
 	}
+	
+	// 정보 수정 페이지
+	@GetMapping("/employee/member/digitalname/{member_no}")
+	public String digitalname(@PathVariable("member_no") Long memberNo, Model model) {
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
+	    model.addAttribute("memberdto", memberdto);
+		return "employee/member/digitalname";
+	}
 }
