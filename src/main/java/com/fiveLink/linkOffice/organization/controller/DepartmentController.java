@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestBody;  // 추가
+import org.springframework.web.bind.annotation.RequestBody;   
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 
@@ -37,7 +37,7 @@ public class DepartmentController {
     // 부서 추가
     @PostMapping("/department/add")
     @ResponseBody
-    public Map<String, Object> addDepartment(@RequestBody Map<String, Object> payload) {  // 수정
+    public Map<String, Object> addDepartment(@RequestBody Map<String, Object> payload) { 
         Map<String, Object> response = new HashMap<>();
         
         try {

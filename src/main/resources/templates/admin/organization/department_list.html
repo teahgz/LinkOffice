@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{include/layout}"> 
+     layout:decorate="~{include/layout}">
 <head>
-    <meta charset="UTF-8"> 
-    
-    <title>Department List</title>  
+    <meta charset="UTF-8">
+    <title>Department List</title>
     <style>
         .container {
             display: flex;
@@ -24,7 +23,7 @@
         }
         .sub-departments ul {
             padding-left: 20px;
-        } 
+        }
         .modal {
             display: none;
             position: fixed;
@@ -57,14 +56,16 @@
             text-decoration: none;
             cursor: pointer;
         }
-    </style> 
+    </style>
+    <!-- Include SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
     <th:block layout:fragment="content">
-        <section> 
+        <section>
             <div class="container">
                 <div class="list">
-                    <h2>부서 목록</h2> 
+                    <h2>부서 목록</h2>
                     <button id="openModal">부서 등록</button>
                     <ul>
                         <th:block th:each="department : ${departments}">
@@ -81,7 +82,6 @@
                         </th:block>
                     </ul>
                 </div>
-
                 <div class="details" th:if="${department}">
                     <h2>부서 정보</h2>
                     <p><strong>부서명:</strong> <span th:text="${department.department_name}"></span></p>
@@ -95,196 +95,216 @@
                                 </li>
                             </th:block>
                         </ul>
-                    </div> 
+                    </div>
                     <button id="editButton" th:data-department-id="${department.department_no}">수정</button>
                 </div>
             </div>
         </section>
 
-        <!-- 모달 -->
-        <div id="createModal" class="modal">
-		    <div class="modal-content">
-		        <span class="close">&times;</span>
-		        <h2>부서 등록</h2>
-		        <form id="departmentForm">
-		            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-		            <label for="departmentName">부서명:</label>
-		            <input type="text" id="departmentName" name="departmentName" required><br><br>
-		            
-		            <label for="departmentHigh">상위 부서:</label>
-		            <select id="departmentHigh" name="departmentHigh">
-		                <option value="0">선택 없음</option>
-		                <th:block th:each="dept : ${topLevelDepartments}">
-		                    <option th:value="${dept.department_no}" th:text="${dept.department_name}"></option>
-		                </th:block>
-		            </select><br><br>
-		            
-		            <button type="submit">등록</button>
-		            <!-- 취소 버튼 추가 -->
-		            <button type="button" id="cancelButton">취소</button>
-		        </form>
-		    </div>
-		</div>
-
-          
-        <script>
-            var modal = document.getElementById("createModal");
-            var btn = document.getElementById("openModal");
-            var span = document.getElementsByClassName("close")[0];
-            var form = document.getElementById("departmentForm");
-
-            btn.onclick = function() {
-                modal.style.display = "block";
-            }
-
-            span.onclick = function() {
-                modal.style.display = "none";
-                resetModal();  
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                    resetModal(); 
-                }
-            }
-
-            document.getElementById("cancelButton").onclick = function() {
-                modal.style.display = "none";   
-                resetModal();   
-            };
-            
-            // 등록 모드로 초기화하는 함수
-            function resetModal() {
-                document.querySelector(".modal-content h2").innerText = "부서 등록";
-                document.querySelector("#departmentForm button[type='submit']").innerText = "등록";
-                
-                document.getElementById("departmentName").value = "";
-                document.getElementById("departmentHigh").value = "0";
-                document.getElementById("departmentHigh").disabled = false;  
-                
-                form.onsubmit = function(event) {
-                    event.preventDefault();
+        <!-- 등록 모달 -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>부서 등록</h2>
+                <form id="departmentForm">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <label for="departmentName">부서명:</label>
+                    <input type="text" id="departmentName" name="departmentName" required><br><br>
                     
-                    var departmentName = document.getElementById("departmentName").value;
-                    var departmentHigh = document.getElementById("departmentHigh").value;
-                    var departmentHighInt = parseInt(departmentHigh, 10);
-                    var csrfToken = document.querySelector('input[name="_csrf"]').value;
+                    <label for="departmentHigh">상위 부서:</label>
+                    <select id="departmentHigh" name="departmentHigh">
+                        <option value="0">선택 없음</option>
+                        <th:block th:each="dept : ${topLevelDepartments}">
+                            <option th:value="${dept.department_no}" th:text="${dept.department_name}"></option>
+                        </th:block>
+                    </select><br><br>
+                    
+                    <button type="submit">등록</button>
+                </form>
+            </div>
+        </div>
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/department/add",
-                        contentType: "application/json",
-                        data: JSON.stringify({
-                            departmentName: departmentName,
-                            departmentHigh: departmentHighInt
-                        }),
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        success: function(response) {
-                            if (response.success) {
+        <!-- 수정 모달 -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>부서 수정</h2>
+                <form id="editForm">
+                    <input type="hidden" id="editDepartmentId" name="departmentId"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <label for="editDepartmentName">부서명:</label>
+                    <input type="text" id="editDepartmentName" name="departmentName" required><br><br>
+                    
+                    <label for="editDepartmentHigh">상위 부서:</label>
+                    <select id="editDepartmentHigh" name="departmentHigh">
+                        <option value="0">선택 없음</option>
+                        <th:block th:each="dept : ${topLevelDepartments}">
+                            <option th:value="${dept.department_no}" th:text="${dept.department_name}"></option>
+                        </th:block>
+                    </select><br><br>
+                    
+                    <button type="submit">수정</button>
+                </form>
+            </div>
+        </div>
+ 
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var createModal = document.getElementById("myModal");
+                var editModal = document.getElementById("editModal");
+                var openModalBtn = document.getElementById("openModal");
+                var editButton = document.getElementById("editButton");
+                var closeButtons = document.getElementsByClassName("close");
+                var createForm = document.getElementById("departmentForm");
+                var editForm = document.getElementById("editForm");
+
+                if (openModalBtn) {
+                    openModalBtn.onclick = function() {
+                        createModal.style.display = "block";
+                    }
+                }
+
+                if (editButton) {
+                    editButton.onclick = function() {
+                        var departmentId = this.getAttribute("data-department-id");
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/department/get?id=" + departmentId,
+                            success: function(response) {
+                                if (response.success) {
+                                    var department = response.department;
+                                    document.getElementById("editDepartmentId").value = department.department_no;
+                                    document.getElementById("editDepartmentName").value = department.department_name;
+                                    document.getElementById("editDepartmentHigh").value = department.department_high;
+
+                                    if (department.subDepartments && department.subDepartments.length > 0) {
+                                        document.getElementById("editDepartmentHigh").disabled = true;
+                                    } else {
+                                        document.getElementById("editDepartmentHigh").disabled = false;
+                                    }
+
+                                    editModal.style.display = "block";
+                                } else {
+                                    Swal.fire("오류", "부서 정보를 불러오는 데 실패했습니다.", "error");
+                                }
+                            },
+                            error: function() {
+                                Swal.fire("오류", "부서 정보를 불러오는 데 실패했습니다.", "error");
+                            }
+                        });
+                    }
+                }
+
+                for (var i = 0; i < closeButtons.length; i++) {
+                    closeButtons[i].onclick = function() {
+                        createModal.style.display = "none";
+                        editModal.style.display = "none";
+                        resetCreateModal();
+                    }
+                }
+
+                window.onclick = function(event) {
+                    if (event.target == createModal || event.target == editModal) {
+                        createModal.style.display = "none";
+                        editModal.style.display = "none";
+                        resetCreateModal();
+                    }
+                }
+
+                function resetCreateModal() {
+                    document.getElementById("departmentName").value = "";
+                    document.getElementById("departmentHigh").value = "0";
+                }
+
+                if (createForm) {
+                    createForm.onsubmit = function(event) {
+                        event.preventDefault();
+                        var departmentName = document.getElementById("departmentName").value;
+                        var departmentHigh = document.getElementById("departmentHigh").value;
+                        var departmentHighInt = parseInt(departmentHigh, 10);
+                        var csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/department/add",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                departmentName: departmentName,
+                                departmentHigh: departmentHighInt
+                            }),
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: '등록 성공',
+                                        text: '부서가 성공적으로 등록되었습니다.',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: '등록 실패',
+                                        text: '등록 오류: ' + response.error,
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            },
+                            error: function() {
                                 Swal.fire({
-                                    title: 'Success!',
-                                    text: '부서가 성공적으로 등록되었습니다.',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: '등록 오류: ' + response.error,
+                                    title: '등록 실패',
+                                    text: '서버와의 통신 중 오류가 발생했습니다.',
                                     icon: 'error',
                                     confirmButtonText: 'OK'
                                 });
                             }
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log("AJAX error:", textStatus, errorThrown);
-                            Swal.fire({
-                                title: 'Error!',
-                                text: '서버와의 통신 중 오류가 발생했습니다.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    });
-                }
-            }
-
-            // 수정
-            function EditDepartment(department) {
-                document.querySelector(".modal-content h2").innerText = "부서 수정";
-                document.querySelector("#departmentForm button[type='submit']").innerText = "수정";
-                
-                document.getElementById("departmentName").value = department.department_name;
-                document.getElementById("departmentHigh").value = department.department_high;
-
-                // 하위 부서가 존재하는 경우 상위 부서 선택 박스 비활성화
-                if (department.subDepartments && department.subDepartments.length > 0) {
-                    document.getElementById("departmentHigh").disabled = true;
-                } else {
-                    document.getElementById("departmentHigh").disabled = false;
-                }
-
-                form.onsubmit = function (event) {
-                    event.preventDefault();
-
-                    var departmentName = document.getElementById("departmentName").value;
-                    var departmentHigh = document.getElementById("departmentHigh").value;
-
-                    var departmentHighInt = parseInt(departmentHigh, 10);
-                    var csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/department/update",
-                        contentType: "application/json",
-                        data: JSON.stringify({
-                            departmentId: department.department_no,
-                            departmentName: departmentName,
-                            departmentHigh: departmentHighInt
-                        }),
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                Swal.fire("수정 성공", "부서가 성공적으로 수정되었습니다.", "success").then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire("수정 오류", response.error, "error");
-                            }
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            Swal.fire("서버 오류", "서버와의 통신 중 오류가 발생했습니다.", "error");
-                        }
-                    });
-                }
-            }
- 
-            document.getElementById("editButton").onclick = function () {
-                var departmentId = this.getAttribute("data-department-id");
-
-                $.ajax({
-                    type: "GET",
-                    url: "/department/get?id=" + departmentId,
-                    success: function (response) {
-                        if (response.success) {
-                        	EditDepartment(response.department);
-                            modal.style.display = "block";
-                        } else {
-                            Swal.fire("오류", "부서 정보를 불러오는 데 실패했습니다.", "error");
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        Swal.fire("오류", "부서 정보를 불러오는 데 실패했습니다.", "error");
+                        });
                     }
-                });
-            };
+                }
+
+                if (editForm) {
+                    editForm.onsubmit = function(event) {
+                        event.preventDefault();
+
+                        var departmentId = document.getElementById("editDepartmentId").value;
+                        var departmentName = document.getElementById("editDepartmentName").value;
+                        var departmentHigh = document.getElementById("editDepartmentHigh").value;
+                        var departmentHighInt = parseInt(departmentHigh, 10);
+                        var csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/department/update",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                departmentId: departmentId,
+                                departmentName: departmentName,
+                                departmentHigh: departmentHighInt
+                            }),
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire("수정 성공", "부서가 성공적으로 수정되었습니다.", "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("수정 오류", response.error, "error");
+                                }
+                            },
+                            error: function() {
+                                Swal.fire("서버 오류", "서버와의 통신 중 오류가 발생했습니다.", "error");
+                            }
+                        });
+                    }
+                }
+            });
         </script>
     </th:block>
 </body>
