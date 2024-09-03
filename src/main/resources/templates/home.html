@@ -40,7 +40,7 @@
         </div>
         <div class="middle-column">
             <div class="main_item_box custom-height-3">
-            	<a class="main_link" th:href="@{/근태 조회 링크}">
+            	<a class="main_link" th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">
 	            	<span class="main_box_title">
 	            		근태 조회
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
