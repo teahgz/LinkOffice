@@ -1,35 +1,130 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{include/layout}">
-<meta charset="UTF-8">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/employee/document/personal.css}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script>
+        $(function () {
+            // jsTree 인스턴스 생성
+            $('#jstree').jstree();
+
+            // 상위 폴더 체크박스 선택하면 하위폴더 체크박스도 선택됨
+            $('#jstree').on('change', 'input[type="checkbox"]', function () {
+                var isChecked = $(this).prop('checked');
+                $(this).closest('li').find('ul input[type="checkbox"]').prop('checked', isChecked);
+            });
+
+            // 폴더 클릭 시 선택됨
+            $('button').on('click', function () {
+                $('#jstree').jstree('select_node', 'root1_childNode1');
+            });
+            
+            // 폴더 추가 버튼 클릭 시 이벤트
+            $('#add-folder-button').on('click', function() {
+                alert('폴더 추가 버튼');
+            });
+        });
+    </script>
+    <style>
+        .tree ul {
+            padding-left: 20px;
+        }
+        .tree input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .document_no_folder {
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            height: 100%;
+        }
+        #document_no_folder_msg {
+            text-align: center;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+        #add-folder-button {
+            border: none;
+            background-color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
     <th:block layout:fragment="content">
-        <link th:href="@{/css/employee/document/personal.css}" rel="stylesheet" type="text/css">
-       <section>
-        개인 문서함
-        <hr>
-        <div class="document_box_type">
-            <table class="document_folder_tree">
-                <thead>
-                    <tr>
-                        <th>폴더 번호</th>
-                        <th>폴더 이름</th>
-                    </tr>
-                </thead>
-                <tbody>
-					<tr th:each="folder : ${folderList}">
-	                    <td th:text="${folder.document_folder_no}">Folder No</td>
-	                    <td th:text="${folder.document_folder_name}">Folder Name</td>
-	                </tr>
-	                <tr th:if="${#lists.isEmpty(folderList)}">
-	                    <td colspan="2">폴더가 없습니다.</td>
-	                </tr>
-                </tbody>
-            </table>
+        <section>
+            개인 문서함
             <hr>
-            <div class="document_file_list">
+            <div class="document_box_type">
+                <div class="document_folder_tree">
+                    <!-- 폴더가 존재하지 않을 때 -->
+                    <th:block th:if="${folderList == null or #lists.size(folderList) == 0}">
+                        <div class="document_no_folder">
+                            <button id="add-folder-button">+</button>
+                            <p id="document_no_folder_msg">폴더 생성</p>
+                        </div>
+                    </th:block>
+                    <!-- 폴더가 존재할 때 출력 -->
+                    <th:block th:if="${folderList != null or #lists.size(folderList) > 0}">
+                        <div id="jstree">
+                            <ul>
+                                <!-- 폴더 레벨이 1(최상위 폴더)인 폴더 출력 -->
+                                <li th:each="folder : ${folderList}"
+                                    th:if="${folder.document_folder_level == 1}"
+                                    th:id="'node_' + ${folder.document_folder_no}">
+                                    <input type="checkbox" th:id="'checkbox_' + ${folder.document_folder_no}" />
+                                    <span th:text="${folder.document_folder_name}">최상위 폴더</span>
+                                    <!-- 자식 폴더 출력 -->
+                                    <ul>
+                                        <th:block th:each="subFolder : ${folderList}"
+                                                  th:if="${subFolder.document_folder_parent_no == folder.document_folder_no}">
+                                            <li th:id="'subNode_' + ${subFolder.document_folder_no}">
+                                                <input type="checkbox" th:id="'checkbox_' + ${subFolder.document_folder_no}" />
+                                                <span th:text="${subFolder.document_folder_name}">자식 폴더</span>
+                                                <!-- 손자 폴더 출력 -->
+                                                <ul>
+                                                    <th:block th:each="childFolder : ${folderList}"
+                                                              th:if="${childFolder.document_folder_parent_no == subFolder.document_folder_no}">
+                                                        <li th:id="'childNode_' + ${childFolder.document_folder_no}">
+                                                            <input type="checkbox" th:id="'checkbox_' + ${childFolder.document_folder_no}" />
+                                                            <span th:text="${childFolder.document_folder_name}">손자 폴더</span>
+                                                            <!-- 손자 폴더의 자식 폴더 출력 -->
+                                                            <ul>
+                                                                <th:block th:each="grandChildFolder : ${folderList}"
+                                                                          th:if="${grandChildFolder.document_folder_parent_no == childFolder.document_folder_no}">
+                                                                    <li th:id="'grandChildNode_' + ${grandChildFolder.document_folder_no}">
+                                                                        <input type="checkbox" th:id="'checkbox_' + ${grandChildFolder.document_folder_no}" />
+                                                                        <span th:text="${grandChildFolder.document_folder_name}">손자의 자식 폴더</span>
+                                                                    </li>
+                                                                </th:block>
+                                                            </ul>
+                                                        </li>
+                                                    </th:block>
+                                                </ul>
+                                            </li>
+                                        </th:block>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </th:block>
+                </div>
+                <hr>
+                <div class="document_file_list">
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
     </th:block>
+</body>
 </html>

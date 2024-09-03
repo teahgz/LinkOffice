@@ -33,7 +33,7 @@ public class DocumentViewController {
 			) {
 		Long member_no = 2L;
 		List<DocumentFolderDto> folderList = documentFolderService.selectPersonalFolderList(member_no);
-		LOGGER.debug(folderList.toString());
+		LOGGER.debug("Folder List: {}", folderList);
 		model.addAttribute("folderList", folderList);
 		return "employee/document/personal";
 	}
