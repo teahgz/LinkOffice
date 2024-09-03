@@ -1,5 +1,5 @@
 // 초기 세션 시간 (초) 설정
-let remainingTime = 1800; 
+let remainingTime = 1800;
 
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -10,13 +10,13 @@ function formatTime(seconds) {
 }
 
 function updateSessionTime() {
-    remainingTime--; 
+    remainingTime--;
     const formattedTime = formatTime(remainingTime);
     document.getElementById('session-time').innerText = `남은 시간: ${formattedTime}`;
 
     if (remainingTime <= 0) {
         alert('세션이 만료되었습니다. 로그인 페이지로 이동합니다.');
-        window.location.href = '/'; 
+        window.location.href = '/';
     }
 }
 
@@ -24,8 +24,8 @@ window.onload = function() {
     fetch('/session-time')
         .then(response => response.json())
         .then(timeLeft => {
-            remainingTime = timeLeft; 
-            setInterval(updateSessionTime, 1000); 
+            remainingTime = timeLeft;
+            setInterval(updateSessionTime, 1000);
         })
         .catch(error => console.error('세션 시간 에러', error));
 };
@@ -42,4 +42,3 @@ document.addEventListener('click', function(event) {
        dropdownMenu.classList.remove('show');
     }
 });
-

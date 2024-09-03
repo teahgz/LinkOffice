@@ -21,7 +21,7 @@ public class VacationFunctionController {
     }
 
 
-    @PostMapping("/addVacation")
+    @PostMapping("/addVacationAction")
     @ResponseBody
     public Map<String, String> addVacation(@RequestParam Map<String, String> params, @RequestParam("memberNo") Long memberNo,
                                            @ModelAttribute VacationDto dto) {
