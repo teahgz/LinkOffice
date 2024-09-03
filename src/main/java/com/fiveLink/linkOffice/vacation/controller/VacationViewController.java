@@ -33,7 +33,9 @@ public class VacationViewController {
         logger.info("Navigating to addVacation page for member_no: {}", memberNo);
 
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
         model.addAttribute("memberdto", memberdto);
+
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";

@@ -33,3 +33,47 @@ function removeYear() {
         yearCount--;
     }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("vacationForm");
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출 동작을 막음
+
+        const payload = new FormData(form);
+
+        fetch('/vacation/addVacation', {
+            method: 'POST',
+            body: payload
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.res_code === '200') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.href = "/vacation/addVacation";
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '실패',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '서버와의 통신 중 오류가 발생했습니다.',
+                confirmButtonText: "닫기"
+            });
+        });
+    });
+});
