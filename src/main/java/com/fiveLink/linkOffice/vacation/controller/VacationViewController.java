@@ -20,11 +20,13 @@ public class VacationViewController {
     //휴가 생성 페이지 이동
     @GetMapping("/vacation/addVacation/{member_no}")
     public String addVacation(@PathVariable("member_no") Long memberNo, Model model) {
-//        System.out.println(memberNo);
-//        model.addAttribute("member_no", memberNo);
-//        Object memberNoFromModel = model.getAttribute("member_no");
-//        logger.info("Model member_no: {}", memberNoFromModel);
+        // 로그에 정보 출력
+        logger.info("Navigating to addVacation page for member_no: {}", memberNo);
 
+        // member_no를 모델에 추가해서 뷰에 전달
+        model.addAttribute("memberNo", memberNo);
+
+        // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";
     }
 }
