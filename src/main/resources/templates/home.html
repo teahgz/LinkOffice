@@ -6,34 +6,29 @@
        	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
-            <div class="main_item_box left-top custom-height-1">
-
-            	<a class="main_link" th:href="@{employee/member/mypage/{no}(no=${member.member_no})}">
-
-	            	<span class="main_box_title">
-	            		내 정보
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-            	<h3>사원 정보</h3>
+			<div class="main_item_box left-top custom-height-1 employee-info">
+				<a class="main_link"
+					th:href="@{employee/member/mypage/{no}(no=${member.member_no})}">
+					<span class="main_box_title"> 내 정보 <img
+						th:src="@{/img/main_arrow.png}" alt="main_arrow"
+						class="main_arrow_img" />
+				</span>
+				</a>
+				<h3>사원 정보</h3>
 				<ul>
-					<li>
-					<img th:src="@{/img/user_profile.jpg}" class="user_photo" alt="User Profile">
-					</li>
-					<li>
-						<span th:text="${member.member_number}"></span>
-					</li>
-					<li>
-						<span th:text="${member.member_name}"></span>
-					</li>
-					<li>
-						<span th:text="${member.department_name}"></span>
-					</li>
+					<li><img th:src="@{/img/user_profile.jpg}" class="user_photo"
+						alt="User Profile"></li>
+					<li><span th:text="${member.member_name}"></span></li>
+					<li><span th:text="${member.department_name}"></span></li>
+					<li><span th:text="${member.position_name}"></span></li>
+				</ul>
+				<ul>
+					<li><span>진행함</span> <span>3</span></li>
+					<li><span>미결함</span> <span>0</span></li>
+					<li><span>참조함</span> <span>4</span></li>
 				</ul>
 			</div>
-            <div class="main_item_box left-bottom custom-height-2">
-
-
+			<div class="main_item_box left-bottom custom-height-2">
             	<a class="main_link" th:href="@{/일정 링크}">
 	         	    <span class="main_box_title">
 	            		일정
