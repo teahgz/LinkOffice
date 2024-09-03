@@ -1,9 +1,9 @@
 .addVacation_content {
-  	 font-size: 1.2vw;
+  font-size: 1.2vw;
       padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: center; 
+      align-items: center;
 }
 .vacationForm {
     width: 85%;

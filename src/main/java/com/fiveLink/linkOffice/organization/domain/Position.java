@@ -10,12 +10,12 @@ import com.fiveLink.linkOffice.member.domain.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,5 +51,9 @@ public class Position {
 
     @Column(name = "position_status")
     private Long positionStatus;
-      
+    
+    // member와 1대다 관계
+    @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
+    private List<Member> members;
+    
 }

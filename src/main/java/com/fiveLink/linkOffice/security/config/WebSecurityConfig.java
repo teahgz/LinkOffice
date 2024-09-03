@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -34,11 +35,12 @@ public class WebSecurityConfig implements HttpSessionListener {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/**", "/css/**", "/img/**", "/js/**").permitAll()
+                    .requestMatchers("/", "/css/**", "/img/**", "/js/**").permitAll()
                     .requestMatchers("/pwchange", "/error", "/session-time").permitAll()
                     .requestMatchers("/home").authenticated()
-                    .requestMatchers("/employee/member/**").authenticated()
                     .requestMatchers("/**").authenticated()
+                    .requestMatchers("/employee/member/**").authenticated()
+                        .requestMatchers("/vacation/**").authenticated()
             )
             .formLogin(login ->
                 login

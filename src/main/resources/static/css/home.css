@@ -151,6 +151,91 @@ section {
 
 /* ------------- 윗부분 수정 금지  -------------- */
 
+.employee-info {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+}
 
+.employee-info .main_box_title {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
- 
+.employee-info .main_arrow_img {
+    width: 16px;
+    height: 16px;
+}
+
+.employee-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.employee-info .user_photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.employee-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.employee-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.employee-position {
+    font-size: 14px;
+    color: #666;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.approval-title {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.approval-status {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.approval-status li {
+    text-align: center;
+    flex: 1;
+}
+
+.approval-status li span:first-child {
+    font-size: 14px;
+    color: #888;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.approval-status li span:last-child {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+}

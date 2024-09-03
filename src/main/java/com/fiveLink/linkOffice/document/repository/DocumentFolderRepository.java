@@ -14,7 +14,7 @@ public interface DocumentFolderRepository extends JpaRepository<DocumentFolder, 
 	
 	List<DocumentFolder> findByMemberNoAndDocumentBoxTypeAndDocumentFolderStatus(
             Long memberNo, Long documentBoxType, Long documentFolderStatus);
-
+	
 	List<DocumentFolder> findByDepartmentNoAndDocumentBoxTypeAndDocumentFolderStatus(
 			Long departmentNo, Long documentBoxType, Long documentFolderStatus);
 	

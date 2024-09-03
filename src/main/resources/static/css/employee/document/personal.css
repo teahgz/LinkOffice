@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+@font-face {
+   font-family: 'LeferiPoint-BlackA';
+   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+   font-weight: normal;
+   font-style: normal;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#main-wrapper {
+    display: flex;
+    flex: 1;
+}
+
+#content-footer-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.document_box_type{
+	display: flex;
+    height: 95%;
+}
+.document_folder_tree{
+    border-radius: 20px;
+    margin: 20px;
+    background-color: white;
+	width: 20%;
+    max-height: 100%;
+}
+.document_file_list{
+	border-radius: 20px;
+    margin: 20px;
+	background-color: white;
+	width: 80%;
+	max-height: 100%;
+}
