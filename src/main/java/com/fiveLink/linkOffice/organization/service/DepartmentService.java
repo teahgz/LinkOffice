@@ -104,4 +104,19 @@ public class DepartmentService {
             .map(Department::getDepartmentName)
             .orElse("미지정");
     }
+    
+    // 부서 수정
+    public void updateDepartment(Long departmentId, String departmentName, Long departmentHigh) {
+        Optional<Department> departmentOptional = departmentRepository.findById(departmentId);
+        
+        if (departmentOptional.isPresent()) {
+            Department department = departmentOptional.get();
+            department.setDepartmentName(departmentName);
+            department.setDepartmentHigh(departmentHigh);
+            departmentRepository.save(department);  
+        } else {
+            throw new RuntimeException("부서를 찾을 수 없습니다.");
+        }
+    }
+
 }

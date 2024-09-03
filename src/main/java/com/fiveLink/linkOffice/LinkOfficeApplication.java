@@ -11,4 +11,6 @@ public class LinkOfficeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LinkOfficeApplication.class, args);
 	}
+
 }
+

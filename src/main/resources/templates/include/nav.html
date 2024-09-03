@@ -12,13 +12,13 @@
 				<div class="dropdown">
 					<ul th:each = "member : ${memberdto}">
 						<li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
-						<li><a href="#">정보 수정</a></li>
+						<li><a th:href="@{/employee/member/myedit/{no}(no=${member.member_no})}">정보 수정</a></li>
 						<li><a href="#">전자결재 서명 등록</a></li>
 					</ul>
 				</div>
 			</li>
-			<li>
-				<a href="#">근태 조회</a>
+			<li th:each = "member : ${memberdto}">
+				<a th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">근태 조회</a>
 
 				</li>
 				<li>
@@ -154,7 +154,7 @@
 					</div>
 				</li>
 
-				<li><a href="#">통합 권한 관리</a></li>
+				<li><a href="/department">통합 권한 관리</a></li>
 			</ul>
 		</div>
 

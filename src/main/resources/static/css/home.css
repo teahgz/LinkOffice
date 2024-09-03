@@ -151,6 +151,7 @@ section {
 
 /* ------------- 윗부분 수정 금지  -------------- */
 
+/* 내 정보 css */
 .employee-info {
     background-color: white;
     border-radius: 10px;
@@ -163,7 +164,6 @@ section {
     color: #333;
     margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 }
 
