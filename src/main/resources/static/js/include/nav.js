@@ -1,6 +1,5 @@
 document.querySelectorAll('#nav_wrap > ul > li > a').forEach(anchor => {
-    anchor.addEventListener('click', function(event) {
-        event.preventDefault();
+    anchor.addEventListener('click', function(event) { 
 
         const dropdown = this.nextElementSibling;
         const parentLi = this.parentElement;

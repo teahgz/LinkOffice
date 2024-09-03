@@ -48,6 +48,6 @@ public class Department {
 	private LocalDateTime departmentUpdateDate;
 	
 	@Column(name="department_status")
-	private Long departmentStatus;
+	private Long departmentStatus ;
 	 
 }

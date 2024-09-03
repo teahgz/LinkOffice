@@ -4,6 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+logs/
+
+/src/main/resources/application.properties
 
 ### STS ###
 .apt_generated
@@ -26,6 +29,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -35,3 +39,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignore specific log file
+logs/
