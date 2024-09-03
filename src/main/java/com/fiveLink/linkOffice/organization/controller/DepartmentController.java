@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestBody;   
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.service.MemberService;
 
 @Controller
 public class DepartmentController {
@@ -22,22 +25,29 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
+    @Autowired
+    private MemberService memberService;
+
     @GetMapping("/department")
     public String listDepartments(Model model, @RequestParam(value = "id", required = false) Long id) {
         List<DepartmentDto> departments = departmentService.getAllDepartments();
         model.addAttribute("departments", departments);
         model.addAttribute("topLevelDepartments", departmentService.getTopLevelDepartments());
         if (id != null) {
-            departmentService.getDepartmentById(id).ifPresent(department -> model.addAttribute("department", department));
+            Optional<DepartmentDto> departmentOpt = departmentService.getDepartmentById(id);
+            if (departmentOpt.isPresent()) {
+                DepartmentDto department = departmentOpt.get();
+                List<MemberDto> members = memberService.getMembersByDepartmentNo(department.getDepartment_no());
+                department.setMembers(members);
+                model.addAttribute("department", department);
+            }
         }
         return "/admin/organization/department_list";
     }
 
- 
-    // 부서 추가
     @PostMapping("/department/add")
     @ResponseBody
-    public Map<String, Object> addDepartment(@RequestBody Map<String, Object> payload) { 
+    public Map<String, Object> addDepartment(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
         
         try {
@@ -59,7 +69,6 @@ public class DepartmentController {
         return response;
     }
 
-
     @GetMapping("/department/get")
     @ResponseBody
     public Map<String, Object> getDepartment(@RequestParam("id") Long id) {
@@ -80,8 +89,6 @@ public class DepartmentController {
         return response;
     }
 
-    
-	// 부서 수정 
     @PostMapping("/department/update")
     @ResponseBody
     public Map<String, Object> updateDepartment(@RequestBody Map<String, Object> payload) {
@@ -102,5 +109,4 @@ public class DepartmentController {
         
         return response;
     }
-
 }
