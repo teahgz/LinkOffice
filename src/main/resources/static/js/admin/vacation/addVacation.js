@@ -40,13 +40,20 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault(); // 기본 폼 제출 동작을 막음
 
         const payload = new FormData(form);
-
-        fetch('/vacation/addVacation', {
+        const memberNo = document.getElementById('memberNo').value; // 멤버 번호 가져오기
+    console.log(memberNo);
+        fetch('/vacation/addVacationAction', {
             method: 'POST',
             body: payload
         })
-        .then(response => response.json())
+        .then(response => {
+        if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+        })
         .then(data => {
+          console.log(data); // 응답 데이터 확인
             if (data.res_code === '200') {
                 Swal.fire({
                     icon: 'success',
@@ -55,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     confirmButtonText: "닫기"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        location.href = "/vacation/addVacation";
+                         location.href = `/home`
                     }
                 });
             } else {

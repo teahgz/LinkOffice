@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fiveLink.linkOffice.mapper.VacationMapper"> <!-- namespace 수정 -->
+
+    <!-- 멤버의 휴가 데이터를 가져오는 쿼리 -->
+    <select id="selectVacationList" resultType="com.fiveLink.linkOffice.vacation.domain.VacationDto">
+        SELECT * FROM fl_vacation
+    </select>
+
+</mapper>
