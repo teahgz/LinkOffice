@@ -56,9 +56,7 @@
             text-decoration: none;
             cursor: pointer;
         }
-    </style>
-    <!-- Include SweetAlert CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    </style> 
 </head>
 <body>
     <th:block layout:fragment="content">
@@ -93,6 +91,14 @@
                                 <li>
                                     <a th:href="@{/department(id=${sub.department_no})}" th:text="${sub.department_name}"></a>
                                 </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                    <div class="members" th:if="${department.members}">
+                        <h3>소속 직원</h3>
+                        <ul>
+                            <th:block th:each="member : ${department.members}">
+                                <li th:text="${member.memberName}"></li>
                             </th:block>
                         </ul>
                     </div>

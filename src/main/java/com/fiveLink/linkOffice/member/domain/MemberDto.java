@@ -45,6 +45,11 @@ public class MemberDto {
 	
 	private List<GrantedAuthority> authorities;
 	
+	// [서혜원] 부서별 사원
+	private Long memberId;
+    private String memberName;
+    private Long departmentNo;
+	    
 	public Member toEntity() {
 		return Member.builder()
 					.memberNo(member_no)
