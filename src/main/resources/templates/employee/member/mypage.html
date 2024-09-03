@@ -20,11 +20,11 @@
                         </div>
                         <ul class="profile-details" th:each="member : ${memberdto}">
                             <li>
-                                <strong>사번</strong> 
+                                <strong>사번</strong>
                                 <span th:text="${member.member_number}"></span>
                             </li>
                             <li>
-                                <strong>사용자</strong> 
+                                <strong>사용자</strong>
                                 <span th:text="${member.member_name}"></span>
                             </li>
 							<li>
@@ -33,31 +33,31 @@
 							</li>
 
 							<li>
-                                <strong>부서</strong> 
+                                <strong>부서</strong>
                                 <span th:text="${member.department_name}"></span>
                             </li>
                             <li>
-                                <strong>직위</strong> 
+                                <strong>직위</strong>
                                 <span th:text="${member.position_name}"></span>
                             </li>
                             <li>
-                                <strong>입사일</strong> 
+                                <strong>입사일</strong>
                                 <span th:text="${member.member_hire_date}"></span>
                             </li>
                             <li>
-                                <strong>퇴사일</strong> 
+                                <strong>퇴사일</strong>
                                 <span>-</span>
                             </li>
                             <li>
-                                <strong>전화번호</strong> 
+                                <strong>전화번호</strong>
                                 <span th:text="${member.member_mobile}"></span>
                             </li>
                             <li>
-                                <strong>내선번호</strong> 
+                                <strong>내선번호</strong>
                                 <span th:text="${member.member_internal}"></span>
                             </li>
                             <li>
-                                <strong>주소</strong> 
+                                <strong>주소</strong>
                                 <span th:text="${member.member_address}"></span>
                             </li>
                         </ul>

@@ -4,14 +4,15 @@
 
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
-	<div id="nav_wrap">
-		<ul th:each="member : ${memberdto}">
+
+	<div id="nav_wrap" >
+		<ul>
 			<li>
 				<a href="#">마이페이지</a>
 				<div class="dropdown">
-					<ul>
+					<ul th:each = "member : ${memberdto}">
 						<li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
-						<li><a th:href="@{/emploee/member/myedit}">정보 수정</a></li>
+						<li><a href="#">정보 수정</a></li>
 						<li><a href="#">전자결재 서명 등록</a></li>
 					</ul>
 				</div>
@@ -19,140 +20,141 @@
 			<li>
 				<a href="#">근태 조회</a>
 
-			</li>
-			<li>
-				<a href="#">공지사항</a>
+				</li>
+				<li>
+					<a href="#">공지사항</a>
 
-			</li>
-			<li>
-				<a href="#">휴가</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">휴가 신청하기</a></li>
-						<li><a href="#">휴가 현황</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">일정</a>
-			</li>
-
-
-			<li>
-				<a href="#">회의실</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">회의실 예약</a></li>
-						<li><a href="#">예약 내역</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">전자결재</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">결재 작성하기</a></li>
-						<li>
-							<a href="#">결재 상신함</a>
-							<div class="dropdown">
-								<ul>
-									<li><a href="#">결재 진행함</a></li>
-									<li><a href="#">결재 반려함</a></li>
-								</ul>
-							</div>
-						</li>
-						<li>
-							<a href="#">결재 수신함</a>
-							<div class="dropdown">
-								<ul>
-									<li><a href="#">결재 내역함</a></li>
-									<li><a href="#">결재 참조함</a></li>
-								</ul>
-							</div>
-						</li>
-					</ul>
+				</li>
+				<li>
+					<a href="#">휴가</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">휴가 신청하기</a></li>
+							<li><a href="#">휴가 현황</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">일정</a>
+				</li>
 
 
-				</div>
-			</li>
-			<li>
-				<a href="#">메신저</a>
+				<li>
+					<a href="#">회의실</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">회의실 예약</a></li>
+							<li><a href="#">예약 내역</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">전자결재</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">결재 작성하기</a></li>
+							<li>
+								<a href="#">결재 상신함</a>
+								<div class="dropdown">
+									<ul>
+										<li><a href="#">결재 진행함</a></li>
+										<li><a href="#">결재 반려함</a></li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<a href="#">결재 수신함</a>
+								<div class="dropdown">
+									<ul>
+										<li><a href="#">결재 내역함</a></li>
+										<li><a href="#">결재 참조함</a></li>
+									</ul>
+								</div>
+							</li>
+						</ul>
 
-			</li>
-			<li><a href="#">주소록</a></li>
 
-			<li>
-				<a href="#">문서함</a>
-				<div class="dropdown">
-					<ul>
-						<li><a>개인 문서함</a></li>
-						<li><a>부서 문서함</a></li>
-						<li><a>사내 문서함</a></li>
-						<li><a href="#">휴지통</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">설문</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">설문 작성</a></li>
-						<li><a href="#">진행중인 설문</a></li>
-						<li><a href="#">내가 만든 설문</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">조직 관리</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">부서 관리</a></li>
-						<li><a href="#">직위 관리</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">사원 관리</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">사원 등록</a></li>
-						<li><a href="#">사원 수정</a></li>
-						<li><a href="#">사원 조회</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">일정 관리</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">사내 일정 목록</a></li>
-						<li><a href="#">월간 사내 일정</a></li>
-						<li><a href="#">일정 범주 관리</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">전자 결재 양식 관리</a>
-				<div class="dropdown">
-					<ul>
-						<li><a href="#">결재 양식함</a></li>
-						<li><a href="#">결재 양식 등록</a></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="#">휴가 관리</a>
-				<div class="dropdown">
-					<ul>
-						<li><a >휴가 생성</a></li>
-						<li><a href="#">휴가 기준</a></li>
-					</ul>
-				</div>
-			</li>
+					</div>
+				</li>
+				<li>
+					<a href="#">메신저</a>
 
-			<li><a href="/department">통합 권한 관리</a></li>
-		</ul>
-	</div>
+				</li>
+				<li><a href="#">주소록</a></li>
+
+				<li>
+					<a href="#">문서함</a>
+					<div class="dropdown">
+						<ul>
+							<li><a th:href="@{/employee/document/personal}">개인 문서함</a></li>
+							<li><a th:href="@{/employee/document/department}">부서 문서함</a></li>
+							<li><a th:href="@{/employee/document/company}">사내 문서함</a></li>
+							<li><a href="#">휴지통</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">설문</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">설문 작성</a></li>
+							<li><a href="#">진행중인 설문</a></li>
+							<li><a href="#">내가 만든 설문</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">조직 관리</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">부서 관리</a></li>
+							<li><a href="#">직위 관리</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">사원 관리</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">사원 등록</a></li>
+							<li><a href="#">사원 수정</a></li>
+							<li><a href="#">사원 조회</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">일정 관리</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">사내 일정 목록</a></li>
+							<li><a href="#">월간 사내 일정</a></li>
+							<li><a href="#">일정 범주 관리</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">전자 결재 양식 관리</a>
+					<div class="dropdown">
+						<ul>
+							<li><a href="#">결재 양식함</a></li>
+							<li><a href="#">결재 양식 등록</a></li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#">휴가 관리</a>
+					<div class="dropdown">
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
+							<li><a th:href="@{/vacation/vacations/{no}(no=${member.member_no})}">휴가 기준</a></li>
+						</ul>
+					</div>
+				</li>
+
+				<li><a href="#">통합 권한 관리</a></li>
+			</ul>
+		</div>
+
 	</nav>
 </th:block>
 
