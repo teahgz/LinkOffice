@@ -20,24 +20,25 @@
 	width: 100%;
 	min-height: 400px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	padding: 60px 20px 80px; /* Increased bottom padding to make space for buttons */
+	padding: 60px 20px 80px; 
 	margin-top: 20px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 20px;
-	position: relative; /* Added */
+	position: relative; 
 }
 
 .profile_header {
 	display: flex;
 	align-items: flex-start;
-	gap: 28px;
 	margin-right: 290px;
 	margin-bottom: 20px;
 }
 
+.profile_header_left{
+	margin-left: 20px;
+}
 .profile_img {
 	width: 150px;
 	height: 150px;
@@ -55,8 +56,22 @@
 	object-fit: cover;
 }
 
-.profile_img input[type="file"] {
-	display: none; 
+.file_info {
+    color: red;
+ 	font-size: 0.7rem;
+ 	margin-left: 20px;
+}
+
+.btn_upload {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #C0C0C0;
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    margin-left: 20px;
+    gap: 5px; 
 }
 
 .profile_details {
@@ -66,6 +81,7 @@
 	padding: 0;
 	margin: 0;
 	list-style: none;
+	margin-top: 20px;
 }
 
 .profile_details li {
@@ -86,7 +102,7 @@
 	grid-template-columns: 1fr 1fr;
 	gap: 30px 40px;
 	width: 70%;
-	margin-left: 220px;
+	margin-left: 310px;
 }
 
 .profile_details.paired li {
@@ -103,7 +119,8 @@
 	padding: 0;
 	margin: 0;
 	list-style: none;
-	margin-left: 230px; 
+	margin-left: 275px;
+	margin-top: 20px;
 }
 
 .profile_detail_address li {
@@ -115,12 +132,42 @@
 	margin-bottom: 5px; 
 }
 
-.input_field {
+.input_address {
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	padding: 8px;
-	max-width: 300px;
 }
+
+.input_pw_container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.input_pw {
+    width: 43%;
+    padding-right: 40px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.toggle_icon {
+    position: absolute;
+    right: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+}
+
+#pwShow {
+    display: none;
+}
+
 
 .form_buttons {
 	display: flex;
@@ -141,15 +188,12 @@
 
 .btn_address {
 	background-color: #B1C2DD;
-	color: #fff;
 }
 
 .btn_update {
 	background-color: #B1C2DD;
-	color: #fff;
 }
 
 .btn_cancel {
 	background-color: #C0C0C0;
-	color: #fff;
 }
