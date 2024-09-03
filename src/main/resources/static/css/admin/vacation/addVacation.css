@@ -1,29 +1,33 @@
 .addVacation_content {
   font-size: 1.2vw;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 2vw 0;
-  table-layout: fixed;
+.vacationForm {
+    width: 85%;
+    max-width: 1500px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
-
-table,
-th,
-td {
-  border: 0.1vw solid #ccc;
+.vacation_click {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+ .vacation_title {
+     width: 85%;
+      max-width: 1500px;
+     text-align: left;
+     margin-bottom: 20px;
+ }
 
-th,
-td {
-  padding: 1vw;
-  text-align: center;
-  overflow: hidden;
-}
-
-th {
-  background-color: #f2f2f2;
+.addVacation_button {
+    display: flex;
+    gap: 10px;
 }
 
 .addVacation_button button {
@@ -77,14 +81,12 @@ th {
   border-radius: 0.4vw;
 }
 
-td {
-  height: 5vw;
+.addVacation_submit {
+    text-align: center;
 }
 
-colgroup col:first-child {
-  width: 30%;
-}
-
-colgroup col:last-child {
-  width: 70%;
+.addVacation_submit button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
