@@ -48,11 +48,12 @@ public class Department {
 	@UpdateTimestamp
 	private LocalDateTime departmentUpdateDate;
 	
-	@Column(name="department_status")
-	private Long departmentStatus;
+	@Column(name="department_status") 
+	private Long departmentStatus ;
+	  
 	
 	// member와 1대다 관계
 	 @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
 	 private List<Member> members;
-	
+	 
 }
