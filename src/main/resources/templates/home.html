@@ -3,7 +3,9 @@
      <meta charset="UTF-8">
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
+		<link th:href="@{/css/employee/attendance/attendance.css}" rel="stylesheet" type="text/css">
        	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+       	<script src="/js/employee/attendance/attendance.js"></script>
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
 			<div class="main_item_box left-top custom-height-1 employee-info">
@@ -49,7 +51,9 @@
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 	            	</span>
 	            </a>
-            	<h3>근태 조회</h3>
+            	<div class="attendance">	            
+                	<span id="clock" th:text="${time}"></span> 
+	            </div>
             </div>
             <div class="main_item_box custom-height-4">
 	            <a class="main_link" th:href="@{/휴가 링크}">
