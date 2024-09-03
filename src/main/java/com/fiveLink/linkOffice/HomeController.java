@@ -25,14 +25,16 @@ public class HomeController {
 
 	@GetMapping("/home")
 	public String home(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		String userNumber = (String) session.getAttribute("userNumber");
-		//    MemberDto memberdto = memberService.getMemberByNumber(userNumber);
-		List<MemberDto> memberdto = memberService.getMemberByNumber(userNumber);
-		// 멤버 객체 전달
-		model.addAttribute("memberdto", memberdto);
 
-		return "home";
+	    HttpSession session = request.getSession();
+	    String userNumber = (String) session.getAttribute("userNumber");
+	//    MemberDto memberdto = memberService.getMemberByNumber(userNumber);
+	    List<MemberDto> memberdto = memberService.getMemberByNumber(userNumber);
+	    // 멤버 객체 전달
+	    model.addAttribute("memberdto", memberdto);
+	    
+	    return "home";
+
 	}
 
 	@GetMapping({"","/"})
