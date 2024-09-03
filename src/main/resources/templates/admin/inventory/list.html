@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr th:each="inventory : ${inventoryList}">
+        <tr th:each="inventory : ${categorySummaryList}">
             <td class="details-control"></td> <!-- Detail button -->
             <td th:text="${inventory.inventory_category_no}">번호</td>
             <td th:text="${inventory.inventory_category_name}">카테고리 이름</td>
