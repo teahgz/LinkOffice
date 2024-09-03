@@ -17,12 +17,11 @@
 				</span>
 				</a>
 				<div class="employee-profile">
-					<img th:src="@{/img/user_profile.jpg}" class="user_photo"
-						alt="User Profile">
+					<img th:src="@{/img/user_profile.jpg}" class="user_photo" alt="사원 사진">
 					<div class="employee-details">
 						<span class="employee-name" th:text="${member.member_name}"></span>
-						<span class="employee-position"
-							th:text="${member.department_name + ' / ' + member.position_name}"></span>
+						<span class="employee-position" th:text="${member.department_name}"></span>
+						<span class="employee-position" th:text="${member.position_name}"></span>
 					</div>
 				</div>
 				<hr class="divider">

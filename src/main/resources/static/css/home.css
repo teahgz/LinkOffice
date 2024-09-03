@@ -175,7 +175,6 @@ section {
 .employee-profile {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .employee-info .user_photo {
@@ -195,6 +194,7 @@ section {
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
+    margin-top: 20px;
 }
 
 .employee-position {

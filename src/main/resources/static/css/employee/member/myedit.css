@@ -26,7 +26,6 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 20px;
 	position: relative; /* Added */
 }
 
@@ -55,10 +54,20 @@
 	object-fit: cover;
 }
 
-.profile_img input[type="file"] {
-	display: none; 
+.btn_upload {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #C0C0C0;
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    gap: 5px; 
 }
 
+.info_photo {
+    vertical-align: middle; 
+}
 .profile_details {
 	display: flex;
 	flex-direction: column;
@@ -66,6 +75,7 @@
 	padding: 0;
 	margin: 0;
 	list-style: none;
+	margin-top: 20px;
 }
 
 .profile_details li {
@@ -104,6 +114,7 @@
 	margin: 0;
 	list-style: none;
 	margin-left: 230px; 
+	margin-top: 20px;
 }
 
 .profile_detail_address li {
@@ -115,11 +126,18 @@
 	margin-bottom: 5px; 
 }
 
-.input_field {
+.input_address {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 8px;
+}
+
+.input_pw {
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	padding: 8px;
 	max-width: 300px;
+	width: 183px;
 }
 
 .form_buttons {
@@ -141,15 +159,12 @@
 
 .btn_address {
 	background-color: #B1C2DD;
-	color: #fff;
 }
 
 .btn_update {
 	background-color: #B1C2DD;
-	color: #fff;
 }
 
 .btn_cancel {
 	background-color: #C0C0C0;
-	color: #fff;
 }
