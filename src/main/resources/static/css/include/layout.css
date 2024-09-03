@@ -1,92 +1,53 @@
-.addVacation_content {
-  font-size: 1.2vw;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+@charset "UTF-8";
+
+/* 눈누 폰트 */
+/* 레페리포인트 */
+@font-face {
+    font-family: 'LeferiPoint-BlackA';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
-.vacationForm {
-    width: 85%;
-    max-width: 1500px;
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    font-family: 'LeferiPoint-BlackA', sans-serif; /* 기본 폰트 설정 */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+   display: none;
+}
+
+#main-wrapper {
+    display: flex;
+    flex: 1;
+
+}
+
+#content-footer-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#main-content {
+    display: flex;
+    flex: 1;
+}
+
+section {
+    flex: 1;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-.vacation_click {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
- .vacation_title {
-     width: 85%;
-      max-width: 1500px;
-     text-align: left;
-     margin-bottom: 20px;
- }
-
-.addVacation_button {
-    display: flex;
-    gap: 10px;
-}
-
-.addVacation_button button {
-  padding: 0.5vw 1vw;
-  border: none;
-  border-radius: 0.4vw;
-  cursor: pointer;
-  font-size: 1.2vw;
-}
-
-.addVacation_button button:first-of-type {
-  background-color: #28a745;
-  color: white;
-}
-
-.addVacation_button button:last-of-type {
-  background-color: #dc3545;
-  color: white;
-}
-
-.addVacation_button button:hover {
-  opacity: 0.8;
-}
-
-#vacationFormContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 1vw;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  width: 18%;
-  box-sizing: border-box;
-}
-
-.input-group label {
-  margin-right: 0.5vw;
-  font-size: 1vw;
-}
-
-.input-group input {
-  flex-grow: 1;
-  width: 5vw;
-  padding: 0.5vw;
-  border: 0.1vw solid #ccc;
-  border-radius: 0.4vw;
-}
-
-.addVacation_submit {
-    text-align: center;
-}
-
-.addVacation_submit button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+    background: #f0f0f0;
+    gap: 15px;
+    min-height: 680px;
 }
