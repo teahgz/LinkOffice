@@ -28,7 +28,7 @@ public class HomeController {
 
 	    HttpSession session = request.getSession();
 	    String userNumber = (String) session.getAttribute("userNumber");
-	//    MemberDto memberdto = memberService.getMemberByNumber(userNumber);
+//		  MemberDto memberdto = memberService.getMemberByNumber(userNumber);
 	    List<MemberDto> memberdto = memberService.getMemberByNumber(userNumber);
 	    // 멤버 객체 전달
 	    model.addAttribute("memberdto", memberdto);

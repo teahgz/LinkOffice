@@ -5,14 +5,14 @@
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
 
-	<div id="nav_wrap">
-		<ul th:each="member : ${memberdto}">
+	<div id="nav_wrap" >
+		<ul>
 			<li>
 				<a href="#">마이페이지</a>
 				<div class="dropdown">
-					<ul>
+					<ul th:each = "member : ${memberdto}">
 						<li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
-						<li><a th:href="@{/emploee/member/myedit}">정보 수정</a></li>
+						<li><a href="#">정보 수정</a></li>
 						<li><a href="#">전자결재 서명 등록</a></li>
 					</ul>
 				</div>
@@ -144,9 +144,9 @@
 				<li>
 					<a href="#">휴가 관리</a>
 					<div class="dropdown">
-						<ul>
-							<li><a th:href="@{/vacation/addVacation/">휴가 생성</a></li>
-							<li><a href="#">휴가 기준</a></li>
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
+							<li><a th:href="@{/vacation/vacations/{no}(no=${member.member_no})}">휴가 기준</a></li>
 						</ul>
 					</div>
 				</li>

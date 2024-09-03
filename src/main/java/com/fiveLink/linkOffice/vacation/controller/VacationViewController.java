@@ -17,17 +17,27 @@ import java.util.List;
 @Controller
 public class VacationViewController {
     private static final Logger logger = LoggerFactory.getLogger(VacationViewController.class);
+
+
+    private final MemberService memberService;
+
+    @Autowired
+    public VacationViewController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
     //휴가 생성 페이지 이동
     @GetMapping("/vacation/addVacation/{member_no}")
     public String addVacation(@PathVariable("member_no") Long memberNo, Model model) {
         // 로그에 정보 출력
         logger.info("Navigating to addVacation page for member_no: {}", memberNo);
 
-        // member_no를 모델에 추가해서 뷰에 전달
-        model.addAttribute("memberNo", memberNo);
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        model.addAttribute("memberdto", memberdto);
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";
     }
+
 }
 
