@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.inventory.controller.InventoryViewController;
+import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.repository.InventoryRepository;
 
@@ -40,5 +41,26 @@ public class InventoryService {
         }
 
         return inventoryDtoList;
+    }
+    
+    public List<InventoryDto> selectInventoryByCategory(Long inventory_category_no) {
+        List<Inventory> inventories = inventoryRepository.findByInventoryCategoryInventoryCategoryNo(inventory_category_no);
+        List<InventoryDto> inventoryDtos = new ArrayList<>();
+
+        for (Inventory inventory : inventories) {
+            InventoryDto dto = InventoryDto.builder()
+                    .inventory_no(inventory.getInventoryNo())
+                    .inventory_name(inventory.getInventoryName())
+                    .inventory_category_no(inventory.getInventoryCategory().getInventoryCategoryNo())
+                    .inventory_price(inventory.getInventoryPrice())
+                    .inventory_quantity(inventory.getInventoryQuantity())
+                    .inventory_location(inventory.getInventoryLocation())
+                    .inventory_purchase_date(inventory.getInventoryPurchaseDate())
+                    .build();
+
+            inventoryDtos.add(dto);
+        }
+
+        return inventoryDtos;
     }
 }

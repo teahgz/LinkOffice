@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
 
+
+
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
     @Query("SELECT ic.inventoryCategoryNo, " + 
@@ -20,4 +22,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
            "GROUP BY ic.inventoryCategoryName " +
            "ORDER BY ic.inventoryCategoryNo")
     List<Object[]> findCategorySummary();
+    
+    List<Inventory> findByInventoryCategoryInventoryCategoryNo(Long inventoryCategoryNo);
 }
