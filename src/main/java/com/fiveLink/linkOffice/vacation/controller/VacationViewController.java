@@ -34,27 +34,12 @@ public class VacationViewController {
 
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
-        // member_no를 모델에 추가해서 뷰에 전달
-        model.addAttribute("memberDto", memberdto);
-        System.out.println(model.getAttribute("memberDto"));
+        model.addAttribute("memberdto", memberdto);
+
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";
     }
-    //휴가 생성 페이지 이동
-    @GetMapping("/vacation/vacations/{member_no}")
-    public String vacations(@PathVariable("member_no") Long memberNo, Model model) {
-        // 로그에 정보 출력
-        logger.info("Navigating to addVacation page for member_no: {}", memberNo);
 
-        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-
-        // member_no를 모델에 추가해서 뷰에 전달
-        model.addAttribute("memberDto", memberdto);
-        System.out.println(model.getAttribute("memberDto"));
-
-        // 휴가 생성 페이지로 이동
-        return "admin/vacation/vacation";
-    }
 }
 
