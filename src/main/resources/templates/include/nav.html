@@ -5,17 +5,19 @@
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
 	<div id="nav_wrap">
-		<ul th:each="member : ${memberdto}">
-			<li>
-				<a href="#">마이페이지</a>
-				<div class="dropdown">
-					<ul>
-						<li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
-						<li><a th:href="@{/emploee/member/myedit}">정보 수정</a></li>
-						<li><a href="#">전자결재 서명 등록</a></li>
-					</ul>
-				</div>
-			</li>
+		<ul>
+			<th:block th:each="member : ${memberdto}">
+                <li>
+                    <a href="#">마이페이지</a>
+                    <div class="dropdown">
+                        <ul>
+                            <li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
+                            <li><a th:href="@{/employee/member/myedit}">정보 수정</a></li>
+                            <li><a href="#">전자결재 서명 등록</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </th:block>
 			<li>
 				<a href="#">근태 조회</a>
 
@@ -142,12 +144,12 @@
 			</li>
 			<li>
 				<a href="#">휴가 관리</a>
-				<div class="dropdown">
-					<ul>
-						<li><a >휴가 생성</a></li>
-						<li><a href="#">휴가 기준</a></li>
-					</ul>
-				</div>
+               	<div class="dropdown">
+                  <ul th:each = "member : ${memberdto}">
+                     <li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
+                     <li><a th:href="@{/vacation/vacations/{no}(no=${member.member_no})}">휴가 기준</a></li>
+                  </ul>
+               </div>
 			</li>
 
 			<li><a href="/department">통합 권한 관리</a></li>

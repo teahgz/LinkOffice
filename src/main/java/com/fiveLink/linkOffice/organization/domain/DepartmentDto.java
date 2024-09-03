@@ -26,6 +26,10 @@ public class DepartmentDto {
     private LocalDateTime department_update_date;
     private Long department_status;
     private List<DepartmentDto> subDepartments = new ArrayList<>();
+    
+    private Long departmentId;
+    private String departmentName;
+    private Long departmentHigh;
 
     public Department toEntity() { 
         return Department.builder()
