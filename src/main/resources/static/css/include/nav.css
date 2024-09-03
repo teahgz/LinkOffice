@@ -4,7 +4,9 @@ nav {
     width: 200px;
     background-color: #f4f4f4;
     overflow-y: auto;
-    overflow-x: hidden;  
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 #nav_wrap {
@@ -86,7 +88,6 @@ nav {
     background-color: #ddd;
 }
 
-
 #nav_wrap > ul > li.active {
     border-bottom: none;
 }
@@ -97,9 +98,11 @@ nav {
 }
 
 .dropdown .dropdown li a {
- margin-left:25%;
+    margin-left: 25%;
 }
 
 .dropdown .dropdown li:hover > a {
     background-color: #ddd;
 }
+
+
