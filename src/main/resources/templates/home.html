@@ -4,17 +4,31 @@
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
        	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
-	<section sec:authorize="hasAnyAuthority('USER')">
+	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
             <div class="main_item_box left-top custom-height-1">
-            	<a class="main_link" th:href="@{/employee/member/mypage/{no}(no=${memberdto.member_no})}">
+            	<a class="main_link" th:href="@{employee/member/mypage/{no}(no=${member.member_no})}">
 	            	<span class="main_box_title">
 	            		내 정보
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 	            	</span>
 	            </a>
             	<h3>사원 정보</h3>
-            </div>
+				<ul>
+					<li>
+					<img th:src="@{/img/user_profile.jpg}" class="user_photo" alt="User Profile">
+					</li>
+					<li>
+						<span th:text="${member.member_number}"></span>
+					</li>
+					<li>
+						<span th:text="${member.member_name}"></span>
+					</li>
+					<li>
+						<span th:text="${member.department_name}"></span>
+					</li>
+				</ul>
+			</div>
             <div class="main_item_box left-bottom custom-height-2">
             	<a class="main_link" th:href="@{/일정 링크}">
 	         	    <span class="main_box_title">

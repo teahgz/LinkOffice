@@ -1,5 +1,7 @@
 package com.fiveLink.linkOffice;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +27,8 @@ public class HomeController {
 	public String home(HttpServletRequest request, Model model) {
 	    HttpSession session = request.getSession();
 	    String userNumber = (String) session.getAttribute("userNumber");
-	    MemberDto memberdto = memberService.getMemberByNumber(userNumber);
+	//    MemberDto memberdto = memberService.getMemberByNumber(userNumber);
+	    List<MemberDto> memberdto = memberService.getMemberByNumber(userNumber);
 	    // 멤버 객체 전달
 	    model.addAttribute("memberdto", memberdto);
 	    

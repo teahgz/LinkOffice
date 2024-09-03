@@ -14,6 +14,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findByMemberNumber(String memberNumber); 
     
+    @Query("SELECT m, p.positionName, d.departmentName " +
+            "FROM Member m " +
+            "JOIN m.position p " +
+            "JOIN m.department d " +
+            "WHERE m.memberNumber = :memberNumber")
+    List<Object[]> findMemberNumber(@Param("memberNumber") String memberNumber);
+    
     // mypage 정보 조회
     @Query("SELECT m, p.positionName, d.departmentName " +
             "FROM Member m " +
