@@ -27,10 +27,9 @@ public class HomeController {
 
 	@GetMapping("/home")
 	public String home(HttpServletRequest request, Model model) {
-
+		// [전주영] 세션 가져오기, 세션 이용해서 memberdto 출력
 	    HttpSession session = request.getSession();
 	    String userNumber = (String) session.getAttribute("userNumber");
-//		  MemberDto memberdto = memberService.getMemberByNumber(userNumber);
 	    List<MemberDto> memberdto = memberService.getMemberByNumber(userNumber);
 	    
 	    // 현재 시간을 00:00:00 형태로 만들기
@@ -38,7 +37,7 @@ public class HomeController {
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 	    String time = now.format(dtf);
 	    
-	    // 멤버 객체 전달
+	    //[전주영] 멤버 객체 전달
 	    model.addAttribute("memberdto", memberdto);
 	    
 	    // 현재 시간 전달

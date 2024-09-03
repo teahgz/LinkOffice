@@ -1,11 +1,5 @@
 package com.fiveLink.linkOffice.organization.service;
 
-import com.fiveLink.linkOffice.organization.domain.Department;
-import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
-import com.fiveLink.linkOffice.organization.repository.DepartmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +7,23 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
+import com.fiveLink.linkOffice.organization.domain.Department;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.repository.DepartmentRepository;
+
 @Service
 public class DepartmentService {
 
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+    
     public List<DepartmentDto> getAllDepartments() {
         List<Department> departments = departmentRepository.findAllByOrderByDepartmentHighAscDepartmentNameAsc();
         return buildHierarchy(mapToDto(departments));

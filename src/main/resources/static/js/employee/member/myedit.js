@@ -43,3 +43,46 @@
             }
         }).open();
     }
+// 이미지 등록
+function previewImage(event) {
+    const file = event.target.files[0]; 
+
+    if (file) {
+        const fileType = file.type;
+        const validTypes = ['image/png', 'image/jpeg']; 
+
+        if (validTypes.includes(fileType)) {
+            const reader = new FileReader(); 
+            reader.onload = function(e) {
+                const img = document.getElementById('profileImg');
+                img.src = e.target.result; 
+            }
+
+            reader.readAsDataURL(file); 
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '파일 형식 오류',
+                text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
+                confirmButtonText: '확인'
+            });
+
+            document.getElementById('profile_image').value = "";
+        }
+    }
+}
+
+// 비밀번호 
+$(document).ready(function() {
+	$('#pwHidden').on('click', function() {
+		$(this).hide(); 
+		$('#pwShow').show(); 
+		$('#new_password').attr('type', 'text'); 
+	});
+
+	$('#pwShow').on('click', function() {
+		$(this).hide(); 
+		$('#pwHidden').show(); 
+		$('#new_password').attr('type', 'password'); 
+	});
+});
