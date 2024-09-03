@@ -24,8 +24,8 @@
     <thead>
         <tr>
             <th></th> <!-- Detail button column -->
-            <th>번호</th>
-            <th>제품명</th>
+            <th>카테고리 번호</th>
+            <th>카테고리 이름</th>
             <th>가격</th>
             <th>수량</th>
             <th>위치</th>
@@ -33,10 +33,10 @@
         </tr>
     </thead>
     <tbody>
-        <tr th:each="inventory : ${inventoryList}">
+        <tr th:each="inventory : ${categorySummaryList}">
             <td class="details-control"></td> <!-- Detail button -->
-            <td th:text="${inventory.inventory_no}">번호</td>
-            <td th:text="${inventory.inventory_name}">제품명</td>
+            <td th:text="${inventory.inventory_category_no}">번호</td>
+            <td th:text="${inventory.inventory_category_name}">카테고리 이름</td>
             <td th:text="${inventory.inventory_price}">가격</td>
             <td th:text="${inventory.inventory_quantity}">수량</td>
             <td th:text="${inventory.inventory_location}">위치</td>

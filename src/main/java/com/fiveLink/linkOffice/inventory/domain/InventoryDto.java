@@ -18,9 +18,10 @@ public class InventoryDto {
 		
 	private Long inventory_no;
 	private String inventory_name;
-//	private Integer inventory_category_no;
-	private Integer inventory_price;
-	private Integer inventory_quantity;
+	private Long inventory_category_no;
+	private String inventory_category_name;
+	private int inventory_price;
+	private int inventory_quantity;
 	private String inventory_location;
 //	private Integer member_no;
 //	private Integer department_no;
@@ -54,5 +55,5 @@ public class InventoryDto {
 					.inventory_create_date(inventory.getInventoryCreateDate())
 					.build();
 		}
-	
+		
 }

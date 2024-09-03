@@ -35,9 +35,9 @@ public class Inventory {
 	@Column(name="inventory_name")
 	private String inventoryName;
 	
-	@ManyToOne  
-	@JoinColumn(name = "inventory_category_no")  
-	private InventoryCategory category;
+	@ManyToOne
+	@JoinColumn(name = "inventory_category_no")
+	private InventoryCategory inventoryCategory;
 	
 	@Column(name="inventory_price")
 	private Integer inventoryPrice;
