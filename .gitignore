@@ -39,6 +39,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-# macOS 파일
-.DS_Store
