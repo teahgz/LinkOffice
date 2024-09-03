@@ -17,15 +17,44 @@ import java.util.List;
 @Controller
 public class VacationViewController {
     private static final Logger logger = LoggerFactory.getLogger(VacationViewController.class);
+
+
+    private final MemberService memberService;
+
+    @Autowired
+    public VacationViewController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
     //휴가 생성 페이지 이동
     @GetMapping("/vacation/addVacation/{member_no}")
     public String addVacation(@PathVariable("member_no") Long memberNo, Model model) {
-//        System.out.println(memberNo);
-//        model.addAttribute("member_no", memberNo);
-//        Object memberNoFromModel = model.getAttribute("member_no");
-//        logger.info("Model member_no: {}", memberNoFromModel);
+        // 로그에 정보 출력
+        logger.info("Navigating to addVacation page for member_no: {}", memberNo);
 
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+        // member_no를 모델에 추가해서 뷰에 전달
+        model.addAttribute("memberDto", memberdto);
+        System.out.println(model.getAttribute("memberDto"));
+
+        // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";
+    }
+    //휴가 생성 페이지 이동
+    @GetMapping("/vacation/vacations/{member_no}")
+    public String vacations(@PathVariable("member_no") Long memberNo, Model model) {
+        // 로그에 정보 출력
+        logger.info("Navigating to addVacation page for member_no: {}", memberNo);
+
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+        // member_no를 모델에 추가해서 뷰에 전달
+        model.addAttribute("memberDto", memberdto);
+        System.out.println(model.getAttribute("memberDto"));
+
+        // 휴가 생성 페이지로 이동
+        return "admin/vacation/vacation";
     }
 }
 

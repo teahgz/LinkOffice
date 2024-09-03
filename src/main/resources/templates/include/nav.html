@@ -144,7 +144,8 @@
 				<a href="#">휴가 관리</a>
 				<div class="dropdown">
 					<ul>
-						<li><a >휴가 생성</a></li>
+						<li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
+
 						<li><a href="#">휴가 기준</a></li>
 					</ul>
 				</div>

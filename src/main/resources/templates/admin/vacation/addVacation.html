@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{include/layout}">
-<meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+</head>
+<body>
+<th:block layout:fragment="content">
+    <section th:each = "member : ${memberDto}">
 
-    <th:block layout:fragment="content">
-        <section>
-        <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
         <div class="addVacation_content">
 
             <div class ="vacation_title"> <h2>휴가 생성</h2> </div>
@@ -21,6 +28,7 @@
                 </div>
 
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:name="memberNo" th:value="${member.member_no}"/>
 
                 <div>
                     <p style="color: red;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
@@ -33,9 +41,7 @@
                 </div>
             </form>
         </div>
-        </section>
-    </th:block>
-
-
+    </section>
+</th:block>
+</body>
 </html>
-
