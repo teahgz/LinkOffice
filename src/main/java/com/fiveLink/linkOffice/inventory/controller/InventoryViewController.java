@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.service.InventoryService;
@@ -32,5 +34,11 @@ public class InventoryViewController {
 
         model.addAttribute("categorySummaryList", categorySummaryList);
         return "admin/inventory/list";
+    }
+    
+    @GetMapping("/inventory/category/{inventory_category_no}")
+    @ResponseBody
+    public List<InventoryDto> selectInventoryByCategory(@PathVariable("inventory_category_no") Long inventory_category_no) {
+        return inventoryService.selectInventoryByCategory(inventory_category_no);
     }
 }
