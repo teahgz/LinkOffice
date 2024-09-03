@@ -6,23 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
-    <!-- SweetAlert2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>s
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 </head>
 <body>
 <th:block layout:fragment="content">
+    <section th:each = "member : ${memberDto}">
 
-    <section th:each = "member : ${memberdto}">
-
-s
         <div class="addVacation_content">
 
             <div class ="vacation_title"> <h2>휴가 생성</h2> </div>
 
-            <form id="vacationForm" class="vacationForm">
+            <form id="vacationForm" class="vacationForm" method="POST" action="/vacation/addVacation">
                 <div class="vacation_click">
                     <div>
                         <h3>연차별 휴가 지정</h3>

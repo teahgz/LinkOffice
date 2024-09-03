@@ -24,6 +24,8 @@ nav {
 #nav_wrap > ul > li {
     position: relative;
     border-bottom: 1px solid #ddd;
+
+
 }
 
 #nav_wrap > ul > li:hover,

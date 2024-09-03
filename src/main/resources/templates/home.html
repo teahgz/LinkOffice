@@ -14,15 +14,18 @@
 						class="main_arrow_img" />
 				</span>
 				</a>
-				<h3>사원 정보</h3>
-				<ul>
-					<li><img th:src="@{/img/user_profile.jpg}" class="user_photo"
-						alt="User Profile"></li>
-					<li><span th:text="${member.member_name}"></span></li>
-					<li><span th:text="${member.department_name}"></span></li>
-					<li><span th:text="${member.position_name}"></span></li>
-				</ul>
-				<ul>
+				<div class="employee-profile">
+					<img th:src="@{/img/user_profile.jpg}" class="user_photo"
+						alt="User Profile">
+					<div class="employee-details">
+						<span class="employee-name" th:text="${member.member_name}"></span>
+						<span class="employee-position"
+							th:text="${member.department_name + ' / ' + member.position_name}"></span>
+					</div>
+				</div>
+				<hr class="divider">
+				<h3 class="approval-title">전자결재</h3>
+				<ul class="approval-status">
 					<li><span>진행함</span> <span>3</span></li>
 					<li><span>미결함</span> <span>0</span></li>
 					<li><span>참조함</span> <span>4</span></li>

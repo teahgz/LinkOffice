@@ -1,70 +1,72 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{include/layout}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/css/employee/member/mypage.css}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 </head>
 <body>
-    <th:block layout:fragment="content">
-        <section>
-            <div class="my_profile">
-                <h1>내 정보</h1>
-                <div class="profile_card">
-                    <div class="profile-header">
-                        <div class="profile_img">
-                            <img th:src="@{/img/user_profile.jpg}" class="user_photo" alt="User Profile">
-                        </div>
-                        <ul class="profile-details" th:each="member : ${memberdto}">
-                            <li>
-                                <strong>사번</strong> 
-                                <span th:text="${member.member_number}"></span>
-                            </li>
-                            <li>
-                                <strong>사용자</strong> 
-                                <span th:text="${member.member_name}"></span>
-                            </li>
-							<li>
-								<strong>주민번호</strong>
-								<span th:text="${#strings.concat(member.member_national.substring(0, 6), '-', member.member_national.substring(7, 8), '******')}"></span>
-							</li>
-
-							<li>
-                                <strong>부서</strong> 
-                                <span th:text="${member.department_name}"></span>
-                            </li>
-                            <li>
-                                <strong>직위</strong> 
-                                <span th:text="${member.position_name}"></span>
-                            </li>
-                            <li>
-                                <strong>입사일</strong> 
-                                <span th:text="${member.member_hire_date}"></span>
-                            </li>
-                            <li>
-                                <strong>퇴사일</strong> 
-                                <span>-</span>
-                            </li>
-                            <li>
-                                <strong>전화번호</strong> 
-                                <span th:text="${member.member_mobile}"></span>
-                            </li>
-                            <li>
-                                <strong>내선번호</strong> 
-                                <span th:text="${member.member_internal}"></span>
-                            </li>
-                            <li>
-                                <strong>주소</strong> 
-                                <span th:text="${member.member_address}"></span>
-                            </li>
-                        </ul>
+<th:block layout:fragment="content">
+    <section>
+        <div class="my_profile">
+            <h1>내 정보</h1>
+            <div class="profile_card">
+                <div class="profile-header">
+                    <div class="profile_img">
+                        <img th:src="@{/img/user_profile.jpg}" class="user_photo" alt="User Profile">
                     </div>
+                    <ul class="profile-details" th:each="member : ${memberdto}">
+                        <li>
+                            <strong>사번</strong>
+                            <span th:text="${member.member_number}"></span>
+                        </li>
+                        <li>
+                            <strong>사용자</strong>
+                            <span th:text="${member.member_name}"></span>
+                        </li>
+                        <li>
+                            <strong>주민번호 </strong>
+                            <span th:text="${#strings.concat(member.member_national.substring(0, 6), '-', member.member_national.substring(7, 8), '******')}"></span>
+                        </li>
+                    </ul>
                 </div>
+                <hr class="divider">
+                <ul class="profile-details paired" th:each="member : ${memberdto}">
+                    <li>
+                        <strong>부서</strong>
+                        <span th:text="${member.department_name}"></span>
+                    </li>
+                    <li>
+                        <strong>직위</strong>
+                        <span th:text="${member.position_name}"></span>
+                    </li>
+                    <li>
+                        <strong>입사일</strong>
+                        <span th:text="${member.member_hire_date}"></span>
+                    </li>
+                    <li>
+                        <strong>퇴사일</strong>
+                        <span>-</span>
+                    </li>
+                    <li>
+                        <strong>전화번호</strong>
+                        <span th:text="${member.member_mobile}"></span>
+                    </li>
+                    <li>
+                        <strong>내선번호</strong>
+                        <span th:text="${member.member_internal}"></span>
+                    </li>
+                    <li>
+                        <strong>주소</strong>
+                        <span th:text="${member.member_address}"></span>
+                    </li>
+                </ul>
             </div>
-        </section>
-    </th:block>
+        </div>
+    </section>
+</th:block>
 </body>
 </html>

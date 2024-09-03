@@ -40,9 +40,3 @@ out/
 ### VS Code ###
 .vscode/
 
-# Ignore specific log file
-<<<<<<< HEAD
-logs/
-=======
-logs/
->>>>>>> 42c052d7b1b20244013715879ceb1a13c43550c3
