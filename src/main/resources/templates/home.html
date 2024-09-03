@@ -7,7 +7,9 @@
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
             <div class="main_item_box left-top custom-height-1">
+
             	<a class="main_link" th:href="@{employee/member/mypage/{no}(no=${member.member_no})}">
+
 	            	<span class="main_box_title">
 	            		내 정보
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
@@ -30,6 +32,8 @@
 				</ul>
 			</div>
             <div class="main_item_box left-bottom custom-height-2">
+
+
             	<a class="main_link" th:href="@{/일정 링크}">
 	         	    <span class="main_box_title">
 	            		일정

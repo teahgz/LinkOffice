@@ -26,12 +26,11 @@ public class InventoryViewController {
 
     @GetMapping("/inventory/list")
     public String selectInventoryList(Model model) {
-        LOGGER.info("selectInventoryList() called");
         List<InventoryDto> categorySummaryList = inventoryService.selectCategorySummary();
         
         LOGGER.info("Category Summary List: " + categorySummaryList);
 
         model.addAttribute("categorySummaryList", categorySummaryList);
-        return "inventory/list";
+        return "admin/inventory/list";
     }
 }
