@@ -9,14 +9,14 @@ body {
     background-color: #f0f0f0;
 }
 
-.login-container {
+.login_container {
     background-color: #4E597E;
     padding: 50px;
     border-radius: 10px;
     width: 400px;
 }
 
-.logo-container {
+.logo_container {
     text-align: center;
     margin-bottom: 20px;
     margin-left: 20px;
@@ -24,13 +24,6 @@ body {
 
 .login_logo_img {
     max-height: 50px;
-}
-
-.input-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
 }
 
 label {
@@ -48,11 +41,38 @@ input {
     box-sizing: border-box;
 }
 
+#pwShow, #pwHidden{
+	width: 25px;
+}
+
+#pwShow{
+	display:none;
+}
+
+.input_group {
+	position: relative;
+	width: 390px;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.toggle_icon {
+	position: absolute;
+	right: 10px;
+	top: 50%; 
+	transform: translateY(-50%);
+	cursor: pointer;
+	width: 20px; 
+	height: 20px;
+}
+
 #remember-me {
     margin-left: 10px; 
 }
 
-.button-group {
+.button_group {
     text-align: center;
     margin-top: 30px;
     
@@ -78,7 +98,7 @@ button:hover {
 button:active {
     transform: scale(0.98); 
 }
-.button-link {
+.button_link {
     color: #ffffff; 
     text-decoration: none; 
     font-weight: bold; 
@@ -90,10 +110,10 @@ button:active {
     transition: background-color 0.3s, transform 0.1s;
 }
 
-.button-link:hover {
+.button_link:hover {
     background-color: #55679C; 
 }
 
-.button-link:active {
+.button_link:active {
     transform: scale(0.98);
 }

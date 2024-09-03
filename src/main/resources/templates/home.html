@@ -9,20 +9,15 @@
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
 			<div class="main_item_box left-top custom-height-1 employee-info">
-				<a class="main_link"
-					th:href="@{employee/member/mypage/{no}(no=${member.member_no})}">
-					<span class="main_box_title"> 내 정보 <img
-						th:src="@{/img/main_arrow.png}" alt="main_arrow"
-						class="main_arrow_img" />
-				</span>
+				<a class="main_link" th:href="@{employee/member/mypage/{no}(no=${member.member_no})}">
+					<span class="main_box_title"> 내 정보 <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img" /> </span>
 				</a>
 				<div class="employee-profile">
-					<img th:src="@{/img/user_profile.jpg}" class="user_photo"
-						alt="User Profile">
+					<img th:src="${member.member_ori_profile_img != null ? member.member_ori_profile_img : '/img/user_profile.jpg'}" class="user_photo" alt="사원 사진">
 					<div class="employee-details">
 						<span class="employee-name" th:text="${member.member_name}"></span>
-						<span class="employee-position"
-							th:text="${member.department_name + ' / ' + member.position_name}"></span>
+						<span class="employee-position" th:text="${member.department_name}"></span> 
+						<span class="employee-position" th:text="${member.position_name}"></span>
 					</div>
 				</div>
 				<hr class="divider">

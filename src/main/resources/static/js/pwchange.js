@@ -1,3 +1,5 @@
+// 주민등록번호 
+
 const frontInput = document.getElementById('registration-number-front');
 const backInput = document.getElementById('registration-number-back');
 
@@ -14,4 +16,18 @@ backInput.addEventListener('input', function() {
 	} else {
 		backInput.value = '';
 	}
+});
+// 비밀번호 
+$(document).ready(function() {
+	$('#pwHidden').on('click', function() {
+		$(this).hide(); 
+		$('#pwShow').show(); 
+		$('#new_password').attr('type', 'text'); 
+	});
+
+	$('#pwShow').on('click', function() {
+		$(this).hide(); 
+		$('#pwHidden').show(); 
+		$('#new_password').attr('type', 'password'); 
+	});
 });
