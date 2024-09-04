@@ -131,17 +131,40 @@ function removeType() {
     }
 }
 
+function collectVacationTypes() {
+    const vacationTypes = [];
+    const inputGroups = document.querySelectorAll('.input-group');
+
+    inputGroups.forEach(group => {
+        const nameInput = group.querySelector('input[name$="[name]"]');
+        const descriptionInput = group.querySelector('input[name$="[description]"]');
+
+        if (nameInput && descriptionInput) {
+            vacationTypes.push({
+                name: nameInput.value,
+                description: descriptionInput.value
+            });
+        }
+    });
+
+    return { vacationTypes };
+}
 document.addEventListener("DOMContentLoaded", function() {
-    const vacationTypeForm = document.getElementById("vacationTypeForm");
-    vacationTypeForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // 기본 폼 제출 동작을 막음
 
-        const payload = new FormData(vacationTypeForm);
-        const memberNo = document.getElementById('memberNo').value; // 멤버 번호 가져오기
+    const form = document.getElementById("vacationTypeForm");
+    var csrfToken = document.querySelector('input[name="_csrf"]').value;
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
 
+        const vacationTypesData = collectVacationTypes();
+        console.log(vacationTypesData);
         fetch('/vacation/addTypeVacation', {
             method: 'POST',
-            body: payload
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+             body: JSON.stringify(vacationTypesData)
         })
         .then(response => {
         if (!response.ok) {
