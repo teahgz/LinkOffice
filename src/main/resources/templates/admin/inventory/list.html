@@ -15,9 +15,9 @@
     <select id="departmentSelect">
     <option value="">부서선택</option>
     <option th:each="department : ${departments}" 
-            th:value="${department.departmentName}" 
-            th:text="${department.departmentName}">
-    </option>
+        th:value="${department.department_name}" 
+        th:text="${department.department_name}">
+</option>
 	</select>
     <table id="example" class="display">
         <thead>

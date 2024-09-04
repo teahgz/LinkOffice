@@ -26,5 +26,8 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     
     List<Inventory> findByInventoryCategoryInventoryCategoryNo(Long inventoryCategoryNo);
     
-    List<Inventory> findByDepartmentDepartmentNo(Long departmentNo);
+    @Query("SELECT DISTINCT d.departmentNo, d.departmentName " +
+            "FROM Inventory i " +
+            "JOIN i.department d")
+     List<Object[]> findAllDepartments();
 }

@@ -64,13 +64,13 @@ public class InventoryService {
         return inventoryDtos;
     }
     public List<InventoryDto> findAllDepartments() {
-        List<Inventory> inventories = inventoryRepository.findByDepartmentDepartmentNo(inventory_department_no);
+        List<Object[]> results = inventoryRepository.findAllDepartments();
         List<InventoryDto> departmentDtos = new ArrayList<>();
 
-        for (Inventory inventory : inventories) {
+        for (Object[] result : results) {
             InventoryDto dto = InventoryDto.builder()
-                    .department_no(inventory.getDepartment().getDepartmentNo())
-                    .department_name(inventory.getDepartment().getDepartmentName())
+                    .department_no((Long) result[0])
+                    .department_name((String) result[1])
                     .build();
             departmentDtos.add(dto);
         }
