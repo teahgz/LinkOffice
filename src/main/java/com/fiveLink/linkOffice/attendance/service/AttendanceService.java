@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.attendance.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Service;
 import com.fiveLink.linkOffice.attendance.domain.Attendance;
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.repository.AttendanceRepository;
-import com.fiveLink.linkOffice.document.domain.DocumentFolder;
-import com.fiveLink.linkOffice.document.domain.DocumentFolderDto;
 
 @Service
 public class AttendanceService {
@@ -34,6 +33,22 @@ public class AttendanceService {
 		}
 		return attendanceDtoList;
 	}
+	// 출근 여부 조회
+	public AttendanceDto findByMemberNoAndWorkDate(Long memberNo, LocalDate today) {
+		Attendance attendance = attendanceRepository.findByMemberNoAndWorkDate(memberNo, today);
+		if(attendance != null) {
+			return new AttendanceDto(	
+				attendance.getAttendanceNo(),
+				attendance.getMemberNo(),
+				attendance.getWorkDate(),
+				attendance.getCheckInTime(),
+				attendance.getCheckOutTime()
+			);
+		} else {
+			return null;			
+		}
+	
+	}
 	// 출근 기능 
 	public int attendanceCheckIn(Attendance attendance) {
 		int result = -1;
@@ -47,10 +62,10 @@ public class AttendanceService {
 		return result;
 	}
 	// 퇴근 기능
-	public int attendanceCheckOut(Long memberNo, LocalDate today) {
+	public int attendanceCheckOut(Attendance attendance) {
 		int result = -1; 
 		try {
-			attendanceRepository.findByMemberNoAndWorkDate(memberNo, today);
+			attendanceRepository.save(attendance);
 			result = 1;
 		} catch(Exception e) {
 			e.printStackTrace();
