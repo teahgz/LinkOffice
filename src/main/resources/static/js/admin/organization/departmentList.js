@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var closeButtons = document.getElementsByClassName("close");
     var createForm = document.getElementById("departmentForm");
     var editForm = document.getElementById("editForm");
-    var csrfToken = document.querySelector('input[name="_csrf"]').value; // Fetch CSRF token once
+    var csrfToken = document.querySelector('input[name="_csrf"]').value; 
 
     if (openModalBtn) {
         openModalBtn.onclick = function () {

@@ -42,7 +42,7 @@ public class WebSecurityConfig implements HttpSessionListener {
             )
             .formLogin(login ->
                 login
-                    .loginPage("/")
+                    .loginPage("/login")
                     .loginProcessingUrl("/login")
                     .usernameParameter("member_number")
                     .passwordParameter("member_pw")
@@ -57,6 +57,7 @@ public class WebSecurityConfig implements HttpSessionListener {
                     .tokenValiditySeconds(86400*7)
                     .alwaysRemember(false)
                     .tokenRepository(tokenRepository())
+                    
                     .authenticationSuccessHandler(rememberMeSuccessHandler()))
             .sessionManagement(sessionManagement ->
                 sessionManagement
@@ -90,7 +91,7 @@ public class WebSecurityConfig implements HttpSessionListener {
     @Bean
     public AuthenticationSuccessHandler rememberMeSuccessHandler() {
         SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
-        handler.setDefaultTargetUrl("/home");
+        handler.setDefaultTargetUrl("/");
         return handler;
     }
     

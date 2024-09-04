@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctx = canvas ? canvas.getContext('2d') : null;
     const currentSignature = document.getElementById('currentSignature');
     let painting = false;
-
+	// 수정 버튼
     if (modifyBtn) {
         modifyBtn.addEventListener('click', function () {
             modifyBtn.style.display = 'none';
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.beginPath();
         ctx.moveTo(e.offsetX, e.offsetY);
     }
-
+	// 지우기 버튼
     if (clearBtn) {
         clearBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -78,7 +78,8 @@ document.addEventListener('DOMContentLoaded', function () {
             saveBtn.style.display = 'inline-block';
         }
     }
-
+    
+// 전자서명 등록
     const form = document.getElementById('digitalFrm');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: data.res_msg,
                     confirmButtonText: '닫기'
                 }).then(() => {
-                    location.href = "/employee/member/digitalnameUpdate/" + memberNo;
+                    location.href = "/employee/member/digitalname/" + memberNo;
                 });
             } else {
                 Swal.fire({

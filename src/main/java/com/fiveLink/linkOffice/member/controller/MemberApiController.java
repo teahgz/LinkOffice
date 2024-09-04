@@ -17,8 +17,8 @@ import com.fiveLink.linkOffice.member.service.MemberService;
 @Controller
 public class MemberApiController {
 
-private final MemberService memberService;
-private final MemberFileService memberFileService;
+	private final MemberService memberService;
+	private final MemberFileService memberFileService;
 	
 	@Autowired
 	public MemberApiController(MemberService memberService,MemberFileService memberFileService) {

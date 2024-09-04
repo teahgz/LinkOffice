@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
@@ -76,5 +77,29 @@ public class MemberFileService {
     		e.printStackTrace();
     	}
     	return result;
+    }
+    
+    // 프로필 이미지 
+    
+    String fileProfileDir = "C:\\linkoffice\\upload\\member\\profile\\";
+    
+    public String uploadProfile(MultipartFile file) {
+    	String newProfileName = null;
+    	
+    	try {
+    		String oriProfileName = file.getOriginalFilename();
+    		String fileExt = oriProfileName.substring(oriProfileName.lastIndexOf("."),oriProfileName.length());
+    		UUID uuid = UUID.randomUUID();
+    		String uniqueName = uuid.toString().replaceAll("-", "");
+    		newProfileName = uniqueName+fileExt;
+    		File saveFile = new File(fileProfileDir+newProfileName);
+    		if(!saveFile.exists()) {
+    			saveFile.mkdirs();
+    		}
+    		file.transferTo(saveFile);
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return newProfileName;
     }
 }
