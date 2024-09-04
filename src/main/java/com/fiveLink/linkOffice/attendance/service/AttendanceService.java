@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.attendance.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class AttendanceService {
 	public AttendanceService(AttendanceRepository attendanceRepository) {
 		this.attendanceRepository = attendanceRepository;
 	}
-	
+	// 근태 조회 리스트 
 	public List<AttendanceDto> selectAttendanceList(Long memberNo){
 		List<Attendance> attendanceList = attendanceRepository.findByMemberNo(memberNo);
 		
@@ -33,4 +34,29 @@ public class AttendanceService {
 		}
 		return attendanceDtoList;
 	}
+	// 출근 기능 
+	public int attendanceCheckIn(Attendance attendance) {
+		int result = -1;
+		try {
+			// 출근 기능이 잘 동작하면 
+			attendanceRepository.save(attendance);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	// 퇴근 기능
+	public int attendanceCheckOut(Long memberNo, LocalDate today) {
+		int result = -1; 
+		try {
+			attendanceRepository.findByMemberNoAndWorkDate(memberNo, today);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	
 }
