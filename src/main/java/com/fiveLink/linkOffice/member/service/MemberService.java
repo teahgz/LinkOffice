@@ -94,7 +94,7 @@ public class MemberService {
 	 
 	 // [서혜원] 부서별 사원
 	 public List<MemberDto> getMembersByDepartmentNo(Long departmentNo) {
-	    List<Member> members = memberRepository.findByDepartment_DepartmentNo(departmentNo);
+	    List<Member> members = memberRepository.findByDepartmentNo(departmentNo);
 	    return members.stream().map(member -> MemberDto.builder()
 	            .memberId(member.getMemberNo())
 	            .memberName(member.getMemberName())
@@ -102,16 +102,5 @@ public class MemberService {
 	            .build()
 	    ).collect(Collectors.toList());
 	}
- 
-    private MemberDto convertToDto(Member member) {
-        if (member == null) {
-            return null;
-        }
-
-        return MemberDto.builder()
-            .memberId(member.getMemberNo())
-            .memberName(member.getMemberName())
-            .departmentNo(member.getDepartment() != null ? member.getDepartment().getDepartmentNo() : null)
-            .build();
-    }
+  
 }
