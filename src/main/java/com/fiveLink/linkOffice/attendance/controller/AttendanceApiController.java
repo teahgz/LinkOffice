@@ -58,7 +58,7 @@ public class AttendanceApiController {
 	public Map<String, String> checkOut(@RequestBody Map<String, Long> payload){
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
-        resultMap.put("res_msg", "출석 기록 중 오류가 발생했습니다.");
+        resultMap.put("res_msg", "퇴근 기록 중 오류가 발생했습니다.");
 
         Long memberNo = payload.get("memberNo");
         // 오늘 날짜와 시간 
@@ -71,23 +71,22 @@ public class AttendanceApiController {
         
         // 조회 성공하면 
         if(attendanceDto != null) {
-        	if(attendanceDto.getCheck_out_time() == null) {
-        		Attendance attendance = Attendance.builder()
-        			.attendanceNo(attendanceDto.getAttendance_no())
-        			.memberNo(attendanceDto.getMember_no())
-        			.workDate(attendanceDto.getWork_date())
-        			.checkInTime(attendanceDto.getCheck_in_time())
-        			.checkOutTime(time)
-        			.build();
-        		
-        		// 퇴근 기능 수행 
-                if(attendanceService.attendanceCheckOut(attendance) > 0) {
-                	resultMap.put("res_code", "200");
-                	resultMap.put("res_msg", "퇴근 확인되었습니다.");  
-                }
+    		Attendance attendance = Attendance.builder()
+    			.attendanceNo(attendanceDto.getAttendance_no())
+    			.memberNo(attendanceDto.getMember_no())
+    			.workDate(attendanceDto.getWork_date())
+    			.checkInTime(attendanceDto.getCheck_in_time())
+    			.checkOutTime(time)
+    			.build();
+    		
+    		// 퇴근 기능 수행 
+            if(attendanceService.attendanceCheckOut(attendance) > 0) {
+            	resultMap.put("res_code", "200");
+            	resultMap.put("res_msg", "퇴근 확인되었습니다.");  
         	}
         }
         
         return resultMap;
     }
+
 }

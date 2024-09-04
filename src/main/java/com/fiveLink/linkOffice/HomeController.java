@@ -78,13 +78,9 @@ public class HomeController {
 	    AttendanceDto attendanceDto = attendanceService.findByMemberNoAndWorkDate(memberNo, today);
 	    logger.info("AttendanceDto: {}", attendanceDto);
 	    String isCheckedIn = "false";
-	    String isCheckedOut = "false";
 	    if(attendanceDto != null) {
 	    	if(attendanceDto.getCheck_in_time() != null) {
 	    		isCheckedIn = "true";
-	    	}
-	    	if(attendanceDto.getCheck_out_time() != null) {
-	    		isCheckedOut = "true";
 	    	}
 	    }
 
@@ -96,7 +92,6 @@ public class HomeController {
 	    
 	    // [박혜선] 출근 여부 전달
 	    model.addAttribute("isCheckedIn", isCheckedIn);
-	    model.addAttribute("isCheckedOut", isCheckedOut);
 	    
 	    return "home";
 

@@ -31,9 +31,9 @@
 #check_in_button, #check_out_button {
     border: none;
     width: 13.5vw;
-    height: 4vh;
+    height: 5.5vh;
     border-radius: 8px;
-    background-color: #C3C3C3;
+    background-color: #B1C2DD;
     transition: background-color 0.3s;
 }
 #check_in_button {
@@ -44,11 +44,14 @@
     margin-left: 15px;
 }
 /* 출퇴근 버튼이 활성화 상태일 때 cursor 모양 */
-#check_in_button:enabled, #check_out_button:enabled {
+#check_in_button:enabled {
     cursor: pointer;
 }
-/* 출퇴근 버튼이 비활성화 상태일 때 기본 커서 모양 */
-#check_in_button:disabled, #check_out_button:disabled {
+#check_out_button{
+	cursor: pointer;
+}
+/* 출근 버튼이 비활성화 상태일 때 기본 커서 모양과 색깔  */
+#check_in_button:disabled {
     cursor: default;
     background-color: #eee;
 }
@@ -57,6 +60,7 @@
 #check_in_button:hover, #check_out_button:hover {
     background-color: #eee;
 }
+/* 근태 조회 버튼 */
 #attendance_check {
     display: inline-block;
     padding: 10px 20px;
@@ -69,7 +73,7 @@
     text-decoration: none;
     transition: background-color 0.3s;
     width: 26.5vw;
-    height: 1vh;
+    height: 1.5vh;
     display: flex;
     justify-content: center;
     align-items: center;

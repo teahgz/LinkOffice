@@ -33,6 +33,7 @@ public class AttendanceViewController {
       this.attendanceService = attendanceService;
       this.memberService = memberService; 
    }
+   
    // 근태 조회 
    @GetMapping("/employee/attendance/myAttendance/{member_no}")
    public String documentPersonalPage(Model model,
