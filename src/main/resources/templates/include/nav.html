@@ -106,8 +106,8 @@
 				<li>
 					<a href="#">조직 관리</a>
 					<div class="dropdown">
-						<ul>
-							<li><a href="#">부서 관리</a></li>
+						<ul th:each = "member : ${memberdto}">
+							<li th:each = "member : ${memberdto}"><a th:href="@{/department}">부서 관리</a></li>
 							<li><a href="#">직위 관리</a></li>
 						</ul>
 					</div>
@@ -154,7 +154,7 @@
 					</div>
 				</li>
 
-				<li><a href="/department">통합 권한 관리</a></li>
+				<li><a href="">통합 권한 관리</a></li>
 			</ul>
 		</div>
 

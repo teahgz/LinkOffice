@@ -6,18 +6,20 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
-import com.fiveLink.linkOffice.organization.service.DepartmentService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.service.DepartmentService;
 
 @Controller
 public class DepartmentController {
@@ -31,6 +33,11 @@ public class DepartmentController {
     @GetMapping("/department")
     public String listDepartments(Model model, @RequestParam(value = "id", required = false) Long id) {
         List<DepartmentDto> departments = departmentService.getAllDepartments();
+         
+        Long memberNo = memberService.getLoggedInMemberNo();
+        
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        model.addAttribute("memberdto", memberdto);
         model.addAttribute("departments", departments);
         model.addAttribute("topLevelDepartments", departmentService.getTopLevelDepartments());
 
