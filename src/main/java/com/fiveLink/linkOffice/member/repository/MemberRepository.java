@@ -11,9 +11,11 @@ import com.fiveLink.linkOffice.member.domain.Member;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-
+	//[전주영] 로그인
     Member findByMemberNumber(String memberNumber); 
-    
+    // [전주영] 전자결재이미지 수정
+    Member findByMemberNo(Long memberNo);
+    // [전주영] 권한 조회 
     @Query("SELECT m, p.positionName, d.departmentName " +
             "FROM Member m " +
             "JOIN m.position p " +
@@ -21,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "WHERE m.memberNumber = :memberNumber")
     List<Object[]> findMemberNumber(@Param("memberNumber") String memberNumber);
     
-    // mypage 정보 조회
+    // [전주영] mypage 정보 조회
     @Query("SELECT m, p.positionName, d.departmentName " +
             "FROM Member m " +
             "JOIN m.position p " +

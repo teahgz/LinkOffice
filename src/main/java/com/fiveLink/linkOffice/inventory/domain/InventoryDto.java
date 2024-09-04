@@ -23,8 +23,10 @@ public class InventoryDto {
 	private int inventory_price;
 	private int inventory_quantity;
 	private String inventory_location;
-//	private Integer member_no;
-//	private Integer department_no;
+	private Long member_no;
+	private String member_name;
+	private Long department_no;
+	private String department_name;
 	private String inventory_purchase_date;
 	private LocalDateTime inventory_create_date;
 	

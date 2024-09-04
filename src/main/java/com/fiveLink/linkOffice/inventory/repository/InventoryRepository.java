@@ -9,6 +9,7 @@ import com.fiveLink.linkOffice.inventory.domain.Inventory;
 
 
 
+
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
     @Query("SELECT ic.inventoryCategoryNo, " + 
@@ -24,4 +25,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     List<Object[]> findCategorySummary();
     
     List<Inventory> findByInventoryCategoryInventoryCategoryNo(Long inventoryCategoryNo);
+    
+    @Query("SELECT DISTINCT d.departmentNo, d.departmentName " +
+            "FROM Inventory i " +
+            "JOIN i.department d")
+     List<Object[]> findAllDepartments();
 }
