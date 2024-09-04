@@ -7,6 +7,27 @@
         <section> 
          근태 조회 
         <hr>
+	        <table border="1">
+	        	<thead>
+	                 <tr>
+	                     <th>날짜</th>
+	                     <th>출근 시간</th>
+	                     <th>상태</th>
+	                 </tr>
+	            </thead>
+				<tbody>
+	                   <tr th:each="attendance : ${attendanceList}">
+	                       <td th:text="${attendance.work_date}"></td>
+	                       <td th:text="${attendance.check_in_time != null ? attendance.check_in_time : '미입력'}"></td>
+	                       <td>
+	                           <span th:if="${attendance.check_in_time != null}">
+	                               <span th:text="${attendance.check_in_time.isBefore('09:00') ? '출근' : '지각'}"></span>
+	                           </span>
+	                           <span th:if="${attendance.check_in_time == null}">결근</span>
+	                       </td>
+	                   </tr>
+	            </tbody>
+	        </table>
     	</section>
     </th:block>
 </html>
