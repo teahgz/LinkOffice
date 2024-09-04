@@ -33,14 +33,13 @@ public class DepartmentController {
         List<DepartmentDto> departments = departmentService.getAllDepartments();
         model.addAttribute("departments", departments);
         model.addAttribute("topLevelDepartments", departmentService.getTopLevelDepartments());
+
         if (id != null) {
-            Optional<DepartmentDto> departmentOpt = departmentService.getDepartmentById(id);
-            if (departmentOpt.isPresent()) {
-                DepartmentDto department = departmentOpt.get();
+            departmentService.getDepartmentById(id).ifPresent(department -> {
                 List<MemberDto> members = memberService.getMembersByDepartmentNo(department.getDepartment_no());
                 department.setMembers(members);
                 model.addAttribute("department", department);
-            }
+            });
         }
         return "/admin/organization/department_list";
     }
@@ -57,13 +56,11 @@ public class DepartmentController {
             departmentService.addDepartment(departmentName, departmentHigh);
             response.put("success", true);
         } catch (NumberFormatException e) {
-            System.out.println("NumberFormatException: " + e.getMessage());
             response.put("success", false);
             response.put("error", "상위 부서를 찾을 수 없습니다." + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
             response.put("success", false);
-            response.put("error", "서버 오류: " + e.getMessage());
+            response.put("error", e.getMessage());
         }
         
         return response;
@@ -102,9 +99,29 @@ public class DepartmentController {
             departmentService.updateDepartment(departmentId, departmentName, departmentHigh);
             response.put("success", true);
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
             response.put("success", false);
-            response.put("error", "서버 오류: " + e.getMessage());
+            response.put("error", e.getMessage());
+        }
+        
+        return response;
+    }
+    
+    @GetMapping("/department/member-count")
+    public long getMemberCountByDepartmentNo(@RequestParam Long departmentNo) {
+        return departmentService.getMemberCountByDepartmentNo(departmentNo);
+    }
+    
+    @PostMapping("/department/delete")
+    @ResponseBody
+    public Map<String, Object> deleteDepartment(@RequestParam("id") Long departmentId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        boolean success = departmentService.deleteDepartment(departmentId);
+        if (success) {
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+            response.put("error", "부서에 소속 사원이 존재하여 삭제가 불가능합니다.");
         }
         
         return response;
