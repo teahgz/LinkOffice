@@ -2,6 +2,9 @@ package com.fiveLink.linkOffice.attendance.controller;
 
 import java.util.List;
 
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +21,26 @@ import com.fiveLink.linkOffice.document.controller.DocumentViewController;
 public class AttendanceViewController {
 
 	private final AttendanceService attendanceService;
-	
+	private final MemberService memberService;
+
 	private static final Logger LOGGER
 	= LoggerFactory.getLogger(AttendanceViewController.class);
 	
 	@Autowired
-	public AttendanceViewController(AttendanceService attendanceService) {
+	public AttendanceViewController(AttendanceService attendanceService, MemberService memberService) {
 		this.attendanceService = attendanceService;
+		this.memberService = memberService;
 	}
-	// 근태 조회 
+
+	// 근태 조회
 	@GetMapping("/employee/attendance/myAttendance/{member_no}")
 	public String documentPersonalPage(Model model,
 			@PathVariable("member_no") Long memberNo
 			) {
 		List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 		LOGGER.debug("attendance List: {}", attendanceList);
+		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("attendanceList", attendanceList);
 		return "employee/attendance/myAttendance";
 	}
