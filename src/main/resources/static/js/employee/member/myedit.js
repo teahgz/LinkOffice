@@ -43,7 +43,7 @@
             }
         }).open();
     }
- // 이미지 등록
+// 이미지 등록
 function previewImage(event) {
     const file = event.target.files[0]; 
 

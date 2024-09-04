@@ -5,7 +5,6 @@
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
 		<link th:href="@{/css/employee/attendance/attendance.css}" rel="stylesheet" type="text/css">
        	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
-       	<script src="/js/employee/attendance/attendance.js"></script>
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
 			<div class="main_item_box left-top custom-height-1 employee-info">
@@ -123,5 +122,6 @@
     <section sec:authorize="hasAnyAuthority('TOTAL_ADMIN')">
     hello
     </section>
+    <script src="/js/employee/attendance/attendance.js"></script>
      </th:block>
 </html>
