@@ -98,7 +98,8 @@ function addType() {
     inputGroup.id = `type${typeCount}`;
 
     const labelName = document.createElement("label");
-    labelName.textContent = `휴가 종류 이름 `;
+    labelName.textContent = `종류 `;
+
     inputGroup.appendChild(labelName);
 
     const inputName = document.createElement("input");
@@ -107,7 +108,7 @@ function addType() {
     inputGroup.appendChild(inputName);
 
     const labelDesc = document.createElement("label");
-    labelDesc.textContent = `휴가 설명 `;
+    labelDesc.textContent = `범위 수 `;
     inputGroup.appendChild(labelDesc);
 
     const inputDesc = document.createElement("input");
@@ -130,17 +131,40 @@ function removeType() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const vacationTypeForm = document.getElementById("vacationTypeForm");
-    vacationTypeForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // 기본 폼 제출 동작을 막음
+function collectVacationTypes() {
+    const vacationTypes = [];
+    const inputGroups = document.querySelectorAll('.input-group');
 
-        const payload = new FormData(vacationTypeForm);
-        const memberNo = document.getElementById('memberNo').value; // 멤버 번호 가져오기
-    console.log(memberNo);
-        fetch('/vacation/addVacationTypeAction', {
+    inputGroups.forEach(group => {
+        const nameInput = group.querySelector('input[name$="[name]"]');
+        const descriptionInput = group.querySelector('input[name$="[description]"]');
+
+        if (nameInput && descriptionInput) {
+            vacationTypes.push({
+                name: nameInput.value,
+                description: descriptionInput.value
+            });
+        }
+    });
+
+    return { vacationTypes };
+}
+document.addEventListener("DOMContentLoaded", function() {
+
+    const form = document.getElementById("vacationTypeForm");
+    var csrfToken = document.querySelector('input[name="_csrf"]').value;
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const vacationTypesData = collectVacationTypes();
+        console.log(vacationTypesData);
+        fetch('/vacation/addTypeVacation', {
             method: 'POST',
-            body: payload
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+             body: JSON.stringify(vacationTypesData)
         })
         .then(response => {
         if (!response.ok) {

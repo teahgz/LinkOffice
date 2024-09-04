@@ -23,13 +23,21 @@
     <div class="vacationForms">
         <form id="vacationForm" class="vacationForm">
             <div class="vacation_click">
-                <div>
-                    <h3>연차별 휴가 지정</h3>
+                <div class="vacation_click_ele">
+                    <div class="vacation_ele1">
+                        <h3>연차별 휴가 지정</h3>
+                        <div style="text-align: center" class="addVacation_button">
+                            <button type="button" onclick="addYear()"><i class="fa-solid fa-plus"></i></button>
+                            <button type="button" onclick="removeYear()"><i class="fa-solid fa-minus"></i></button>
+                        </div>
+
+                    </div>
+                    <div>
+                        <p style="color: red; font-size: 10px;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
+                    </div>
+
                 </div>
-                <div style="text-align: center" class="addVacation_button">
-                    <button type="button" onclick="addYear()">+</button>
-                    <button type="button" onclick="removeYear()">-</button>
-                </div>
+
                 <div class="addVacation_submit" style="text-align: center; margin-top: 20px;">
                     <button type="submit">등록</button>
                 </div>
@@ -40,7 +48,7 @@
             <input type="hidden" th:name="memberNo" th:id="memberNo" th:value="${member.member_no}"/>
 
             <div>
-                <p style="color: red;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
+
             </div>
 
             <div id="vacationFormContainer">
@@ -52,7 +60,7 @@
             </div>
             <!-- 분리되는 부분 -->
             <div>
-                <p style="color: red;">* 1년 미만 재직자에게 월차 지급 여부</p>
+                <p style="color: red; font-size: 10px;">* 1년 미만 재직자에게 월차 지급 여부</p>
             </div>
 
             <div>
@@ -70,8 +78,8 @@
                     <h3>휴가 종류 생성</h3>
                 </div>
                 <div style="text-align: center" class="addVacation_button">
-                    <button type="button" onclick="addType()">+</button>
-                    <button type="button" onclick="removeType()">-</button>
+                    <button type="button" onclick="addType()"><i class="fa-solid fa-plus"></i></button>
+                    <button type="button" onclick="removeType()"><i class="fa-solid fa-minus"></i></button>
                 </div>
                 <div class="addVacationType_submit" style="text-align: center; margin-top: 20px;">
                     <button type="submit">등록</button>
@@ -80,9 +88,8 @@
 
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <input type="hidden" th:name="memberNo" th:id="memberNo" th:value="${member.member_no}"/>
 
-            <div id="vacationTypeFormContainer">
+            <div id="vacationTypeFormContainer" class ="vacationTypeFormContainer">
                 <!-- 여기에 동적으로 입력폼이 추가됩니다 -->
 
             </div>
