@@ -1,12 +1,11 @@
-package com.fiveLink.linkOffice.inventory.category.domain;
+package com.fiveLink.linkOffice.inventory.domain;
 
 
 import java.util.List;
 
-import com.fiveLink.linkOffice.inventory.domain.Inventory;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,6 +32,6 @@ public class InventoryCategory {
 	@Column(name="inventory_category_name")
 	private String inventoryCategoryName;
 	
-	@OneToMany(mappedBy = "inventoryCategory")
+	@OneToMany(mappedBy = "inventoryCategory", fetch = FetchType.LAZY)
     private List<Inventory> inventory;
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.service.InventoryService;
+import com.fiveLink.linkOffice.organization.domain.Department;
 
 @Controller
 public class InventoryViewController {
@@ -29,10 +30,12 @@ public class InventoryViewController {
     @GetMapping("/inventory/list")
     public String selectInventoryList(Model model) {
         List<InventoryDto> categorySummaryList = inventoryService.selectCategorySummary();
+        List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
         
         LOGGER.info("Category Summary List: " + categorySummaryList);
-
+        LOGGER.info("Department Names: " + departmentNames);
         model.addAttribute("categorySummaryList", categorySummaryList);
+        model.addAttribute("departments", departmentNames);
         return "admin/inventory/list";
     }
     
@@ -41,4 +44,8 @@ public class InventoryViewController {
     public List<InventoryDto> selectInventoryByCategory(@PathVariable("inventory_category_no") Long inventory_category_no) {
         return inventoryService.selectInventoryByCategory(inventory_category_no);
     }
+    
+    
+    
+    
 }

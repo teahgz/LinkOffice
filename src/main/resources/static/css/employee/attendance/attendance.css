@@ -27,31 +27,35 @@
      justify-content: center;
      align-items: center;
 }
-#check_in_button{
-	border: none;
-	width: 13.5vw;
-	height: 4vh;
-	margin-right: 15px;
-	border-radius: 8px;
-	background-color: #C3C3C3;
-	transition: background-color 0.3s;
-	cursor: pointer;
+/* 출퇴근 버튼 css */
+#check_in_button, #check_out_button {
+    border: none;
+    width: 13.5vw;
+    height: 4vh;
+    border-radius: 8px;
+    background-color: #C3C3C3;
+    transition: background-color 0.3s;
 }
-#check_in_button:hover{
-	background-color: #eee;
+#check_in_button {
+    margin-right: 15px;
 }
-#check_out_button{
-	border: none;
-	width: 13.5vw;
-	height: 4vh;
-	margin-left: 15px;
-	border-radius: 8px;
-	background-color: #C3C3C3;
-	transition: background-color 0.3s;
-	cursor: pointer;
+
+#check_out_button {
+    margin-left: 15px;
 }
-#check_out_button:hover{
-	background-color: #eee;
+/* 출퇴근 버튼이 활성화 상태일 때 cursor 모양 */
+#check_in_button:enabled, #check_out_button:enabled {
+    cursor: pointer;
+}
+/* 출퇴근 버튼이 비활성화 상태일 때 기본 커서 모양 */
+#check_in_button:disabled, #check_out_button:disabled {
+    cursor: default;
+    background-color: #eee;
+}
+
+/* 활성화된 출퇴근 버튼에 대한 호버 효과 */
+#check_in_button:hover, #check_out_button:hover {
+    background-color: #eee;
 }
 #attendance_check {
     display: inline-block;
@@ -70,7 +74,7 @@
     justify-content: center;
     align-items: center;
 }
-
+/* 근태 조회 버튼에 대한 호버 효과 */
 #attendance_check:hover {
     background-color: #eee;
 }
