@@ -26,11 +26,10 @@ private final MemberFileService memberFileService;
 		this.memberFileService = memberFileService;
 	}
 	
+	// 전자결재 서명 등록
 	@ResponseBody
 	@PostMapping("/employee/member/digitalname/{member_no}")
-	public Map<String, String> digitalnameUpdate(
-	        @PathVariable("member_no") Long memberNo,
-	        @RequestParam("signatureData") String signatureData) {
+	public Map<String, String> digitalnameUpdate( @PathVariable("member_no") Long memberNo,@RequestParam("signatureData") String signatureData) {
 	    Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "파일 등록 중 오류가 발생하였습니다.");
@@ -44,13 +43,19 @@ private final MemberFileService memberFileService;
 	                memberdto.setMember_ori_digital_img(signatureData);
 	                memberdto.setMember_new_digital_img(newDigitalName);
 	                
-	                if (memberService.updateMemberDigital(memberdto) != null) {
-	                    response.put("res_code", "200");
-	                    response.put("res_msg", "파일 업로드가 완료되었습니다.");
-	                }
-	            } else {
-	                response.put("res_msg", "파일 등록 중 오류가 발생하였습니다.");
+                    if(memberFileService.delete(memberdto.getMember_no()) > 0) {
+                    	response.put("res_msg", "기존 파일 삭제 완료되었습니다.");
+                    }else {
+                    	response.put("res_msg", "기존 파일 삭제 중 오류가 발생되었습니다.");
+                    }
+
 	            }
+	            
+	            if (memberService.updateMemberDigital(memberdto) != null) {
+                    response.put("res_code", "200");
+                    response.put("res_msg", "파일 업로드가 완료되었습니다.");
+                 
+                }
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();

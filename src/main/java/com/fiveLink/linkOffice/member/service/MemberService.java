@@ -119,13 +119,14 @@ public class MemberService {
         }
     }
     
-    // [전주영] 전자결재 서명 update
+    // [전주영] 전자결재 서명 dto 조회
     public MemberDto selectMemberOne(Long memberNo) {
     	Member member = memberRepository.findByMemberNo(memberNo);
     	MemberDto dto = new MemberDto().toDto(member);
     	return dto;
     }
     
+    // 전자결재 서명 update
     @Transactional
     public Member updateMemberDigital(MemberDto dto) {
     	MemberDto temp = selectMemberOne(dto.getMember_no());
