@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.member.domain.Member;
@@ -102,6 +104,20 @@ public class MemberService {
 	            .build()
 	    ).collect(Collectors.toList());
 	}
+  
+	// [서혜원] 부서 관리 memberdto
+	public Long getLoggedInMemberNo() {
+    	org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();  
+ 
+        Member member = memberRepository.findByMemberNumber(username);
+
+        if (member != null) {
+            return member.getMemberNo();  
+        } else {
+            throw new RuntimeException("로그인한 사용자 정보를 찾을 수 없습니다.");
+        }
+    }
     
     // [전주영] 전자결재 서명 update
     public MemberDto selectMemberOne(Long memberNo) {
