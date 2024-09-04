@@ -13,16 +13,18 @@
       <p th:text="${member.member_name} + '님의 서명을 등록/수정해주세요'"></p>
       <div class="digital_box">
         <img th:if="${member.member_ori_digital_img != null}" th:src="${member.member_ori_digital_img}" alt="현재 서명" id="currentSignature">
-        <canvas th:if="${member.member_ori_digital_img == null}" id="canvas" width="300" height="150"></canvas>
+        <canvas  id="canvas" width="600" height="300" style="display:none;"></canvas>
       </div>
 
       <div class="button_group">
         <button th:if="${member.member_ori_digital_img != null}" id="modifyBtn" class="btn btn_primary" type="button">수정</button>
-        <button th:if="${member.member_ori_digital_img == null}" id="saveBtn" class="btn btn_primary">등록</button>
+        <button id="saveBtn" class="btn btn_primary">등록</button>
         <button id="clearBtn" class="btn btn_secondary" type="button">지우기</button>
       </div>
     </form>
   </section>
-  <script th:src="@{/js/employee/member/digitalname.js}"></script>
+  <script th:src="@{/js/employee/member/digitalname.js}">
+
+  </script>
 </th:block>
 </html>

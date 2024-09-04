@@ -1,4 +1,3 @@
-// 이벤트 발생
 document.addEventListener('DOMContentLoaded', function () {
     const modifyBtn = document.getElementById('modifyBtn');
     const saveBtn = document.getElementById('saveBtn');
@@ -6,30 +5,32 @@ document.addEventListener('DOMContentLoaded', function () {
     const digitalBox = document.querySelector('.digital_box');
     const canvas = document.getElementById('canvas');
     const ctx = canvas ? canvas.getContext('2d') : null;
+    const currentSignature = document.getElementById('currentSignature');
     let painting = false;
 
     if (modifyBtn) {
         modifyBtn.addEventListener('click', function () {
             modifyBtn.style.display = 'none';
             if (saveBtn) saveBtn.style.display = 'inline-block';
-            digitalBox.style.display = 'block';
-            const currentSignature = document.getElementById('currentSignature');
-            if (currentSignature) {
-                currentSignature.style.display = 'none';
-            }
+            if (clearBtn) clearBtn.style.display = 'inline-block'; 
+            if (currentSignature) currentSignature.style.display = 'none';
             if (canvas) {
                 canvas.style.display = 'block';
                 setupCanvas();
             }
         });
-    } else {
-        if (canvas) {
+    }
+
+    if (canvas) {
+        if (currentSignature) {
+            canvas.style.display = 'none';
+        } else {
             digitalBox.style.display = 'block';
             canvas.style.display = 'block';
             setupCanvas();
         }
     }
-	// 캔버스
+
     function setupCanvas() {
         if (!ctx) return;
         ctx.lineWidth = 3;
@@ -55,60 +56,65 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.beginPath();
         ctx.moveTo(e.offsetX, e.offsetY);
     }
-	// 지우기
+
     if (clearBtn) {
         clearBtn.addEventListener('click', function (e) {
             e.preventDefault();
             clearCanvas();
         });
     }
-	
+
     function clearCanvas() {
         if (ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
-    
-// form 제출
-  const form = document.getElementById('digitalFrm');
-  form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const payload = new FormData(form);
-      const memberNo = form.member_no.value;
-      const csrfToken = document.getElementById('csrf_token').value;
-      const canvas = document.getElementById('canvas');
-      const signatureDataUrl = canvas.toDataURL('image/png');
 
-      payload.append('signatureData', signatureDataUrl);
+    if (saveBtn) {
+        if (currentSignature) {
+            saveBtn.style.display = 'none';
+            clearBtn.style.display = 'none';
+        } else {
+            saveBtn.style.display = 'inline-block';
+        }
+    }
 
-      fetch('/employee/member/digitalname/' + memberNo, {
-          method: 'post',
-          headers: {
-              'X-CSRF-TOKEN': csrfToken
-          },
-          body: payload
-      })
-      .then(response => response.json())
-      .then(data => {
-		if(data.res_code == '200'){
-			Swal.fire({
-				icon : 'success',
-				title : '서명 등록',
-				text : data.res_msg,
-				confirmButtonText : '닫기'				
-			}).then((result)=>{
-				location.href="/employee/member/digitalnameUpdate/"+ memberNo;
-			})
-		}else{
-			Swal.fire({
-				icon : 'error',
-				title : '서명 등록',
-				text : data.res_msg,
-				confirmButtonText : '닫기'				
-			})
-		}
-      })
-  });
+    const form = document.getElementById('digitalFrm');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const payload = new FormData(form);
+        const memberNo = form.member_no.value;
+        const csrfToken = document.getElementById('csrf_token').value;
+        const signatureDataUrl = canvas.toDataURL('image/png');
 
+        payload.append('signatureData', signatureDataUrl);
+
+        fetch('/employee/member/digitalname/' + memberNo, {
+            method: 'post',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: payload
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.res_code == '200') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '서명 등록',
+                    text: data.res_msg,
+                    confirmButtonText: '닫기'
+                }).then(() => {
+                    location.href = "/employee/member/digitalnameUpdate/" + memberNo;
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '서명 등록',
+                    text: data.res_msg,
+                    confirmButtonText: '닫기'
+                });
+            }
+        });
+    });
 });
-
