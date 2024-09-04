@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberFileService;
@@ -62,6 +64,42 @@ public class MemberApiController {
 	        response.put("res_msg", "서버 오류가 발생하였습니다.");
 	    }
 	    return response;
+	}
+	
+	@ResponseBody
+	@PostMapping("/employee/member/myedit/{member_no}")
+	public Map<String,String> profileUpdate(  @PathVariable("member_no") Long memberNo,
+            @RequestParam(name = "file", required = false) MultipartFile file, 
+            @RequestParam(name = "roadAddress") String roadAddress,  
+            @RequestParam(name = "detailAddress") String detailAddress, 
+            @RequestParam(name = "newPassword") String newPassword){
+		 Map<String, String> response = new HashMap<>();
+		    response.put("res_code", "404");
+		    response.put("res_msg", "파일 등록 중 오류가 발생하였습니다.");
+		    
+		    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
+		    
+		    String newAdr = roadAddress + detailAddress;
+		    memberdto.setMember_address(newAdr);
+		    
+		    memberdto.setMember_pw(newPassword);
+		    if(file != null && "".equals(file.getOriginalFilename()) == false) {
+		    	String saveFileName = memberFileService.uploadProfile(file);
+		    	if(saveFileName != null) {
+		    		memberdto.setMember_ori_profile_img(file.getOriginalFilename());
+		    		memberdto.setMember_new_profile_img(saveFileName);
+		    		
+		    	} else {
+		    		response.put("res_msg", "파일 업로드 실패");
+		    	}
+		    	
+		    }
+		    
+		    if(memberService.updateMemberProfile(memberdto) != null) {
+		    	response.put("res_code", "200");
+		    	response.put("res_msg", "정보 수정 성공하였습니다.");
+		    }
+		    return response;
 	}
 
 }

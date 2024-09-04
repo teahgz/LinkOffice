@@ -89,37 +89,53 @@ $(document).ready(function() {
 
 // 정보 수정 등록
 const form = document.getElementById('myeditUpdateFrm');
-form.addEventListener('submit', (e) => {
-	e.preventDefault();
-	const payload = new FormData(form);
-	const memberNo = form.member_no.value;
-	const csrfToken = document.getElementById('csrf_token').value;
 
-	fetch('/myedit/' + memberNo, {
-		method: 'post',
-		headers: {
-			'X-CSRF-TOKEN': csrfToken
-		},
-		body: payload
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.res_code == '202') {
-				Swal.fire({
-					icon: 'success',
-					title: '수정 성공',
-					text: data.res_msg,
-					confirmButtonText: '닫기'
-				}).then((result) => {
-					alert("성공");
-				});
-			} else {
-				Swal.fire({
-					icon: 'error',
-					title: '수정 성공',
-					text: data.res_msg,
-					confirmButtonText: '닫기'
-				})
-			}
-		})
+form.addEventListener('submit', (e) => {
+    e.preventDefault();  
+
+    const memberNo = form.member_no.value;
+    const roadAddress = form.sample4_roadAddress.value;
+    const detailAddress = form.sample4_detailAddress.value;
+    const newPw = form.new_password.value;
+    const profileImg = form.profile_image.files[0]; 
+    const csrfToken = document.getElementById('csrf_token').value;
+
+
+    const formData = new FormData();
+    formData.append('roadAddress', roadAddress);
+    formData.append('detailAddress', detailAddress);
+    formData.append('newPassword', newPw);
+    formData.append('file', profileImg);  
+    formData.append('member_no', memberNo); 
+
+    fetch('/employee/member/myedit/' + memberNo, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken 
+        },
+        body: formData 
+    })
+    .then(response => response.json()) 
+    .then(data => {
+        if (data.res_code == '200') {
+            Swal.fire({
+                icon: 'success',
+                title: '수정 성공',
+                text: data.res_msg,
+                confirmButtonText: '닫기'
+            }).then((result) => {
+                alert("성공");
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '수정 실패',
+                text: data.res_msg,
+                confirmButtonText: '닫기'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('오류 발생:', error);
+    });
 });

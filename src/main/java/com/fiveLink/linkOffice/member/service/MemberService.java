@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -134,14 +133,23 @@ public class MemberService {
     		temp.setMember_ori_digital_img(dto.getMember_ori_digital_img());
     		temp.setMember_new_digital_img(dto.getMember_new_digital_img());
     	} 
-    	System.out.println("memberService"+temp);
     	
     	Member member = temp.toEntity();
-    	System.out.println(member);
     	
     	Member result = memberRepository.save(member);
-    	System.out.println("servie단결과"+result);
+    	return result;
+    } 
+    
+    // 프로필 및 비밀번호, 주소 변경 
+    @Transactional
+    public Member updateMemberProfile(MemberDto dto) {
+    	MemberDto temp = selectMemberOne(dto.getMember_no());
+    	
+    	Member member = dto.toEntity();
+    	
+    	Member result = memberRepository.save(member);
+    	
     	return result;
     	
-    } 
+    }
 }
