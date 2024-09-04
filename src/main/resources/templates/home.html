@@ -51,8 +51,10 @@
                 		<form id="attendanceForm" action="/attendance/checkIn" method="post">
 		            		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>	            
                 			<input type="hidden" id="attendance_memberNo" th:value="${member.member_no}">
-                			<button type="submit" id="check_in_button">출근</button>
-	                		<button type="submit" id="check_out_button">퇴근</button>
+                			<button type="submit" id="check_in_button" 
+                			th:disabled="${isCheckedIn == 'true'}">출근</button>
+	                		<button type="submit" id="check_out_button"
+	                		th:disabled="${isCheckedOut == 'true'}">퇴근</button>
                 		</form>
                 	</div>
                 	<a id="attendance_check" th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">
