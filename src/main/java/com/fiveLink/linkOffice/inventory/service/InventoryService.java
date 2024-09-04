@@ -63,4 +63,18 @@ public class InventoryService {
 
         return inventoryDtos;
     }
+    public List<InventoryDto> findAllDepartments() {
+        List<Inventory> inventories = inventoryRepository.findByDepartmentDepartmentNo(inventory_department_no);
+        List<InventoryDto> departmentDtos = new ArrayList<>();
+
+        for (Inventory inventory : inventories) {
+            InventoryDto dto = InventoryDto.builder()
+                    .department_no(inventory.getDepartment().getDepartmentNo())
+                    .department_name(inventory.getDepartment().getDepartmentName())
+                    .build();
+            departmentDtos.add(dto);
+        }
+
+        return departmentDtos;
+    }
 }
