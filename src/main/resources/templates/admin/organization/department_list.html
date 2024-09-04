@@ -1,65 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{include/layout}">
-<head>
-    <meta charset="UTF-8">
-    <title>Department List</title>
-    <style>
-        .container {
-            display: flex;
-        }
-        .list {
-            width: 30%;
-            border-right: 1px solid #ddd;
-            padding: 10px;
-        }
-        .details {
-            width: 70%;
-            padding: 10px;
-        }
-        .sub-departments {
-            margin-top: 20px;
-        }
-        .sub-departments ul {
-            padding-left: 20px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style> 
-</head>
-<body>
-    <th:block layout:fragment="content">
+     layout:decorate="~{include/layout}"> 
+<th:block layout:fragment="content">
+<link th:href="@{/css/admin/organization/departmentList.css}" rel="stylesheet" type="text/css"> 
         <section>
             <div class="container">
                 <div class="list">
@@ -81,29 +25,31 @@
                     </ul>
                 </div>
                 <div class="details" th:if="${department}">
-                    <h2>부서 정보</h2>
-                    <p><strong>부서명:</strong> <span th:text="${department.department_name}"></span></p>
-                    <p><strong>상위 부서명:</strong> <span th:text="${department.department_high_name}"></span></p>
-                    <div class="sub-departments" th:if="${department.subDepartments}">
-                        <h3>하위 부서</h3>
-                        <ul>
-                            <th:block th:each="sub : ${department.subDepartments}">
-                                <li>
-                                    <a th:href="@{/department(id=${sub.department_no})}" th:text="${sub.department_name}"></a>
-                                </li>
-                            </th:block>
-                        </ul>
-                    </div>
-                    <div class="members" th:if="${department.members}">
-                        <h3>소속 직원</h3>
-                        <ul>
-                            <th:block th:each="member : ${department.members}">
-                                <li th:text="${member.memberName}"></li>
-                            </th:block>
-                        </ul>
-                    </div>
-                    <button id="editButton" th:data-department-id="${department.department_no}">수정</button>
-                </div>
+				    <h2>부서 정보</h2>
+				    <p><strong>부서명:</strong> <span th:text="${department.department_name}"></span></p>
+				    <p><strong>상위 부서명:</strong> <span th:text="${department.department_high_name}"></span></p>
+				    <div class="sub-departments" th:if="${department.subDepartments}">
+				        <h3>하위 부서</h3>
+				        <ul>
+				            <th:block th:each="sub : ${department.subDepartments}">
+				                <li>
+				                    <a th:href="@{/department(id=${sub.department_no})}" th:text="${sub.department_name}"></a>
+				                </li>
+				            </th:block>
+				        </ul>
+				    </div>
+				    <div class="members" th:if="${department.members}">
+				        <h3>소속 직원</h3>
+				        <ul>
+				            <th:block th:each="member : ${department.members}">
+				                <li th:text="${member.memberName}"></li>
+				            </th:block>
+				        </ul>
+				    </div>
+				    <button id="editButton" th:data-department-id="${department.department_no}">수정</button>
+				    <button id="deleteButton" th:data-department-id="${department.department_no}">삭제</button> <!-- 삭제 버튼 추가 -->
+				</div>
+
             </div>
         </section>
 
@@ -152,168 +98,8 @@
                     <button type="submit">수정</button>
                 </form>
             </div>
-        </div>
- 
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var createModal = document.getElementById("myModal");
-                var editModal = document.getElementById("editModal");
-                var openModalBtn = document.getElementById("openModal");
-                var editButton = document.getElementById("editButton");
-                var closeButtons = document.getElementsByClassName("close");
-                var createForm = document.getElementById("departmentForm");
-                var editForm = document.getElementById("editForm");
-
-                if (openModalBtn) {
-                    openModalBtn.onclick = function() {
-                        createModal.style.display = "block";
-                    }
-                }
-
-                if (editButton) {
-                    editButton.onclick = function() {
-                        var departmentId = this.getAttribute("data-department-id");
-
-                        $.ajax({
-                            type: "GET",
-                            url: "/department/get?id=" + departmentId,
-                            success: function(response) {
-                                if (response.success) {
-                                    var department = response.department;
-                                    document.getElementById("editDepartmentId").value = department.department_no;
-                                    document.getElementById("editDepartmentName").value = department.department_name;
-                                    document.getElementById("editDepartmentHigh").value = department.department_high;
-
-                                    if (department.subDepartments && department.subDepartments.length > 0) {
-                                        document.getElementById("editDepartmentHigh").disabled = true;
-                                    } else {
-                                        document.getElementById("editDepartmentHigh").disabled = false;
-                                    }
-
-                                    editModal.style.display = "block";
-                                } else {
-                                    Swal.fire("오류", "부서 정보를 불러오는 데 실패했습니다.", "error");
-                                }
-                            },
-                            error: function() {
-                                Swal.fire("오류", "부서 정보를 불러오는 데 실패했습니다.", "error");
-                            }
-                        });
-                    }
-                }
-
-                for (var i = 0; i < closeButtons.length; i++) {
-                    closeButtons[i].onclick = function() {
-                        createModal.style.display = "none";
-                        editModal.style.display = "none";
-                        resetCreateModal();
-                    }
-                }
-
-                window.onclick = function(event) {
-                    if (event.target == createModal || event.target == editModal) {
-                        createModal.style.display = "none";
-                        editModal.style.display = "none";
-                        resetCreateModal();
-                    }
-                }
-
-                function resetCreateModal() {
-                    document.getElementById("departmentName").value = "";
-                    document.getElementById("departmentHigh").value = "0";
-                }
-
-                if (createForm) {
-                    createForm.onsubmit = function(event) {
-                        event.preventDefault();
-                        var departmentName = document.getElementById("departmentName").value;
-                        var departmentHigh = document.getElementById("departmentHigh").value;
-                        var departmentHighInt = parseInt(departmentHigh, 10);
-                        var csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/department/add",
-                            contentType: "application/json",
-                            data: JSON.stringify({
-                                departmentName: departmentName,
-                                departmentHigh: departmentHighInt
-                            }),
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    Swal.fire({
-                                        title: '등록 성공',
-                                        text: '부서가 성공적으로 등록되었습니다.',
-                                        icon: 'success',
-                                        confirmButtonText: 'OK'
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: '등록 실패',
-                                        text: '등록 오류: ' + response.error,
-                                        icon: 'error',
-                                        confirmButtonText: 'OK'
-                                    });
-                                }
-                            },
-                            error: function() {
-                                Swal.fire({
-                                    title: '등록 실패',
-                                    text: '서버와의 통신 중 오류가 발생했습니다.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        });
-                    }
-                }
-
-                if (editForm) {
-                    editForm.onsubmit = function(event) {
-                        event.preventDefault();
-
-                        var departmentId = document.getElementById("editDepartmentId").value;
-                        var departmentName = document.getElementById("editDepartmentName").value;
-                        var departmentHigh = document.getElementById("editDepartmentHigh").value;
-                        var departmentHighInt = parseInt(departmentHigh, 10);
-                        var csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/department/update",
-                            contentType: "application/json",
-                            data: JSON.stringify({
-                                departmentId: departmentId,
-                                departmentName: departmentName,
-                                departmentHigh: departmentHighInt
-                            }),
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    Swal.fire("수정 성공", "부서가 성공적으로 수정되었습니다.", "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("수정 오류", response.error, "error");
-                                }
-                            },
-                            error: function() {
-                                Swal.fire("서버 오류", "서버와의 통신 중 오류가 발생했습니다.", "error");
-                            }
-                        });
-                    }
-                }
-            });
-        </script>
-    </th:block>
-</body>
-
+        </div> 
+		<script th:src="@{/js/admin/organization/departmentList.js}"></script>
+    </th:block> 
 </html>
 

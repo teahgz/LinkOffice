@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class MemberService {
@@ -94,7 +96,7 @@ public class MemberService {
 	 
 	 // [서혜원] 부서별 사원
 	 public List<MemberDto> getMembersByDepartmentNo(Long departmentNo) {
-	    List<Member> members = memberRepository.findByDepartment_DepartmentNo(departmentNo);
+	    List<Member> members = memberRepository.findByDepartmentNo(departmentNo);
 	    return members.stream().map(member -> MemberDto.builder()
 	            .memberId(member.getMemberNo())
 	            .memberName(member.getMemberName())
@@ -102,16 +104,44 @@ public class MemberService {
 	            .build()
 	    ).collect(Collectors.toList());
 	}
+  
+	// [서혜원] 부서 관리 memberdto
+	public Long getLoggedInMemberNo() {
+    	org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();  
  
-    private MemberDto convertToDto(Member member) {
-        if (member == null) {
-            return null;
-        }
+        Member member = memberRepository.findByMemberNumber(username);
 
-        return MemberDto.builder()
-            .memberId(member.getMemberNo())
-            .memberName(member.getMemberName())
-            .departmentNo(member.getDepartment() != null ? member.getDepartment().getDepartmentNo() : null)
-            .build();
+        if (member != null) {
+            return member.getMemberNo();  
+        } else {
+            throw new RuntimeException("로그인한 사용자 정보를 찾을 수 없습니다.");
+        }
     }
+    
+    // [전주영] 전자결재 서명 dto 조회
+    public MemberDto selectMemberOne(Long memberNo) {
+    	Member member = memberRepository.findByMemberNo(memberNo);
+    	MemberDto dto = new MemberDto().toDto(member);
+    	return dto;
+    }
+    
+    // 전자결재 서명 update
+    @Transactional
+    public Member updateMemberDigital(MemberDto dto) {
+    	MemberDto temp = selectMemberOne(dto.getMember_no());
+    	if(dto.getMember_ori_digital_img() != null && "".equals(dto.getMember_ori_digital_img()) == false) {
+    		temp.setMember_ori_digital_img(dto.getMember_ori_digital_img());
+    		temp.setMember_new_digital_img(dto.getMember_new_digital_img());
+    	} 
+    	System.out.println("memberService"+temp);
+    	
+    	Member member = temp.toEntity();
+    	System.out.println(member);
+    	
+    	Member result = memberRepository.save(member);
+    	System.out.println("servie단결과"+result);
+    	return result;
+    	
+    } 
 }

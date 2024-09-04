@@ -13,5 +13,5 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 
 	List<Attendance> findByMemberNo(Long memberNo);
 	
-	int findByMemberNoAndWorkDate(Long memberNo, LocalDate today);
+	Attendance findByMemberNoAndWorkDate(Long memberNo, LocalDate today);
 }

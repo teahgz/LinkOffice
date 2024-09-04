@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fiveLink.linkOffice.inventory.category.domain.InventoryCategory;
+import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.organization.domain.Department;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,11 +49,13 @@ public class Inventory {
 	@Column(name="inventory_location")
 	private String inventoryLocation;
 	
-	//@Column(name="member_no")
-    //private Integer memberNo;
+	@ManyToOne
+    @JoinColumn(name = "member_no")
+    private Member member;
 	
-	//@Column(name="department_no")
-	//private Integer departmentNo;
+	@ManyToOne
+    @JoinColumn(name = "department_no")
+    private Department department;
 	
 	@Column(name="inventory_purchase_date")
 	private String inventoryPurchaseDate;

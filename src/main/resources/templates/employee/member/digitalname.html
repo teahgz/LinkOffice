@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{include/layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
-    <th:block layout:fragment="content">
-    <link th:href="@{/css/employee/member/digitalname.css}" rel="stylesheet" type="text/css">
-  <section class="signature-registration" th:each="member : ${memberdto}">
-        <h2>전자 결재 서명 등록/수정</h2>
-        
-        <div class="signature_form">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <input type="hidden" name="member_no" th:value="${member.member_no}" />
-            <p th:text="${member.member_name} + '님의 서명을 등록/수정해주세요'"></p>
-            <div class="signature_box">
-                <img th:if="${member.member_ori_digital_img != null}" th:src="${member.member_ori_digital_img}" alt="현재 서명" id="currentSignature">
-                <canvas th:if="${member.member_ori_digital_img == null}" id="canvas" width="300" height="200"></canvas>
-            </div>
-            <div class="button_group">
-                <button th:if="${member.member_ori_digital_img != null}" id="modifyBtn" class="btn btn_primary">수정</button>
-                <button th:if="${member.member_ori_digital_img == null}" id="saveBtn" class="btn btn_primary">등록</button>
-                <button id="clearBtn" class="btn btn_secondary">지우기</button>
-            </div>
-        </div>
-    </section>
-        <script th:src="@{/js/employee/member/digitalname.js}"></script>
-    </th:block>
+<th:block layout:fragment="content">
+  <link th:href="@{/css/employee/member/digitalname.css}" rel="stylesheet" type="text/css">
+  <section class="signature-registration">
+    <h2>전자 결재 서명 등록/수정</h2>
+    <form class="digital_form" id="digitalFrm" th:each="member : ${memberdto}">
+      <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
+      <input type="hidden" name="member_no" th:value="${member.member_no}" />
+      <p th:text="${member.member_name} + '님의 서명을 등록/수정해주세요'"></p>
+      <div class="digital_box">
+        <img th:if="${member.member_ori_digital_img != null}" th:src="${member.member_ori_digital_img}" alt="현재 서명" id="currentSignature">
+        <canvas  id="canvas" width="600" height="300" style="display:none;"></canvas>
+      </div>
+
+      <div class="button_group">
+        <button th:if="${member.member_ori_digital_img != null}" id="modifyBtn" class="btn btn_primary" type="button">수정</button>
+        <button id="saveBtn" class="btn btn_primary">등록</button>
+        <button id="clearBtn" class="btn btn_secondary" type="button">지우기</button>
+      </div>
+    </form>
+  </section>
+  <script th:src="@{/js/employee/member/digitalname.js}">
+
+  </script>
+</th:block>
 </html>

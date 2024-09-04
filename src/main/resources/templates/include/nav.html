@@ -13,13 +13,12 @@
 					<ul th:each = "member : ${memberdto}">
 						<li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
 						<li><a th:href="@{/employee/member/myedit/{no}(no=${member.member_no})}">정보 수정</a></li>
-						<li><a th:href="@{/employee/member/digitalname/{no}(no=${member.member_no})}">전자결재 서명 등록</a></li>
+						<li><a th:href="@{/employee/member/digitalnameUpdate/{no}(no=${member.member_no})}">전자결재 서명 등록</a></li>
 					</ul>
 				</div>
 			</li>
 			<li th:each = "member : ${memberdto}">
 				<a th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">근태 조회</a>
-
 				</li>
 				<li>
 					<a href="#">공지사항</a>
@@ -106,8 +105,8 @@
 				<li>
 					<a href="#">조직 관리</a>
 					<div class="dropdown">
-						<ul>
-							<li><a href="#">부서 관리</a></li>
+						<ul th:each = "member : ${memberdto}">
+							<li th:each = "member : ${memberdto}"><a th:href="@{/department}">부서 관리</a></li>
 							<li><a href="#">직위 관리</a></li>
 						</ul>
 					</div>
@@ -154,7 +153,7 @@
 					</div>
 				</li>
 
-				<li><a href="/department">통합 권한 관리</a></li>
+				<li><a href="">통합 권한 관리</a></li>
 			</ul>
 		</div>
 

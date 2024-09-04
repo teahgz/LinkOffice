@@ -1,10 +1,12 @@
 package com.fiveLink.linkOffice.member.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.Position;
 
@@ -16,18 +18,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="fl_member")
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @AllArgsConstructor(access=AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Builder
 public class Member {
 
@@ -104,5 +109,6 @@ public class Member {
 	@Column(name="member_additional")
 	private Long memberAdditional;
 	
-	
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Inventory> inventory;
 }
