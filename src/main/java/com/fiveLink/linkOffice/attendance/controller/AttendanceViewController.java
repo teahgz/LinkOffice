@@ -15,33 +15,38 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
-import com.fiveLink.linkOffice.document.controller.DocumentViewController;
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.service.MemberService;
 
 @Controller
 public class AttendanceViewController {
 
-	private final AttendanceService attendanceService;
-	private final MemberService memberService;
+   private final AttendanceService attendanceService;
+   
+   private final MemberService memberService;
+   
+   private static final Logger LOGGER
+   = LoggerFactory.getLogger(AttendanceViewController.class);
+   
+   @Autowired
+   public AttendanceViewController(AttendanceService attendanceService, MemberService memberService) {
+      this.attendanceService = attendanceService;
+      this.memberService = memberService; 
+   }
+   // 근태 조회 
+   @GetMapping("/employee/attendance/myAttendance/{member_no}")
+   public String documentPersonalPage(Model model,
+         @PathVariable("member_no") Long memberNo
+         ) {
+      List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
+      LOGGER.debug("attendance List: {}", attendanceList);
+      
+      // memberDto 불러오기 
+      List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+ 
+      model.addAttribute("memberdto", memberdto);
+      model.addAttribute("attendanceList", attendanceList);
+      return "employee/attendance/myAttendance";
+   }
 
-	private static final Logger LOGGER
-	= LoggerFactory.getLogger(AttendanceViewController.class);
-	
-	@Autowired
-	public AttendanceViewController(AttendanceService attendanceService, MemberService memberService) {
-		this.attendanceService = attendanceService;
-		this.memberService = memberService;
-	}
-
-	// 근태 조회
-	@GetMapping("/employee/attendance/myAttendance/{member_no}")
-	public String documentPersonalPage(Model model,
-			@PathVariable("member_no") Long memberNo
-			) {
-		List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
-		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-		LOGGER.debug("attendance List: {}", attendanceList);
-		model.addAttribute("memberdto", memberdto);
-		model.addAttribute("attendanceList", attendanceList);
-		return "employee/attendance/myAttendance";
-	}
 }

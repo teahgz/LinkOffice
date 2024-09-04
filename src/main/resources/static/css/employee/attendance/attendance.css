@@ -1,5 +1,76 @@
 @charset "UTF-8";
+
+/* 눈누 폰트 */
+/* 레페리포인트 */
+@font-face {
+    font-family: 'LeferiPoint-BlackA';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 .attendance{
+	font-family: 'LeferiPoint-BlackA';
+	flex: 1.5;  
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: auto; 
 	text-align: center;
 	font-size: 25px;
+	align-items: center;
+}
+.attendance button {
+    font-family: 'LeferiPoint-BlackA'; 
+}
+.attendance_button{
+	 display: flex;
+     justify-content: center;
+     align-items: center;
+}
+#check_in_button{
+	border: none;
+	width: 13.5vw;
+	height: 4vh;
+	margin-right: 15px;
+	border-radius: 8px;
+	background-color: #C3C3C3;
+	transition: background-color 0.3s;
+	cursor: pointer;
+}
+#check_in_button:hover{
+	background-color: #eee;
+}
+#check_out_button{
+	border: none;
+	width: 13.5vw;
+	height: 4vh;
+	margin-left: 15px;
+	border-radius: 8px;
+	background-color: #C3C3C3;
+	transition: background-color 0.3s;
+	cursor: pointer;
+}
+#check_out_button:hover{
+	background-color: #eee;
+}
+#attendance_check {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: black;
+    background-color: #C3C3C3;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    width: 26.5vw;
+    height: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#attendance_check:hover {
+    background-color: #eee;
 }
