@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,8 @@ public class DepartmentDto {
     private String departmentName;
     private Long departmentHigh;
 
+    private List<MemberDto> members;
+    
     public Department toEntity() { 
         return Department.builder()
             .departmentNo(department_no)

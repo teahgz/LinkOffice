@@ -3,6 +3,8 @@ package com.fiveLink.linkOffice.vacation.controller;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacation.domain.VacationDto;
+import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,12 @@ public class VacationViewController {
 
 
     private final MemberService memberService;
+    private final VacationService vacationService;
 
     @Autowired
-    public VacationViewController(MemberService memberService) {
+    public VacationViewController(MemberService memberService, VacationService vacationService) {
         this.memberService = memberService;
+        this.vacationService = vacationService;
     }
 
     //휴가 생성 페이지 이동
@@ -34,8 +38,9 @@ public class VacationViewController {
 
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
+        List<VacationDto> vacationList = vacationService.selectVacationList();
         model.addAttribute("memberdto", memberdto);
-
+        model.addAttribute("vacationList", vacationList);
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";

@@ -1,5 +1,6 @@
 document.querySelectorAll('#nav_wrap > ul > li > a').forEach(anchor => {
     anchor.addEventListener('click', function(event) {
+        event.preventDefault(); // 링크 클릭 시 기본 동작 방지 (페이지 이동 방지)
 
         const dropdown = this.nextElementSibling;
         const parentLi = this.parentElement;
@@ -28,6 +29,7 @@ document.querySelectorAll('#nav_wrap > ul > li > a').forEach(anchor => {
 
         function handleChildClick(event) {
             event.stopPropagation();
+            event.preventDefault(); // 자식 링크 클릭 시 기본 동작 방지 (페이지 이동 방지)
             const childDropdown = this.nextElementSibling;
             const childLi = this.parentElement;
             const isChildDropdownOpen = childDropdown && childDropdown.style.display === 'block';
