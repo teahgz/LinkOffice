@@ -98,7 +98,8 @@ function addType() {
     inputGroup.id = `type${typeCount}`;
 
     const labelName = document.createElement("label");
-    labelName.textContent = `휴가 종류 이름 `;
+    labelName.textContent = `종류 `;
+
     inputGroup.appendChild(labelName);
 
     const inputName = document.createElement("input");
@@ -107,7 +108,7 @@ function addType() {
     inputGroup.appendChild(inputName);
 
     const labelDesc = document.createElement("label");
-    labelDesc.textContent = `휴가 설명 `;
+    labelDesc.textContent = `범위 수 `;
     inputGroup.appendChild(labelDesc);
 
     const inputDesc = document.createElement("input");
@@ -137,8 +138,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const payload = new FormData(vacationTypeForm);
         const memberNo = document.getElementById('memberNo').value; // 멤버 번호 가져오기
-    console.log(memberNo);
-        fetch('/vacation/addVacationTypeAction', {
+
+        fetch('/vacation/addTypeVacation', {
             method: 'POST',
             body: payload
         })
