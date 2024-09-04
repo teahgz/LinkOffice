@@ -114,4 +114,7 @@ public class MemberService {
             .departmentNo(member.getDepartment() != null ? member.getDepartment().getDepartmentNo() : null)
             .build();
     }
+    
+    // [전주영] 전자결재 서명 update
+    
 }

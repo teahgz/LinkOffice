@@ -5,20 +5,6 @@ h2 {
 	margin-bottom: 20px;
 }
 
-.info_icon {
-	display: inline-block;
-	width: 18px;
-	height: 18px;
-	background-color: #007bff;
-	color: white;
-	border-radius: 50%;
-	text-align: center;
-	line-height: 18px;
-	font-style: normal;
-	font-size: 12px;
-	margin-left: 5px;
-}
-
 .signature_form {
 	background-color: #f8f8f8;
 	border-radius: 4px;
