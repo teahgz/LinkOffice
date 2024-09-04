@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.attendance.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,5 +33,16 @@ public class AttendanceService {
 			attendanceDtoList.add(attendanceDto);
 		}
 		return attendanceDtoList;
+	}
+	
+	public int attendanceCheckIn(Attendance attendance) {
+		int result = -1;
+		try {
+			attendanceRepository.save(attendance);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

@@ -46,8 +46,19 @@
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 	            	</span>
 	            </a>
-            	<div class="attendance">	            
+            	<div class="attendance">
                 	<span id="clock" th:text="${time}"></span> 
+                	<div class="attendance_button">
+                		<form id="attendanceForm" action="/attendance/checkIn" method="post">
+		            		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>	            
+                			<input type="hidden" id="attendance_memberNo" th:value="${member.member_no}">
+                			<button type="submit" id="check_in_button">출근</button>
+	                		<button type="submit" id="check_out_button">퇴근</button>
+                		</form>
+                	</div>
+                	<a id="attendance_check" th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">
+					    근태 조회
+					</a>   	
 	            </div>
             </div>
             <div class="main_item_box custom-height-4">
