@@ -20,6 +20,7 @@ public class MemberViewController {
 	public MemberViewController(MemberService memberService) {
 		this.memberService = memberService;
 	}
+	
 	// 내정보 페이지
 	@GetMapping("/employee/member/mypage/{member_no}")
 	public String myPage(@PathVariable("member_no") Long memberNo, Model model) {
@@ -36,7 +37,7 @@ public class MemberViewController {
 	}
 	
 	// 정보 수정 페이지
-	@GetMapping("/employee/member/digitalnameUpdate/{member_no}")
+	@GetMapping("/employee/member/digitalname/{member_no}")
 	public String digitalname(@PathVariable("member_no") Long memberNo, Model model) {
 	    List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
 	    model.addAttribute("memberdto", memberDtoList);

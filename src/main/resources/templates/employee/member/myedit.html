@@ -9,9 +9,10 @@
     <section>
         <div class="my_profile">
             <h1>정보 수정</h1>
-            <form action="#" method="post" enctype="multipart/form-data">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-				<div class="profile_card" th:each="member : ${memberdto}">
+            <form id="myeditUpdateFrm" enctype="multipart/form-data"  th:each="member : ${memberdto}">
+                <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
+				<input type="hidden" name="member_no" th:value="${member.member_no}" />
+				<div class="profile_card">
 					<div class="profile_header">
 						<div class="profile_header_left">
 							<img id="profileImg" th:src="${member.member_ori_profile_img != null ? member.member_ori_profile_img : '/img/user_profile.jpg'}" class="profile_img" alt="사원 사진"> 

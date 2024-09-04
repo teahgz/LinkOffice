@@ -37,6 +37,29 @@ public class HomeController {
 		
 	}
 
+	@GetMapping({ "", "/" })
+	public String loginPage(HttpServletRequest request, Model model) {
+		String errorMessage = (String) request.getSession().getAttribute("error");
+		if (errorMessage != null) {
+			model.addAttribute("error", true);
+			model.addAttribute("exception", errorMessage);
+			request.getSession().removeAttribute("error");
+		} else {
+			model.addAttribute("error", false);
+		}
+		return "login";
+	}
+
+	@GetMapping("/pwchange")
+	public String pwchangePage() {
+		return "pwchange";
+	}
+
+	@GetMapping("/error")
+	public String error() {
+		return "error";
+	}
+	  
 	@GetMapping("/home")
 	public String home(HttpServletRequest request, Model model) {
 		// [전주영] 세션 가져오기, 세션 이용해서 memberdto 출력
@@ -78,29 +101,7 @@ public class HomeController {
 	    return "home";
 
 	}
-	  @GetMapping({"","/"})
-	    public String loginPage(HttpServletRequest request, Model model) {
-	        String errorMessage = (String) request.getSession().getAttribute("error");
-	        if (errorMessage != null) {
-	            model.addAttribute("error", true);
-	            model.addAttribute("exception", errorMessage);
-	            request.getSession().removeAttribute("error");
-	        } else {
-	            model.addAttribute("error", false);
-	        }
-	        return "login";
-	    }
 
-
-	@GetMapping("/pwchange")
-	public String pwchangePage() {
-		return "pwchange";
-	}
-
-	@GetMapping("/error")
-	public String error() {
-		return "error";
-	}
 
 
 }
