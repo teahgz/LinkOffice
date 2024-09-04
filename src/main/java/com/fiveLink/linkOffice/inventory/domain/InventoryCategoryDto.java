@@ -1,4 +1,4 @@
-package com.fiveLink.linkOffice.inventory.category.domain;
+package com.fiveLink.linkOffice.inventory.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

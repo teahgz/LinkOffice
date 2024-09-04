@@ -1,42 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>비품 목록</title>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{include/layout}">
+<meta charset="UTF-8">
+<th:block layout:fragment="content">
+	<link th:href="@{/css/admin/inventory/list.css}" rel="stylesheet" type="text/css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <style>
-        td.details-control {
-            background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
-            cursor: pointer;
-        }
-
-        tr.shown td.details-control {
-            background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
-        }
-
-        /* 하위 테이블 스타일 */
-        .child-row td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-
-        /* DataTables 스타일을 동일하게 적용 */
-        table.dataTable tbody th, table.dataTable tbody td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #ddd;
-        }
-    </style>
-</head>
+<section>
 <body>
+	<div style="width: 80%; margin: 0 auto;">
     <h1>비품 목록</h1>
     <br>
-    <table id="example" class="display" style="width: 100%">
+    <select id="departmentSelect">
+    <option value="">부서선택</option>
+    <option th:each="department : ${departments}" 
+        th:value="${department.department_name}" 
+        th:text="${department.department_name}">
+</option>
+	</select>
+    <table id="example" class="display">
         <thead>
             <tr>
                 <th></th>
@@ -60,36 +43,33 @@
             </tr>
         </tbody>
     </table>
-
+    </div>
+   </section>
     <script>
     function format(inventory_category_no) {
-        var detailsHtml = '<div class="child-row"><table class="display" style="width:100%;">' +
-                          '<thead>' +
-                          '<tr>' +
-                          '<th>번호</th>' +
-                          '<th>제품명</th>' +
-                          '<th>가격</th>' +
-                          '<th>수량</th>' +
-                          '<th>위치</th>' +
-                          '<th>구매 날짜</th>' +
-                          '</tr>' +
-                          '</thead><tbody>';
+        var detailsHtml = '<tr class="child-row">';
 
         fetchInventoryByCategory(inventory_category_no, function(data) {
-            data.forEach(function(item) {
-                detailsHtml += '<tr>';
-                detailsHtml += '<td>' + item.inventory_no + '</td>';
-                detailsHtml += '<td>' + item.inventory_name + '</td>';
-                detailsHtml += '<td>' + item.inventory_price + '</td>';
-                detailsHtml += '<td>' + item.inventory_quantity + '</td>';
-                detailsHtml += '<td>' + item.inventory_location + '</td>';
-                detailsHtml += '<td>' + item.inventory_purchase_date + '</td>';
+            data.forEach(function(item, index) {
+                detailsHtml += '<td></td>'; 
+                detailsHtml += '<td>' + (index + 1) + '</td>'; 
+                detailsHtml += '<td>' + item.inventory_name + '</td>'; 
+                detailsHtml += '<td>' + item.inventory_price + '</td>'; 
+                detailsHtml += '<td>' + item.inventory_quantity + '</td>'; 
+                detailsHtml += '<td>' + item.inventory_location + '</td>'; 
+                detailsHtml += '<td>' + item.inventory_purchase_date + '</td>'; 
                 detailsHtml += '</tr>';
             });
-            detailsHtml += '</tbody></table></div>';
 
             var row = $('#example').DataTable().row($('tr[data-inventory_no="' + inventory_category_no + '"]'));
-            row.child(detailsHtml).show();
+            row.child('<table class="display child-table" style="width:100%">' + detailsHtml + '</table>').show();
+
+            // 하위 테이블의 너비를 상위 테이블과 맞춤
+            var childTable = row.child().find('.child-table');
+            var parentCols = row.nodes().to$().children('td');
+            childTable.find('td').each(function(i) {
+                $(this).css('width', parentCols.eq(i).css('width'));
+            });
         });
 
         return detailsHtml;
@@ -118,7 +98,7 @@
             "paging": true,
             "searching": true,
             "ordering": true,
-            "info": true,
+            "info": false,
             "autoWidth": false
         });
 
@@ -131,11 +111,16 @@
                 row.child.hide();
                 tr.removeClass('shown');
             } else {
-                row.child(format(inventory_category_no)).show();
+                format(inventory_category_no);
                 tr.addClass('shown');
             }
         });
     });
     </script>
 </body>
+	<!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+</th:block>
 </html>

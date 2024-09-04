@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.member.domain.Member;
 
 import jakarta.persistence.Column;
@@ -58,4 +59,6 @@ public class Department {
 	 @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
 	 private List<Member> members;
 	 
+	 @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+	    private List<Inventory> inventory;
 }
