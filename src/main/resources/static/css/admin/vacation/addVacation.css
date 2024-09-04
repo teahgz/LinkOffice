@@ -65,10 +65,11 @@
 }
 
 .input-group {
-  display: flex;
+   display: flex;
   align-items: center;
-  width: 18%;
+  width: 18%; /* 개별 아이템의 크기를 조정하여 한 줄에 5개씩 들어가도록 설정 */
   box-sizing: border-box;
+  margin-bottom: 1vw;
 }
 
 .input-group label {
@@ -100,7 +101,9 @@
     justify-content: space-between;
     align-items: center;
 }
-.vacationTypeFormContainer {
+
+.vacationTypeFormContainer,
+.vacationFormContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;

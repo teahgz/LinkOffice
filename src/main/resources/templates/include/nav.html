@@ -85,7 +85,7 @@
 				<li>
 					<a href="#">문서함</a>
 					<div class="dropdown">
-						<ul>
+						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/document/personal}">개인 문서함</a></li>
 							<li><a th:href="@{/employee/document/department}">부서 문서함</a></li>
 							<li><a th:href="@{/employee/document/company}">사내 문서함</a></li>
@@ -160,6 +160,7 @@
 
 
 	</nav>
+	<script th:src="@{/js/include/nav.js}"></script>
 </th:block>
 
 </html>

@@ -5,16 +5,16 @@
       layout:decorate="~{include/layout}">
 <head>
     <meta charset="UTF-8">
-    <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
-    <!-- SweetAlert2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
 <th:block layout:fragment="content">
-
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
     <section th:each = "member : ${memberdto}">
 
         <div class="addVacation_content">
@@ -45,12 +45,10 @@
 
             <div id="vacationFormContainer">
                 <!-- 여기에 동적으로 입력폼이 추가됩니다 -->
-                <div th:each="vacation : ${vacationList}">
-                    <div class="input-group" th:id="'year' + ${vacation.vacation_year}">
+                    <div class="input-group" th:each="vacation : ${vacationList}">
                         <label th:text="${vacation.vacation_year} + '년차 '">1년차 </label>
                         <input type="number" th:name="'vacationData[' + ${vacation.vacation_year} + ']'" th:value="${vacation.vacation_annual_leave}" min="0"/>
                     </div>
-                </div>
             </div>
             <!-- 분리되는 부분 -->
             <div>
@@ -94,6 +92,7 @@
 
         </div>
     </section>
+    <script th:src="@{/js/admin/vacation/addVacation.js}"></script>
 </th:block>
 </body>
 </html>
