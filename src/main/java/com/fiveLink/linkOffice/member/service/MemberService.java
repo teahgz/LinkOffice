@@ -10,7 +10,7 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class MemberService {
@@ -116,5 +116,27 @@ public class MemberService {
     }
     
     // [전주영] 전자결재 서명 update
+    public MemberDto selectMemberOne(Long memberNo) {
+    	Member member = memberRepository.findByMemberNo(memberNo);
+    	MemberDto dto = new MemberDto().toDto(member);
+    	return dto;
+    }
     
+    @Transactional
+    public Member updateMemberDigital(MemberDto dto) {
+    	MemberDto temp = selectMemberOne(dto.getMember_no());
+    	if(dto.getMember_ori_digital_img() != null && "".equals(dto.getMember_ori_digital_img()) == false) {
+    		temp.setMember_ori_digital_img(dto.getMember_ori_digital_img());
+    		temp.setMember_new_digital_img(dto.getMember_new_digital_img());
+    	} 
+    	System.out.println("memberService"+temp);
+    	
+    	Member member = temp.toEntity();
+    	System.out.println(member);
+    	
+    	Member result = memberRepository.save(member);
+    	System.out.println("servie단결과"+result);
+    	return result;
+    	
+    }
 }

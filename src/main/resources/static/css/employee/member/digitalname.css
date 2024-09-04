@@ -5,13 +5,13 @@ h2 {
 	margin-bottom: 20px;
 }
 
-.signature_form {
+.digital_form {
 	background-color: #f8f8f8;
 	border-radius: 4px;
 	padding: 20px;
 }
 
-.signature_box {
+.digital_box {
 	width: 300px;
 	height: 200px;
 	border: 3px double #ccc;

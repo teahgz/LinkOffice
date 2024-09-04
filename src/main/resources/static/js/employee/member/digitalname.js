@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modifyBtn = document.getElementById('modifyBtn');
     const saveBtn = document.getElementById('saveBtn');
     const clearBtn = document.getElementById('clearBtn');
-    const signatureBox = document.querySelector('.signature_box');
+    const digitalBox = document.querySelector('.digital_box');
     const canvas = document.getElementById('canvas');
     const ctx = canvas ? canvas.getContext('2d') : null;
     let painting = false;
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modifyBtn.addEventListener('click', function () {
             modifyBtn.style.display = 'none';
             if (saveBtn) saveBtn.style.display = 'inline-block';
-            signatureBox.style.display = 'block';
+            digitalBox.style.display = 'block';
             const currentSignature = document.getElementById('currentSignature');
             if (currentSignature) {
                 currentSignature.style.display = 'none';
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     } else {
         if (canvas) {
-            signatureBox.style.display = 'block';
+            digitalBox.style.display = 'block';
             canvas.style.display = 'block';
             setupCanvas();
         }
@@ -62,10 +62,53 @@ document.addEventListener('DOMContentLoaded', function () {
             clearCanvas();
         });
     }
-
+	
     function clearCanvas() {
         if (ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
+    
+// form 제출
+  const form = document.getElementById('digitalFrm');
+  form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const payload = new FormData(form);
+      const memberNo = form.member_no.value;
+      const csrfToken = document.getElementById('csrf_token').value;
+      const canvas = document.getElementById('canvas');
+      const signatureDataUrl = canvas.toDataURL('image/png');
+
+      payload.append('signatureData', signatureDataUrl);
+
+      fetch('/employee/member/digitalname/' + memberNo, {
+          method: 'post',
+          headers: {
+              'X-CSRF-TOKEN': csrfToken
+          },
+          body: payload
+      })
+      .then(response => response.json())
+      .then(data => {
+		if(data.res_code == '200'){
+			Swal.fire({
+				icon : 'success',
+				title : '서명 등록',
+				text : data.res_msg,
+				confirmButtonText : '닫기'				
+			}).then((result)=>{
+				location.href="/employee/member/digitalnameUpdate/"+ memberNo;
+			})
+		}else{
+			Swal.fire({
+				icon : 'error',
+				title : '서명 등록',
+				text : data.res_msg,
+				confirmButtonText : '닫기'				
+			})
+		}
+      })
+  });
+
 });
+

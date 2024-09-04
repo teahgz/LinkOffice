@@ -5,14 +5,13 @@
 <meta charset="UTF-8">
 <th:block layout:fragment="content">
   <link th:href="@{/css/employee/member/digitalname.css}" rel="stylesheet" type="text/css">
-  <section class="signature-registration" th:each="member : ${memberdto}">
+  <section class="signature-registration">
     <h2>전자 결재 서명 등록/수정</h2>
-    <form class="signature_form">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <form class="digital_form" id="digitalFrm" th:each="member : ${memberdto}">
+      <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
       <input type="hidden" name="member_no" th:value="${member.member_no}" />
       <p th:text="${member.member_name} + '님의 서명을 등록/수정해주세요'"></p>
-
-      <div class="signature_box">
+      <div class="digital_box">
         <img th:if="${member.member_ori_digital_img != null}" th:src="${member.member_ori_digital_img}" alt="현재 서명" id="currentSignature">
         <canvas th:if="${member.member_ori_digital_img == null}" id="canvas" width="300" height="150"></canvas>
       </div>
