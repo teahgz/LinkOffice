@@ -117,3 +117,9 @@ button:active {
 .button_link:active {
     transform: scale(0.98);
 }
+
+.error_message{
+	font-size: 2vh;
+	color: #ff0000;
+	text-align: center;
+}

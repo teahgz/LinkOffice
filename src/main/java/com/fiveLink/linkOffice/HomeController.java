@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
@@ -77,11 +78,19 @@ public class HomeController {
 	    return "home";
 
 	}
+	  @GetMapping({"","/"})
+	    public String loginPage(HttpServletRequest request, Model model) {
+	        String errorMessage = (String) request.getSession().getAttribute("error");
+	        if (errorMessage != null) {
+	            model.addAttribute("error", true);
+	            model.addAttribute("exception", errorMessage);
+	            request.getSession().removeAttribute("error");
+	        } else {
+	            model.addAttribute("error", false);
+	        }
+	        return "login";
+	    }
 
-	@GetMapping({"","/"})
-	public String loginPage() {
-		return "login";
-	}
 
 	@GetMapping("/pwchange")
 	public String pwchangePage() {
