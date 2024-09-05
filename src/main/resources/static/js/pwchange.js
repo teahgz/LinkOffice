@@ -1,7 +1,7 @@
 // 주민등록번호 
 
-const frontInput = document.getElementById('registration-number-front');
-const backInput = document.getElementById('registration-number-back');
+const frontInput = document.getElementById('registration_number_front');
+const backInput = document.getElementById('registration_number_back');
 
 frontInput.addEventListener('input', function() {
 	if (frontInput.value.length === 6) {

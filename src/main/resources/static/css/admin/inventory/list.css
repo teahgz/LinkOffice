@@ -1,6 +1,0 @@
-        /* DataTables 스타일을 동일하게 적용 */
-        table.dataTable tbody th, table.dataTable tbody td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #ddd;
-        }
-       

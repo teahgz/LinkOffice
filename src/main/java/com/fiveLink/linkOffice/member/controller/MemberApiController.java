@@ -66,9 +66,26 @@ public class MemberApiController {
 	    return response;
 	}
 	
+	// 비밀번호 확인
+	@ResponseBody
+	@PostMapping("/myedit/pwVerify/{member_no}")
+	public Map<String,String> pwVerify(@PathVariable("member_no") Long memberNo,@RequestBody String pwVerify){
+		 Map<String, String> response = new HashMap<>();
+		    response.put("res_code", "404");
+		    
+		    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
+		    System.out.println(memberdto.getMember_pw());
+		    System.out.println("확인"+pwVerify);
+		 if(memberdto.getMember_pw().equals(pwVerify)) {
+			 response.put("res_code", "200");
+		 }
+		 return response;
+	}
+	
+	// 정보수정 
 	@ResponseBody
 	@PostMapping("/employee/member/myedit/{member_no}")
-	public Map<String,String> profileUpdate(  @PathVariable("member_no") Long memberNo,
+	public Map<String,String> profileUpdate(@PathVariable("member_no") Long memberNo,
             @RequestParam(name = "file", required = false) MultipartFile file, 
             @RequestParam(name = "roadAddress") String roadAddress,  
             @RequestParam(name = "detailAddress") String detailAddress, 
@@ -91,6 +108,12 @@ public class MemberApiController {
 		    	if(saveFileName != null) {
 		    		memberdto.setMember_ori_profile_img(file.getOriginalFilename());
 		    		memberdto.setMember_new_profile_img(saveFileName);
+		    		
+		    		if(memberFileService.profileDelete(memberNo) > 0) {
+		    			response.put("res_msg", "기존 파일이 삭제 되었습니다.");
+		    		}else {
+		    			response.put("res_msg", "기존 파일이 삭제 중 오류가 발생하었습니다.");
+		    		}
 		    	} else {
 		    		response.put("res_msg", "파일 업로드 실패");
 		    	}

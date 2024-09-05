@@ -78,15 +78,13 @@
 
 }
 
-
-
 .divider {
     width: 100%;
     border: 0;
     border-top: 1px solid #ddd; 
 }
 
-.profile-details.paired {
+.profile_details.paired {
     display: grid; 
     grid-template-columns: 1fr 1fr; 
     gap: 30px 40px; 
@@ -94,7 +92,7 @@
     margin-left: 220px; 
 }
 
-.profile-details.paired li {
+.profile_details.paired li {
     display: flex; 
     justify-content: flex-start; 
     align-items: center; 

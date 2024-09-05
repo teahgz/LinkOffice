@@ -117,8 +117,21 @@ public class MemberService {
             throw new RuntimeException("로그인한 사용자 정보를 찾을 수 없습니다.");
         }
     }
-    
-    // [전주영] 전자결재 서명 dto 조회
+     
+	// [서혜원] 직위 번호별 사원 조회
+	public List<MemberDto> getMembersByPositionNo(Long positionNo) {
+	    List<Member> members = memberRepository.findByPositionNo(positionNo);
+	    return members.stream()
+	        .map(member -> MemberDto.builder()
+	            .memberId(member.getMemberNo())
+	            .memberName(member.getMemberName())
+	            .positionNo(member.getPosition().getPositionNo()) 
+	            .build()
+	        )
+	        .collect(Collectors.toList());
+	}
+ 
+    // [전주영] 전자결재 서명 dto 조회 
     public MemberDto selectMemberOne(Long memberNo) {
     	Member member = memberRepository.findByMemberNo(memberNo);
     	MemberDto dto = new MemberDto().toDto(member);

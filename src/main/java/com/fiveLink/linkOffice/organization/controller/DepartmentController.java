@@ -1,43 +1,39 @@
 package com.fiveLink.linkOffice.organization.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 @Controller
 public class DepartmentController {
 
-    @Autowired
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
+    private final MemberService memberService;
 
     @Autowired
-    private MemberService memberService;
+    public DepartmentController(DepartmentService departmentService, MemberService memberService) {
+        this.departmentService = departmentService;
+        this.memberService = memberService;
+    }
 
     @GetMapping("/department")
     public String listDepartments(Model model, @RequestParam(value = "id", required = false) Long id) {
         List<DepartmentDto> departments = departmentService.getAllDepartments();
-         
         Long memberNo = memberService.getLoggedInMemberNo();
-        
-        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-        model.addAttribute("memberdto", memberdto);
+        List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
+
+        model.addAttribute("memberdto", memberDto);
         model.addAttribute("departments", departments);
         model.addAttribute("topLevelDepartments", departmentService.getTopLevelDepartments());
 
@@ -53,84 +49,86 @@ public class DepartmentController {
 
     @PostMapping("/department/add")
     @ResponseBody
-    public Map<String, Object> addDepartment(@RequestBody Map<String, Object> payload) {
-        Map<String, Object> response = new HashMap<>();
-        
+    public Map<String, String> addDepartment(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "부서 추가 중 오류가 발생했습니다.");
+
         try {
             String departmentName = (String) payload.get("departmentName");
             Long departmentHigh = Long.valueOf(payload.get("departmentHigh").toString());
-             
+
             departmentService.addDepartment(departmentName, departmentHigh);
-            response.put("success", true);
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "부서가 성공적으로 추가되었습니다.");
         } catch (NumberFormatException e) {
-            response.put("success", false);
-            response.put("error", "상위 부서를 찾을 수 없습니다." + e.getMessage());
+            resultMap.put("res_msg", "상위 부서를 찾을 수 없습니다. " + e.getMessage());
         } catch (Exception e) {
-            response.put("success", false);
-            response.put("error", e.getMessage());
+            resultMap.put("res_msg", e.getMessage());
         }
-        
-        return response;
+        return resultMap;
     }
 
     @GetMapping("/department/get")
     @ResponseBody
     public Map<String, Object> getDepartment(@RequestParam("id") Long id) {
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
         try {
             Optional<DepartmentDto> departmentDtoOptional = departmentService.getDepartmentById(id);
             if (departmentDtoOptional.isPresent()) {
-                response.put("success", true);
-                response.put("department", departmentDtoOptional.get());
+                resultMap.put("res_code", "200");
+                resultMap.put("department", departmentDtoOptional.get());
             } else {
-                response.put("success", false);
-                response.put("error", "부서를 찾을 수 없습니다.");
+                resultMap.put("res_code", "404");
+                resultMap.put("res_msg", "부서를 찾을 수 없습니다.");
             }
         } catch (Exception e) {
-            response.put("success", false);
-            response.put("error", "서버 오류: " + e.getMessage());
+            resultMap.put("res_code", "500");
+            resultMap.put("res_msg", "서버 오류: " + e.getMessage());
         }
-        return response;
+        return resultMap;
     }
 
     @PostMapping("/department/update")
     @ResponseBody
-    public Map<String, Object> updateDepartment(@RequestBody Map<String, Object> payload) {
-        Map<String, Object> response = new HashMap<>();
-        
+    public Map<String, String> updateDepartment(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "부서 업데이트 중 오류가 발생했습니다.");
+
         try {
             Long departmentId = Long.valueOf(payload.get("departmentId").toString());
             String departmentName = (String) payload.get("departmentName");
             Long departmentHigh = Long.valueOf(payload.get("departmentHigh").toString());
 
             departmentService.updateDepartment(departmentId, departmentName, departmentHigh);
-            response.put("success", true);
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "부서가 성공적으로 업데이트되었습니다.");
         } catch (Exception e) {
-            response.put("success", false);
-            response.put("error", e.getMessage());
+            resultMap.put("res_msg", e.getMessage());
         }
-        
-        return response;
+        return resultMap;
     }
-    
+
     @GetMapping("/department/member-count")
+    @ResponseBody
     public long getMemberCountByDepartmentNo(@RequestParam Long departmentNo) {
         return departmentService.getMemberCountByDepartmentNo(departmentNo);
     }
-    
+
     @PostMapping("/department/delete")
     @ResponseBody
-    public Map<String, Object> deleteDepartment(@RequestParam("id") Long departmentId) {
-        Map<String, Object> response = new HashMap<>();
-        
+    public Map<String, String> deleteDepartment(@RequestParam("id") Long departmentId) {
+        Map<String, String> resultMap = new HashMap<>();
         boolean success = departmentService.deleteDepartment(departmentId);
-        if (success) {
-            response.put("success", true);
-        } else {
-            response.put("success", false);
-            response.put("error", "부서에 소속 사원이 존재하여 삭제가 불가능합니다.");
-        }
         
-        return response;
+        if (success) {
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "부서가 성공적으로 삭제되었습니다.");
+        } else {
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "부서에 소속 사원이 존재하여 삭제가 불가능합니다.");
+        }
+        return resultMap;
     }
 }
