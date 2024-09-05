@@ -80,15 +80,17 @@ public class MemberApiController {
 		    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
 		    
 		    String newAdr = roadAddress + detailAddress;
-		    memberdto.setMember_address(newAdr);
-		    
-		    memberdto.setMember_pw(newPassword);
+		    if(!newAdr.isEmpty()) {
+		    	memberdto.setMember_address(newAdr);
+		    }
+		    if(!newPassword.isEmpty()) {
+		    	memberdto.setMember_pw(newPassword);
+		    }
 		    if(file != null && "".equals(file.getOriginalFilename()) == false) {
 		    	String saveFileName = memberFileService.uploadProfile(file);
 		    	if(saveFileName != null) {
 		    		memberdto.setMember_ori_profile_img(file.getOriginalFilename());
 		    		memberdto.setMember_new_profile_img(saveFileName);
-		    		
 		    	} else {
 		    		response.put("res_msg", "파일 업로드 실패");
 		    	}

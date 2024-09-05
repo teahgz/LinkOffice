@@ -9,11 +9,13 @@ h2 {
 	background-color: #f8f8f8;
 	border-radius: 4px;
 	padding: 20px;
+	width: 800px;
+	
 }
 
 .digital_box {
-  width: 600px; /* 크기 조정 */
-  height: 350px; /* 크기 조정 */
+  width: 600px; 
+  height: 350px; 
   border: 3px double #ccc;
   margin: 20px auto;
   display: flex;
@@ -24,7 +26,7 @@ h2 {
 #currentSignature {
   max-width: 100%;
   max-height: 100%;
-  display: block; /* 이미지를 블록으로 설정하여 부모 컨테이너의 크기에 맞게 조정 */
+  display: block;
 }
 
 #canvas {

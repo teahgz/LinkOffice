@@ -124,7 +124,7 @@ form.addEventListener('submit', (e) => {
                 text: data.res_msg,
                 confirmButtonText: '닫기'
             }).then((result) => {
-                alert("성공");
+                location.href = "/employee/member/myedit/" + memberNo;
             });
         } else {
             Swal.fire({

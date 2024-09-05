@@ -144,9 +144,10 @@ public class MemberService {
     @Transactional
     public Member updateMemberProfile(MemberDto dto) {
     	MemberDto temp = selectMemberOne(dto.getMember_no());
+    	System.out.println("memberService"+temp);
     	
     	Member member = dto.toEntity();
-    	
+    	System.out.println(dto);
     	Member result = memberRepository.save(member);
     	
     	return result;

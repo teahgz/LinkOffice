@@ -16,7 +16,7 @@
 .profile_card {
 	background-color: #f8f9fa;
 	border-radius: 12px;
-	max-width: 800px;
+	max-width: 900px;
 	width: 100%;
 	min-height: 400px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -42,7 +42,6 @@
 	width: 150px;
 	height: 150px;
 	border-radius: 50%;
-	background-color: #ddd;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -59,7 +58,6 @@
 .file_info {
     color: red;
  	font-size: 0.7rem;
- 	margin-left: 20px;
 }
 
 .btn_upload {
@@ -119,17 +117,18 @@
 	padding: 0;
 	margin: 0;
 	list-style: none;
-	margin-left: 275px;
+	margin-left: 290px;
 	margin-top: 20px;
 }
 
 .profile_detail_address li {
-	width: 100%;
+	width: 87%;
 }
 
 .profile_detail_address label {
 	margin-right: 20px;
-	margin-bottom: 5px; 
+	margin-bottom: 5px;
+	font-weight: bold;
 }
 
 .input_address {
@@ -167,7 +166,6 @@
 #pwShow {
     display: none;
 }
-
 
 .form_buttons {
 	display: flex;
