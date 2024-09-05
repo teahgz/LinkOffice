@@ -11,7 +11,7 @@
             <div class="profile_card">
                 <div class="profile-header">
                     <div class="profile_img">
-                        <img th:src="${member.member_ori_profile_img != null ? member.member_ori_profile_img : '/img/user_profile.jpg'}" class="user_photo" alt="User Profile">
+					<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" id="currentSignature">
                     </div>
                     <ul class="profile-details" >
                         <li>
@@ -54,7 +54,7 @@
                         <strong>내선번호</strong>
                         <span th:text="${member.member_internal}"></span>
                     </li>
-                    <li>
+                    <li id="address">
                         <strong>주소</strong>
                         <span th:text="${member.member_address}"></span>
                     </li>

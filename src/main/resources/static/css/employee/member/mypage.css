@@ -41,7 +41,6 @@
     width: 150px; 
     height: 150px; 
     border-radius: 50%;
-    background-color: #ddd;
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -69,6 +68,17 @@
     align-items: center; 
     gap: 30px;
 }
+
+#address{
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    gap: 30px;
+    width: 280px;
+
+}
+
+
 
 .divider {
     width: 100%;
