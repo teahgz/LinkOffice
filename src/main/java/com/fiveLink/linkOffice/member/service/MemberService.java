@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.member.domain.Member;
@@ -17,12 +18,23 @@ import jakarta.transaction.Transactional;
 public class MemberService {
 	
 	private final MemberRepository memberRepository;
+	private final PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	public MemberService(MemberRepository memberRepository) {
+	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
 		this.memberRepository = memberRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
-	
+	// 멤버 조회 
+	  public List<MemberDto> getAllMembers() {
+	        List<Member> members = memberRepository.findAll();
+	        List<MemberDto> memberDtos = members.stream()
+	            .map(MemberDto::toDto) // static 메소드 호출
+	            .collect(Collectors.toList());
+	        return memberDtos;
+	    }
+    
+	// 사번으로 조회 
 	public List<MemberDto> getMemberByNumber(String memberNumber) {  
 		 List<Object[]> results = memberRepository.findMemberNumber(memberNumber);
 		 return results.stream().map(result -> {
@@ -153,17 +165,20 @@ public class MemberService {
     	return result;
     } 
     
-    // 프로필 및 비밀번호, 주소 변경 
+    // 프로필 이미지 및 비밀번호, 주소 변경 
     @Transactional
     public Member updateMemberProfile(MemberDto dto) {
     	MemberDto temp = selectMemberOne(dto.getMember_no());
-    	System.out.println("memberService"+temp);
     	
     	Member member = dto.toEntity();
-    	System.out.println(dto);
     	Member result = memberRepository.save(member);
-    	
     	return result;
-    	
+    }
+    
+    // 사원 생성
+    public Member createMember(MemberDto dto) {
+    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
+    	Member member = dto.toEntity();
+    	return memberRepository.save(member);
     }
 }
