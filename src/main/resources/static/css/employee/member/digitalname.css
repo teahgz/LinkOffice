@@ -1,18 +1,35 @@
 @charset "UTF-8";
 
-h2 {
-	color: #333;
+h1 {
+	font-size: 2rem;
 	margin-bottom: 20px;
+	width: auto;
+	align-self: flex-start;
+	margin-left: 100px;
+}
+
+#digital_name{
+ 	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .digital_form {
-	background-color: #f8f8f8;
-	border-radius: 4px;
-	padding: 20px;
-	width: 800px;
-	
+	background-color: #f8f9fa;
+	border-radius: 12px;
+	max-width: 900px;
+	width: 100%;
+	min-height: 400px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding: 20px 20px 50px;
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	position: relative; 
 }
-
 .digital_box {
   width: 600px; 
   height: 350px; 
