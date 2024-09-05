@@ -12,6 +12,8 @@ import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.repository.InventoryRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class InventoryService {
 
@@ -85,5 +87,28 @@ public class InventoryService {
     
     public String findinventoryManager() {
         return inventoryRepository.findinventoryManager();
+    }
+    
+    @Transactional
+    public boolean createOrUpdateInventory(InventoryDto dto) {
+        // 수량을 제외한 동일한 비품이 있는지 찾기
+        Inventory existingInventory = inventoryRepository.findByCategoryAndNameAndLocation(
+            dto.getInventory_category_name(),
+            dto.getInventory_name(),
+            dto.getInventory_location(),
+            dto.getDepartment_name());
+
+        if (existingInventory != null) {
+            // 비품이 이미 존재할 경우 수량 업데이트
+            int newQuantity = existingInventory.getInventoryQuantity() + dto.getInventory_quantity();
+            existingInventory.setInventoryQuantity(newQuantity);
+            inventoryRepository.save(existingInventory);  // 업데이트 후 저장
+            return true;  // 업데이트되었음을 알림
+        } else {
+            // 비품이 존재하지 않을 경우 새로 생성
+            Inventory newInventory = dto.toEntity();
+            inventoryRepository.save(newInventory);  // 새로운 비품 저장
+            return false;  // 새로 추가되었음을 알림
+        }
     }
 }

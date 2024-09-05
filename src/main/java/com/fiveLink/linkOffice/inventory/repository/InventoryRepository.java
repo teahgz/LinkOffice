@@ -44,4 +44,14 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     
     @Query("SELECT m.memberName FROM Member m WHERE m.memberNo = 2")
     String findinventoryManager();
+    
+ // 수량을 제외한 동일한 비품이 있는지 확인
+    @Query("SELECT i FROM Inventory i WHERE i.inventoryCategory.inventoryCategoryName = :categoryName " +
+           "AND i.inventoryName = :name " +
+           "AND i.inventoryLocation = :location " +
+           "AND i.department.departmentName = :departmentName")
+    Inventory findByCategoryAndNameAndLocation(@Param("categoryName") String categoryName,
+                                               @Param("name") String name,
+                                               @Param("location") String location,
+                                               @Param("departmentName") String departmentName);
 }
