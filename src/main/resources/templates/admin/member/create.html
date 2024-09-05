@@ -1,63 +1,95 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{include/layout}"> 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<meta charset="UTF-8">
+<body>
     <th:block layout:fragment="content">
-        <link th:href="@{/css/admin/member/create.css}" rel="stylesheet" type="text/css">
-       <section>
-        <div class="create_member">
-            <h1>사원 등록</h1>
-            <div class="member_card">
-                <div class="member_header">
-                    <div class="profile_img">
-					<img alt="사원 사진" id="currentSignature">
+	    <link th:href="@{/css/admin/member/create.css}" rel="stylesheet" type="text/css">
+         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <section>
+            <div class="create_member">
+                <h1>사원 등록</h1>
+                <form id="createMemberFrm">
+                    <div class="member_card">
+                        <div class="member_header">
+                            <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
+                            <div class="profile_header_left">
+                                <div class="profile_img">
+                                    <img th:src="@{/img/user_profile.jpg}" alt="사원 사진" id="profileImg">
+                                </div>
+                                <label for="profile_image" class="btn_upload"><span>이미지 등록</span></label>
+                                <p class="file_info">이미지는 PNG 또는 JPG만 등록 가능합니다.</p>
+                                <input type="file" id="profile_image" name="profile_image" style="display: none;" onchange="previewImage(event)">
+                            </div>
+                            <ul class="profile_details">
+                                <li>
+                                    <strong>사원명</strong>
+                                    <input type="text">
+                                </li>
+                                <li>
+                                    <strong>주민번호</strong>
+                                    <div class="registration_number">
+                                        <input type="text" id="registration_number_front" name="registration_number_front" maxlength="6" required>
+                                        <span>-</span> 
+                                        <input type="text" id="registration_number_back" name="registration_number_back" maxlength="7" required>
+                                    </div>
+                                </li>
+                               <li>
+								    <strong>부서</strong>
+								    <select>
+								        <option value="0">부서명</option>
+								        <th:block th:each="department : ${departments}">
+								            <option th:value="${department.department_no}" th:text="${department.department_name}"></option>
+								        </th:block>
+								    </select>
+								</li>
+
+                                <li>
+                                    <strong>직위</strong>
+                                     <select>
+								        <option value="0">부서명</option>
+								        <th:block th:each="department : ${departments}">
+								            <option th:value="${department.department_no}" th:text="${department.department_name}"></option>
+								        </th:block>
+								    </select>
+                                </li>
+                                <li>
+                                    <strong>입사일</strong>
+                                    <input type="date">
+                                </li>
+								<li>
+								    <strong>전화번호</strong>
+								    <div class="mobile_number">
+								        <input type="text" id="mobile1" maxlength="3" value="010">
+								        <span>-</span>
+								        <input type="text" id="mobile2" maxlength="4">
+								        <span>-</span>
+								        <input type="text" id="mobile3" maxlength="4">
+								    </div>
+								</li>
+								<li>
+								    <strong>내선번호</strong>
+								    <div class="internal_number">
+								        <input type="text" id="internal1" value="02">
+								        <span>-</span>
+								        <input type="text" id="internal2">
+								        <span>-</span>
+								        <input type="text" id="internal3">
+								    </div>
+								</li>
+                            </ul>
+                        </div>
+
+                        <div class="form_buttons">
+                            <button type="submit" class="btn_create">등록</button>
+                            <button type="button" class="btn_cancel" onclick="window.history.back();">취소</button>
+                        </div>
                     </div>
-                    <ul class="profile-details" >
-                        <li>
-                            <strong>사번</strong>
-                            <input>
-                        </li>
-                        <li>
-                            <strong>사용자</strong>
-                            <input>
-                        </li>
-                        <li>
-                            <strong>주민번호 </strong>
-                            <input>
-                        </li>
-                    </ul>
-                </div>
-                <hr class="divider">
-                <ul class="profile-details paired">
-                    <li>
-                        <strong>부서</strong>
-                    </li>
-                    <li>
-                        <strong>직위</strong>
-                    </li>
-                    <li>
-                        <strong>입사일</strong>
-                        <input>
-                    </li>
-                    <li>
-                        <strong>퇴사일</strong>
-                        <span>-</span>
-                    </li>
-                    <li>
-                        <strong>전화번호</strong>
-                        <input>
-                    </li>
-                    <li>
-                        <strong>내선번호</strong>
-                        <input>
-                    </li>
-                    <li id="address">
-                        <strong>주소</strong>
-                    </li>
-                </ul>
+                </form>
             </div>
-        </div>
-    </section>
-        <script th:src="@{/js/#}"></script>
+        </section>
+        <script th:src="@{/js/admin/member/create.js}"></script>
     </th:block>
+</body>
 </html>
