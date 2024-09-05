@@ -6,7 +6,10 @@
 
     <!-- 멤버의 휴가 데이터를 가져오는 쿼리 -->
     <select id="selectVacationList" resultType="com.fiveLink.linkOffice.vacation.domain.VacationDto">
-        SELECT * FROM fl_vacation
+        SELECT vacation_annual_leave
+        FROM fl_vacation
     </select>
-
+    <select id="countVacation" resultType="int">
+        SELECT count(*) FROM fl_vacation
+    </select>
 </mapper>

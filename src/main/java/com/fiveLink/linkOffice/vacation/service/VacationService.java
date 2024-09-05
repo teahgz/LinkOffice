@@ -27,21 +27,17 @@ public class VacationService {
         this.vacationTypeRepository = vacationTypeRepository;
     }
 
-    public int addVacation(VacationDto dto){
+    public int addVacation(Vacation vacation) {
         int result = -1;
         try {
-            List<Vacation> vacations = dto.toEntities();
-            for (Vacation vacation : vacations) {
-                vacationRepository.save(vacation);
-            }
-
+            vacationRepository.save(vacation);
             result = 1;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         return result;
     }
+
     public int addTypeVacation(VacationTypeDto dto) {
         int result = -1;
         try {
@@ -61,6 +57,12 @@ public class VacationService {
 
     public List<VacationDto> selectVacationList(){
         return vacationMapper.selectVacationList();
+    }
+
+    public int countVacation() {
+        return vacationMapper.countVacation();
+
+
     }
 
 }
