@@ -59,3 +59,5 @@ function closeDropdowns() {
         li.classList.remove('active');
     });
 }
+
+// 정보수정 클릭 시 비밀번호 모달창 출력 
