@@ -1,28 +1,6 @@
-		td.details-control {
-            background: url('https://icons.getbootstrap.com/assets/icons/caret-down-fill.svg') no-repeat center center;
-            cursor: pointer;
-        }
-
-        tr.shown td.details-control {
-            background: url('https://icons.getbootstrap.com/assets/icons/caret-up-fill.svg') no-repeat center center;
-        }
-
-        /* 하위 테이블 스타일 */
-        .child-row td {
-        width: 100%;
-    	background-color: #f9f9f9;
-        	display: block !important;
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-
         /* DataTables 스타일을 동일하게 적용 */
         table.dataTable tbody th, table.dataTable tbody td {
             padding: 8px 10px;
             border-bottom: 1px solid #ddd;
         }
-        tr.shown + tr.child {
-    display: table-row !important;
-}
+       
