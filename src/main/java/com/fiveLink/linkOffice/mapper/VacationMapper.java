@@ -7,5 +7,6 @@ import java.util.List;
 @Mapper
 public interface VacationMapper {
     List<VacationDto> selectVacationList();
+    int countVacation();
 
 }

@@ -79,46 +79,41 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	}
    	// 퇴근 기능 
-    if(!checkOutButton.disabled){		
-	    document.getElementById('check_out_button').addEventListener('click', function() {
-			// submit이 자동으로 되지 않게 해줌 
-			event.preventDefault();
-			
-            var csrfToken = document.querySelector('input[name="_csrf"]').value;
-            var url = '/attendance/checkOut';
-            var jsonData = JSON.stringify({ memberNo: memberNo });
+    document.getElementById('check_out_button').addEventListener('click', function() {
+		// submit이 자동으로 되지 않게 해줌 
+		event.preventDefault();
+		
+        var csrfToken = document.querySelector('input[name="_csrf"]').value;
+        var url = '/attendance/checkOut';
+        var jsonData = JSON.stringify({ memberNo: memberNo });
 
-            // 버튼 비활성화 및 스타일 업데이트
-            checkOutButton.disabled = true;
-
-            // AJAX 요청 보내기
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: jsonData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.res_code === '200') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '퇴근 확인',
-                        text: data.res_msg,
-                        confirmButtonText: '확인'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '오류',
-                        text: data.res_msg,
-                        confirmButtonText: '확인'
-                    });
-                }
-            });
-	    });
-	}
+        // AJAX 요청 보내기
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: jsonData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.res_code === '200') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '퇴근 확인',
+                    text: data.res_msg,
+                    confirmButtonText: '확인'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류',
+                    text: data.res_msg,
+                    confirmButtonText: '확인'
+                });
+            }
+        });
+    });
 });

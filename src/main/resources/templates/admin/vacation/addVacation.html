@@ -15,6 +15,7 @@
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
+
     <section th:each = "member : ${memberdto}">
 
         <div class="addVacation_content">
@@ -23,13 +24,16 @@
     <div class="vacationForms">
         <form id="vacationForm" class="vacationForm">
             <div class="vacation_click">
-                <div>
-                    <h3>연차별 휴가 지정</h3>
+                <div class="vacation_click_ele">
+                    <div class="vacation_ele1">
+                        <h3>연차별 휴가 지정</h3>
+                    </div>
+                    <div>
+                        <p style="color: red; font-size: 10px;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
+                    </div>
+
                 </div>
-                <div style="text-align: center" class="addVacation_button">
-                    <button type="button" onclick="addYear()">+</button>
-                    <button type="button" onclick="removeYear()">-</button>
-                </div>
+
                 <div class="addVacation_submit" style="text-align: center; margin-top: 20px;">
                     <button type="submit">등록</button>
                 </div>
@@ -38,21 +42,116 @@
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <input type="hidden" th:name="memberNo" th:id="memberNo" th:value="${member.member_no}"/>
-
-            <div>
-                <p style="color: red;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
-            </div>
+            <input type="hidden" th:name="countVacation" th:id="countVacation" th:value="${countVacation}"/>
 
             <div id="vacationFormContainer">
-                <!-- 여기에 동적으로 입력폼이 추가됩니다 -->
-                    <div class="input-group" th:each="vacation : ${vacationList}">
-                        <label th:text="${vacation.vacation_year} + '년차 '">1년차 </label>
-                        <input type="number" th:name="'vacationData[' + ${vacation.vacation_year} + ']'" th:value="${vacation.vacation_annual_leave}" min="0"/>
-                    </div>
+
+                <div class="input-group">
+                    <label for="year1">1년차</label>
+                    <input type="number" id="year1" name="year1" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year2">2년차</label>
+                    <input type="number" id="year2" name="year2" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year3">3년차</label>
+                    <input type="number" id="year3" name="year3" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year4">4년차</label>
+                    <input type="number" id="year4" name="year4" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year5">5년차</label>
+                    <input type="number" id="year5" name="year5" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year6">6년차</label>
+                    <input type="number" id="year6" name="year6" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year7">7년차</label>
+                    <input type="number" id="year7" name="year7" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year8">8년차</label>
+                    <input type="number" id="year8" name="year8" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year9">9년차</label>
+                    <input type="number" id="year9" name="year9" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year10">10년차</label>
+                    <input type="number" id="year10" name="year10" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year11">11년차</label>
+                    <input type="number" id="year11" name="year11" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year12">12년차</label>
+                    <input type="number" id="year12" name="year12" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year13">13년차</label>
+                    <input type="number" id="year13" name="year13" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year14">14년차</label>
+                    <input type="number" id="year14" name="year14" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year15">15년차</label>
+                    <input type="number" id="year15" name="year15" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year16">16년차</label>
+                    <input type="number" id="year16" name="year16" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year17">17년차</label>
+                    <input type="number" id="year17" name="year17" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year18">18년차</label>
+                    <input type="number" id="year18" name="year18" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year19">19년차</label>
+                    <input type="text" id="year19" name="year19" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year20">20년차</label>
+                    <input type="number" id="year20" name="year20" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year21">21년차</label>
+                    <input type="number" id="year21" name="year21" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year22">22년차</label>
+                    <input type="number" id="year22" name="year22" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year23">23년차</label>
+                    <input type="number" id="year23" name="year23" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year24">24년차</label>
+                    <input type="number" id="year24" name="year24" placeholder="휴가 갯수 입력">
+                </div>
+                <div class="input-group">
+                    <label for="year25">25년차 이상</label>
+                    <input type="number" id="year25" name="year25" placeholder="휴가 갯수 입력">
+                </div>
+
             </div>
+
             <!-- 분리되는 부분 -->
             <div>
-                <p style="color: red;">* 1년 미만 재직자에게 월차 지급 여부</p>
+                <p style="color: red; font-size: 10px;">* 1년 미만 재직자에게 월차 지급 여부</p>
             </div>
 
             <div>
@@ -69,29 +168,35 @@
                 <div>
                     <h3>휴가 종류 생성</h3>
                 </div>
-                <div style="text-align: center" class="addVacation_button">
-                    <button type="button" onclick="addType()">+</button>
-                    <button type="button" onclick="removeType()">-</button>
-                </div>
+
                 <div class="addVacationType_submit" style="text-align: center; margin-top: 20px;">
                     <button type="submit">등록</button>
                 </div>
+
             </div>
 
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <input type="hidden" th:name="memberNo" th:id="memberNo" th:value="${member.member_no}"/>
 
-            <div id="vacationTypeFormContainer">
-                <!-- 여기에 동적으로 입력폼이 추가됩니다 -->
+            <div id="vacationTypeFormContainer" class ="vacationTypeFormContainer">
+                <div class="input-group">
+                    <label for="vacationType">휴가 종류</label>
+                    <input type="text" id="vacationType" name="vacationType" placeholder="휴가 종류 입력">
+                </div>
+                <div class="input-group">
+                    <label for="vacationValue">휴가 값</label>
+                    <input type="text" id="vacationValue" name="vacationValue" placeholder="휴가 값 입력">
+                </div>
 
             </div>
+
 
         </form>
     </div>
 
         </div>
     </section>
+
     <script th:src="@{/js/admin/vacation/addVacation.js}"></script>
 </th:block>
 </body>

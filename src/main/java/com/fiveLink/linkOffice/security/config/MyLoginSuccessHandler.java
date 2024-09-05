@@ -23,6 +23,6 @@ public class MyLoginSuccessHandler implements AuthenticationSuccessHandler {
 	    HttpSession session = request.getSession();
 	    session.setAttribute("userNumber", userNumber);
 	    // 성공 시 리다이렉트할 URL 설정
-	    response.sendRedirect("/home");
+	    response.sendRedirect("/");
 	}
 }

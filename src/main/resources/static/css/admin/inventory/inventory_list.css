@@ -1,0 +1,25 @@
+/* DataTables 스타일을 동일하게 적용 */
+table.dataTable tbody th, table.dataTable tbody td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#departmentSelectContainer select {
+    width: 150px;
+    padding: 5px;
+    margin-right: 10px;           
+}
+
+#departmentSelectContainer {
+    position: relative;
+    z-index: 10;  
+    margin-bottom: -32px;  
+    display: flex;
+    justify-content: flex-start;  
+}
+
+#departmentSelectContainer select {
+    width: 150px;
+    padding: 5px;
+    margin-right: 10px; 
+}

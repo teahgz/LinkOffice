@@ -26,6 +26,7 @@ public class DocumentViewController {
 	public DocumentViewController(DocumentFolderService documentFolderService) {
 		this.documentFolderService = documentFolderService;
 	}
+	
 	// 개인 문서함 : 사원번호를 받아옴 
 	@GetMapping("/employee/document/personal")
 	public String documentPersonalPage(Model model

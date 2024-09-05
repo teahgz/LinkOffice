@@ -21,14 +21,13 @@ public class VacationDto  {
     private Long member_no;
 
     @Builder.Default
-    private Map<String, Integer> vacationData = new HashMap<>();
+    private Map<String, Object> vacationData = new HashMap<>();
 
-    // getter 및 setter 메서드
-    public Map<String, Integer> getVacationData() {
+    public Map<String, Object> getVacationData() {
         return vacationData;
     }
 
-    public void setVacationData(Map<String, Integer> vacationData) {
+    public void setVacationData(Map<String, Object> vacationData) {
         this.vacationData = vacationData;
     }
     public Vacation toEntity(){
@@ -41,21 +40,33 @@ public class VacationDto  {
                 .build();
 
     }
-    // 추가 메서드: vacationData를 기반으로 여러 Vacation 엔티티 생성
     public List<Vacation> toEntities() {
         List<Vacation> vacations = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : vacationData.entrySet()) {
-            vacations.add(Vacation.builder()
-                    .vacationNo(vacation_no)
-                    .vacationYear(Integer.parseInt(entry.getKey()))
-                    .vacationAnnualLeave(entry.getValue())
-                    .vacationCreateDate(vacation_create_date)
-                    .memberNo(member_no)
-                    .build());
+        for (Map.Entry<String, Object> entry : vacationData.entrySet()) {
+            try {
+                String yearStr = entry.getKey();
+                Object daysObj = entry.getValue();
+
+                int year = Integer.parseInt(yearStr); // 연도를 정수로 변환
+                int days = (daysObj instanceof String)
+                        ? Integer.parseInt((String) daysObj) // daysObj가 String일 경우
+                        : (Integer) daysObj; // daysObj가 Integer일 경우
+
+                Vacation vacation = Vacation.builder()
+                        .vacationYear(year)
+                        .vacationAnnualLeave(days)
+                        .vacationCreateDate(vacation_create_date)
+                        .memberNo(member_no)
+                        .build();
+
+                vacations.add(vacation);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                // 로그를 남기거나 적절한 에러 처리를 수행할 수 있습니다.
+            }
         }
         return vacations;
     }
-
     public VacationDto toDto(Vacation vacation){
         return VacationDto.builder()
                 .vacation_no(vacation.getVacationNo())

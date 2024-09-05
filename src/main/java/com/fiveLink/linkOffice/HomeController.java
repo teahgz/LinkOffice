@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
@@ -36,7 +37,28 @@ public class HomeController {
 		
 	}
 
-	@GetMapping("/home")
+	@GetMapping("/login")
+	public String loginPage(HttpServletRequest request, Model model) {
+		String errorMessage = (String) request.getSession().getAttribute("error");
+		if (errorMessage != null) {
+			model.addAttribute("error", true);
+			model.addAttribute("exception", errorMessage);
+			request.getSession().removeAttribute("error");
+		} 
+		return "login";
+	}
+
+	@GetMapping("/pwchange")
+	public String pwchangePage() {
+		return "pwchange";
+	}
+
+	@GetMapping("/error")
+	public String error() {
+		return "error";
+	}
+	  
+	@GetMapping({"/",""})
 	public String home(HttpServletRequest request, Model model) {
 		// [전주영] 세션 가져오기, 세션 이용해서 memberdto 출력
 	    HttpSession session = request.getSession();
@@ -54,13 +76,9 @@ public class HomeController {
 	    AttendanceDto attendanceDto = attendanceService.findByMemberNoAndWorkDate(memberNo, today);
 	    logger.info("AttendanceDto: {}", attendanceDto);
 	    String isCheckedIn = "false";
-	    String isCheckedOut = "false";
 	    if(attendanceDto != null) {
 	    	if(attendanceDto.getCheck_in_time() != null) {
 	    		isCheckedIn = "true";
-	    	}
-	    	if(attendanceDto.getCheck_out_time() != null) {
-	    		isCheckedOut = "true";
 	    	}
 	    }
 
@@ -72,26 +90,11 @@ public class HomeController {
 	    
 	    // [박혜선] 출근 여부 전달
 	    model.addAttribute("isCheckedIn", isCheckedIn);
-	    model.addAttribute("isCheckedOut", isCheckedOut);
 	    
 	    return "home";
 
 	}
 
-	@GetMapping({"","/"})
-	public String loginPage() {
-		return "login";
-	}
-
-	@GetMapping("/pwchange")
-	public String pwchangePage() {
-		return "pwchange";
-	}
-
-	@GetMapping("/error")
-	public String error() {
-		return "error";
-	}
 
 
 }

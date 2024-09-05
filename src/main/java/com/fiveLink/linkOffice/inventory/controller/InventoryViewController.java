@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.service.InventoryService;
-import com.fiveLink.linkOffice.organization.domain.Department;
 
 @Controller
 public class InventoryViewController {
@@ -27,25 +26,38 @@ public class InventoryViewController {
         this.inventoryService = inventoryService;
     }
 
+    // 메인 화면 - 부서 목록 및 카테고리 요약 목록 조회
     @GetMapping("/inventory/list")
     public String selectInventoryList(Model model) {
-        List<InventoryDto> categorySummaryList = inventoryService.selectCategorySummary();
+        // 부서 목록을 조회하여 model에 추가
         List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
-        
-        LOGGER.info("Category Summary List: " + categorySummaryList);
-        LOGGER.info("Department Names: " + departmentNames);
-        model.addAttribute("categorySummaryList", categorySummaryList);
         model.addAttribute("departments", departmentNames);
-        return "admin/inventory/list";
+
+        return "admin/inventory/inventory_list";
     }
-    
-    @GetMapping("/inventory/category/{inventory_category_no}")
+
+    @GetMapping("/inventory/category/{inventory_category_no}/department/{department_no}")
     @ResponseBody
-    public List<InventoryDto> selectInventoryByCategory(@PathVariable("inventory_category_no") Long inventory_category_no) {
-        return inventoryService.selectInventoryByCategory(inventory_category_no);
+    public List<InventoryDto> selectInventoryByCategoryAndDepartment(
+            @PathVariable("inventory_category_no") Long inventoryCategoryNo,
+            @PathVariable("department_no") Long departmentNo) {
+        return inventoryService.selectInventoryByCategoryAndDepartment(inventoryCategoryNo, departmentNo);
+    }
+
+    @GetMapping("/inventory/department/{departmentNo}")
+    @ResponseBody
+    public List<InventoryDto> selectInventoryByDepartment(@PathVariable("departmentNo") Long departmentNo) {
+        List<InventoryDto> result = inventoryService.selectInventoryByDepartment(departmentNo);
+        LOGGER.info("selectInventoryByDepartment result: {}", result);
+        return result;
     }
     
-    
-    
-    
+    @GetMapping("/inventory/create")
+    public String selectInventorycreate(Model model) {
+        // 부서 목록을 조회하여 model에 추가
+        List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
+        model.addAttribute("departments", departmentNames);
+
+        return "admin/inventory/inventory_create";
+    }
 }

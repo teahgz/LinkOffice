@@ -30,19 +30,20 @@ public class AttendanceViewController {
       this.attendanceService = attendanceService;
       this.memberService = memberService; 
    }
+   
    // 근태 조회 
    @GetMapping("/employee/attendance/myAttendance/{member_no}")
    public String documentPersonalPage(Model model,
-         @PathVariable("member_no") Long memberNo
-         ) {
+         @PathVariable("member_no") Long memberNo)  {
       List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
       LOGGER.debug("attendance List: {}", attendanceList);
       
       // memberDto 불러오기 
       List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
- 
+      
       model.addAttribute("memberdto", memberdto);
       model.addAttribute("attendanceList", attendanceList);
       return "employee/attendance/myAttendance";
    }
+
 }

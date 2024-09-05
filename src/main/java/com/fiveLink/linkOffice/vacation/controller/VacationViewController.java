@@ -35,12 +35,14 @@ public class VacationViewController {
     public String addVacation(@PathVariable("member_no") Long memberNo, Model model) {
         // 로그에 정보 출력
         logger.info("Navigating to addVacation page for member_no: {}", memberNo);
-
+        int countVacation = vacationService.countVacation();
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
         List<VacationDto> vacationList = vacationService.selectVacationList();
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("vacationList", vacationList);
+        model.addAttribute("countVacation", countVacation);
+
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";
