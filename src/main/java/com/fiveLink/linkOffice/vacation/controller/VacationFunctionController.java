@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.vacation.controller;
 
+import com.fiveLink.linkOffice.vacation.domain.Vacation;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
@@ -22,28 +23,38 @@ public class VacationFunctionController {
         this.vacationService = vacationService;
     }
 
-
     @PostMapping("/addVacationAction")
     @ResponseBody
-    public Map<String, String> addVacation(@RequestParam Map<String, String> params, @RequestParam("memberNo") Long memberNo,
-                                           @ModelAttribute VacationDto dto) {
+    public Map<String, String> addVacation(@RequestBody Map<String, Object> params) {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
-        params.forEach((key, value) -> {
-            if (key.startsWith("vacationData[")) {
-                String yearNumber = key.substring("vacationData[".length(), key.length() - 1);
-                Integer vacationValue = Integer.valueOf(value);
-                dto.getVacationData().put(yearNumber, vacationValue);
-                System.out.println("Year " + yearNumber + ": " + vacationValue);
+        System.out.println(params);
+        try {
+            Long memberNo = Long.parseLong((String) params.get("memberNo"));
+            boolean lessThanOneYear = (Boolean) params.get("lessThanOneYear");
+
+            // 연차 입력 데이터 처리
+            Map<String, Object> vacationData = (Map<String, Object>) params.get("vacationData");
+
+            VacationDto dto = new VacationDto();
+            dto.setMember_no(memberNo);
+            //dto.setLessThanOneYear(lessThanOneYear);  // 체크박스 상태 설정
+            dto.setVacationData(vacationData);
+
+            List<Vacation> vacations = dto.toEntities();
+            System.out.println(vacations);
+            for (Vacation vacation : vacations) {
+                if (vacationService.addVacation(vacation) > 0) {
+                    resultMap.put("res_code", "200");
+                    resultMap.put("res_msg", "성공적으로 생성되었습니다.");
+                } else {
+                    resultMap.put("res_msg", "연차 정보를 추가하는 데 실패했습니다.");
+                }
             }
-        });
-
-        dto.setMember_no(memberNo);
-
-        if (vacationService.addVacation(dto) > 0) {
-            resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "성공적으로 생성되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
         }
 
         return resultMap;
@@ -56,11 +67,11 @@ public class VacationFunctionController {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
+
         try {
             List<Map<String, String>> vacationTypesList = (List<Map<String, String>>) payload.get("vacationTypes");
             System.out.println("Received Vacation Types List: " + vacationTypesList);
 
-            // Convert the list to a DTO
             VacationTypeDto dto = new VacationTypeDto();
             for(int i = 0; i<vacationTypesList.size(); i++ ){
                 Map<String, String> vacationType = vacationTypesList.get(i);
