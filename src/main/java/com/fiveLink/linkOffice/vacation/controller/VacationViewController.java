@@ -39,10 +39,10 @@ public class VacationViewController {
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
         List<VacationDto> vacationList = vacationService.selectVacationList();
+
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("vacationList", vacationList);
         model.addAttribute("countVacation", countVacation);
-
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";

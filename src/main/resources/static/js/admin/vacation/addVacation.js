@@ -4,30 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // 기본 폼 제출 동작을 막음
+        event.preventDefault();
 
-        const memberNo = document.getElementById('memberNo').value; // 멤버 번호 가져오기
-        const yearInputs = document.querySelectorAll('[id^="year"]'); // 연차 입력폼 선택
-        const lessThanOneYear = document.getElementById('lessThanOneYear').checked; // 1년 미만 체크박스 상태
+        const memberNo = document.getElementById('memberNo').value;
+        const yearInputs = document.querySelectorAll('[id^="year"]');
+        const lessThanOneYear = document.getElementById('lessThanOneYear').checked;
+        const countVacation =document.getElementById('countVacation').value;
 
-        // 연차와 일수 데이터를 담을 객체 생성
+      const vacationPkElements = document.querySelectorAll('[id^="vacationPk"]');
+
+        let count = 1;
         const vacationData = {};
+        const vacationPkData = [];
+        if (countVacation > 0) {
+                vacationPkElements.forEach(input => {
+                    if (input.value) {
+                        vacationPkData.push(input.value);
+                    }
+                });
+           yearInputs.forEach(input => {
+           const year = input.id.replace('year', '');
+           const vacationDays = input.value;
 
-        yearInputs.forEach(input => {
-            const year = input.id.replace('year', ''); // Extract year number from id (e.g., "1" from "year1")
-            const vacationDays = input.value; // Get input value
-
-            // 연차와 일수를 vacationData 객체에 추가
-            vacationData[year] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
-            console.log( vacationData[year]);
-        });
-
-        // 전송할 데이터 객체 생성
-        const requestData = {
-            memberNo: memberNo,
-            vacationData: vacationData,
-            lessThanOneYear: lessThanOneYear
-        };
+           vacationData[count] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
+           console.log("확인용sss:"+vacationData[count]);
+           count++;
+            });
+            console.log(typeof(vacationPkData[0]));
+            const requestData = {
+                 memberNo: memberNo,
+                 vacationData: vacationData,
+                lessThanOneYear: lessThanOneYear,
+                countVacation : countVacation,
+                count : count,
+                vacationPkData :vacationPkData
+            };
 
         fetch('/vacation/addVacationAction', {
             method: 'POST',
@@ -52,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     confirmButtonText: "닫기"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        location.href = `/home`;
+                       location.reload();
                     }
                 });
             } else {
@@ -72,6 +83,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmButtonText: "닫기"
             });
         });
+        }else {
+             yearInputs.forEach(input => {
+             const year = input.id.replace('year', '');
+             const vacationDays = input.value;
+
+             vacationData[year] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
+             console.log("확인용:"+vacationData[year]);
+            });
+
+            const requestData = {
+                        memberNo: memberNo,
+                        vacationData: vacationData,
+                        lessThanOneYear: lessThanOneYear,
+                        countVacation : countVacation,
+             };
+
+        fetch('/vacation/addVacationAction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.res_code === '200') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                       location.reload();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '실패',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '서버와의 통신 중 오류가 발생했습니다.',
+                confirmButtonText: "닫기"
+            });
+        });
+        }
+
+
+
     });
 });
 
