@@ -34,9 +34,9 @@ public class WebSecurityConfig implements HttpSessionListener {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/", "/css/**", "/img/**", "/js/**").permitAll()
+                    .requestMatchers("/login","/css/**", "/img/**", "/js/**").permitAll()
                     .requestMatchers("/pwchange", "/error", "/session-time").permitAll()
-                    .requestMatchers("/home").authenticated()
+                    .requestMatchers("/").authenticated()
                     .requestMatchers("/**").authenticated()
                     .requestMatchers("/employee/member/**").authenticated()
             )

@@ -37,16 +37,14 @@ public class HomeController {
 		
 	}
 
-	@GetMapping({ "", "/" })
+	@GetMapping("/login")
 	public String loginPage(HttpServletRequest request, Model model) {
 		String errorMessage = (String) request.getSession().getAttribute("error");
 		if (errorMessage != null) {
 			model.addAttribute("error", true);
 			model.addAttribute("exception", errorMessage);
 			request.getSession().removeAttribute("error");
-		} else {
-			model.addAttribute("error", false);
-		}
+		} 
 		return "login";
 	}
 
@@ -60,7 +58,7 @@ public class HomeController {
 		return "error";
 	}
 	  
-	@GetMapping("/home")
+	@GetMapping("/")
 	public String home(HttpServletRequest request, Model model) {
 		// [전주영] 세션 가져오기, 세션 이용해서 memberdto 출력
 	    HttpSession session = request.getSession();
