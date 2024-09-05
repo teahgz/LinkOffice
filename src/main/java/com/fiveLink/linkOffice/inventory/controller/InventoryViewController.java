@@ -56,8 +56,17 @@ public class InventoryViewController {
     public String selectInventorycreate(Model model) {
         // 부서 목록을 조회하여 model에 추가
         List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
+        String finventoryManager = inventoryService.findinventoryManager();
         model.addAttribute("departments", departmentNames);
-
+        model.addAttribute("manager", finventoryManager);
         return "admin/inventory/inventory_create";
     }
+    
+    @GetMapping("/inventory/categories")
+    @ResponseBody
+    public List<String> getAllCategories() {
+        return inventoryService.findAllCategories();
+    }
+    
+    
 }

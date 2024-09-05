@@ -38,4 +38,10 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     	       "ORDER BY i.inventoryPurchaseDate DESC") 
 		List<Inventory> findByCategoryAndDepartment(@Param("inventoryCategoryNo") Long inventoryCategoryNo, 
 		                                            @Param("departmentNo") Long departmentNo);
+    
+    @Query("SELECT DISTINCT ic.inventoryCategoryName FROM InventoryCategory ic")
+    List<String> findAllCategoryNames();
+    
+    @Query("SELECT m.memberName FROM Member m WHERE m.memberNo = 2")
+    String findinventoryManager();
 }

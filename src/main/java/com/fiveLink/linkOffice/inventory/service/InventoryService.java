@@ -78,4 +78,12 @@ public class InventoryService {
 
         return departmentDtos;
     }
+    
+    public List<String> findAllCategories() {
+        return inventoryRepository.findAllCategoryNames();
+    }
+    
+    public String findinventoryManager() {
+        return inventoryRepository.findinventoryManager();
+    }
 }
