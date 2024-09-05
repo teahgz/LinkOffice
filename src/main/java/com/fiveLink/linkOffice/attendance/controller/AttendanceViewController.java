@@ -2,9 +2,6 @@ package com.fiveLink.linkOffice.attendance.controller;
 
 import java.util.List;
 
-import com.fiveLink.linkOffice.member.domain.MemberDto;
-import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +34,13 @@ public class AttendanceViewController {
    // 근태 조회 
    @GetMapping("/employee/attendance/myAttendance/{member_no}")
    public String documentPersonalPage(Model model,
-         @PathVariable("member_no") Long memberNo
-         ) {
+         @PathVariable("member_no") Long memberNo)  {
       List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
       LOGGER.debug("attendance List: {}", attendanceList);
       
       // memberDto 불러오기 
       List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
- 
+      
       model.addAttribute("memberdto", memberdto);
       model.addAttribute("attendanceList", attendanceList);
       return "employee/attendance/myAttendance";

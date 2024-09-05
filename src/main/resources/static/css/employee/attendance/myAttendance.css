@@ -1,0 +1,157 @@
+@charset "UTF-8";
+
+.attendance_div{
+    display: flex;
+	width: 100%;
+	height : 600px;
+}
+/* 근태 상태 */
+.attendance_status{
+	 margin-bottom: 10px;
+}
+/* 출근 */
+#attendance_normal{
+	width: 25px; 
+    height: 15px; 
+    display: inline-block; 
+    background-color: #00D220; 
+    vertical-align: middle; 
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 20px;
+}
+/* 지각 */
+#attendance_late{
+	width: 25px; 
+    height: 15px; 
+    display: inline-block; 
+    background-color: #FFB545; 
+    vertical-align: middle; 
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 20px;
+}
+/* 결근 */
+#attendance_absent{
+	width: 25px; 
+    height: 15px; 
+    display: inline-block; 
+    background-color: #D25726; 
+    vertical-align: middle; 
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 20px;
+}
+/* 휴가 */
+#attendance_vacation{
+	width: 25px; 
+    height: 15px; 
+    display: inline-block; 
+    background-color: #3226D2; 
+    vertical-align: middle; 
+    margin-left: 10px;
+    border-radius: 20px;
+}
+/* 왼쪽 영역 */
+.attendance_left{
+	display: flex;
+	width: 80%;
+	height: 95%;
+	margin: 20px;
+	flex-direction: column; 
+	display: inline-block;
+}
+.calendar_div{
+	width: 100%;
+	height: 95%;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: 20px;
+	display: flex;
+    flex-direction: column;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+}
+/* 년도와 날짜, 꺽쇠 */
+#calendar_title{
+	border-bottom: 1px solid black;
+	padding-top: 20px;
+	width: 90%;
+	height: 40px;
+	display: flex;
+    justify-content: center; 
+}
+/* 년도와 날짜 */
+#year_and_month{
+	width: 150px;
+	text-align: center;
+}
+/* 이전 달, 다음 달 버튼 */
+#prev_button, #next_button{
+	margin: 0 15px; 
+	cursor: pointer;
+}
+/* 달력 */
+#calendar{
+	height: 90%;
+	width: 95%;
+	margin-top: 10px;
+	border-collapse: collapse;
+	flex: 1;
+}
+/* 달력 날짜 안에 바 */
+/* 정살 출근 */
+.bar_normal {
+	background-color: #00D220; 
+	border-radius: 20px;
+    width: 70%;
+    height: 10px; 
+    margin-top: 2px; 
+}
+/* 지각 */
+.bar_late {
+	background-color: #FFB545; 
+	border-radius: 20px;
+    width: 70%;
+    height: 10px; 
+    margin-top: 2px; 
+}
+/* 결근 */
+.bar_absent {
+	background-color: #D25726; 
+	border-radius: 20px;
+    width: 70%;
+    height: 10px; 
+    margin-top: 2px;     
+}
+/* 휴가 */
+.bar_vacation {
+	background-color: #3226D2; 
+	border-radius: 20px;
+    width: 70%;
+    height: 10px; 
+    margin-top: 2px; 
+}
+/* 달력 안에 각 날짜 */
+.date_container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 35px;
+    text-align: center;
+}
+/* 달력 안에 근태 bar */
+.date_bar {
+    position: absolute;
+    bottom: 0; 
+    left: 50%;
+   	transform: translateX(-50%);
+}
+.attendance_list{
+	display: flex;
+	width: 100%;
+	height: 95%;
+	background-color: white;
+	border-radius: 10px;
+	margin: 20px;
+}
