@@ -8,94 +8,148 @@
     <style>
         
     </style>
+
 <section>
+	<div style="width: 80%; margin: 0 auto;">
     <h1>비품 등록</h1>
     <hr>
 
-    <div class="form-container">
-        <form action="/submit-inventory" method="POST">
-            <div class="form-group">
-                <label for="department">부서 :</label>
-                <select id="department" name="department">
-                    <option value="">부서 선택</option>
-                	<option th:each="department : ${departments}" 
+    <form action="/submit-inventory" method="POST">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+
+    <div class="form-group">
+        <label for="department">부서 :</label>
+        <select id="department" name="department">
+            <option value="">부서 선택</option>
+            <option th:each="department : ${departments}" 
                     th:value="${department.department_no}" 
                     th:text="${department.department_name}">
-                </option>
-                </select>
-                <br><br>
-                <label for="date">일자 :</label>
-                <input type="date" id="date" name="date">
-                <br><br>
-                <label for="category">카테고리명 :</label>
-                <input type="text" id="category" name="category" readonly>
-                <button type="button" id="openModalBtn">카테고리 선택</button>
-                <br><br>
-                <label for="iventoryName">비품명 :</label>
-                <input type="text" id="iventoryName" name="iventoryName">
-                <br><br>
-                <label for="iventoryLocation">보관위치 :</label>
-                <input type="text" id="iventoryLocation" name="iventoryLocation">
-                <br><br>
-                <label for="inventoryPrice">가격 :</label>
-                <input type="text" id="inventoryPrice" name="inventoryPrice">
-                <br><br>
-                <label for="iventoryManager">관리자 :</label>
-                <input type="text" id="iventoryManager" name="iventoryManager" disabled>
-                <br><br>
-                <label for="iventoryQuanatity">수량 :</label>
-                <input type="text" id="iventoryQuanatity" name="iventoryQuanatity">
-            </div>
-            <div class="register-button">
-                <button type="submit">등록</button>
-            </div>
-        </form>
+            </option>
+        </select>
     </div>
+
+    <div class="form-group">
+        <label for="date">일자 :</label>
+        <input type="date" id="date" name="date">
+    </div>
+
+    <div class="form-group">
+        <label for="category">카테고리명 :</label>
+        <input type="text" id="category" name="category" readonly>
+        <button type="button" id="openModalBtn">카테고리 선택</button>
+    </div>
+
+    <div class="form-group">
+        <label for="inventoryName">비품명 :</label>
+        <input type="text" id="inventoryName" name="inventoryName">
+    </div>
+
+    <div class="form-group">
+        <label for="inventoryLocation">보관위치 :</label>
+        <input type="text" id="inventoryLocation" name="inventoryLocation">
+    </div>
+
+    <div class="form-group">
+        <label for="inventoryPrice">가격 :</label>
+        <input type="text" id="inventoryPrice" name="inventoryPrice">
+    </div>
+
+    <div class="form-group">
+        <label for="inventoryManager">관리자 :</label>
+        <input type="text" th:value="${manager} + ' 관리자'" id="inventoryManager" name="inventoryManager" readonly>
+    </div>
+
+    <div class="form-group">
+        <label for="inventoryQuantity">수량 :</label>
+        <input type="text" id="inventoryQuantity" name="inventoryQuantity">
+    </div>
+
+    <div class="register-button">
+        <button type="submit">등록</button>
+    </div>
+</form>
+
 
     <!-- 모달 -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h3>카테고리 선택</h3>
-            <ul>
-                <li><button type="button" class="category-item" data-category="노트북">노트북</button></li>
-                <li><button type="button" class="category-item" data-category="모니터">모니터</button></li>
-                <li><button type="button" class="category-item" data-category="키보드">키보드</button></li>
-                <!-- 추가 카테고리 -->
-            </ul>
+            <div id="categoryList">
+                <!-- 카테고리 동적 추가 영역 -->
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="confirm-button" id="confirmBtn">확인</button>
+                <button type="button" class="cancel-button" id="cancelBtn">취소</button>
+            </div>
         </div>
     </div>
+    </div>
 </section>
+
     <script>
         // 모달 열기
         var modal = document.getElementById("myModal");
         var btn = document.getElementById("openModalBtn");
         var span = document.getElementsByClassName("close")[0];
+        var confirmBtn = document.getElementById("confirmBtn");
+        var cancelBtn = document.getElementById("cancelBtn");
 
         btn.onclick = function() {
             modal.style.display = "block";
-        }
 
-        // 모달 닫기
+            // 카테고리 데이터를 불러와서 모달에 추가
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/inventory/categories', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var categories = JSON.parse(xhr.responseText);
+                    var categoryList = document.getElementById('categoryList');
+                    categoryList.innerHTML = ''; // 기존 리스트 제거
+
+                    for (var i = 0; i < categories.length; i++) {
+                        var listItem = document.createElement('div');
+                        listItem.className = 'category-item';
+                        listItem.innerHTML = `
+                            <input type="radio" id="category_${categories[i]}" name="category" value="${categories[i]}" class="category-item">
+                            <label for="category_${categories[i]}">${categories[i]}</label>
+                        `;
+                        categoryList.appendChild(listItem);
+                    }
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Error fetching categories');
+            };
+            xhr.send();
+        };
+
+        // 모달 닫기 (X 버튼)
         span.onclick = function() {
             modal.style.display = "none";
-        }
+        };
 
+        // 모달 닫기 (외부 클릭)
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
-        }
+        };
 
-        // 카테고리 선택 시 모달에서 값 설정
-        var categoryItems = document.getElementsByClassName("category-item");
-        for (var i = 0; i < categoryItems.length; i++) {
-            categoryItems[i].onclick = function() {
-                var selectedCategory = this.getAttribute("data-category");
-                document.getElementById("category").value = selectedCategory;
+        // 확인 버튼 클릭 시 선택한 카테고리 설정
+        confirmBtn.onclick = function() {
+            var selectedCategory = document.querySelector('input[name="category"]:checked');
+            if (selectedCategory) {
+                document.getElementById("category").value = selectedCategory.value;
                 modal.style.display = "none";
             }
-        }
+        };
+
+        // 취소 버튼 클릭 시 모달 닫기
+        cancelBtn.onclick = function() {
+            modal.style.display = "none";
+        };
     </script>
 </th:block>
 </html>

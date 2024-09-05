@@ -110,5 +110,5 @@ public class Member {
 	private Long memberAdditional;
 	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Inventory> inventory;
+	private List<Inventory> inventory;
 }

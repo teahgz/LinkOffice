@@ -20,8 +20,8 @@ public class InventoryDto {
 	private String inventory_name;
 	private Long inventory_category_no;
 	private String inventory_category_name;
-	private int inventory_price;
-	private int inventory_quantity;
+	private Integer inventory_price;
+	private Integer inventory_quantity;
 	private String inventory_location;
 	private Long member_no;
 	private String member_name;
