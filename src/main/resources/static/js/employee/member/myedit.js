@@ -1,10 +1,3 @@
-const closeModalButton = document.querySelector('#myModal .close');
-closeModalButton.addEventListener('click', () => {
-    document.getElementById('myModal').style.display = 'none';
-    sessionStorage.removeItem('modalClosed'); // 모달 상태 리셋
-    window.history.back(); // 이전 페이지로 이동
-});
-
 // 모달 -> 비밀번호 확인 시 꺼지기
 const pwform = document.getElementById('pwVerifyFrm');
 pwform.addEventListener('submit', (e) => {
@@ -12,20 +5,30 @@ pwform.addEventListener('submit', (e) => {
     
     const csrfToken = document.getElementById('csrf_token_pw').value;
     const pwVerify = pwform.pw_verify.value;
-    const memberPw = document.getElementById('member_pw').value;
-
-    if (pwVerify === memberPw) {
-        document.getElementById('myModal').style.display = 'none';
-        sessionStorage.setItem('modalClosed', 'true'); // 모달이 닫혔다는 상태를 저장
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: '비밀번호가 일치하지 않습니다!',
-            confirmButtonText: '닫기'
-        }).then(() => {
-            document.getElementById('pw_verify').value = ""; // 비밀번호 입력 필드 초기화
-        });
+   	const memberNo = pwform.member_no_pw.value;
+   	
+   	fetch('/myedit/pwVerify/'+memberNo,{
+		method:'post',
+		headers:{
+			'X-CSRF-TOKEN':csrfToken
+		},
+		body:pwVerify
+	})
+	.then(response=>response.json())
+	.then(data=>{
+		if(data.res_code == '200'){
+			document.getElementById('myModal').style.display = 'none';
+        	sessionStorage.setItem('modalClosed', 'true');
+		}else {
+	        Swal.fire({
+	            icon: 'error',
+	            title: '비밀번호가 일치하지 않습니다!',
+	            confirmButtonText: '닫기'
+	        }).then(() => {
+	            document.getElementById('pw_verify').value = ""; // 비밀번호 입력 필드 초기화
+	        });
     }
+	})
 });
 
 // 페이지 로드 시 모달 상태 확인
