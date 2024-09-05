@@ -44,4 +44,13 @@ public class MemberViewController {
 	    return "employee/member/digitalname";
 	}
 
+	// 관리자 사원 등록 페이지
+	@GetMapping("/admin/member/create")
+	public String create(Model model) {
+	      Long memberNo = memberService.getLoggedInMemberNo();
+	        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	        model.addAttribute("memberdto", memberdto);
+		return "admin/member/create";
+	}
 }
+

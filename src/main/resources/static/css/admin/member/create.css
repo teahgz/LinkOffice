@@ -1,11 +1,11 @@
-.my_profile {
+.create_member {
     position: relative; 
     display: flex;
     flex-direction: column;
     align-items: center; 
 }
 
-.my_profile h1 {
+.create_member h1 {
     font-size: 2rem;
     margin-bottom: 20px;
     width: auto; 
@@ -13,7 +13,7 @@
     margin-left: 100px;
 }
 
-.profile_card {
+.member_card {
     background-color: #f8f9fa;
     border-radius: 12px; 
     max-width: 800px; 
@@ -29,7 +29,7 @@
     gap: 20px;
 }
 
-.profile-header {
+.member_header {
     display: flex;
     align-items: flex-start; 
     gap: 28px; 
