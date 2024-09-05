@@ -58,7 +58,7 @@ public class HomeController {
 		return "error";
 	}
 	  
-	@GetMapping("/")
+	@GetMapping({"/",""})
 	public String home(HttpServletRequest request, Model model) {
 		// [전주영] 세션 가져오기, 세션 이용해서 memberdto 출력
 	    HttpSession session = request.getSession();
