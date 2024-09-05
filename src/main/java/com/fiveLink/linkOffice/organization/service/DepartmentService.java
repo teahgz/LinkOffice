@@ -11,23 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.fiveLink.linkOffice.mapper.VacationMapper;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.repository.DepartmentRepository;
+import com.fiveLink.linkOffice.vacation.repository.VacationRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class DepartmentService {
 
-    @Autowired
     private DepartmentRepository departmentRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
-    private MemberRepository memberRepository;
- 
+    public DepartmentService(DepartmentRepository departmentRepository, MemberRepository memberRepository){
+        this.departmentRepository = departmentRepository;
+        this.memberRepository = memberRepository;
+    }
+    
     public List<DepartmentDto> getAllDepartments() {
         List<Department> departments = departmentRepository.findAllByOrderByDepartmentHighAscDepartmentNameAsc();
         return buildHierarchy(mapToDto(departments));
@@ -77,9 +82,11 @@ public class DepartmentService {
         }
     }
     
-    public List<DepartmentDto> getTopLevelDepartments() {
-        List<Department> departments = departmentRepository.findByDepartmentHigh(0L);
-        return mapToDto(departments);
+    public List<DepartmentDto> getTopLevelDepartments() { 
+        List<Department> departments = departmentRepository.findByDepartmentHighAndDepartmentStatus(0L, 0L);
+        return departments.stream()
+                          .map(this::mapToDto)
+                          .collect(Collectors.toList());
     }
  
     private DepartmentDto mapToDto(Department department) {
@@ -102,7 +109,7 @@ public class DepartmentService {
         return dtos;
     }
 
-    // 부서 계층 구조 생성
+    // 부서 계층 구조 
     private List<DepartmentDto> buildHierarchy(List<DepartmentDto> allDepartments) {
         Map<Long, DepartmentDto> departmentMap = allDepartments.stream()
             .collect(Collectors.toMap(DepartmentDto::getDepartment_no, Function.identity()));

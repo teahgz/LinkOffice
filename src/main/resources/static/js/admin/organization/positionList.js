@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var editModal = document.getElementById("editModal");
     var openModalBtn = document.getElementById("openModal");
     var closeButtons = document.getElementsByClassName("close");
-    var createForm = document.getElementById("departmentForm");
+    var createForm = document.getElementById("positionForm");
     var editForm = document.getElementById("editForm");
-    var csrfToken = document.querySelector('input[name="_csrf"]').value; 
+    var csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     if (openModalBtn) {
         openModalBtn.onclick = function () {
@@ -13,22 +13,20 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-	// 수정
-    document.querySelectorAll("#editButton").forEach(function (editButton) {
+    // 수정
+    document.querySelectorAll("button#editButton").forEach(function (editButton) {
         editButton.onclick = function () {
-            var departmentId = this.getAttribute("data-department-id");
+            var positionId = this.getAttribute("data-position-id");
 
-           $.ajax({
+            $.ajax({
                 type: "GET",
-                url: `/department/get?id=${departmentId}`,
+                url: `/position/get?id=${positionId}`,
                 success: function (response) {
                     if (response.res_code === "200") {
-                        const department = response.department;
-                        document.getElementById("editDepartmentId").value = department.department_no;
-                        document.getElementById("editDepartmentName").value = department.department_name;
-                        document.getElementById("editDepartmentHigh").value = department.department_high;
-
-                        document.getElementById("editDepartmentHigh").disabled = department.subDepartments && department.subDepartments.length > 0;
+                        const position = response.position;
+                        document.getElementById("editPositionId").value = position.position_no;
+                        document.getElementById("editPositionName").value = position.position_name;
+                        document.getElementById("editPositionHigh").value = position.position_high;
 
                         editModal.style.display = "block";
                     } else {
@@ -36,20 +34,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 },
                 error: function () {
-                    Swal.fire("오류", response.res_msg, "error");
+                    Swal.fire("오류", "서버 요청 중 오류가 발생했습니다.", "error");
                 }
             });
         };
     });
 
-	// 삭제
-    document.querySelectorAll("#deleteButton").forEach(function (deleteButton) {
+    // 삭제
+    document.querySelectorAll("button#deleteButton").forEach(function (deleteButton) {
         deleteButton.onclick = function () {
-            var departmentId = this.getAttribute("data-department-id");
+            var positionId = this.getAttribute("data-position-id");
 
             Swal.fire({
-                title: '부서 삭제',
-                text: '부서를 삭제하시겠습니까?',
+                title: '직위 삭제',
+                text: '직위를 삭제하시겠습니까?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -60,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
-                        url: "/department/delete",
-                        data: { id: departmentId },
+                        url: "/position/delete",
+                        data: { id: positionId },
                         headers: {
                             'X-CSRF-TOKEN': csrfToken
                         },
@@ -75,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         },
                         error: function () {
-                            Swal.fire('서버 오류', response.res_msg, 'error');
+                            Swal.fire('서버 오류', "서버 요청 중 오류가 발생했습니다.", 'error');
                         }
                     });
                 }
@@ -102,25 +100,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function resetForm(form) {
         form.reset();
-        if (form.id === 'editForm') {
-            document.getElementById("editDepartmentHigh").disabled = false; 
-        }
     }
 
     // 등록
     if (createForm) {
         createForm.onsubmit = function (event) {
             event.preventDefault();
-            var departmentName = document.getElementById("departmentName").value;
-            var departmentHigh = document.getElementById("departmentHigh").value; 
+            var positionName = document.getElementById("positionName").value;
+            var positionHigh = document.getElementById("positionHigh").value;
 
             $.ajax({
                 type: "POST",
-                url: "/department/add",
+                url: "/position/add",
                 contentType: "application/json",
                 data: JSON.stringify({
-                    departmentName: departmentName,
-                    departmentHigh: departmentHigh
+                    positionName: positionName,
+                    positionHigh: positionHigh
                 }),
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -135,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 },
                 error: function () {
-                    Swal.fire('서버 오류', response.res_msg, 'error');
+                    Swal.fire('서버 오류', "서버 요청 중 오류가 발생했습니다.", 'error');
                 }
             });
         };
@@ -146,19 +141,18 @@ document.addEventListener("DOMContentLoaded", function () {
         editForm.onsubmit = function (event) {
             event.preventDefault();
 
-            var departmentId = document.getElementById("editDepartmentId").value;
-            var departmentName = document.getElementById("editDepartmentName").value;
-            var departmentHigh = document.getElementById("editDepartmentHigh").value;
-            var departmentHighInt = parseInt(departmentHigh, 10);
+            var positionId = document.getElementById("editPositionId").value;
+            var positionName = document.getElementById("editPositionName").value;
+            var positionHigh = document.getElementById("editPositionHigh").value;
 
             $.ajax({
                 type: "POST",
-                url: "/department/update",
+                url: "/position/update",
                 contentType: "application/json",
                 data: JSON.stringify({
-                    departmentId: departmentId,
-                    departmentName: departmentName,
-                    departmentHigh: departmentHighInt
+                    positionId: positionId,
+                    positionName: positionName,
+                    positionHigh: positionHigh
                 }),
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -173,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 },
                 error: function () {
-                    Swal.fire("서버 오류", response.res_msg, "error");
+                    Swal.fire("서버 오류", "서버 요청 중 오류가 발생했습니다.", "error");
                 }
             });
         };

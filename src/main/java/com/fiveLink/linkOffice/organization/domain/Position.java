@@ -21,12 +21,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "fl_position")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Builder
 public class Position {
     
@@ -51,6 +53,9 @@ public class Position {
 
     @Column(name = "position_status")
     private Long positionStatus;
+    
+    @Column(name = "position_level")
+    private Long positionLevel;
     
     // member와 1대다 관계
     @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)

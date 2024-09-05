@@ -49,7 +49,8 @@ public class MemberDto {
 	private Long memberId;
     private String memberName;
     private Long departmentNo;
-   
+    private Long positionNo;
+    
 	public Member toEntity() {
 		return Member.builder()
 					.memberNo(member_no)

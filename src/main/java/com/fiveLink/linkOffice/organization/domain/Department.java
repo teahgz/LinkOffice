@@ -60,5 +60,5 @@ public class Department {
 	 private List<Member> members;
 	 
 	 @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-	    private List<Inventory> inventory;
+	 private List<Inventory> inventory;
 }
