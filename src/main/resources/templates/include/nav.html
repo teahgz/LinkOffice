@@ -117,8 +117,8 @@
 				<li>
 					<a href="#">사원 관리</a>
 					<div class="dropdown">
-						<ul>
-							<li><a href="#">사원 등록</a></li>
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/admin/member/create}">사원 등록</a></li>
 							<li><a href="#">사원 수정</a></li>
 							<li><a href="#">사원 조회</a></li>
 						</ul>

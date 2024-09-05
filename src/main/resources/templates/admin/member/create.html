@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/admin/member/create.css}" rel="stylesheet" type="text/css">
+       <section>
+        <div class="create_member">
+            <h1>사원 등록</h1>
+            <div class="member_card">
+                <div class="member_header">
+                    <div class="profile_img">
+					<img alt="사원 사진" id="currentSignature">
+                    </div>
+                    <ul class="profile-details" >
+                        <li>
+                            <strong>사번</strong>
+                            <input>
+                        </li>
+                        <li>
+                            <strong>사용자</strong>
+                            <input>
+                        </li>
+                        <li>
+                            <strong>주민번호 </strong>
+                            <input>
+                        </li>
+                    </ul>
+                </div>
+                <hr class="divider">
+                <ul class="profile-details paired">
+                    <li>
+                        <strong>부서</strong>
+                    </li>
+                    <li>
+                        <strong>직위</strong>
+                    </li>
+                    <li>
+                        <strong>입사일</strong>
+                        <input>
+                    </li>
+                    <li>
+                        <strong>퇴사일</strong>
+                        <span>-</span>
+                    </li>
+                    <li>
+                        <strong>전화번호</strong>
+                        <input>
+                    </li>
+                    <li>
+                        <strong>내선번호</strong>
+                        <input>
+                    </li>
+                    <li id="address">
+                        <strong>주소</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+        <script th:src="@{/js/#}"></script>
+    </th:block>
+</html>
