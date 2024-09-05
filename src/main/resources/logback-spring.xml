@@ -68,8 +68,4 @@
    		<appender-ref ref="CONSOLE"/>
    		<appender-ref ref="FILE"/>
    </logger>
-   <root level="DEBUG">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
-    </root>
 </configuration>

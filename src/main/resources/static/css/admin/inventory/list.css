@@ -9,6 +9,9 @@
 
         /* 하위 테이블 스타일 */
         .child-row td {
+        width: 100%;
+    	background-color: #f9f9f9;
+        	display: block !important;
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -20,3 +23,6 @@
             padding: 8px 10px;
             border-bottom: 1px solid #ddd;
         }
+        tr.shown + tr.child {
+    display: table-row !important;
+}
