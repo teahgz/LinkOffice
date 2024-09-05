@@ -30,6 +30,7 @@ public class VacationDto  {
     public void setVacationData(Map<String, Object> vacationData) {
         this.vacationData = vacationData;
     }
+
     public Vacation toEntity(){
         return Vacation.builder()
                 .vacationNo(vacation_no)
@@ -46,19 +47,18 @@ public class VacationDto  {
             try {
                 String yearStr = entry.getKey();
                 Object daysObj = entry.getValue();
-
                 int year = Integer.parseInt(yearStr); // 연도를 정수로 변환
                 int days = (daysObj instanceof String)
                         ? Integer.parseInt((String) daysObj) // daysObj가 String일 경우
                         : (Integer) daysObj; // daysObj가 Integer일 경우
 
                 Vacation vacation = Vacation.builder()
+                        .vacationNo(vacation_no)
                         .vacationYear(year)
                         .vacationAnnualLeave(days)
                         .vacationCreateDate(vacation_create_date)
                         .memberNo(member_no)
                         .build();
-
                 vacations.add(vacation);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -67,6 +67,7 @@ public class VacationDto  {
         }
         return vacations;
     }
+
     public VacationDto toDto(Vacation vacation){
         return VacationDto.builder()
                 .vacation_no(vacation.getVacationNo())

@@ -34,8 +34,12 @@
 
                 </div>
 
-                <div class="addVacation_submit" style="text-align: center; margin-top: 20px;">
+                <div class="addVacation_submit" style="text-align: center; margin-top: 20px;" th:if="${countVacation == 0}">
                     <button type="submit">등록</button>
+                </div>
+
+                <div class="addVacation_update" style="text-align: center; margin-top: 20px;" th:if="${countVacation > 0}">
+                    <button type="submit">수정</button>
                 </div>
             </div>
 
@@ -46,103 +50,111 @@
 
             <div id="vacationFormContainer">
 
-                <div class="input-group">
+                    <div class="input-group" th:if="${countVacation > 0}" th:each="list : ${vacationList}">
+                        <label for="year${list.vacation_year}">[[${list.vacation_year}]]년차</label>
+                        <input type="number" id="year${list.vacation_year}" name="year${list.vacation_year}"
+                               th:value="${list.vacation_annual_leave}"
+                               placeholder="휴가 갯수 입력">
+                        <input type="hidden" id="vacationPk" th:value="${list.vacation_no}"/>
+                    </div>
+
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year1">1년차</label>
                     <input type="number" id="year1" name="year1" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year2">2년차</label>
                     <input type="number" id="year2" name="year2" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year3">3년차</label>
                     <input type="number" id="year3" name="year3" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year4">4년차</label>
                     <input type="number" id="year4" name="year4" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year5">5년차</label>
                     <input type="number" id="year5" name="year5" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year6">6년차</label>
                     <input type="number" id="year6" name="year6" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year7">7년차</label>
                     <input type="number" id="year7" name="year7" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year8">8년차</label>
                     <input type="number" id="year8" name="year8" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year9">9년차</label>
                     <input type="number" id="year9" name="year9" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year10">10년차</label>
                     <input type="number" id="year10" name="year10" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year11">11년차</label>
                     <input type="number" id="year11" name="year11" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year12">12년차</label>
                     <input type="number" id="year12" name="year12" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year13">13년차</label>
                     <input type="number" id="year13" name="year13" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year14">14년차</label>
                     <input type="number" id="year14" name="year14" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year15">15년차</label>
                     <input type="number" id="year15" name="year15" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year16">16년차</label>
                     <input type="number" id="year16" name="year16" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year17">17년차</label>
                     <input type="number" id="year17" name="year17" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year18">18년차</label>
                     <input type="number" id="year18" name="year18" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year19">19년차</label>
                     <input type="text" id="year19" name="year19" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year20">20년차</label>
                     <input type="number" id="year20" name="year20" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year21">21년차</label>
                     <input type="number" id="year21" name="year21" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year22">22년차</label>
                     <input type="number" id="year22" name="year22" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year23">23년차</label>
                     <input type="number" id="year23" name="year23" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year24">24년차</label>
                     <input type="number" id="year24" name="year24" placeholder="휴가 갯수 입력">
                 </div>
-                <div class="input-group">
+                <div class="input-group" th:if="${countVacation == 0}">
                     <label for="year25">25년차 이상</label>
                     <input type="number" id="year25" name="year25" placeholder="휴가 갯수 입력">
                 </div>

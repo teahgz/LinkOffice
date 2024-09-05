@@ -27,12 +27,15 @@ public class VacationService {
         this.vacationTypeRepository = vacationTypeRepository;
     }
 
-    public int addVacation(Vacation vacation) {
+    public int addVacation(VacationDto dto) {
         int result = -1;
         try {
+            Vacation vacation = dto.toEntity();
             vacationRepository.save(vacation);
+
             result = 1;
-        } catch (Exception e) {
+
+        } catch (Exception e){
             e.printStackTrace();
         }
         return result;
@@ -41,10 +44,7 @@ public class VacationService {
     public int addTypeVacation(VacationTypeDto dto) {
         int result = -1;
         try {
-            System.out.println(dto);
             VacationType vacationTypes = dto.toEntity();
-            System.out.println(vacationTypes);
-
             vacationTypeRepository.save(vacationTypes);
 
             result = 1;
@@ -63,6 +63,20 @@ public class VacationService {
         return vacationMapper.countVacation();
 
 
+    }
+
+    public Vacation findVacationById(Long vacationId) {
+        return vacationRepository.findById(vacationId).orElse(null);
+    }
+
+    public int updateVacation(Vacation vacation) {
+        try {
+            vacationRepository.save(vacation); // JPA의 save는 수정도 처리합니다.
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
 }

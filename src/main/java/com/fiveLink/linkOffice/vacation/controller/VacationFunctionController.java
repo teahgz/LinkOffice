@@ -29,29 +29,48 @@ public class VacationFunctionController {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
-        System.out.println(params);
+
         try {
             Long memberNo = Long.parseLong((String) params.get("memberNo"));
-            boolean lessThanOneYear = (Boolean) params.get("lessThanOneYear");
-
             // 연차 입력 데이터 처리
             Map<String, Object> vacationData = (Map<String, Object>) params.get("vacationData");
-
             VacationDto dto = new VacationDto();
             dto.setMember_no(memberNo);
-            //dto.setLessThanOneYear(lessThanOneYear);  // 체크박스 상태 설정
             dto.setVacationData(vacationData);
 
+            int count = Integer.parseInt(String.valueOf(params.get("countVacation")));
+            if(count > 0) {
+                List<String> vacationPk = (List<String>) params.get("vacationPkData");
+                for(int i = 0; i< vacationPk.size(); i++){
+
+                    String pk = vacationPk.get(i);
+                    dto.setVacation_no(Long.parseLong(pk));
+
+                    List<Vacation> vacations = dto.toEntities();
+
+                    dto.setVacation_no(vacations.get(i).getVacationNo());
+                    dto.setVacation_annual_leave(vacations.get(i).getVacationAnnualLeave());
+                    dto.setVacation_year(vacations.get(i).getVacationYear());
+                    if (vacationService.addVacation(dto) > 0) {
+                        resultMap.put("res_code", "200");
+                        resultMap.put("res_msg", "성공적으로 생성되었습니다.");
+                    }
+                }
+
+            }
             List<Vacation> vacations = dto.toEntities();
-            System.out.println(vacations);
+
             for (Vacation vacation : vacations) {
-                if (vacationService.addVacation(vacation) > 0) {
+                dto.setVacation_year(vacation.getVacationYear());
+                dto.setVacation_annual_leave(vacation.getVacationAnnualLeave());
+
+                if (vacationService.addVacation(dto) > 0) {
                     resultMap.put("res_code", "200");
                     resultMap.put("res_msg", "성공적으로 생성되었습니다.");
-                } else {
-                    resultMap.put("res_msg", "연차 정보를 추가하는 데 실패했습니다.");
                 }
+
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
