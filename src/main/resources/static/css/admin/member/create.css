@@ -1,49 +1,48 @@
 .create_member {
-    position: relative; 
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-}
-
-.create_member h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 100px;
+    position: relative;
+    width: 80%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .member_card {
     background-color: #f8f9fa;
-    border-radius: 12px; 
-    max-width: 800px; 
+    border-radius: 12px;
+    max-width: 800px;
     width: 100%;
-    min-height: 400px; 
+    min-height: 400px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 20px 60px; 
-    margin-top: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: flex-start; 
-    gap: 20px;
+    padding: 40px 20px 60px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
 }
 
 .member_header {
     display: flex;
-    align-items: flex-start; 
-    gap: 28px; 
-    margin-right: 290px;
-    margin-bottom: 20px;
+    width: 100%;
+    padding: 0 20px;
+    justify-content: space-between;
+}
+
+.profile_header_left {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
 }
 
 .profile_img {
-    width: 150px; 
-    height: 150px; 
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
 }
 
@@ -53,48 +52,135 @@
     object-fit: cover;
 }
 
-.profile-details {
-    display: flex; 
-    flex-direction: column; 
-    gap: 35px; 
-    padding: 0; 
-    margin: 0; 
-    list-style: none; 
+.btn_upload {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #C0C0C0;
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px; 
 }
 
-.profile-details li {
+.file_info {
+    color: red;
+    font-size: 0.7rem;
+    margin-top: 10px; 
+    margin-left: 40px;
+}
+
+.profile_details {
     display: flex;
-    justify-content: flex-start; 
-    align-items: center; 
-    gap: 30px;
+    flex-direction: column;
+    gap: 25px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    margin-top: 20px;
 }
 
-#address{
+.profile_details li {
     display: flex;
-    justify-content: flex-start; 
-    align-items: center; 
-    gap: 30px;
-    width: 280px;
-
+    align-items: center;
+    gap: 20px;
 }
 
-.divider {
+.profile_details li strong {
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.profile_details.paired {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+.profile_detail_address {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
     width: 100%;
-    border: 0;
-    border-top: 1px solid #ddd; 
+    margin-top: 20px;
 }
 
-.profile-details.paired {
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 30px 40px; 
-    width: 70%; 
-    margin-left: 220px; 
+.profile_detail_address li {
+    margin-left: 330px;
 }
 
-.profile-details.paired li {
-    display: flex; 
-    justify-content: flex-start; 
-    align-items: center; 
-    gap: 30px; 
+.profile_detail_address label {
+    min-width: 80px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.mobile_number, .internal_number {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mobile_number input, .internal_number input {
+    width: 60px; 
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.mobile_number span, .internal_number span {
+    font-size: 1rem; 
+}
+
+
+.profile_details input[type="text"], .profile_details input[type="date"], .profile_details input[type="tel"] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    max-width: 400px; 
+    box-sizing: border-box;
+    font-size: 1rem; 
+}
+
+select option {
+    padding: 8px; 
+}
+
+
+
+.form_buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    justify-content: flex-end; 
+    width: 100%;
+}
+
+.btn_address, .btn_create, .btn_cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn_address {
+    background-color: #B1C2DD;
+    margin-left:20px;
+}
+
+.btn_create {
+    background-color: #B1C2DD;
+}
+
+.btn_cancel {
+    background-color: #C0C0C0;
 }
