@@ -34,7 +34,8 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     
     @Query("SELECT i FROM Inventory i " +
 		       "WHERE i.inventoryCategory.inventoryCategoryNo = :inventoryCategoryNo " +
-		       "AND i.department.departmentNo = :departmentNo")  
+		       "AND i.department.departmentNo = :departmentNo " +
+    	       "ORDER BY i.inventoryPurchaseDate DESC") 
 		List<Inventory> findByCategoryAndDepartment(@Param("inventoryCategoryNo") Long inventoryCategoryNo, 
 		                                            @Param("departmentNo") Long departmentNo);
 }

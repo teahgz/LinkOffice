@@ -33,8 +33,7 @@ public class InventoryViewController {
         List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
         model.addAttribute("departments", departmentNames);
 
-        // 페이지 로드 시에는 카테고리 요약을 로드하지 않음
-        return "admin/inventory/list";
+        return "admin/inventory/inventory_list";
     }
 
     @GetMapping("/inventory/category/{inventory_category_no}/department/{department_no}")
@@ -51,5 +50,14 @@ public class InventoryViewController {
         List<InventoryDto> result = inventoryService.selectInventoryByDepartment(departmentNo);
         LOGGER.info("selectInventoryByDepartment result: {}", result);
         return result;
+    }
+    
+    @GetMapping("/inventory/create")
+    public String selectInventorycreate(Model model) {
+        // 부서 목록을 조회하여 model에 추가
+        List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
+        model.addAttribute("departments", departmentNames);
+
+        return "admin/inventory/inventory_create";
     }
 }
