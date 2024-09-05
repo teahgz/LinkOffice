@@ -1,3 +1,7 @@
+document.querySelector('.close').addEventListener('click', function() {
+    window.history.back();
+});
+
 // 모달 -> 비밀번호 확인 시 꺼지기
 const pwform = document.getElementById('pwVerifyFrm');
 pwform.addEventListener('submit', (e) => {
