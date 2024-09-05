@@ -3,15 +3,34 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
-<th:block layout:fragment="content">
+<th:block layout:fragment="content" th:each="member : ${memberdto}">
     <link th:href="@{/css/employee/member/myedit.css}" rel="stylesheet" type="text/css">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <section>
+
+	<div id="myModal" class="modal">
+		<div class="modal-content">
+			<h2>비밀번호 입력</h2>
+			<form id="pwVerifyFrm">
+			<span class="close">&times;</span>
+			 <input type="hidden" id="member_no_pw" th:value="${member.member_no}" />
+			 <input type="hidden" id="member_pw" th:value="${member.member_pw}" />
+			 <input type="hidden" id="csrf_token_pw" th:value="${_csrf.token}" />
+				<div class="password-container">
+					<label for="pwVerify">비밀번호 </label> 
+					<input type="password"id="pw_verify" name="pw_verify" required>
+				</div>
+				<div class="button-container">
+					<button type="submit">확인</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<section>
         <div class="my_profile">
             <h1>정보 수정</h1>
-            <form id="myeditUpdateFrm" enctype="multipart/form-data" th:each="member : ${memberdto}">
+            <form id="myeditUpdateFrm" enctype="multipart/form-data">
                 <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
-                <input type="hidden" name="member_no" th:value="${member.member_no}" />
+                <input type="hidden" id="member_no" th:value="${member.member_no}" />
                 <div class="profile_card">
                     <div class="profile_header">
                         <div class="profile_header_left">

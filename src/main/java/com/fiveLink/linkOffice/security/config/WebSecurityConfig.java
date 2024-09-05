@@ -57,7 +57,6 @@ public class WebSecurityConfig implements HttpSessionListener {
                     .tokenValiditySeconds(86400*7)
                     .alwaysRemember(false)
                     .tokenRepository(tokenRepository())
-                    
                     .authenticationSuccessHandler(rememberMeSuccessHandler()))
             .sessionManagement(sessionManagement ->
                 sessionManagement
