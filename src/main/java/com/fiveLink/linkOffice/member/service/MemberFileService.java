@@ -102,4 +102,28 @@ public class MemberFileService {
     	}
     	return newProfileName;
     }
+    
+    // 프로필 이미지 삭제 
+    public int profileDelete(Long memberNo) {
+    	int result = -1;
+    	try {
+    		Member member = memberRepository.findByMemberNo(memberNo);
+    		
+    		String newFileProfile = member.getMemberNewProfileImg();
+    		String oriFileProfile = member.getMemberOriProfileImg();
+    		
+    		String resultDir = fileProfileDir + URLDecoder.decode(newFileProfile,"UTF-8");
+    		
+    		if(resultDir != null && resultDir.isEmpty() == false) {
+    			File file = new File(resultDir);
+    			if(file.exists()) {
+    				file.delete();
+    				result = 1;
+    			}
+    		}
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return result;
+    }
 }
