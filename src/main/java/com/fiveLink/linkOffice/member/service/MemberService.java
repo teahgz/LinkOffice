@@ -119,6 +119,19 @@ public class MemberService {
         }
     }
     
+	// [서혜원] 직위 번호별 사원 조회
+	public List<MemberDto> getMembersByPositionNo(Long positionNo) {
+	    List<Member> members = memberRepository.findByPositionNo(positionNo);
+	    return members.stream()
+	        .map(member -> MemberDto.builder()
+	            .memberId(member.getMemberNo())
+	            .memberName(member.getMemberName())
+	            .positionNo(member.getPosition().getPositionNo()) 
+	            .build()
+	        )
+	        .collect(Collectors.toList());
+	}
+
     // [전주영] 전자결재 서명 update
     public MemberDto selectMemberOne(Long memberNo) {
     	Member member = memberRepository.findByMemberNo(memberNo);

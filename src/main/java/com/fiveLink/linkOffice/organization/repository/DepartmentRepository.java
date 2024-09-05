@@ -13,11 +13,10 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     List<Department> findByDepartmentHigh(Long departmentHigh);
 
+    List<Department> findByDepartmentHighAndDepartmentStatus(Long departmentHigh, Long departmentStatus);
+    
     List<Department> findAllByOrderByDepartmentHighAscDepartmentNameAsc();
     
-    @Query(value = "SELECT * FROM departments WHERE department_name = :name AND department_id = :id", nativeQuery = true)
-    Department findByNameAndId(@Param("name") String name, @Param("id") Long id);
- 
     // 부서명 수정 중복 확인
     boolean existsByDepartmentName(String departmentName);
     boolean existsByDepartmentNameAndDepartmentNoNot(String departmentName, Long departmentNo); 

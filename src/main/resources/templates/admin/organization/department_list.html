@@ -24,7 +24,7 @@
                         </th:block>
                     </ul>
                 </div>
-                <div class="details" th:if="${department}">
+               <div class="details" th:if="${department}">
 				    <h2>부서 정보</h2>
 				    <p><strong>부서명:</strong> <span th:text="${department.department_name}"></span></p>
 				    <p><strong>상위 부서명:</strong> <span th:text="${department.department_high_name}"></span></p>
@@ -47,14 +47,14 @@
 				        </ul>
 				    </div>
 				    <button id="editButton" th:data-department-id="${department.department_no}">수정</button>
-				    <button id="deleteButton" th:data-department-id="${department.department_no}">삭제</button> <!-- 삭제 버튼 추가 -->
+				    <button id="deleteButton" th:data-department-id="${department.department_no}">삭제</button> 삭제 버튼 추가
 				</div>
 
             </div>
         </section>
 
         <!-- 등록 모달 -->
-        <div id="myModal" class="modal">
+        <div id="createModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>부서 등록</h2>
@@ -98,7 +98,7 @@
                     <button type="submit">수정</button>
                 </form>
             </div>
-        </div> 
+        </div>  
 		<script th:src="@{/js/admin/organization/departmentList.js}"></script>
     </th:block> 
 </html>

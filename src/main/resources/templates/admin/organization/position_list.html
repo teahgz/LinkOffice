@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+<th:block layout:fragment="content">
+<link th:href="@{/css/admin/organization/positionList.css}" rel="stylesheet" type="text/css"> 
+        <section>
+            <div class="container">
+                <div class="list">
+                    <h2>직위 목록</h2>
+                    <button id="openModal">직위 등록</button>
+                    <ul>
+                        <th:block th:each="position : ${positions}">
+                            <li>
+                                <a th:href="@{/position(id=${position.position_no})}" th:text="${position.position_name}"></a>  
+                            </li>
+                        </th:block>
+                    </ul>
+                </div>
+                <div class="details" th:if="${position}">
+				    <h2>직위 정보</h2>
+				    <p><strong>직위명:</strong> <span th:text="${position.position_name}"></span></p>
+				    <p><strong>상위 직위명:</strong> <span th:text="${position.position_high_name}"></span></p> 
+				    <button id="editButton" th:data-position-id="${position.position_no}">수정</button>
+				    <button id="deleteButton" th:data-position-id="${position.position_no}">삭제</button>   
+				</div>
+
+
+            </div>
+        </section>
+
+        <!-- 등록 모달 -->
+        <div id="createModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>직위 등록</h2>
+                <form id="positionForm">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <label for="positionName">직위명:</label>
+                    <input type="text" id="positionName" name="positionName" required><br><br>
+                    
+                    <label for="positionHigh">상위 직위:</label>
+                    <select id="positionHigh" name="positionHigh">
+                        <option value="0">선택 없음</option>
+                        <th:block th:each="pos : ${topLevelPositions}">
+                            <option th:value="${pos.position_no}" th:text="${pos.position_name}"></option>
+                        </th:block>
+                    </select><br><br>
+                    
+                    <button type="submit">등록</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 수정 모달 -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>직위 수정</h2>
+                <form id="editForm">
+                    <input type="hidden" id="editPositionId" name="positionId"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <label for="editPositionName">직위명:</label>
+                    <input type="text" id="editPositionName" name="positionName" required><br><br>
+                    
+                    <label for="editPositionHigh">상위 직위:</label>
+                    <select id="editPositionHigh" name="positionHigh">
+                        <option value="0">선택 없음</option>
+                        <th:block th:each="pos : ${topLevelPositions}">
+                            <option th:value="${pos.position_no}" th:text="${pos.position_name}"></option>
+                        </th:block>
+                    </select><br><br>
+                    
+                    <button type="submit">수정</button>
+                </form>
+            </div>
+        </div> 
+		<script th:src="@{/js/admin/organization/positionList.js}"></script>
+    </th:block> 
+</html>
+
