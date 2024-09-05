@@ -108,6 +108,12 @@ public class MemberApiController {
 		    	if(saveFileName != null) {
 		    		memberdto.setMember_ori_profile_img(file.getOriginalFilename());
 		    		memberdto.setMember_new_profile_img(saveFileName);
+		    		
+		    		if(memberFileService.profileDelete(memberNo) > 0) {
+		    			response.put("res_msg", "기존 파일이 삭제 되었습니다.");
+		    		}else {
+		    			response.put("res_msg", "기존 파일이 삭제 중 오류가 발생하었습니다.");
+		    		}
 		    	} else {
 		    		response.put("res_msg", "파일 업로드 실패");
 		    	}
