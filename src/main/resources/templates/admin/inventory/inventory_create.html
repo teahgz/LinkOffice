@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{include/layout}">
+<meta charset="UTF-8">
+<th:block layout:fragment="content">
+    <link th:href="@{/css/admin/inventory/inventory_create.css}" rel="stylesheet" type="text/css">
+    <style>
+        
+    </style>
+<section>
+    <h1>비품 등록</h1>
+    <hr>
+
+    <div class="form-container">
+        <form action="/submit-inventory" method="POST">
+            <div class="form-group">
+                <label for="department">부서 :</label>
+                <select id="department" name="department">
+                    <option value="">부서 선택</option>
+                	<option th:each="department : ${departments}" 
+                    th:value="${department.department_no}" 
+                    th:text="${department.department_name}">
+                </option>
+                </select>
+                <br><br>
+                <label for="date">일자 :</label>
+                <input type="date" id="date" name="date">
+                <br><br>
+                <label for="category">카테고리명 :</label>
+                <input type="text" id="category" name="category" readonly>
+                <button type="button" id="openModalBtn">카테고리 선택</button>
+                <br><br>
+                <label for="iventoryName">비품명 :</label>
+                <input type="text" id="iventoryName" name="iventoryName">
+                <br><br>
+                <label for="iventoryLocation">보관위치 :</label>
+                <input type="text" id="iventoryLocation" name="iventoryLocation">
+                <br><br>
+                <label for="inventoryPrice">가격 :</label>
+                <input type="text" id="inventoryPrice" name="inventoryPrice">
+                <br><br>
+                <label for="iventoryManager">관리자 :</label>
+                <input type="text" id="iventoryManager" name="iventoryManager" disabled>
+                <br><br>
+                <label for="iventoryQuanatity">수량 :</label>
+                <input type="text" id="iventoryQuanatity" name="iventoryQuanatity">
+            </div>
+            <div class="register-button">
+                <button type="submit">등록</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 모달 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>카테고리 선택</h3>
+            <ul>
+                <li><button type="button" class="category-item" data-category="노트북">노트북</button></li>
+                <li><button type="button" class="category-item" data-category="모니터">모니터</button></li>
+                <li><button type="button" class="category-item" data-category="키보드">키보드</button></li>
+                <!-- 추가 카테고리 -->
+            </ul>
+        </div>
+    </div>
+</section>
+    <script>
+        // 모달 열기
+        var modal = document.getElementById("myModal");
+        var btn = document.getElementById("openModalBtn");
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // 모달 닫기
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // 카테고리 선택 시 모달에서 값 설정
+        var categoryItems = document.getElementsByClassName("category-item");
+        for (var i = 0; i < categoryItems.length; i++) {
+            categoryItems[i].onclick = function() {
+                var selectedCategory = this.getAttribute("data-category");
+                document.getElementById("category").value = selectedCategory;
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</th:block>
+</html>
