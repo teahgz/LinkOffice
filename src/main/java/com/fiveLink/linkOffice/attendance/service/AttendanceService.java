@@ -96,7 +96,7 @@ public class AttendanceService {
 	}	
     
 	// 공휴일 API 제공 메소드. 년도와 달의 값을 매개변수로 받음.
-    public static Map<String, Object> holidayInfoAPI(String year, String month) throws IOException {
+    public Map<String, Object> holidayInfoAPI(String year, String month) throws IOException {
     	// 공휴일 API에서 받은 key 값 
     	String secretKey = "K%2FCnoTIK3E6FzNpZG%2BnO6g%2FuNJgDKu1sQqq3r9bF5EExcoUhfnjuaFvlRpdpD2deCOvTeOEwJ3TUW7z8m4mKxQ%3D%3D";
         

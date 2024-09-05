@@ -1,10 +1,10 @@
 package com.fiveLink.linkOffice.attendance.controller;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
-import com.fiveLink.linkOffice.member.domain.MemberDto;
-import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +38,13 @@ public class AttendanceViewController {
    @GetMapping("/employee/attendance/myAttendance/{member_no}")
    public String documentPersonalPage(Model model,
          @PathVariable("member_no") Long memberNo
-         ) {
+         ) throws IOException {
       List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
       LOGGER.debug("attendance List: {}", attendanceList);
       
       // memberDto 불러오기 
       List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
- 
+      
       model.addAttribute("memberdto", memberdto);
       model.addAttribute("attendanceList", attendanceList);
       return "employee/attendance/myAttendance";

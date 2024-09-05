@@ -2,32 +2,67 @@
 <html xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorate="~{include/layout}">
-<meta charset="UTF-8">
+	<meta charset="UTF-8">
     <th:block layout:fragment="content">
+	<link th:href="@{/css/employee/attendance/myAttendance.css}" rel="stylesheet" type="text/css">
         <section> 
-         근태 조회 
+        	<h1>근태 조회</h1>
         <hr>
-	        <table border="1">
-	        	<thead>
-	                 <tr>
-	                     <th>날짜</th>
-	                     <th>출근 시간</th>
-	                     <th>상태</th>
-	                 </tr>
-	            </thead>
-				<tbody>
-	                   <tr th:each="attendance : ${attendanceList}">
-	                       <td th:text="${attendance.work_date}"></td>
-	                       <td th:text="${attendance.check_in_time != null ? attendance.check_in_time : '미입력'}"></td>
-	                       <td>
-	                           <span th:if="${attendance.check_in_time != null}">
-	                               <span th:text="${attendance.check_in_time.isBefore('09:00') ? '출근' : '지각'}"></span>
-	                           </span>
-	                           <span th:if="${attendance.check_in_time == null}">결근</span>
-	                       </td>
-	                   </tr>
-	            </tbody>
-	        </table>
+        <div class="attendance_div">
+	        <div class="attendance_left">
+	        	<div class="attendance_status">
+	        		<span>출근<span id="attendance_normal"></span></span>
+	        		<span>지각<span id="attendance_late"></span></span>
+	        		<span>결근<span id="attendance_absent"></span></span>
+	        		<span>휴가<span id="attendance_vacation"></span></span>
+	        	</div>
+	        	<div class="calendar_div">
+					<div id="calendar_title">
+						<span id="prev_button" onclick="prevMonth()"> &lt; </span>
+						<span id="year_and_month"></span>
+						<span id="next_button" onclick="nextMonth()"> &gt; </span>
+					</div>
+					<table id="calendar">
+						<tr>
+							<td align="center"><font color ="#F79DC2">일</td>
+							<td align="center">월</td>
+							<td align="center">화</td>
+							<td align="center">수</td>
+							<td align="center">목</td>
+							<td align="center">금</td>
+							<td align="center"><font color ="skyblue">토</td>
+						</tr>
+					</table>
+				</div>
+	        </div>
+	        <hr>
+	        <div class="attendance_list">
+		        <table id="attendanceTable" border="1">
+		        	<thead>
+		                 <tr>
+		                     <th>날짜</th>
+		                     <th>출근 시간</th>
+		                     <th>퇴근 시간</th>
+		                     <th>상태</th>
+		                 </tr>
+		            </thead>
+					<tbody>
+		                   <tr th:each="attendance : ${attendanceList}">
+		                       <td class="attendance_date" th:text="${attendance.work_date}"></td>
+		                       <td th:text="${attendance.check_in_time != null ? attendance.check_in_time : ''}"></td>
+		                       <td th:text="${attendance.check_out_time != null ? attendance.check_out_time : ''}"></td>
+		                       <td>
+		                           <span th:if="${attendance.check_in_time != null}">
+		                               <span th:text="${attendance.check_in_time.isBefore('09:00') ? '출근' : '지각'}"></span>
+		                           </span>
+		                           <span th:if="${attendance.check_in_time == null}">결근</span>
+		                       </td>
+		                   </tr>
+		            </tbody>
+		        </table>
+	        </div>
+        </div>
     	</section>
+    	<script src="/js/employee/attendance/myAttendance.js"></script>
     </th:block>
 </html>
