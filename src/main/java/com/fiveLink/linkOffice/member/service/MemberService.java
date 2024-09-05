@@ -18,12 +18,11 @@ import jakarta.transaction.Transactional;
 public class MemberService {
 	
 	private final MemberRepository memberRepository;
-	private final PasswordEncoder passwordEncoder;
+
 	
 	@Autowired
-	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+	public MemberService(MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 	// 멤버 조회 
 	  public List<MemberDto> getAllMembers() {
@@ -177,7 +176,7 @@ public class MemberService {
     
     // 사원 생성
     public Member createMember(MemberDto dto) {
-    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
+		/* dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw())); */
     	Member member = dto.toEntity();
     	return memberRepository.save(member);
     }
