@@ -1,9 +1,7 @@
 package com.fiveLink.linkOffice.attendance.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +35,7 @@ public class AttendanceViewController {
    // 근태 조회 
    @GetMapping("/employee/attendance/myAttendance/{member_no}")
    public String documentPersonalPage(Model model,
-         @PathVariable("member_no") Long memberNo
-         ) throws IOException {
+         @PathVariable("member_no") Long memberNo)  {
       List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
       LOGGER.debug("attendance List: {}", attendanceList);
       
