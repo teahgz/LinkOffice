@@ -15,9 +15,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     List<Department> findByDepartmentHighAndDepartmentStatus(Long departmentHigh, Long departmentStatus);
     
-    List<Department> findAllByOrderByDepartmentHighAscDepartmentNameAsc();
+    List<Department> findAllByDepartmentStatusOrderByDepartmentHighAscDepartmentNameAsc(Long departmentStatus);
     
     // 부서명 수정 중복 확인
-    boolean existsByDepartmentName(String departmentName);
-    boolean existsByDepartmentNameAndDepartmentNoNot(String departmentName, Long departmentNo); 
+    boolean existsByDepartmentNameAndDepartmentStatus(String departmentName, Long departmentStatus); 
+    
 }
