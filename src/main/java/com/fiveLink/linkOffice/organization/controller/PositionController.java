@@ -103,4 +103,25 @@ public class PositionController {
         return resultMap;
     }
  
+    @GetMapping("/position/member-count")
+    @ResponseBody
+    public long getMemberCountByPositionNo(@RequestParam Long positionNo) {
+        return positionService.getMemberCountByPositionNo(positionNo);
+    }
+    
+    @PostMapping("/position/delete")
+    @ResponseBody
+    public Map<String, String> deletePosition(@RequestParam("id") Long positionId) {
+        Map<String, String> resultMap = new HashMap<>();
+        boolean success = positionService.deletePosition(positionId);
+        
+        if (success) {
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "직위가 성공적으로 삭제되었습니다.");
+        } else {
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "직위에 소속 사원이 존재하여 삭제가 불가능합니다.");
+        }
+        return resultMap;
+    }
 }

@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 수정
-    document.querySelectorAll("button#editButton").forEach(function (editButton) {
+/*    document.querySelectorAll("button#editButton").forEach(function (editButton) {
         editButton.onclick = function () {
             var positionId = this.getAttribute("data-position-id");
 
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         };
-    });
+    });*/
 
     // 삭제
     document.querySelectorAll("button#deleteButton").forEach(function (deleteButton) {
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 수정
-    if (editForm) {
+    /*if (editForm) {
         editForm.onsubmit = function (event) {
             event.preventDefault();
 
@@ -171,5 +171,5 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         };
-    }
+    }*/
 });

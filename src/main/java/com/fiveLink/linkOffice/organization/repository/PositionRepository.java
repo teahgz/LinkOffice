@@ -16,11 +16,11 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 	List<Position> findAllByOrderByPositionHighAsc();
     List<Position> findByPositionHighIsNotNull();
     
-    boolean existsByPositionName(String positionName);
+    boolean existsByPositionNameAndPositionStatus(String positionName, Long positionStatus);
     
-    boolean existsByPositionNameAndPositionNoNot(String positionName, Long positionNo);
-    
-    List<Position> findByPositionHighAndPositionStatus(Long positionHigh, Long positionStatus);
+    boolean existsByPositionNameAndPositionNoNot(String positionName, Long positionNo); 
   
+    List<Position> findByPositionHigh(Long positionHigh);
+    
     List<Position> findAllByPositionStatus(Long status);
 } 
