@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
+import com.fiveLink.linkOffice.inventory.domain.InventoryCategory;
+import com.fiveLink.linkOffice.inventory.domain.InventoryCategoryDto;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
+import com.fiveLink.linkOffice.inventory.repository.InventoryCategoryRepository;
 import com.fiveLink.linkOffice.inventory.repository.InventoryRepository;
 
 import jakarta.transaction.Transactional;
@@ -18,11 +21,13 @@ import jakarta.transaction.Transactional;
 public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    private final InventoryCategoryRepository inventoryCategoryRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryService.class);
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository) {
+    public InventoryService(InventoryRepository inventoryRepository, InventoryCategoryRepository inventoryCategoryRepository) {
         this.inventoryRepository = inventoryRepository;
+        this.inventoryCategoryRepository = inventoryCategoryRepository;
     }
 
     public List<InventoryDto> selectInventoryByCategoryAndDepartment(Long inventoryCategoryNo, Long departmentNo) {
@@ -129,4 +134,16 @@ public class InventoryService {
     public String findMemberNameByNumber(String memberNumber) {
         return inventoryRepository.findMemberNameByMemberNumber(memberNumber);
     }
+    
+    public String registerCategory(InventoryCategoryDto inventoryCategoryDto) {
+        // 카테고리 이름으로 검색
+        if (inventoryCategoryRepository.findByInventoryCategoryName(inventoryCategoryDto.getInventory_category_name()).isPresent()) {
+            return "이미 존재하는 카테고리입니다.";
+        }
+
+        // 카테고리가 없으면 새로 등록
+        inventoryCategoryRepository.save(inventoryCategoryDto.toEntity());
+        return "카테고리가 성공적으로 등록되었습니다.";
+    }
+    
 }
