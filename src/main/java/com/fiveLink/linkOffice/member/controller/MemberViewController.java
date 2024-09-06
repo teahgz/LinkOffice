@@ -11,18 +11,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.domain.PositionDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
+import com.fiveLink.linkOffice.organization.service.PositionService;
 
 @Controller
 public class MemberViewController {
 	
 	private final MemberService memberService;
 	private final DepartmentService departmentService;
+	private final PositionService positionService;
 	
 	@Autowired
-	public MemberViewController(MemberService memberService,DepartmentService departmentService) {
+	public MemberViewController(MemberService memberService, DepartmentService departmentService, PositionService positionService) {
 		this.memberService = memberService;
 		this.departmentService = departmentService;
+		this.positionService = positionService;
 	}
 	
 	// 내정보 페이지
@@ -51,16 +55,19 @@ public class MemberViewController {
 	// 관리자 사원 등록 페이지
 	@GetMapping("/admin/member/create")
 	public String create(Model model) {
-			// 로그인한 사원의 정보
+		// 로그인한 사원의 정보
 	      Long memberNo = memberService.getLoggedInMemberNo();
 	      // 번호
 	      List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	      // 부서명 조회 
 	      List<DepartmentDto> departments = departmentService.getAllDepartments();
+	      // 직위명 조회 
+	      List<PositionDto> positions = positionService.getAllPositionsForSelect();
 	        
 	        
 	      model.addAttribute("memberdto", memberdto);
 	      model.addAttribute("departments", departments);
+	      model.addAttribute("positions", positions);
 		return "admin/member/create";
 	}
 }
