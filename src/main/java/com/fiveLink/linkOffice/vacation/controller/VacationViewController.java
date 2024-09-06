@@ -4,6 +4,7 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
+import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +41,14 @@ public class VacationViewController {
 
         List<VacationDto> vacationList = vacationService.selectVacationList();
 
+        int countVacationType = vacationService.countVacationType();
+        List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
+
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("vacationList", vacationList);
         model.addAttribute("countVacation", countVacation);
+        model.addAttribute("countVacationType", countVacationType);
+        model.addAttribute("vacationTypeList", vacationTypeList);
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";

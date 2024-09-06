@@ -26,7 +26,7 @@ public class VacationService {
         this.vacationMapper = vacationMapper;
         this.vacationTypeRepository = vacationTypeRepository;
     }
-
+//휴가 연차 생성
     public int addVacation(VacationDto dto) {
         int result = -1;
         try {
@@ -41,6 +41,18 @@ public class VacationService {
         return result;
     }
 
+
+    public List<VacationDto> selectVacationList(){
+        return vacationMapper.selectVacationList();
+    }
+
+    public int countVacation() {
+        return vacationMapper.countVacation();
+
+
+    }
+// 휴가 종류 생성
+
     public int addTypeVacation(VacationTypeDto dto) {
         int result = -1;
         try {
@@ -54,29 +66,20 @@ public class VacationService {
         }
         return result;
     }
-
-    public List<VacationDto> selectVacationList(){
-        return vacationMapper.selectVacationList();
-    }
-
-    public int countVacation() {
-        return vacationMapper.countVacation();
+    public int countVacationType() {
+        return vacationMapper.countVacationType();
 
 
     }
-
-    public Vacation findVacationById(Long vacationId) {
-        return vacationRepository.findById(vacationId).orElse(null);
+    public List<VacationTypeDto> selectVacationTypeList(){
+        return vacationMapper.selectVacationTypeList();
     }
 
-    public int updateVacation(Vacation vacation) {
-        try {
-            vacationRepository.save(vacation); // JPA의 save는 수정도 처리합니다.
-            return 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
+    public VacationTypeDto getVacationTypeByNo(Long vacationTypeNo) {
+        return vacationTypeRepository.findByVacationTypeNo(vacationTypeNo)
+                .orElseThrow(() -> new RuntimeException("휴가 타입을 찾을 수 없습니다."));
     }
+
+
 
 }

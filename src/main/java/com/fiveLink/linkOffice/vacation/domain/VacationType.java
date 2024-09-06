@@ -22,7 +22,7 @@ public class VacationType {
     private String vacationTypeName;
 
     @Column(name="vacation_type_calculate")
-    private int vacationTypeCalculate;
+    private double vacationTypeCalculate;
 
 
 }
