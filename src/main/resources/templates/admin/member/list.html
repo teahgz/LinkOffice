@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/admin/member/list.css}" rel="stylesheet" type="text/css">
+        <section>
+	           <div class="create_member">
+        <h1>사원 조회</h1>
+        <div class="search_sort_container">
+            <div class="search_container">
+                <select>
+                    <option>부서명</option>
+                    <!-- 다른 옵션들 추가 -->
+                </select>
+                <input type="text" class="search_input" placeholder="검색어 입력">
+                <button class="search_button">검색</button>
+            </div>
+            <div class="sort_container">
+                <span>최신순</span>
+                <span>오래된 순</span>
+            </div>
+        </div>
+        <table class="employee_table">
+            <thead>
+                <tr>
+                    <th>사번</th>
+                    <th>사원명</th>
+                    <th>부서명</th>
+                    <th>직위</th>
+                    <th>입사일</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>24082310</td>
+                    <td>홍길동</td>
+                    <td>재무회계1팀</td>
+                    <td>대리</td>
+                    <td>2024-08-23</td>
+                    <td>재직</td>
+                </tr>
+                <!-- 추가 행 -->
+            </tbody>
+        </table>
+        <div class="pagination">
+            <button>&lt;&lt;</button>
+            <button>&lt;</button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>&gt;</button>
+            <button>&gt;&gt;</button>
+        </div>
+    </div>
+        </section>
+        <script th:src="@{/js/#}"></script>
+    </th:block>
+</html>

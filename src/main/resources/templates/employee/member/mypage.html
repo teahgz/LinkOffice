@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
-<body>
 <th:block layout:fragment="content">
     <link th:href="@{/css/employee/member/mypage.css}" rel="stylesheet" type="text/css">
     <section th:each="member : ${memberdto}">
@@ -63,5 +62,4 @@
         </div>
     </section>
 </th:block>
-</body>
 </html>
