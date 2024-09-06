@@ -93,21 +93,44 @@ public class VacationFunctionController {
         try {
             String vacationType = (String) payload.get("vacationType");
             double vacationValue = Double.parseDouble((String)payload.get("vacationValue")) ;
-            int countType = Integer.parseInt( (String) payload.get("countType"));
             VacationTypeDto dto = new VacationTypeDto();
             dto.setVacation_type_name(vacationType);
             dto.setVacation_type_calculate(vacationValue);
 
-            if(countType > 0){
-                Long vacationTypeNo = Long.valueOf(payload.get("vacationTypeNo").toString());
-                dto.setVacation_type_no(vacationTypeNo);
                 if(vacationService.addTypeVacation(dto)>0) {
                     resultMap.put("res_code", "200");
                     resultMap.put("res_msg", "성공적으로 생성되었습니다.");
                 }
 
-            }else {
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
+        }
+
+
+        return resultMap;
+    }
+    // 휴가 종류 추가
+    @PostMapping("/updateVacation")
+    @ResponseBody
+    public Map<String, String> updateVacation(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
+
+
+        try {
+            VacationTypeDto dto = new VacationTypeDto();
+            List<String> vacationTypePkData = (List<String>) payload.get("vacationTypePkData");
+            List<String> vacationTypeNameData = (List<String>) payload.get("vacationTypeNameData");
+            List<String> vacationTypeCalData = (List<String>) payload.get("vacationTypeCalData");
+            for(int i = 0; i< vacationTypePkData.size(); i++){
+
+                dto.setVacation_type_no(Long.parseLong(vacationTypePkData.get(i)));
+                dto.setVacation_type_name(vacationTypeNameData.get(i));
+                dto.setVacation_type_calculate(Double.parseDouble(vacationTypeCalData.get(i)));
                 if(vacationService.addTypeVacation(dto)>0) {
                     resultMap.put("res_code", "200");
                     resultMap.put("res_msg", "성공적으로 생성되었습니다.");
@@ -122,9 +145,7 @@ public class VacationFunctionController {
 
 
         return resultMap;
+
     }
-
-
-
 
 }

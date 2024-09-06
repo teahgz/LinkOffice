@@ -236,27 +236,59 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
 document.addEventListener('DOMContentLoaded', function () {
- const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
     document.querySelectorAll('.save-btn').forEach(function (button) {
         button.addEventListener('click', function () {
+            const vacationTypeNoInputs = document.querySelectorAll('[id^="editVacationTypeNo"]');
+            const vacationTypeNameInputs = document.querySelectorAll('[id^="editVacationTypeName"]');
+            const vacationTypeCalInputs = document.querySelectorAll('[id^="editVacationTypeCalculate"]');
 
-            const vacationTypeNo = document.getElementById('editVacationTypeNo').value;
-            const vacationType = document.getElementById('editVacationTypeName').value;
-            const vacationValue = document.getElementById('editVacationTypeCalculate').value;
-            const countType = document.getElementById('countType').value;
+            const vacationTypePkData = [];
+            vacationTypeNoInputs.forEach(input => {
+                if (input.value) {
+                    vacationTypePkData.push(input.value);
+                }
+            });
+
+            const vacationTypeNameData = [];
+            vacationTypeNameInputs.forEach(input => {
+                if (input.value) {
+                    vacationTypeNameData.push(input.value);
+                }
+            });
+
+            const vacationTypeCalData = [];
+            vacationTypeCalInputs.forEach(input => {
+                if (input.value) {
+                    vacationTypeCalData.push(input.value);
+                }
+            });
+
+            console.log("pk 확인:" + vacationTypePkData);
+            console.log("pk 확인:" + vacationTypeNameData);
+            console.log("pk 확인:" + vacationTypeCalData);
+
+            const vacationData = {};
+            const vacationPkData = [];
+            if (countVacation > 0) {
+                vacationPkElements.forEach(input => {
+                    if (input.value) {
+                        vacationPkData.push(input.value);
+                    }
+                });
+            }
 
             // 서버로 보낼 데이터 준비
             const data = {
-                vacationTypeNo: vacationTypeNo,
-                vacationType: vacationType,
-                vacationValue: vacationValue,
-                countType : countType
+                vacationTypePkData: vacationTypePkData,
+                vacationTypeNameData: vacationTypeNameData,
+                vacationTypeCalData: vacationTypeCalData
             };
 
             // Fetch API를 사용하여 데이터를 전송
-            fetch('/vacation/addTypeVacation', {
+            fetch('/vacation/updateVacation', {
                 method: 'POST', // 또는 PUT, 백엔드에서 처리할 방식에 맞게 설정
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,18 +297,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(data) // 데이터를 JSON으로 변환하여 전송
             })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-                throw new Error('네트워크 응답이 올바르지 않습니다.');
+                return response.json();
             })
-            .then(result => {
-                console.log('저장 성공:', result);
-                // 성공 후 필요한 처리 (예: 화면 갱신)
+            .then(data => {
+                if (data.res_code === '200') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '실패',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    });
+                }
             })
             .catch(error => {
-                console.error('저장 중 오류 발생:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '서버와의 통신 중 오류가 발생했습니다.',
+                    confirmButtonText: "닫기"
+                });
             });
+
         });
     });
 });

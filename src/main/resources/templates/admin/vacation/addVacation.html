@@ -210,7 +210,6 @@
                         <tr>
                             <td th:text="${list.vacation_type_name}"></td> <!-- 휴가 종류 -->
                             <td th:text="${list.vacation_type_calculate}"></td> <!-- 휴가 값 -->
-                            <input type="hidden" id="vacationTypeNo" th:value="${list.vacation_type_no}"/>
                             <td>
                                 <button type="button" class="edit-btn">수정</button>
                                 <button type="button" class="delete-btn">삭제</button>
@@ -220,11 +219,13 @@
 
                             <form id ="editVacationType">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                <input type="hidden" id ="countType" th:value="${countVacationType}"/>
+                                <td style="display:none;">
+                                    <input type="hidden" id="editVacationTypeNo" th:value="${list.vacation_type_no}" />
+                                </td>
                                 <td>
                                     <input type="text" id="editVacationTypeName" th:value="${list.vacation_type_name}" />
                                 </td>
-                                <input type="hidden" id="editVacationTypeNo" th:value="${list.vacation_type_no}" />
+
                                 <td>
                                     <input type="number" id="editVacationTypeCalculate" th:value="${list.vacation_type_calculate}" />
                                 </td>
