@@ -78,12 +78,25 @@ public class MemberViewController {
 	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    
 	    List<MemberDto> memberList = memberService.getAllMembers();
-	    System.out.println(memberList);
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("departments", departments);
 		model.addAttribute("memberList", memberList);
 		
 		return "admin/member/list";
+	}
+	
+	@GetMapping("/admin/member/detail/{member_no}")
+	public String detail(@PathVariable("member_no") Long memberNo, Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		
+		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+		System.out.println(memberDtoList);
+	    model.addAttribute("memberdto", memberdto);
+	    model.addAttribute("memberDtoList", memberDtoList);
+	    
+	    return "admin/member/detail";
 	}
 }
 
