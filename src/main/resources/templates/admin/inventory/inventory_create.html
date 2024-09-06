@@ -125,19 +125,19 @@
             xhr.send();
         };
 
-        // 모달 닫기 (X 버튼)
+        
         span.onclick = function() {
             modal.style.display = "none";
         };
 
-        // 모달 닫기 (외부 클릭)
+        
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         };
 
-        // 확인 버튼 클릭 시 선택한 카테고리 설정
+        
         confirmBtn.onclick = function() {
             var selectedCategory = document.querySelector('input[name="category"]:checked');
             if (selectedCategory) {

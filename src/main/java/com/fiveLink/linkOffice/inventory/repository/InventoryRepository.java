@@ -42,16 +42,29 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     @Query("SELECT DISTINCT ic.inventoryCategoryName FROM InventoryCategory ic")
     List<String> findAllCategoryNames();
     
-    @Query("SELECT m.memberName FROM Member m WHERE m.memberNo = 2")
-    String findinventoryManager();
     
- // 수량을 제외한 동일한 비품이 있는지 확인
+ // 수량을 제외한 동일한 비품이 있는지 확인 (가격과 구입 날짜 추가)
     @Query("SELECT i FROM Inventory i WHERE i.inventoryCategory.inventoryCategoryName = :categoryName " +
            "AND i.inventoryName = :name " +
            "AND i.inventoryLocation = :location " +
-           "AND i.department.departmentName = :departmentName")
-    Inventory findByCategoryAndNameAndLocation(@Param("categoryName") String categoryName,
-                                               @Param("name") String name,
-                                               @Param("location") String location,
-                                               @Param("departmentName") String departmentName);
+           "AND i.inventoryPrice = :price " +  
+           "AND i.inventoryPurchaseDate = :purchaseDate " +  
+           "AND i.department.departmentNo = :departmentNo")
+    Inventory findByCategoryAndNameAndLocationAndPriceAndDate(
+        @Param("categoryName") String categoryName,
+        @Param("name") String name,
+        @Param("location") String location,
+        @Param("price") Integer price, 
+        @Param("purchaseDate") String purchaseDate, 
+        @Param("departmentNo") Long departmentNo);
+    
+    @Query("SELECT ic.inventoryCategoryNo FROM InventoryCategory ic WHERE ic.inventoryCategoryName = :categoryName")
+    Long findCategoryNoByName(@Param("categoryName") String categoryName);
+    
+    @Query("SELECT m.memberNo FROM Member m WHERE m.memberName = :memberName")
+    Long findMemberNoByName(@Param("memberName") String memberName);
+    
+    @Query("SELECT m.memberName FROM Member m WHERE m.memberNumber = :memberNumber")
+    String findMemberNameByMemberNumber(@Param("memberNumber") String memberNumber);
+    
 }
