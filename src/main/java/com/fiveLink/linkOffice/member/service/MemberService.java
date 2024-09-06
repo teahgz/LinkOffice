@@ -236,12 +236,12 @@ public class MemberService {
     }
   
     // [서혜원] 조직도
-//    public List<MemberDto> getAllMembers() {
-//        List<Member> members = memberRepository.findAllByMemberStatus(0L);
-//        return members.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
+    public List<MemberDto> getAllMembersChart() {
+        List<Member> members = memberRepository.findAllByMemberStatus(0L);
+        return members.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
     private MemberDto convertToDto(Member member) {
         return MemberDto.builder()
@@ -265,7 +265,9 @@ public class MemberService {
                 .member_new_digital_img(member.getMemberNewDigitalImg())
                 .member_status(member.getMemberStatus())
                 .member_additional(member.getMemberAdditional())
+                .position_name(member.getPosition() != null ? member.getPosition().getPositionName() : null)  
+                .department_name(member.getDepartment() != null ? member.getDepartment().getDepartmentName() : null) 
                 .build();
-    }
+    } 
      
 } 

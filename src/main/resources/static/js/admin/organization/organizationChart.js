@@ -68,52 +68,80 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
-        const selectedMembersContainer = $('#selected-members');
-        selectedMembersContainer.empty();
+    const selectedMembersContainer = $('#selected-members');
+    const permissionPickList = $('.permission_pick_list');
+    selectedMembersContainer.empty();
+    permissionPickList.empty(); // Clear previous items
 
-        const selectedNodes = instance.get_selected(true);
-        selectedMembers = [];
+    const selectedNodes = instance.get_selected(true);
+    selectedMembers = [];
 
-        selectedNodes.forEach(function(node) {
-            if (node.original.type === 'member') {
-                const memberElement = $('<div class="selected-member"></div>');
-                const memberName = $('<span></span>').text(node.text);
-                const removeButton = $('<button class="remove-member">&times;</button>');
+    selectedNodes.forEach(function(node) {
+        if (node.original.type === 'member') {
+            const memberId = node.id;  
+            const memberNumber = memberId.replace('member_', ''); // 사원 번호
+            const memberElement = $('<div class="selected-member"></div>');
+            const memberName = $('<span></span>').text(node.text);
+            const removeButton = $('<button class="remove-member">&times;</button>');
 
-                memberElement.append(memberName).append(removeButton);
-                selectedMembersContainer.append(memberElement);
+            memberElement.append(memberName).append(removeButton);
+            selectedMembersContainer.append(memberElement);
 
-                selectedMembers.push(node.text);
+            selectedMembers.push(memberNumber);
 
-                removeButton.click(function() {
-                    instance.uncheck_node(node);
-                    memberElement.remove();
-                    const index = selectedMembers.indexOf(node.text);
-                    if (index !== -1) {
-                        selectedMembers.splice(index, 1);
-                    }
-                    localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
-                });
-            }
-        });
+            removeButton.click(function() {
+                instance.uncheck_node(node);
+                memberElement.remove();
+                const index = selectedMembers.indexOf(memberNumber);
+                if (index !== -1) {
+                    selectedMembers.splice(index, 1);
+                }
+                
+                localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+               
+                permissionPickList.find(`.permission-item[data-name="${node.text}"]`).remove();
+            });
 
-        localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
-    }
-
-    // 확인 버튼 클릭 이벤트 핸들러
-    $('#confirmButton').click(function() {
-        const permissionPickList = $('.permission_pick_list');
-        permissionPickList.empty(); // 기존 출력 내용 초기화
-
-        // 선택된 사원 출력
-        selectedMembers.forEach(function(member) {
-            permissionPickList.append(`<div>${member}</div>`);
-        });
-
-        // 모달 닫기
-        $('#organizationChartModal').modal('hide');
+            const permissionItem = $(`<div class="permission-item" data-name="${node.text}"></div>`);
+            permissionItem.text(node.text);
+            permissionPickList.append(permissionItem);
+        }
     });
 
-    // 페이지 로드 시 선택된 사원 정보 로드
+    localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+}
+
+    // 확인 버튼 
+    $('#confirmButton').click(function() {
+        console.log("선택한 사원 정보:", selectedMembers);
+        alert("선택한 사원: " + selectedMembers.join(", "));
+    
+        var csrfToken = document.querySelector('input[name="_csrf"]').value; 
+    
+        $.ajax({
+            url: '/api/organization/saveSelectedMembers',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            contentType: 'application/json',
+            data: JSON.stringify({ members: selectedMembers }),
+            success: function(response) {
+                console.log('선택한 사원 저장 성공:', response);
+                alert('선택한 사원이 저장되었습니다.');
+                
+                $('#organizationChartModal').modal('hide');
+
+                localStorage.removeItem('selectedMembers');
+                
+                $('.permission_pick_list').empty();
+            },
+            error: function(xhr, status, error) {
+                console.error('선택한 사원 저장 오류:', error);
+                alert('선택한 사원을 저장하는데 오류가 발생했습니다.');
+            }
+        });
+    });
+
     loadSelectedMembers();
 });

@@ -3,7 +3,8 @@ package com.fiveLink.linkOffice.organization.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map; 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,18 +34,19 @@ public class OrganizationChartController {
     @ResponseBody
     public List<Map<String, Object>> getOrganizationChart() {
         List<DepartmentDto> departments = departmentService.getAllDepartments();
-        List<MemberDto> members = memberService.getAllMembers(); 
+        List<MemberDto> members = memberService.getAllMembersChart(); 
         return buildTree(departments, members);
     }
 
-    // 선택된 사원 데이터를 처리하는 POST 
+    // 선택된 사원 데이터 처리 
     @PostMapping("/saveSelectedMembers")
     @ResponseBody
     public Map<String, Object> saveSelectedMembers(@RequestBody Map<String, List<String>> selectedMembers) {
-        List<String> members = selectedMembers.get("members");
-         
-        System.out.println("선택한 사원 목록: " + members);
- 
+        List<String> memberNumbers = selectedMembers.get("members");
+        
+        // 조직도에서 선택한 사원 번호 출력
+        System.out.println("선택한 사원 번호 목록: " + memberNumbers);
+
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("message", "선택한 사원이 성공적으로 저장되었습니다.");
@@ -118,22 +120,17 @@ public class OrganizationChartController {
                     children.add(memberNode);
                 }
             }
-        }
-        
+        } 
         return node;
     }
 
     private Map<String, Object> createMemberNode(MemberDto member) {
-        Map<String, Object> memberNode = new HashMap<>(); 
-        
-        String memberDisplayText = member.getMember_name() + " (" + member.getPosition_name() + ")";
-        System.out.println(member);
-        
+        Map<String, Object> memberNode = new HashMap<>();
         memberNode.put("id", "member_" + member.getMember_no());
-        memberNode.put("text", memberDisplayText);
+        memberNode.put("text", member.getMember_name() + " " + member.getPosition_name());
         memberNode.put("type", "member");
-        
         return memberNode;
     }
+
 
 }
