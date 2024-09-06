@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .create_member {
     position: relative;
     width: 80%;
@@ -155,8 +156,6 @@ select option {
     padding: 8px; 
 }
 
-
-
 .form_buttons {
     display: flex;
     gap: 10px;
@@ -165,16 +164,11 @@ select option {
     width: 100%;
 }
 
-.btn_address, .btn_create, .btn_cancel {
+.btn_create, .btn_cancel {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.btn_address {
-    background-color: #B1C2DD;
-    margin-left:20px;
 }
 
 .btn_create {

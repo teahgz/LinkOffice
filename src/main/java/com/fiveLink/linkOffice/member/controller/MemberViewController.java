@@ -70,5 +70,15 @@ public class MemberViewController {
 	      model.addAttribute("positions", positions);
 		return "admin/member/create";
 	}
+	
+	@GetMapping("/admin/member/list")
+	public String list(Model model) {
+		Long memberNo = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+		
+		model.addAttribute("memberdto", memberdto);
+		
+		return "admin/member/list";
+	}
 }
 
