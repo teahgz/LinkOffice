@@ -113,6 +113,12 @@
 				</li>
 			<li>
 				<a href="#">비품 관리</a>
+				<div class="dropdown">
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/inventory/list}">비품 목록</a></li>
+							<li><a th:href="@{/inventory/create}">비품 등록</a></li>
+						</ul>
+				</div>
 			</li>
 				<li>
 					<a href="#">사원 관리</a>

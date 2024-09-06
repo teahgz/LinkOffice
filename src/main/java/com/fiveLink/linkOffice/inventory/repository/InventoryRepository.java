@@ -67,4 +67,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     @Query("SELECT m.memberName FROM Member m WHERE m.memberNumber = :memberNumber")
     String findMemberNameByMemberNumber(@Param("memberNumber") String memberNumber);
     
+    
 }
