@@ -169,7 +169,10 @@ public class MemberApiController {
 			for (MemberDto memberDto : memberDtoList) {
 			    String memberNational = memberDto.getMember_national();
 			    if (national.equals(memberNational)) {
+			    	response.put("res_code", "409");
 			    	response.put("res_msg", "중복 주민번호를 가진 사원이 있습니다");
+			    	return response;
+			    	
 			    }else {
 			    	dto.setMember_national(national);
 			    }
@@ -191,6 +194,7 @@ public class MemberApiController {
 				response.put("res_code", "200");
 			    response.put("res_msg", "사원 등록을 성공하였습니다.");
 			}
+			
 			
 		}catch(Exception e) {
 			e.printStackTrace();

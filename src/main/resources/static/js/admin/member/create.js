@@ -137,7 +137,8 @@ createFrm.addEventListener('submit',(e)=>{
         })
         .then(response => response.json())
         .then(data => {
-			if(data.res_code = '200'){
+			console.log(data);
+			if(data.res_code == '200'){
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
@@ -145,6 +146,12 @@ createFrm.addEventListener('submit',(e)=>{
 		}).then((result)=>{
 			location.href = "/admin/member/create";
 		});
+			}else if(data.res_code == '409'){
+				Swal.fire({
+				icon : 'warning',
+				text : data.res_msg,
+				confirmButtonText : "닫기"
+			});	
 			}else {
 				Swal.fire({
 				icon : 'error',
