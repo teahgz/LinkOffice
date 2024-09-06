@@ -27,13 +27,42 @@ public class MemberService {
 		this.passwordEncoder = passwordEncoder;
 	}
 	// 멤버 조회 
-	  public List<MemberDto> getAllMembers() {
-	        List<Member> members = memberRepository.findAll();
-	        List<MemberDto> memberDtos = members.stream()
-	            .map(MemberDto::toDto) // static 메소드 호출
-	            .collect(Collectors.toList());
-	        return memberDtos;
-	    }
+	public List<MemberDto> getAllMembers() {
+        List<Object[]> results = memberRepository.findAllMembersWithDetails();
+
+        return results.stream()
+            .map(result -> {
+                Member member = (Member) result[0];
+                String positionName = (String) result[1];
+                String departmentName = (String) result[2];
+
+                return MemberDto.builder()
+                        .member_no(member.getMemberNo())
+                        .member_number(member.getMemberNumber())
+                        .member_pw(member.getMemberPw())
+                        .member_name(member.getMemberName())
+                        .member_national(member.getMemberNational())
+                        .member_internal(member.getMemberInternal())
+                        .member_mobile(member.getMemberMobile())
+                        .department_no(member.getDepartmentNo())
+                        .position_no(member.getPositionNo())
+                        .department_name(departmentName)
+                        .position_name(positionName)
+                        .member_address(member.getMemberAddress())
+                        .member_hire_date(member.getMemberHireDate())
+                        .member_end_date(member.getMemberEndDate())
+                        .member_create_date(member.getMemberCreateDate())
+                        .member_update_date(member.getMemberUpdateDate())
+                        .member_ori_profile_img(member.getMemberOriProfileImg())
+                        .member_new_profile_img(member.getMemberNewProfileImg())
+                        .member_ori_digital_img(member.getMemberOriDigitalImg())
+                        .member_new_digital_img(member.getMemberNewDigitalImg())
+                        .member_status(member.getMemberStatus())
+                        .member_additional(member.getMemberAdditional())
+                        .build();
+            })
+            .collect(Collectors.toList());
+    }
     
 	// 사번으로 조회 
 	public List<MemberDto> getMemberByNumber(String memberNumber) {  

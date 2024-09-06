@@ -75,8 +75,13 @@ public class MemberViewController {
 	public String list(Model model) {
 		Long memberNo = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-		
+	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	    
+	    List<MemberDto> memberList = memberService.getAllMembers();
+	    System.out.println(memberList);
 		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("departments", departments);
+		model.addAttribute("memberList", memberList);
 		
 		return "admin/member/list";
 	}
