@@ -151,7 +151,7 @@ public class MemberService {
     	return dto;
     }
     
-    // 전자결재 서명 update
+    // [전주영] 전자결재 서명 update
     @Transactional
     public Member updateMemberDigital(MemberDto dto) {
     	MemberDto temp = selectMemberOne(dto.getMember_no());
@@ -166,20 +166,46 @@ public class MemberService {
     	return result;
     } 
     
-    // 프로필 이미지 및 비밀번호, 주소 변경 
+    // [전주영] 프로필 이미지 및 비밀번호, 주소 변경 
     @Transactional
     public Member updateMemberProfile(MemberDto dto) {
-    	MemberDto temp = selectMemberOne(dto.getMember_no());
-    	
+    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
     	Member member = dto.toEntity();
     	Member result = memberRepository.save(member);
     	return result;
     }
     
-    // 사원 생성
+    // [전주영] 사원 생성
     public Member createMember(MemberDto dto) {
     	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw())); 
     	Member member = dto.toEntity();
     	return memberRepository.save(member);
     }
+    
+    
+    // [전주영] 사번으로 member 조회
+    public MemberDto selectMemNumberOne(String MemberNumber) {
+    	Member member = memberRepository.findByMemberNumber(MemberNumber);
+    	MemberDto dto = new MemberDto().toDto(member);
+    	return dto;
+    }
+    // [전주영] 비밀번호 변경해주기
+    @Transactional
+    public Member pwchange(MemberDto dto) {
+    	
+    	MemberDto temp = selectMemNumberOne(dto.getMember_number());
+    	
+    	Member member = temp.toEntity();
+    	// dto 에서 받아온 비밀번호 암호화
+    	String encodedPw = passwordEncoder.encode(dto.getMember_pw());
+    	
+    	// member번호에 인코딩된 비밀번호 암호화
+    	member.setMemberPw(encodedPw);
+    	Member result = memberRepository.save(member);
+    	
+    	return result;
+    }
+    
+   
+
 }

@@ -125,9 +125,9 @@ createFrm.addEventListener('submit',(e)=>{
 			icon : 'error',
 			text : vali_text,
 			confirmButtonText : "닫기"
-		})
+		});
 	 } else{
-		   const formData = new FormData(createFrm);
+		const formData = new FormData(createFrm);
         fetch('/admin/member/create', {
             method: 'post',
             headers : {
@@ -137,7 +137,6 @@ createFrm.addEventListener('submit',(e)=>{
         })
         .then(response => response.json())
         .then(data => {
-			console.log(data);
 			if(data.res_code == '200'){
 				Swal.fire({
 				icon : 'success',
