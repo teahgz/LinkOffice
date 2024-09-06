@@ -105,9 +105,8 @@ public class WebSecurityConfig implements HttpSessionListener {
     public void sessionDestroyed(HttpSessionEvent se) {
         System.out.println("Session destroyed: " + se.getSession().getId());
     }
-    
 
-	
+    // 비밀번호 암호화
 	 @Bean 
 	 public PasswordEncoder passwordEncoder() { 
 		 return new BCryptPasswordEncoder(); 

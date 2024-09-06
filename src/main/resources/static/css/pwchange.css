@@ -75,19 +75,27 @@ input {
 	height: 20px;
 }
 
-
-.registration_number {
+.national_number {
 	display: flex;
 	align-items: center;
 }
 
-.registration_number input {
-	width: calc(50% - 25px); 
+.national_number input {
+	margin-right: 5px;
+	padding: 8px;
 }
 
-.registration_number span {
-	color: #ffffff; 
-	margin: 0 10px; 
+#national_number_front, #national_number_back {
+	width: 102px; 
+}
+
+#national_number_mid {
+	width: 30px; 
+}
+
+.national_number span {
+	color: #ffffff;
+	margin: 0 5px; 
 }
 
 .button_group {

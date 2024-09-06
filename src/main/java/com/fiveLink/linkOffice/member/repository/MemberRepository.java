@@ -15,6 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByMemberNumber(String memberNumber); 
     // [전주영] 전자결재이미지 수정
     Member findByMemberNo(Long memberNo);
+    
     // [전주영] 권한 조회 
     @Query("SELECT m, p.positionName, d.departmentName " +
             "FROM Member m " +
