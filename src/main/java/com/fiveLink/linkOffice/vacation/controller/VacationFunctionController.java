@@ -112,7 +112,7 @@ public class VacationFunctionController {
 
         return resultMap;
     }
-    // 휴가 종류 추가
+    // 휴가 종류 수정
     @PostMapping("/updateVacation")
     @ResponseBody
     public Map<String, String> updateVacation(@RequestBody Map<String, Object> payload) {
@@ -122,20 +122,58 @@ public class VacationFunctionController {
 
 
         try {
-            VacationTypeDto dto = new VacationTypeDto();
-            List<String> vacationTypePkData = (List<String>) payload.get("vacationTypePkData");
-            List<String> vacationTypeNameData = (List<String>) payload.get("vacationTypeNameData");
-            List<String> vacationTypeCalData = (List<String>) payload.get("vacationTypeCalData");
-            for(int i = 0; i< vacationTypePkData.size(); i++){
+            Long vacationTypeNo = Long.parseLong((String) payload.get("vacationTypeNo"));
+            String vacationTypeName = (String)payload.get("vacationTypeName");
+            double vacationTypeCalculate = Double.parseDouble((String)payload.get("vacationTypeCalculate"));
 
-                dto.setVacation_type_no(Long.parseLong(vacationTypePkData.get(i)));
-                dto.setVacation_type_name(vacationTypeNameData.get(i));
-                dto.setVacation_type_calculate(Double.parseDouble(vacationTypeCalData.get(i)));
-                if(vacationService.addTypeVacation(dto)>0) {
-                    resultMap.put("res_code", "200");
-                    resultMap.put("res_msg", "성공적으로 생성되었습니다.");
-                }
+            VacationTypeDto dto = new VacationTypeDto();
+
+            dto.setVacation_type_no(vacationTypeNo);
+            dto.setVacation_type_name(vacationTypeName);
+            dto.setVacation_type_calculate(vacationTypeCalculate);
+            if(vacationService.addTypeVacation(dto)>0) {
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "성공적으로 수정되었습니다.");
             }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
+        }
+
+
+        return resultMap;
+
+    }
+
+    // 휴가 종류 삭제
+    @PostMapping("/deleteVacation")
+    @ResponseBody
+    public Map<String, String> deleteVacation(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
+
+
+        try {
+            Long vacationTypeNo = Long.parseLong((String) payload.get("vacationTypeNo"));
+            String vacationTypeName = (String)payload.get("vacationTypeName");
+            double VacationTypeCal = Double.parseDouble((String)payload.get("vacationTypeCal"));
+
+            VacationTypeDto dto = new VacationTypeDto();
+
+            dto.setVacation_type_no(vacationTypeNo);
+            dto.setVacation_type_name(vacationTypeName);
+            dto.setVacation_type_calculate(VacationTypeCal);
+            dto.setVacation_type_status(1);
+
+            if(vacationService.addTypeVacation(dto)>0) {
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "성공적으로 수정되었습니다.");
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

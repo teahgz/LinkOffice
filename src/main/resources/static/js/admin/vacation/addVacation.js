@@ -236,57 +236,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+//휴가 카테고리 수정
 document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     document.querySelectorAll('.save-btn').forEach(function (button) {
         button.addEventListener('click', function () {
-            const vacationTypeNoInputs = document.querySelectorAll('[id^="editVacationTypeNo"]');
-            const vacationTypeNameInputs = document.querySelectorAll('[id^="editVacationTypeName"]');
-            const vacationTypeCalInputs = document.querySelectorAll('[id^="editVacationTypeCalculate"]');
 
-            const vacationTypePkData = [];
-            vacationTypeNoInputs.forEach(input => {
-                if (input.value) {
-                    vacationTypePkData.push(input.value);
-                }
-            });
+            const form = button.closest('form');
+            if (!form) return;
 
-            const vacationTypeNameData = [];
-            vacationTypeNameInputs.forEach(input => {
-                if (input.value) {
-                    vacationTypeNameData.push(input.value);
-                }
-            });
+            const vacationTypeNo = form.querySelector('#editVacationTypeNo').value;
+            const vacationTypeName = form.querySelector('#editVacationTypeName').value;
+            const vacationTypeCalculate = form.querySelector('#editVacationTypeCalculate').value;
+            console.log(vacationTypeNo);
 
-            const vacationTypeCalData = [];
-            vacationTypeCalInputs.forEach(input => {
-                if (input.value) {
-                    vacationTypeCalData.push(input.value);
-                }
-            });
-
-            console.log("pk 확인:" + vacationTypePkData);
-            console.log("pk 확인:" + vacationTypeNameData);
-            console.log("pk 확인:" + vacationTypeCalData);
-
-            const vacationData = {};
-            const vacationPkData = [];
-            if (countVacation > 0) {
-                vacationPkElements.forEach(input => {
-                    if (input.value) {
-                        vacationPkData.push(input.value);
-                    }
-                });
-            }
-
-            // 서버로 보낼 데이터 준비
             const data = {
-                vacationTypePkData: vacationTypePkData,
-                vacationTypeNameData: vacationTypeNameData,
-                vacationTypeCalData: vacationTypeCalData
+                vacationTypeNo: vacationTypeNo,
+                vacationTypeName: vacationTypeName,
+                vacationTypeCalculate: vacationTypeCalculate
             };
-
             // Fetch API를 사용하여 데이터를 전송
             fetch('/vacation/updateVacation', {
                 method: 'POST', // 또는 PUT, 백엔드에서 처리할 방식에 맞게 설정
@@ -332,6 +301,73 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
 
+        });
+    });
+});
+
+/*삭제버튼-상태값 변화*/
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+    document.querySelectorAll('.delete-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const row = button.closest('tr');
+            if (!row) return;
+
+            const vacationTypeNo = row.querySelector('#vacationTypeNo').value;
+            const vacationTypeName = row.querySelector('#vacationTypeName').value;
+            const vacationTypeCal = row.querySelector('#vacationTypeCal').value;
+
+            console.log(vacationTypeNo);
+ console.log(vacationTypeName); console.log(vacationTypeCal);
+
+            fetch('/vacation/deleteVacation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    vacationTypeNo : vacationTypeNo,
+                    vacationTypeName : vacationTypeName,
+                    vacationTypeCal : vacationTypeCal
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.res_code === '200') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            row.remove(); // 성공 시 행 제거
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '실패',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '서버와의 통신 중 오류가 발생했습니다.',
+                    confirmButtonText: "닫기"
+                });
+            });
         });
     });
 });
