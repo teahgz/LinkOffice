@@ -14,6 +14,7 @@ body {
     padding: 50px;
     border-radius: 10px;
     width: 400px;
+    height: 250px;
 }
 
 .logo_container {
@@ -119,7 +120,7 @@ button:active {
 }
 
 .error_message{
-	font-size: 2vh;
+	font-size: 1.5vh;
 	color: #ff0000;
 	text-align: center;
 }
