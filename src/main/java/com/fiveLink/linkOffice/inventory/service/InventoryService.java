@@ -85,30 +85,48 @@ public class InventoryService {
         return inventoryRepository.findAllCategoryNames();
     }
     
-    public String findinventoryManager() {
-        return inventoryRepository.findinventoryManager();
-    }
     
     @Transactional
     public boolean createOrUpdateInventory(InventoryDto dto) {
-        // 수량을 제외한 동일한 비품이 있는지 찾기
-        Inventory existingInventory = inventoryRepository.findByCategoryAndNameAndLocation(
-            dto.getInventory_category_name(),
-            dto.getInventory_name(),
-            dto.getInventory_location(),
-            dto.getDepartment_name());
+        // 카테고리명으로 카테고리 번호 조회
+        Long categoryNo = findCategoryNoByName(dto.getInventory_category_name());
 
+        // 멤버 이름으로 멤버 번호 조회
+        Long memberNo = findMemberNoByName(dto.getMember_name());
+
+        // 카테고리 및 멤버 번호를 DTO에 설정
+        dto.setInventory_category_no(categoryNo);
+        dto.setMember_no(memberNo);
+        
+        // 수량을 제외한 동일한 비품이 있는지 찾기
+        Inventory existingInventory = inventoryRepository.findByCategoryAndNameAndLocationAndPriceAndDate(
+                dto.getInventory_category_name(),
+                dto.getInventory_name(),
+                dto.getInventory_location(),
+                dto.getInventory_price(), 
+                dto.getInventory_purchase_date(),  
+                dto.getDepartment_no());
+        
         if (existingInventory != null) {
-            // 비품이 이미 존재할 경우 수량 업데이트
-            int newQuantity = existingInventory.getInventoryQuantity() + dto.getInventory_quantity();
-            existingInventory.setInventoryQuantity(newQuantity);
-            inventoryRepository.save(existingInventory);  // 업데이트 후 저장
-            return true;  // 업데이트되었음을 알림
+            existingInventory.setInventoryQuantity(dto.getInventory_quantity());
+            inventoryRepository.save(existingInventory);  
+            return true;  
         } else {
-            // 비품이 존재하지 않을 경우 새로 생성
             Inventory newInventory = dto.toEntity();
-            inventoryRepository.save(newInventory);  // 새로운 비품 저장
-            return false;  // 새로 추가되었음을 알림
+            inventoryRepository.save(newInventory);  
+            return false; 
         }
+    }
+    
+    public Long findCategoryNoByName(String categoryName) {
+        return inventoryRepository.findCategoryNoByName(categoryName);
+    }
+
+    public Long findMemberNoByName(String memberName) {
+        return inventoryRepository.findMemberNoByName(memberName);
+    }
+    
+    public String findMemberNameByNumber(String memberNumber) {
+        return inventoryRepository.findMemberNameByMemberNumber(memberNumber);
     }
 }

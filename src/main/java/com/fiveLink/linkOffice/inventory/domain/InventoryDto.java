@@ -2,6 +2,9 @@ package com.fiveLink.linkOffice.inventory.domain;
 
 import java.time.LocalDateTime;
 
+import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.organization.domain.Department;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,15 +36,31 @@ public class InventoryDto {
 	public Inventory toEntity() {
 		// Entity의 매개변수 생성자 사용
 		// protected -> builder
-		return Inventory.builder()
-				.inventoryNo(inventory_no)
-				.inventoryName(inventory_name)
-				.inventoryPrice(inventory_price)
-				.inventoryQuantity(inventory_quantity)
-				.inventoryLocation(inventory_location)
-				.inventoryPurchaseDate(inventory_purchase_date)
-				.inventoryCreateDate(inventory_create_date)
-				.build();				
+		Department department = Department.builder()
+		        .departmentNo(department_no)  
+		        .build();
+
+		Member member = Member.builder()
+		        .memberNo(member_no)  
+		        .build();
+		
+		InventoryCategory inventoryCategory = InventoryCategory.builder()
+		        .inventoryCategoryNo(inventory_category_no)  
+		        .build();
+		
+		
+		 return Inventory.builder()
+			        .inventoryNo(inventory_no)
+			        .inventoryName(inventory_name)
+			        .inventoryPrice(inventory_price)
+			        .inventoryQuantity(inventory_quantity)
+			        .inventoryLocation(inventory_location)
+			        .inventoryPurchaseDate(inventory_purchase_date)
+			        .inventoryCreateDate(inventory_create_date)
+			        .department(department)  
+			        .member(member) 
+			        .inventoryCategory(inventoryCategory)
+			        .build();			
 	}
 	
 	// Entity로 받아온(DB) 정보를 사용할때

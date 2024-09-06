@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.service.InventoryService;
@@ -59,12 +60,20 @@ public class InventoryViewController {
     }
     
     @GetMapping("/inventory/create")
-    public String selectInventorycreate(Model model) {
+    public String selectInventoryCreate(Model model) {
         // 부서 목록을 조회하여 model에 추가
         List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
-        String finventoryManager = inventoryService.findinventoryManager();
+
+        // Spring Security에서 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberNumber = authentication.getName();  // 로그인한 사용자의 member_number
+        
+        // member_number로 member_name을 조회
+        String memberName = inventoryService.findMemberNameByNumber(memberNumber);
+        
         model.addAttribute("departments", departmentNames);
-        model.addAttribute("manager", finventoryManager);
+        model.addAttribute("manager", memberName);  // memberName을 '관리자' 필드에 출력
+        
         return "admin/inventory/inventory_create";
     }
     
@@ -89,7 +98,15 @@ public class InventoryViewController {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "비품 처리 중 오류가 발생했습니다.");
-
+        
+        // '관리자'라는 단어 제거
+        memberName = memberName.replace("관리자", "").trim();
+        
+        // 카테고리명으로 카테고리 번호 조회
+        Long categoryNo = inventoryService.findCategoryNoByName(categoryName);
+        
+        // 멤버 이름으로 멤버 번호 조회
+        Long memberNo = inventoryService.findMemberNoByName(memberName);
         
         // DTO 생성 및 값 설정
         InventoryDto dto = InventoryDto.builder()
@@ -102,7 +119,6 @@ public class InventoryViewController {
             .member_name(memberName)
             .inventory_quantity(inventoryQuantity)
             .build();
-
         try {
             // 서비스 호출해서 업데이트 또는 생성
             boolean isUpdated = inventoryService.createOrUpdateInventory(dto);
@@ -115,7 +131,6 @@ public class InventoryViewController {
                 resultMap.put("res_msg", "새로운 비품이 성공적으로 등록되었습니다.");
             }
         } catch (Exception e) {
-            LOGGER.error("Exception during inventory processing: ", e);
             resultMap.put("res_code", "500");
             resultMap.put("res_msg", "비품 처리 중 오류가 발생했습니다.");
         }
