@@ -100,4 +100,18 @@ public class MemberDto {
 					.member_additional(member.getMemberAdditional())
 					.build();
 	}
+	
+	public MemberDto toDto(Object[] result) {
+	    Member member = (Member) result[0];
+	    String positionName = (String) result[1];
+	    String departmentName = (String) result[2];
+
+	    return MemberDto.builder()
+	            .member_no(member.getMemberNo())
+	            .member_name(member.getMemberName())
+	            .position_name(positionName)
+	            .department_name(departmentName)
+	            .build();
+	}
+
 }

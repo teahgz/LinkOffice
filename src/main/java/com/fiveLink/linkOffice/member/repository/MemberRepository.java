@@ -49,4 +49,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     
     // [서혜원] 직위 소속 사원 여부
     long countByPositionNo(Long positionNo);
+    
+    // [서혜원] 조직도
+    List<Member> findAllByMemberStatus(Long status);
+     
 }

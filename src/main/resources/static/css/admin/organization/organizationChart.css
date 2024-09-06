@@ -1,0 +1,87 @@
+@charset "UTF-8";
+
+.modal {
+    display: none;  
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 0;   
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+
+.organizationchart_title {
+	font-size : 18px;
+	font-weight : bold;
+	margin-bottom: 20px;
+}
+
+#selected-members {
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    min-height: 30px;
+}
+
+.selected-member {
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    padding: 2px 5px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+}
+
+.remove-member {
+    margin-left: 5px;
+    cursor: pointer;
+    color: red;
+}
+
+.remove-member:hover {
+    font-weight: bold;
+}
+
+.chart_close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top : 15px;
+}
+
+.chart_close:hover {
+    color: #000;
+}
+
+.permission_pick_list {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.permission-item {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.permission-item:last-child {
+    border-bottom: none;
+}
