@@ -103,6 +103,16 @@
     gap: 10px;  
 }
 
+.organization_search {
+	margin-bottom: 15px;
+	border: 1px solid #ccc;
+    border-radius: 8px;
+    width : 94.5%;
+    padding: 10px;
+    background-color: #f9f9f9;
+    min-height: 10px;
+}
+
 .selected-member {
     display: flex;
     align-items: center;
@@ -130,7 +140,29 @@
 .remove-member:hover {
     font-weight: bold;
     color: #cc0000;
+}  
+ 
+.jstree-closed > .jstree-icon::before {
+    content: '';  
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background-image: url('/img/org_plus.png');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
 }
+ 
+.jstree-open > .jstree-icon::before {
+    content: ''; /* 기본 아이콘 제거 */
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background-image: url('/img/org_minus.png');
+    background-size: cover;   
+    background-position: center;
+    background-repeat: no-repeat;
+} 
 
 /* ------------------------------ */
 /* 조직도 모달 관련 공통 css입니다. 상단 절대 수정 금지 */

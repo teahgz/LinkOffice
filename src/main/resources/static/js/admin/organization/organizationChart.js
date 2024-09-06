@@ -31,26 +31,27 @@ document.addEventListener("DOMContentLoaded", function () {
             method: 'GET',
             success: function(data) {
                 console.log('조직도 데이터:', data);
-                $('#organization-chart').jstree({
+                $('#organization-chart').jstree({ 
                     'core': {
                         'data': data,
-                        'themes': {
-                            'icons': false,
-                            'dots': false
+                        'themes': { 
+                            'icons': true,
+                            'dots': false,
+                            
                         }
                     },
                     'plugins': ['checkbox', 'types', 'search'],
                     'types': {
                         'default': {
-                            'icon': 'fa fa-folder'
+                            'icon': 'fa fa-users'
                         },
-                        'file': {
-                            'icon': 'fa fa-file'
-                        }
-                    },
-                    checkbox: {
-                        keep_selected_style: false
-                    }
+                        'department': {
+                            'icon': 'fa fa-users'
+                        }, 
+                        'member': {
+			            	'icon': 'fa fa-user'  
+			        	}
+                    } 
                 }).on('ready.jstree', function (e, data) {
                     restoreSelection(data.instance);
                 });
@@ -58,6 +59,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 // 체크박스 변경 시 선택된 사원 업데이트
                 $('#organization-chart').on('changed.jstree', function (e, data) {
                     updateSelectedMembers(data.selected, data.instance);
+                });
+                
+                // 검색  
+                $('#organization_search').on('keyup', function() { 
+                    const searchString = $(this).val();
+
+                    $('#organization-chart').jstree(true).search(searchString); 
                 });
             },
             error: function(xhr, status, error) {
