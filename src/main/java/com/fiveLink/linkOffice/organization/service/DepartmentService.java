@@ -34,7 +34,7 @@ public class DepartmentService {
     }
     
     public List<DepartmentDto> getAllDepartments() {
-        List<Department> departments = departmentRepository.findAllByOrderByDepartmentHighAscDepartmentNameAsc();
+        List<Department> departments = departmentRepository.findAllByDepartmentStatusOrderByDepartmentHighAscDepartmentNameAsc(0L);
         return buildHierarchy(mapToDto(departments));
     }
 
@@ -51,6 +51,12 @@ public class DepartmentService {
     @Transactional
     public void addDepartment(String departmentName, Long departmentHigh) {
         try {
+        	// 중복 부서명 체크
+            boolean isDuplicate = departmentRepository.existsByDepartmentNameAndDepartmentStatus(departmentName, 0L);
+            if (isDuplicate) {
+                throw new CustomDuplicateDepartmentException("중복된 부서명이 존재합니다.");
+            }
+            
             Department department = Department.builder()
                 .departmentName(departmentName)
                 .departmentHigh(departmentHigh)
@@ -156,7 +162,7 @@ public class DepartmentService {
                 .orElseThrow(() -> new RuntimeException("부서를 찾을 수 없습니다."));
 
         // 중복 부서명 체크
-        boolean isDuplicate = departmentRepository.existsByDepartmentNameAndDepartmentNoNot(departmentName, departmentId);
+        boolean isDuplicate = departmentRepository.existsByDepartmentNameAndDepartmentStatus(departmentName, 0L);
         if (isDuplicate) {
             throw new CustomDuplicateDepartmentException("중복된 부서명이 존재합니다.");
         }

@@ -46,4 +46,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // [서혜원] 하위 부서 소속 사원 여부
     long countByDepartmentNo(Long departmentNo);
+    
+    // [서혜원] 직위 소속 사원 여부
+    long countByPositionNo(Long positionNo);
 }

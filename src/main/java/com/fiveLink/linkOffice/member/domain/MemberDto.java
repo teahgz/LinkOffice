@@ -76,7 +76,7 @@ public class MemberDto {
 					.build();
 	}
 	
-	public MemberDto toDto(Member member) {
+	public static MemberDto toDto(Member member) {
 		return MemberDto.builder()
 					.member_no(member.getMemberNo())
 					.member_number(member.getMemberNumber())
