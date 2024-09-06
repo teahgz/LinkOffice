@@ -16,7 +16,7 @@ import java.util.Map;
 public class VacationTypeDto {
     private Long vacation_type_no;
     private String vacation_type_name;
-    private int vacation_type_calculate;
+    private double vacation_type_calculate;
     @Builder.Default
     private Map<String, String> vacationTypesData = new HashMap<>();
 

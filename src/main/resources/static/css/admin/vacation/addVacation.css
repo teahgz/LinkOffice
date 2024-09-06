@@ -137,3 +137,64 @@ addVacation_update button{
     margin-right: 0.3vw;
 }
 
+.vacationTable {
+   width:100%;
+  border-collapse: collapse;
+  margin: 2vw 0;
+  table-layout: fixed;
+}
+
+table,
+th,
+td {
+  border: 0.1vw solid #ccc;
+}
+
+th,
+td {
+  padding: 1vw;
+  text-align: center;
+  overflow: hidden;
+  font-size:1vw;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+
+.edit-btn {
+  border: none;
+  width: 5vw;
+  padding: 0.5vw;
+  border-radius: 10px;
+}
+.delete-btn {
+  border: none;
+  width: 5vw;
+  padding: 0.5vw;
+  border-radius: 10px;
+}
+
+.save-btn {
+  border: none;
+  width: 5vw;
+  padding: 0.5vw;
+  border-radius: 10px;
+}
+.cancel-btn {
+  border: none;
+  width: 5vw;
+  padding: 0.5vw;
+  border-radius: 10px;
+}
+#editVacationTypeName {
+  border: 1px solid #ccc;
+ font-size: 1vw;
+  border-radius: 5px;
+}
+#editVacationTypeCalculate {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1vw;
+}

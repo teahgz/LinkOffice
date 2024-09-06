@@ -149,13 +149,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
+//휴가 종류 생성
+document.addEventListener('DOMContentLoaded', () => {
     const forms = document.getElementById("vacationTypeForm");
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
     forms.addEventListener('submit', function(event) {
 
         event.preventDefault();
 
-         const payload = new FormData(form);
+       const vacationType = document.getElementById('vacationType').value;
+       const vacationValue = document.getElementById('vacationValue').value;
 
         fetch('/vacation/addTypeVacation', {
             method: 'POST',
@@ -163,7 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             },
-             body: JSON.stringify(payload)
+             body: JSON.stringify({
+                vacationType:vacationType,
+                vacationValue :vacationValue
+             })
         })
         .then(response => {
         if (!response.ok) {
@@ -181,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     confirmButtonText: "닫기"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                         location.href = `/home`
+                         location.reload();
                     }
                 });
             } else {
@@ -202,3 +208,75 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 수정 버튼 클릭 이벤트 처리
+    document.querySelectorAll('.edit-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const row = this.closest('tr'); // 클릭된 버튼이 속한 기본 행
+            const editRow = row.nextElementSibling; // 숨겨진 수정용 행
+            console.log(row);
+            console.log(editRow);
+            // 기본 행 숨기기
+            row.style.display = 'none';
+
+            // 수정 행 보이기
+            editRow.style.display = 'table-row';
+
+            editRow.querySelector('.cancel-btn').addEventListener('click', function () {
+                // 기본 행 다시 보이기
+                row.style.display = 'table-row';
+
+                // 수정 행 숨기기
+                editRow.style.display = 'none';
+            });
+
+
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+ const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    document.querySelectorAll('.save-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+
+            const vacationTypeNo = document.getElementById('editVacationTypeNo').value;
+            const vacationType = document.getElementById('editVacationTypeName').value;
+            const vacationValue = document.getElementById('editVacationTypeCalculate').value;
+            const countType = document.getElementById('countType').value;
+
+            // 서버로 보낼 데이터 준비
+            const data = {
+                vacationTypeNo: vacationTypeNo,
+                vacationType: vacationType,
+                vacationValue: vacationValue,
+                countType : countType
+            };
+
+            // Fetch API를 사용하여 데이터를 전송
+            fetch('/vacation/addTypeVacation', {
+                method: 'POST', // 또는 PUT, 백엔드에서 처리할 방식에 맞게 설정
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data) // 데이터를 JSON으로 변환하여 전송
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('네트워크 응답이 올바르지 않습니다.');
+            })
+            .then(result => {
+                console.log('저장 성공:', result);
+                // 성공 후 필요한 처리 (예: 화면 갱신)
+            })
+            .catch(error => {
+                console.error('저장 중 오류 발생:', error);
+            });
+        });
+    });
+});
