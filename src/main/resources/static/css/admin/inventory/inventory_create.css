@@ -58,7 +58,7 @@
             background-color: #0056b3;
         }
 
-        /* 모달 스타일 */
+        /* 공통 모달 스타일 */
         .modal {
             display: none;
             position: fixed;
@@ -70,7 +70,8 @@
             background-color: rgba(0, 0, 0, 0.5);
         }
 
-        .modal-content {
+        /* 카테고리 선택 모달 스타일 */
+        .modal-select .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
             padding: 20px;
@@ -78,6 +79,18 @@
             width: 30%;
             text-align: center;
             max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* 카테고리 등록 모달 스타일 */
+        .modal-register .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #aaa;
+            width: 40%;
+            text-align: left;
+            max-height: 500px;
             overflow-y: auto;
         }
 
@@ -104,14 +117,14 @@
             cursor: pointer;
         }
 
-        .confirm-button {
+        .confirm-button, .confirm-register {
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
         }
 
-        .cancel-button {
+        .cancel-button, .cancel-register {
             background-color: #aaa;
             color: white;
             border: none;
@@ -123,15 +136,14 @@
         }
 
         /* 모달 닫기 버튼 스타일 */
-        .close {
+        .close, .closeRegisterModal {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
 
-        .close:hover,
-        .close:focus {
+        .close:hover, .close:focus, .closeRegisterModal:hover, .closeRegisterModal:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;

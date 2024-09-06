@@ -3,13 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
-<body>
-    <th:block layout:fragment="content">
+<th:block layout:fragment="content">
 	    <link th:href="@{/css/admin/member/create.css}" rel="stylesheet" type="text/css">
-         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <section>
-            <div class="create_member">
                 <h1>사원 등록</h1>
+            <div class="create_member">
                 <form id="createMemberFrm">
                     <div class="member_card">
                         <div class="member_header">
@@ -25,57 +23,51 @@
                             <ul class="profile_details">
                                 <li>
                                     <strong>사원명</strong>
-                                    <input type="text">
+                                    <input type="text" id="name" name="name">
                                 </li>
                                 <li>
                                     <strong>주민번호</strong>
-                                    <div class="registration_number">
-                                        <input type="text" id="registration_number_front" name="registration_number_front" maxlength="6" required>
+                                    <div class="national_number">
+                                        <input type="text" id="national_number_front" name="national_number_front" maxlength="6">
                                         <span>-</span> 
-                                        <input type="text" id="registration_number_back" name="registration_number_back" maxlength="7" required>
+                                        <input type="text" id="national_number_back" name="national_number_back" maxlength="7">
                                     </div>
                                 </li>
-                               <li>
+                   				            <li>
 								    <strong>부서</strong>
-								    <select>
-								        <option value="0">부서명</option>
-								        <th:block th:each="department : ${departments}">
-								            <option th:value="${department.department_no}" th:text="${department.department_name}"></option>
-								        </th:block>
+								    <select  name="department">
+								     	<option th:each="department : ${departments}" th:value="${department.department_no}" th:text="${department.department_name}"></option>
 								    </select>
 								</li>
 
                                 <li>
                                     <strong>직위</strong>
-                                     <select>
-								        <option value="0">부서명</option>
-								        <th:block th:each="department : ${departments}">
-								            <option th:value="${department.department_no}" th:text="${department.department_name}"></option>
-								        </th:block>
+                                     <select name="position" id="position">
+								     	<option th:each="position : ${positions}" th:value="${position.position_no}" th:text="${position.position_name}" ></option>
 								    </select>
                                 </li>
                                 <li>
                                     <strong>입사일</strong>
-                                    <input type="date">
+                                    <input type="date" id="hire_date" name="hire_date">
                                 </li>
 								<li>
 								    <strong>전화번호</strong>
 								    <div class="mobile_number">
-								        <input type="text" id="mobile1" maxlength="3" value="010">
+								        <input type="text" id="mobile1" name="mobile1" maxlength="3" value="010">
 								        <span>-</span>
-								        <input type="text" id="mobile2" maxlength="4">
+								        <input type="text" id="mobile2" name="mobile2" maxlength="4">
 								        <span>-</span>
-								        <input type="text" id="mobile3" maxlength="4">
+								        <input type="text" id="mobile3" name="mobile3" maxlength="4">
 								    </div>
 								</li>
 								<li>
 								    <strong>내선번호</strong>
 								    <div class="internal_number">
-								        <input type="text" id="internal1" value="02">
+								        <input type="text" id="internal1" name="internal1" value="02" maxlength="3">
 								        <span>-</span>
-								        <input type="text" id="internal2">
+								        <input type="text" id="internal2" name="internal2" maxlength="4">
 								        <span>-</span>
-								        <input type="text" id="internal3">
+								        <input type="text" id="internal3" name="internal3" maxlength="4">
 								    </div>
 								</li>
                             </ul>
@@ -90,6 +82,6 @@
             </div>
         </section>
         <script th:src="@{/js/admin/member/create.js}"></script>
-    </th:block>
-</body>
+</th:block>
 </html>
+

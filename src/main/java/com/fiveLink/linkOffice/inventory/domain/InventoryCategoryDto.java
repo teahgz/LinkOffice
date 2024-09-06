@@ -18,10 +18,10 @@ public class InventoryCategoryDto {
 	private String inventory_category_name;
 	
 	public InventoryCategory toEntity() {
-		return InventoryCategory.builder()
-				.inventoryCategoryNo(inventory_category_no)
-				.inventoryCategoryName(inventory_category_name)
-				.build();
+	    return InventoryCategory.builder()
+	            .inventoryCategoryNo(inventory_category_no)
+	            .inventoryCategoryName(inventory_category_name)
+	            .build();
 	}
 	
 	public InventoryCategoryDto toDto(InventoryCategory inventoryCategory) {

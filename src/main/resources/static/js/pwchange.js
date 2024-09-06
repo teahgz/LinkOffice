@@ -1,23 +1,29 @@
-// 주민등록번호 
+// 입력 시 다음으로
+const frontInput = document.getElementById('national_number_front');
+const midInput = document.getElementById('national_number_mid');
+const backInput = document.getElementById('national_number_back');
+const newPw = document.getElementById('new_password');
 
-const frontInput = document.getElementById('registration_number_front');
-const backInput = document.getElementById('registration_number_back');
 
 frontInput.addEventListener('input', function() {
-	if (frontInput.value.length === 6) {
-		backInput.focus();
-	}
+    if (frontInput.value.length === 6) {
+        midInput.focus();
+    }
+});
+
+midInput.addEventListener('input', function() {
+    if (midInput.value.length === 1) {
+        backInput.focus();
+    }
 });
 
 backInput.addEventListener('input', function() {
-	let value = backInput.value;
-	if (value.length > 0) {
-		backInput.value = value.charAt(0) + '*'.repeat(value.length - 1);
-	} else {
-		backInput.value = '';
-	}
+    if (backInput.value.length === 6) {
+        newPw.focus();
+    }
 });
-// 비밀번호 
+
+// 비밀번호 보이기 안보이기
 $(document).ready(function() {
 	$('#pwHidden').on('click', function() {
 		$(this).hide(); 
@@ -31,3 +37,76 @@ $(document).ready(function() {
 		$('#new_password').attr('type', 'password'); 
 	});
 });
+
+// 비밀번호 변경 폼
+const pwChangeFrm = document.getElementById('pwchangeFrm');
+
+pwChangeFrm.addEventListener('submit',(e)=>{
+	e.preventDefault();
+	
+	let vali_check = false;
+	let vali_text = "";
+	
+	if(pwChangeFrm.user_id.value == ""){
+		vali_text += '아이디(사번)을 입력하세요.';
+		pwChangeFrm.user_id.focus();
+	} else if(pwChangeFrm.national_number_front == ""){
+		vali_text += '주민번호를 입력하세요.';
+		form.national_number_front.focus();
+	} else if(pwChangeFrm.national_number_back == ""){
+		vali_text += '주민번호를 입력하세요.';
+		pwChangeFrm.national_number_back.focus();
+	} else if(pwChangeFrm.new_password == ""){
+		vali_text += '새로운 비밀번호를 입력하세요.';
+		pwChangeFrm.new_password.focus();
+	} else {
+		vali_check = true;
+	}
+	
+	const csrfToken = document.getElementById('csrf_token').value;
+	const userId = pwChangeFrm.user_id.value;
+	const naNum1 = pwChangeFrm.national_number_front.value;
+	const naNum2 = pwChangeFrm.national_number_back.value;
+	const newpw = pwChangeFrm.new_password.value;
+	console.log(userId);
+	console.log(naNum1);
+	console.log(naNum2);
+	console.log(newpw);
+	if(vali_check == false){
+		Swal.fire({
+			icon : 'error',
+			text : vali_text,
+			confirmButtonText : "닫기"
+		});
+	} else{
+		const formData = new FormData(pwChangeFrm);
+		
+		console.log(formData);
+		fetch('/pwchange',{
+			method :'put',
+			headers : {
+				'X-CSRF-TOKEN' : csrfToken
+			},
+			body : formData
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+			if(data.res_code == '200'){
+				Swal.fire({
+				icon : 'success',
+				text : data.res_msg,
+				confirmButtonText : "닫기"
+		}).then((result) => {
+			location.href = ("/login");
+		});
+			} else{
+				Swal.fire({
+				icon : 'error',
+				text : data.res_msg,
+				confirmButtonText : "닫기"
+			})
+			}
+		})
+	}
+})

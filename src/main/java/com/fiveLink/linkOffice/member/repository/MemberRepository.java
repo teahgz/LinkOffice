@@ -15,6 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByMemberNumber(String memberNumber); 
     // [전주영] 전자결재이미지 수정
     Member findByMemberNo(Long memberNo);
+    
     // [전주영] 권한 조회 
     @Query("SELECT m, p.positionName, d.departmentName " +
             "FROM Member m " +
@@ -49,8 +50,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     
     // [서혜원] 직위 소속 사원 여부
     long countByPositionNo(Long positionNo);
-    
+     
     // [서혜원] 조직도
     List<Member> findAllByMemberStatus(Long status);
-     
+      
+    // [전주영] 전체 사원 조회 (관리자 빼고)
+    @Query("SELECT m, p.positionName, d.departmentName " +
+            "FROM Member m " +
+            "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+            "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+            "WHERE m.memberNo != 1")
+     List<Object[]> findAllMembersWithDetails(); 
 }

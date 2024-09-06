@@ -6,16 +6,17 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/inventory/inventory_create.css}" rel="stylesheet" type="text/css">
     <style>
-        
+        /* 필요하다면 CSS를 추가하세요 */
     </style>
 
 <section>
-	<div style="width: 80%; margin: 0 auto;">
+    <div style="width: 80%; margin: 0 auto;">
     <h1>비품 등록</h1>
     <hr>
 
     <form action="/submit-inventory" method="POST">
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+    <!-- CSRF 토큰 추가 -->
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
 
     <div class="form-group">
         <label for="department">부서 :</label>
@@ -37,6 +38,7 @@
         <label for="category">카테고리명 :</label>
         <input type="text" id="category" name="category" readonly>
         <button type="button" id="openModalBtn">카테고리 선택</button>
+        <button type="button" id="openRegisterModalBtn">카테고리 등록</button> <!-- 카테고리 등록 버튼 추가 -->
     </div>
 
     <div class="form-group">
@@ -69,9 +71,8 @@
     </div>
 </form>
 
-
-    <!-- 모달 -->
-    <div id="myModal" class="modal">
+    <!-- 카테고리 선택 모달 -->
+    <div id="myModal" class="modal modal-select">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h3>카테고리 선택</h3>
@@ -85,11 +86,30 @@
             </div>
         </div>
     </div>
+
+    <!-- 카테고리 등록 모달 -->
+    <div id="registerModal" class="modal modal-register">
+        <div class="modal-content">
+            <span class="closeRegisterModal">&times;</span>
+            <h3>카테고리 등록</h3>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="newCategory">카테고리 명 :</label>
+                    <input type="text" id="newCategory" name="newCategory">
+                </div>
+            </form>
+            <div class="modal-buttons">
+                <button type="button" class="confirm-register" id="registerCategoryBtn">등록</button>
+                <button type="button" class="cancel-register" id="cancelRegisterBtn">취소</button>
+            </div>
+        </div>
+    </div>
+
     </div>
 </section>
 
     <script>
-        // 모달 열기
+        // 카테고리 선택 모달
         var modal = document.getElementById("myModal");
         var btn = document.getElementById("openModalBtn");
         var span = document.getElementsByClassName("close")[0];
@@ -120,24 +140,21 @@
                 }
             };
             xhr.onerror = function() {
-                console.error('Error fetching categories');
+                alert('카테고리 목록을 불러오는 중 오류가 발생했습니다.');
             };
             xhr.send();
         };
 
-        // 모달 닫기 (X 버튼)
         span.onclick = function() {
             modal.style.display = "none";
         };
 
-        // 모달 닫기 (외부 클릭)
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         };
 
-        // 확인 버튼 클릭 시 선택한 카테고리 설정
         confirmBtn.onclick = function() {
             var selectedCategory = document.querySelector('input[name="category"]:checked');
             if (selectedCategory) {
@@ -146,10 +163,63 @@
             }
         };
 
-        // 취소 버튼 클릭 시 모달 닫기
         cancelBtn.onclick = function() {
             modal.style.display = "none";
         };
+
+        // 카테고리 등록 모달
+        var registerModal = document.getElementById("registerModal");
+        var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
+        var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];
+        var registerCategoryBtn = document.getElementById("registerCategoryBtn");
+        var cancelRegisterBtn = document.getElementById("cancelRegisterBtn");
+
+        // 카테고리 등록 모달 열기
+        openRegisterModalBtn.onclick = function() {
+            registerModal.style.display = "block";
+        };
+
+        // 등록 모달 닫기
+        closeRegisterModal.onclick = function() {
+            registerModal.style.display = "none";
+        };
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            if (event.target == registerModal) {
+                registerModal.style.display = "none";
+            }
+        };
+
+        // 카테고리 등록 버튼 클릭 시
+        registerCategoryBtn.onclick = function() {
+            registerCategory();  // 클릭 시 함수 호출
+        };
+
+        // 카테고리 등록 함수
+        function registerCategory() {
+            var newCategory = document.getElementById("newCategory").value;
+            var csrfToken = document.getElementById('csrfToken').value;
+            if (newCategory) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/inventory/register-category', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        alert(xhr.responseText);  
+                    } else {
+                        alert('카테고리 등록 실패');
+                    }
+                };
+                xhr.onerror = function() {
+                    alert('카테고리 등록 중 오류 발생');
+                };
+                xhr.send(JSON.stringify({ inventory_category_name: newCategory }));
+            } else {
+                alert('카테고리 이름을 입력하세요.');
+            }
+        }
     </script>
 </th:block>
 </html>

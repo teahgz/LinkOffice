@@ -12,5 +12,12 @@
     <select id="countVacation" resultType="int">
         SELECT count(*) FROM fl_vacation
     </select>
+    <select id="countVacationType" resultType="int">
+        SELECT count(*) FROM fl_vacation_type
+    </select>
+    <select id="selectVacationTypeList" resultType="com.fiveLink.linkOffice.vacation.domain.VacationTypeDto">
+        SELECT *
+        FROM fl_vacation_type
+    </select>
 
 </mapper>

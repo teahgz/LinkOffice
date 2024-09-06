@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.member.domain.Member;
@@ -17,12 +18,53 @@ import jakarta.transaction.Transactional;
 public class MemberService {
 	
 	private final MemberRepository memberRepository;
+	private final PasswordEncoder passwordEncoder;
+
 	
 	@Autowired
-	public MemberService(MemberRepository memberRepository) {
+	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
 		this.memberRepository = memberRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
-	
+	// 멤버 조회 
+	public List<MemberDto> getAllMembers() {
+        List<Object[]> results = memberRepository.findAllMembersWithDetails();
+
+        return results.stream()
+            .map(result -> {
+                Member member = (Member) result[0];
+                String positionName = (String) result[1];
+                String departmentName = (String) result[2];
+
+                return MemberDto.builder()
+                        .member_no(member.getMemberNo())
+                        .member_number(member.getMemberNumber())
+                        .member_pw(member.getMemberPw())
+                        .member_name(member.getMemberName())
+                        .member_national(member.getMemberNational())
+                        .member_internal(member.getMemberInternal())
+                        .member_mobile(member.getMemberMobile())
+                        .department_no(member.getDepartmentNo())
+                        .position_no(member.getPositionNo())
+                        .department_name(departmentName)
+                        .position_name(positionName)
+                        .member_address(member.getMemberAddress())
+                        .member_hire_date(member.getMemberHireDate())
+                        .member_end_date(member.getMemberEndDate())
+                        .member_create_date(member.getMemberCreateDate())
+                        .member_update_date(member.getMemberUpdateDate())
+                        .member_ori_profile_img(member.getMemberOriProfileImg())
+                        .member_new_profile_img(member.getMemberNewProfileImg())
+                        .member_ori_digital_img(member.getMemberOriDigitalImg())
+                        .member_new_digital_img(member.getMemberNewDigitalImg())
+                        .member_status(member.getMemberStatus())
+                        .member_additional(member.getMemberAdditional())
+                        .build();
+            })
+            .collect(Collectors.toList());
+    }
+    
+	// 사번으로 조회 
 	public List<MemberDto> getMemberByNumber(String memberNumber) {  
 		 List<Object[]> results = memberRepository.findMemberNumber(memberNumber);
 		 return results.stream().map(result -> {
@@ -138,7 +180,7 @@ public class MemberService {
     	return dto;
     }
     
-    // 전자결재 서명 update
+    // [전주영] 전자결재 서명 update
     @Transactional
     public Member updateMemberDigital(MemberDto dto) {
     	MemberDto temp = selectMemberOne(dto.getMember_no());
@@ -153,27 +195,53 @@ public class MemberService {
     	return result;
     } 
     
-    // 프로필 및 비밀번호, 주소 변경 
+    // [전주영] 프로필 이미지 및 비밀번호, 주소 변경 
     @Transactional
     public Member updateMemberProfile(MemberDto dto) {
-    	MemberDto temp = selectMemberOne(dto.getMember_no());
-    	System.out.println("memberService"+temp);
-    	
+    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
     	Member member = dto.toEntity();
-    	System.out.println(dto);
+    	Member result = memberRepository.save(member);
+    	return result;
+    }
+    
+    // [전주영] 사원 생성
+    public Member createMember(MemberDto dto) {
+    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw())); 
+    	Member member = dto.toEntity();
+    	return memberRepository.save(member);
+    }
+    
+    
+    // [전주영] 사번으로 member 조회
+    public MemberDto selectMemNumberOne(String MemberNumber) {
+    	Member member = memberRepository.findByMemberNumber(MemberNumber);
+    	MemberDto dto = new MemberDto().toDto(member);
+    	return dto;
+    }
+    // [전주영] 비밀번호 변경해주기
+    @Transactional
+    public Member pwchange(MemberDto dto) {
+    	
+    	MemberDto temp = selectMemNumberOne(dto.getMember_number());
+    	
+    	Member member = temp.toEntity();
+    	// dto 에서 받아온 비밀번호 암호화
+    	String encodedPw = passwordEncoder.encode(dto.getMember_pw());
+    	
+    	// member번호에 인코딩된 비밀번호 암호화
+    	member.setMemberPw(encodedPw);
     	Member result = memberRepository.save(member);
     	
     	return result;
-    	
     }
-    
+  
     // [서혜원] 조직도
-    public List<MemberDto> getAllMembers() {
-        List<Member> members = memberRepository.findAllByMemberStatus(0L);
-        return members.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
+//    public List<MemberDto> getAllMembers() {
+//        List<Member> members = memberRepository.findAllByMemberStatus(0L);
+//        return members.stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
 
     private MemberDto convertToDto(Member member) {
         return MemberDto.builder()
@@ -200,4 +268,4 @@ public class MemberService {
                 .build();
     }
      
-}
+} 

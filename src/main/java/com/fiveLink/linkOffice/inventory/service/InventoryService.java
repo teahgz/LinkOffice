@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
+import com.fiveLink.linkOffice.inventory.domain.InventoryCategory;
+import com.fiveLink.linkOffice.inventory.domain.InventoryCategoryDto;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
+import com.fiveLink.linkOffice.inventory.repository.InventoryCategoryRepository;
 import com.fiveLink.linkOffice.inventory.repository.InventoryRepository;
 
 import jakarta.transaction.Transactional;
@@ -18,11 +21,13 @@ import jakarta.transaction.Transactional;
 public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    private final InventoryCategoryRepository inventoryCategoryRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryService.class);
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository) {
+    public InventoryService(InventoryRepository inventoryRepository, InventoryCategoryRepository inventoryCategoryRepository) {
         this.inventoryRepository = inventoryRepository;
+        this.inventoryCategoryRepository = inventoryCategoryRepository;
     }
 
     public List<InventoryDto> selectInventoryByCategoryAndDepartment(Long inventoryCategoryNo, Long departmentNo) {
@@ -85,30 +90,60 @@ public class InventoryService {
         return inventoryRepository.findAllCategoryNames();
     }
     
-    public String findinventoryManager() {
-        return inventoryRepository.findinventoryManager();
-    }
     
     @Transactional
     public boolean createOrUpdateInventory(InventoryDto dto) {
-        // 수량을 제외한 동일한 비품이 있는지 찾기
-        Inventory existingInventory = inventoryRepository.findByCategoryAndNameAndLocation(
-            dto.getInventory_category_name(),
-            dto.getInventory_name(),
-            dto.getInventory_location(),
-            dto.getDepartment_name());
+        // 카테고리명으로 카테고리 번호 조회
+        Long categoryNo = findCategoryNoByName(dto.getInventory_category_name());
 
+        // 멤버 이름으로 멤버 번호 조회
+        Long memberNo = findMemberNoByName(dto.getMember_name());
+
+        // 카테고리 및 멤버 번호를 DTO에 설정
+        dto.setInventory_category_no(categoryNo);
+        dto.setMember_no(memberNo);
+        
+        // 수량을 제외한 동일한 비품이 있는지 찾기
+        Inventory existingInventory = inventoryRepository.findByCategoryAndNameAndLocationAndPriceAndDate(
+                dto.getInventory_category_name(),
+                dto.getInventory_name(),
+                dto.getInventory_location(),
+                dto.getInventory_price(), 
+                dto.getInventory_purchase_date(),  
+                dto.getDepartment_no());
+        
         if (existingInventory != null) {
-            // 비품이 이미 존재할 경우 수량 업데이트
-            int newQuantity = existingInventory.getInventoryQuantity() + dto.getInventory_quantity();
-            existingInventory.setInventoryQuantity(newQuantity);
-            inventoryRepository.save(existingInventory);  // 업데이트 후 저장
-            return true;  // 업데이트되었음을 알림
+            existingInventory.setInventoryQuantity(dto.getInventory_quantity());
+            inventoryRepository.save(existingInventory);  
+            return true;  
         } else {
-            // 비품이 존재하지 않을 경우 새로 생성
             Inventory newInventory = dto.toEntity();
-            inventoryRepository.save(newInventory);  // 새로운 비품 저장
-            return false;  // 새로 추가되었음을 알림
+            inventoryRepository.save(newInventory);  
+            return false; 
         }
     }
+    
+    public Long findCategoryNoByName(String categoryName) {
+        return inventoryRepository.findCategoryNoByName(categoryName);
+    }
+
+    public Long findMemberNoByName(String memberName) {
+        return inventoryRepository.findMemberNoByName(memberName);
+    }
+    
+    public String findMemberNameByNumber(String memberNumber) {
+        return inventoryRepository.findMemberNameByMemberNumber(memberNumber);
+    }
+    
+    public String registerCategory(InventoryCategoryDto inventoryCategoryDto) {
+        // 카테고리 이름으로 검색
+        if (inventoryCategoryRepository.findByInventoryCategoryName(inventoryCategoryDto.getInventory_category_name()).isPresent()) {
+            return "이미 존재하는 카테고리입니다.";
+        }
+
+        // 카테고리가 없으면 새로 등록
+        inventoryCategoryRepository.save(inventoryCategoryDto.toEntity());
+        return "카테고리가 성공적으로 등록되었습니다.";
+    }
+    
 }

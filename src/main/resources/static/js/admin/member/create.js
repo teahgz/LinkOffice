@@ -1,20 +1,11 @@
 // 주민등록번호 
 
-const frontInput = document.getElementById('registration_number_front');
-const backInput = document.getElementById('registration_number_back');
+const frontInput = document.getElementById('national_number_front');
+const backInput = document.getElementById('national_number_back');
 
 frontInput.addEventListener('input', function() {
 	if (frontInput.value.length === 6) {
 		backInput.focus();
-	}
-});
-
-backInput.addEventListener('input', function() {
-	let value = backInput.value;
-	if (value.length > 0) {
-		backInput.value = value.charAt(0) + '*'.repeat(value.length - 1);
-	} else {
-		backInput.value = '';
 	}
 });
 
@@ -24,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobile2 = document.getElementById('mobile2');
     const mobile3 = document.getElementById('mobile3');
 	const internal1 = document.getElementById('internal1');
+	const internal2 = document.getElementById('internal2');
+	const internal3 = document.getElementById('internal3');
 	
     mobile1.addEventListener('input', function() {
         if (mobile1.value.length === 3) {
@@ -42,6 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			internal1.focus();
 		}
 	});
+	 internal1.addEventListener('input',function(){
+		if(internal1.value.length === 3){
+			internal2.focus();
+		}
+	});
+	 internal2.addEventListener('input',function(){
+		if(internal2.value.length === 4){
+			internal3.focus();
+		}
+	});
+
 });
 
 // 이미지 등록 
@@ -73,4 +77,90 @@ function previewImage(event) {
     }
 }
 
+// 유효성 검사 및 등록
 
+const createFrm = document.getElementById('createMemberFrm');
+
+createFrm.addEventListener('submit',(e)=>{
+	e.preventDefault();
+	
+	let vali_check = false;
+	let vali_text ="";
+	
+	if(createFrm.profile_image.value == ""){
+		vali_text += '이미지를 등록해주세요.';
+		createFrm.profile_image.focus();
+	} else if(createFrm.name.value == ""){
+		vali_text += '사원명을 입력해주세요.';
+		createFrm.name.focus();
+	} else if(createFrm.national_number_front.value == ""){
+		vali_text += '주민번호 앞자리를 입력해주세요.';
+		national_number_front.focus();
+	 } else if(createFrm.national_number_back.value == ""){
+		vali_text += '주민번호 뒷자리를 입력해주세요';
+		national_number_back.focus();
+	 } else if(createFrm.hire_date.value == ""){
+		vali_text += '입사일을 지정해주세요.';
+		hire_date.focus();
+	 } else if(createFrm.mobile2.value == ""){
+		vali_text += '전화번호를 입력해주세요.';
+		mobile2.focus();
+	 } else if(createFrm.mobile3.value ==""){
+		vali_text += '전화번호를 입력해주세요.';
+		mobile3.focus();
+	 } else if(createFrm.internal2.value == ""){
+		vali_text += '내선번호를 입력해주세요.';
+		internal2.focus();
+	 } else if(createFrm.internal3.value == ""){
+		vali_text += '내선번호를 입력해주세요.';
+		internal3.focus();
+	 } else {
+		vali_check = true;
+	 }
+	 
+	 const csrfToken = document.getElementById("csrf_token").value;
+	 
+	 if(vali_check == false){
+		Swal.fire({
+			icon : 'error',
+			text : vali_text,
+			confirmButtonText : "닫기"
+		});
+	 } else{
+		const formData = new FormData(createFrm);
+        fetch('/admin/member/create', {
+            method: 'post',
+            headers : {
+				'X-CSRF-TOKEN':csrfToken
+			},
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+			if(data.res_code == '200'){
+				Swal.fire({
+				icon : 'success',
+				text : data.res_msg,
+				confirmButtonText : "닫기"
+		}).then((result)=>{
+			location.href = "/admin/member/create";
+		});
+			}else if(data.res_code == '409'){
+				Swal.fire({
+				icon : 'warning',
+				text : data.res_msg,
+				confirmButtonText : "닫기"
+			});	
+			}else {
+				Swal.fire({
+				icon : 'error',
+				text : data.res_msg,
+				confirmButtonText : "닫기"
+			});
+			}
+		}
+		
+        )
+		
+	 }
+})
