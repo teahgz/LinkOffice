@@ -14,9 +14,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fiveLink.linkOffice.inventory.domain.InventoryCategoryDto;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.service.InventoryService;
 
@@ -136,6 +138,13 @@ public class InventoryViewController {
         }
 
         return resultMap;
+    }
+    
+    @PostMapping("/inventory/register-category")
+    @ResponseBody // @ResponseBody를 추가하여 문자열을 직접 클라이언트에게 반환
+    public String registerCategory(@RequestBody InventoryCategoryDto inventoryCategoryDto) {
+        String result = inventoryService.registerCategory(inventoryCategoryDto);
+        return result;
     }
     
 }
