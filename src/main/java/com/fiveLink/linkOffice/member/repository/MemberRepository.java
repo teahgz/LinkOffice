@@ -50,4 +50,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     
     // [서혜원] 직위 소속 사원 여부
     long countByPositionNo(Long positionNo);
+    
+    // [전주영] 전체 사원 조회 (관리자 빼고)
+    @Query("SELECT m, p.positionName, d.departmentName " +
+            "FROM Member m " +
+            "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+            "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+            "WHERE m.memberNo != 1")
+     List<Object[]> findAllMembersWithDetails();
 }
