@@ -123,5 +123,5 @@ public class PositionController {
             resultMap.put("res_msg", "직위에 소속 사원이 존재하여 삭제가 불가능합니다.");
         }
         return resultMap;
-    }
+    } 
 }

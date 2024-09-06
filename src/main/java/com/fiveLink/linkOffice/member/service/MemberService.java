@@ -234,7 +234,40 @@ public class MemberService {
     	
     	return result;
     }
-    
-   
+  
+    // [서혜원] 조직도
+    public List<MemberDto> getAllMembersChart() {
+        List<Member> members = memberRepository.findAllByMemberStatus(0L);
+        return members.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
-}
+    private MemberDto convertToDto(Member member) {
+        return MemberDto.builder()
+                .member_no(member.getMemberNo())
+                .member_number(member.getMemberNumber())
+                .member_pw(member.getMemberPw())
+                .member_name(member.getMemberName())
+                .member_national(member.getMemberNational())
+                .member_internal(member.getMemberInternal())
+                .member_mobile(member.getMemberMobile())
+                .department_no(member.getDepartmentNo())
+                .position_no(member.getPositionNo())
+                .member_address(member.getMemberAddress())
+                .member_hire_date(member.getMemberHireDate())
+                .member_end_date(member.getMemberEndDate())
+                .member_create_date(member.getMemberCreateDate())
+                .member_update_date(member.getMemberUpdateDate())
+                .member_ori_profile_img(member.getMemberOriProfileImg())
+                .member_new_profile_img(member.getMemberNewProfileImg())
+                .member_ori_digital_img(member.getMemberOriDigitalImg())
+                .member_new_digital_img(member.getMemberNewDigitalImg())
+                .member_status(member.getMemberStatus())
+                .member_additional(member.getMemberAdditional())
+                .position_name(member.getPosition() != null ? member.getPosition().getPositionName() : null)  
+                .department_name(member.getDepartment() != null ? member.getDepartment().getDepartmentName() : null) 
+                .build();
+    } 
+     
+} 

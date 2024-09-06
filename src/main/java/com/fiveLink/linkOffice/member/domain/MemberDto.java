@@ -99,5 +99,6 @@ public class MemberDto {
 					.member_status(member.getMemberStatus())
 					.member_additional(member.getMemberAdditional())
 					.build();
-	}
+	} 
+
 }

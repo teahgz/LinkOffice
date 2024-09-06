@@ -65,7 +65,7 @@ button:hover {
     margin-bottom: 10px;
 }
 
-a {
+.container a, .details a {
     color: #2994da;
     text-decoration: none;
     font-size: 18px;
@@ -73,9 +73,9 @@ a {
     font-style: bold;
 }
 
-a:hover {
+.container a:hover, .details a:hover {
     color: #163e65;
-}
+} 
 
 .modal {
     display: none;
