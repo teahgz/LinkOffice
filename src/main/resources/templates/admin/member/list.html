@@ -32,18 +32,16 @@
               <th>직위</th>
               <th>입사일</th>
               <th>상태</th>
-              <th>상세</th>
             </tr>
           </thead>
-      	  <tbody th:each="member : ${memberList}">
-		    <tr>
+      	  <tbody>
+		    <tr th:each="member : ${memberList}" th:data_member_no="${member.member_no}" class="member_row">
 		        <td th:text="${member.member_number}"></td>
 		        <td th:text="${member.member_name}"></td>
 		        <td th:text="${member.department_name}"></td>
 		        <td th:text="${member.position_name}">대리</td>
 		        <td th:text="${member.member_hire_date}"></td>
 		        <td th:text="${member.member_status == 1 ? '퇴사' : '재직'}"></td>
-		        <td><a th:href="@{/admin/member/detail/{member_no}(member_no=${member.member_no})}">상세보기</a></td>
 		    </tr>
 		  </tbody>
         </table>
@@ -60,6 +58,6 @@
       </div>
     </section>
 
-    <script th:src="@{/js/#}"></script>
+    <script th:src="@{/js/admin/member/list.js}"></script>
   </th:block>
 </html>
