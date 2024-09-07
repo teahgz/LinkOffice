@@ -8,11 +8,11 @@
         <div class="my_profile">
             <h1>내 정보</h1>
             <div class="profile_card">
-                <div class="profile-header">
+                <div class="profile_header">
                     <div class="profile_img">
 					<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" id="currentSignature">
                     </div>
-                    <ul class="profile-details" >
+                    <ul class="profile_details" >
                         <li>
                             <strong>사번</strong>
                             <span th:text="${member.member_number}"></span>
@@ -43,7 +43,11 @@
                     </li>
                     <li>
                         <strong>퇴사일</strong>
-                        <span>-</span>
+                        <form id="endFrm">
+                        <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
+                        <input type="hidden" id="member_no" th:value="${member.member_no}" />
+                        <button type="button" class="end_button" onclick="confirmEnd()">퇴사</button>
+                        </form>
                     </li>
                     <li>
                         <strong>전화번호</strong>
@@ -58,8 +62,13 @@
                         <span th:text="${member.member_address}"></span>
                     </li>
                 </ul>
+                
+                <div class="button_container">
+                	<button type="button" class="list_button" onclick="history.back()">목록</button>
+            	</div>
             </div>
         </div>
     </section>
+    <script th:src="@{/js/admin/member/detail.js}"></script>
 </th:block>
 </html>
