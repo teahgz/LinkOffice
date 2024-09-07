@@ -176,7 +176,7 @@ public class MemberService {
     // [전주영] 전자결재 서명 dto 조회 
     public MemberDto selectMemberOne(Long memberNo) {
     	Member member = memberRepository.findByMemberNo(memberNo);
-    	MemberDto dto = new MemberDto().toDto(member);
+    	MemberDto dto = MemberDto.toDto(member);
     	return dto;
     }
     
@@ -215,7 +215,7 @@ public class MemberService {
     // [전주영] 사번으로 member 조회
     public MemberDto selectMemNumberOne(String MemberNumber) {
     	Member member = memberRepository.findByMemberNumber(MemberNumber);
-    	MemberDto dto = new MemberDto().toDto(member);
+    	MemberDto dto = MemberDto.toDto(member);
     	return dto;
     }
     // [전주영] 비밀번호 변경해주기
@@ -234,7 +234,7 @@ public class MemberService {
     	
     	return result;
     }
-  
+
     // [서혜원] 조직도
     public List<MemberDto> getAllMembersChart() {
         List<Member> members = memberRepository.findAllByMemberStatus(0L);
