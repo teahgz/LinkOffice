@@ -218,7 +218,7 @@ public class MemberApiController {
 			 @RequestParam("new_password") String newPw){
 		 Map<String, String> response = new HashMap<>();
 		    response.put("res_code", "404");
-		    response.put("res_msg", "사원 등록 중 오류가 발생하였습니다.");
+		    response.put("res_msg", "비밀번호 변경 중 오류가 발생하였습니다.");
 		    
 		    MemberDto dto = new MemberDto();
 		    
@@ -237,6 +237,7 @@ public class MemberApiController {
 			    	if(!memberNational.equals(userNational)) {
 			    		response.put("res_code", "409");
 					    response.put("res_msg", "사번과 등록된 주민번호가 일치하지 않습니다!");
+					    return response;
 			    	} else {
 			    		dto.setMember_pw(newPw);
 			    	}

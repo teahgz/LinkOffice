@@ -68,10 +68,6 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 	const naNum1 = pwChangeFrm.national_number_front.value;
 	const naNum2 = pwChangeFrm.national_number_back.value;
 	const newpw = pwChangeFrm.new_password.value;
-	console.log(userId);
-	console.log(naNum1);
-	console.log(naNum2);
-	console.log(newpw);
 	if(vali_check == false){
 		Swal.fire({
 			icon : 'error',
@@ -81,7 +77,6 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 	} else{
 		const formData = new FormData(pwChangeFrm);
 		
-		console.log(formData);
 		fetch('/pwchange',{
 			method :'put',
 			headers : {
