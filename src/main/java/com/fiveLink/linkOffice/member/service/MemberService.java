@@ -285,5 +285,15 @@ public class MemberService {
     	Member result = memberRepository.save(member);
     	return result;
     }
+    
+    // [전주영] 사원 정보 수정
+    @Transactional
+    public Member memberEdit(MemberDto memberdto) {
+    	Member member = memberdto.toEntity();
+    	Member result = memberRepository.save(member);
+    	return result;
+    	
+    }
+    
      
 } 

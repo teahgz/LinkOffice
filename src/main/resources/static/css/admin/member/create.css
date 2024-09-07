@@ -172,7 +172,7 @@ select option {
     width: 100%;
 }
 
-.create_button, .btn_cancel {
+.create_button, .cancel_button {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
