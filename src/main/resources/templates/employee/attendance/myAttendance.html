@@ -2,15 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
-
-<head>
     <meta charset="UTF-8">
-    <link th:href="@{/css/employee/attendance/myAttendance.css}" rel="stylesheet" type="text/css">
-    <title>근태 조회</title>
-</head>
-
-<body>
     <th:block layout:fragment="content" th:each="member : ${memberdto}">
+    <link th:href="@{/css/employee/attendance/myAttendance.css}" rel="stylesheet" type="text/css">
+        <section>
         <table style="display: none;" class="hidden_table">
             <tr th:each="attendance : ${attendanceList}">
                 <td class="hidden_date" th:text="${attendance.work_date}"></td>
@@ -18,7 +13,6 @@
                 <td id="mem_no" th:text="${member.member_no}"></td>
             </tr>
         </table>
-        <section>
             <h1>근태 조회</h1>
             <hr>
             <div class="attendance_div">
@@ -102,5 +96,4 @@
         </section>
         <script src="/js/employee/attendance/myAttendance.js"></script>
     </th:block>
-</body>
 </html>
