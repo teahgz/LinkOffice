@@ -26,7 +26,7 @@ function confirmEnd(){
 					text : data.res_msg,
 					confirmButtonText : "닫기"
 					}).then((result) =>{
-						location.href="/admin/member/list"
+						location.href="/admin/member/detail/"+memberNo;
 					});
 				} else {
 					Swal.fire({
