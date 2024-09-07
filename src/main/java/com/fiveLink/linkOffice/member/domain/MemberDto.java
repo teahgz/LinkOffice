@@ -45,6 +45,8 @@ public class MemberDto {
 	private String format_end_date;
 	
 	private List<GrantedAuthority> authorities;
+	//[김채영] 1년미만 여부
+	private int member_one_under;
 	
 	// [서혜원] 부서별 사원
 	private Long memberId;
@@ -74,6 +76,7 @@ public class MemberDto {
 					.memberNewDigitalImg(member_new_digital_img)
 					.memberStatus(member_status)
 					.memberAdditional(member_additional)
+					.memberOneUnder(member_one_under)
 					.build();
 	}
 	

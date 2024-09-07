@@ -44,11 +44,14 @@ public class VacationViewController {
         int countVacationType = vacationService.countVacationType();
         List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
 
+        int countCheckOneYear = vacationService.countCheckOneYear();
+
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("vacationList", vacationList);
         model.addAttribute("countVacation", countVacation);
         model.addAttribute("countVacationType", countVacationType);
         model.addAttribute("vacationTypeList", vacationTypeList);
+        model.addAttribute("countCheckOneYear", countCheckOneYear);
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";

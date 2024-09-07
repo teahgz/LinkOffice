@@ -3,6 +3,7 @@ package com.fiveLink.linkOffice.vacation.controller;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.vacation.domain.Vacation;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
+import com.fiveLink.linkOffice.vacation.domain.VacationOneUnderDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class VacationFunctionController {
         this.vacationService = vacationService;
     }
 
+
+    // 휴가 종류 추가
     @PostMapping("/addVacationAction")
     @ResponseBody
     public Map<String, String> addVacation(@RequestBody Map<String, Object> params) {
@@ -41,6 +44,7 @@ public class VacationFunctionController {
             dto.setVacationData(vacationData);
 
             int count = Integer.parseInt(String.valueOf(params.get("countVacation")));
+
             if(count > 0) {
                 List<String> vacationPk = (List<String>) params.get("vacationPkData");
                 for(int i = 0; i< vacationPk.size(); i++){
@@ -53,6 +57,7 @@ public class VacationFunctionController {
                     dto.setVacation_no(vacations.get(i).getVacationNo());
                     dto.setVacation_annual_leave(vacations.get(i).getVacationAnnualLeave());
                     dto.setVacation_year(vacations.get(i).getVacationYear());
+
                     if (vacationService.addVacation(dto) > 0) {
                         resultMap.put("res_code", "200");
                         resultMap.put("res_msg", "성공적으로 생성되었습니다.");
@@ -81,8 +86,6 @@ public class VacationFunctionController {
 
         return resultMap;
     }
-
-    // 휴가 종류 추가
     @PostMapping("/addTypeVacation")
     @ResponseBody
     public Map<String, String> addTypeVacation(@RequestBody Map<String, Object> payload) {
@@ -175,6 +178,38 @@ public class VacationFunctionController {
             }
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
+        }
+
+
+        return resultMap;
+
+    }
+    // 휴가 종류 삭제
+    @PostMapping("/checkOneYear")
+    @ResponseBody
+    public Map<String, String> checkOneYear(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
+
+
+        try {
+            Boolean isChecked = (Boolean) payload.get("isChecked");
+            VacationOneUnderDto dto = new VacationOneUnderDto();
+            // Boolean 값을 문자열 "true"와 비교하는 대신 Boolean.TRUE.equals()를 사용
+            if (Boolean.TRUE.equals(isChecked)) {
+                dto.setVacation_under_status(1); // 체크된 경우
+            } else {
+                dto.setVacation_under_status(0); // 체크되지 않은 경우
+            }
+            if(vacationService.checkOneYear(dto)>0) {
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "성공적으로 삭제되었습니다.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("res_code", "404");

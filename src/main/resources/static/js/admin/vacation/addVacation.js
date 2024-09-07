@@ -1,4 +1,4 @@
-// 폼 제출 시 처리
+// 연차 개수 제출 시 처리
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById("vacationForm");
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const memberNo = document.getElementById('memberNo').value;
         const yearInputs = document.querySelectorAll('[id^="year"]');
-        const lessThanOneYear = document.getElementById('lessThanOneYear').checked;
         const countVacation =document.getElementById('countVacation').value;
 
       const vacationPkElements = document.querySelectorAll('[id^="vacationPk"]');
@@ -27,13 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
            const vacationDays = input.value;
 
            vacationData[count] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
-           console.log("확인용sss:"+vacationData[count]);
+
            count++;
             });
-            console.log(typeof(vacationPkData[0]));
+
             const requestData = {
-                 memberNo: memberNo,
-                 vacationData: vacationData,
+                memberNo: memberNo,
+                vacationData: vacationData,
                 lessThanOneYear: lessThanOneYear,
                 countVacation : countVacation,
                 count : count,
@@ -89,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
              const vacationDays = input.value;
 
              vacationData[year] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
-             console.log("확인용:"+vacationData[year]);
+
             });
 
             const requestData = {
@@ -216,8 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             const row = this.closest('tr'); // 클릭된 버튼이 속한 기본 행
             const editRow = row.nextElementSibling; // 숨겨진 수정용 행
-            console.log(row);
-            console.log(editRow);
+
             // 기본 행 숨기기
             row.style.display = 'none';
 
@@ -249,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const vacationTypeNo = form.querySelector('#editVacationTypeNo').value;
             const vacationTypeName = form.querySelector('#editVacationTypeName').value;
             const vacationTypeCalculate = form.querySelector('#editVacationTypeCalculate').value;
-            console.log(vacationTypeNo);
 
             const data = {
                 vacationTypeNo: vacationTypeNo,
@@ -318,9 +315,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const vacationTypeName = row.querySelector('#vacationTypeName').value;
             const vacationTypeCal = row.querySelector('#vacationTypeCal').value;
 
-            console.log(vacationTypeNo);
- console.log(vacationTypeName); console.log(vacationTypeCal);
-
             fetch('/vacation/deleteVacation', {
                 method: 'POST',
                 headers: {
@@ -371,3 +365,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+//1년미만 여부
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    document.getElementById('oneUnderForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출을 막고
+
+        const isChecked = document.getElementById('lessThanOneYear').checked;
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+        fetch('/vacation/checkOneYear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    isChecked :isChecked
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+           .then(data => {
+                     console.log(data); // 응답 데이터 확인
+                       if (data.res_code === '200') {
+                           Swal.fire({
+                               icon: 'success',
+                               title: '성공',
+                               text: data.res_msg,
+                               confirmButtonText: "닫기"
+                           }).then((result) => {
+                               if (result.isConfirmed) {
+                                    location.reload();
+                               }
+                           });
+                       } else {
+                           Swal.fire({
+                               icon: 'error',
+                               title: '실패',
+                               text: data.res_msg,
+                               confirmButtonText: "닫기"
+                           });
+                       }
+                   })
+                   .catch(error => {
+                       Swal.fire({
+                           icon: 'error',
+                           title: '오류 발생',
+                           text: '서버와의 통신 중 오류가 발생했습니다.',
+                           confirmButtonText: "닫기"
+                       });
+                   });
+        });
+    });
