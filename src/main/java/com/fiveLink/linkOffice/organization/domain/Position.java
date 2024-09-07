@@ -37,13 +37,13 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long positionNo;
 
-    @Column(name = "position_name", nullable = false)
+    @Column(name = "position_name")
     private String positionName;
 
     @Column(name = "position_high")
     private Long positionHigh;
 
-    @Column(name = "position_create_date", updatable = false)
+    @Column(name = "position_create_date")
     @CreationTimestamp
     private LocalDateTime positionCreateDate;
 

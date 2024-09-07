@@ -32,15 +32,16 @@ public class MenuPermissionDto {
 					.menuPermissionUpdateDate(menu_permission_update_date)
 					.build();
 	}
-	
+	 
 	public MenuPermissionDto toDto(MenuPermission menupermission) {
-		return MenuPermissionDto.builder()
-					.menu_permission_no(menupermission.getMenuPermissionNo())
-					.menu_no(menupermission.getMenuPermissionNo())
-					.permission_code_no(menupermission.getPermissionCodeNo())
-					.menu_permission_create_date(menupermission.getMenuPermissionCreateDate())
-					.menu_permission_update_date(menupermission.getMenuPermissionUpdateDate())
-					.build();
+	    return MenuPermissionDto.builder()
+	        .menu_permission_no(menupermission.getMenuPermissionNo())
+	        .menu_no(menupermission.getMenuNo())   
+	        .permission_code_no(menupermission.getPermissionCodeNo())
+	        .menu_permission_create_date(menupermission.getMenuPermissionCreateDate())
+	        .menu_permission_update_date(menupermission.getMenuPermissionUpdateDate())
+	        .build();
 	}
+
 	
 }
