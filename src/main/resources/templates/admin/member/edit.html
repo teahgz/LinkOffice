@@ -67,10 +67,8 @@
                     </li>
                 </ul>
                 <div class="button_container">
-                	<div th:if="${member.member_status == 0}" id="edit_div">
-					   <a th:href="@{/admin/member/edit/{no}(no=${member.member_no})}" id="edit_button">수정</a> 
-                	</div>
-					<button type="button" id="list_button" onclick="history.back()">목록</button>
+				   <a th:href="@{/admin/member/edit/{no}{no=${member.member_no}}}" id="edit_button">수정</a> 
+				   <button type="button" id="list_button" onclick="history.back()">목록</button>
 			    </div>
             </div>
         </div>

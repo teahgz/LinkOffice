@@ -118,17 +118,29 @@
     display: flex;
     justify-content: flex-end;
     width: 100%;
-   margin-right: 30px;
+    margin-right: 30px;
+    gap: 20px; 
 }
 
-.list_button {
+#edit_div {
+	margin-top:6px;
+}
+
+#edit_button {
+    padding: 8px 15px;
+    background-color: #B3C7EE; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; 
+    font-size:14px;
+    color: #000000;
+}
+
+#list_button {
     padding: 8px 15px;
     background-color: #C0C0C0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-.list_button:hover {
-    background-color: #C0C0C0;
 }
