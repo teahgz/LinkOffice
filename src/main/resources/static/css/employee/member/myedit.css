@@ -144,7 +144,7 @@
  	font-size: 0.7rem;
 }
 
-.btn_upload {
+.upload_button {
     display: inline-block;
     padding: 10px 15px;
     background-color: #C0C0C0;
@@ -251,7 +251,7 @@
     display: none;
 }
 
-.form_buttons {
+.button_container {
 	display: flex;
 	gap: 10px;
 	position: absolute;
@@ -261,21 +261,21 @@
 	margin-left: 30px;
 }
 
-.btn_address, .btn_update, .btn_cancel {
+.address_button, .edit_button, .cancel_button {
 	padding: 10px 20px;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
 }
 
-.btn_address {
+.address_button {
 	background-color: #B1C2DD;
 }
 
-.btn_update {
+.edit_button {
 	background-color: #B1C2DD;
 }
 
-.btn_cancel {
+.cancel_button {
 	background-color: #C0C0C0;
 }

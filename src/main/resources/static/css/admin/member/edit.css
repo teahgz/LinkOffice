@@ -1,5 +1,7 @@
 @charset "UTF-8";
-.create_member {
+@charset "UTF-8";
+
+.my_profile {
     position: relative;
     width: 80%;
     max-width: 1000px;
@@ -11,17 +13,16 @@
 h1 {
     font-size: 2rem;
     margin-bottom: 20px;
-    width: auto; 
-    align-self: flex-start; 
+    width: auto;
+    align-self: flex-start;
     margin-left: 100px;
 }
 
-.member_card {
+.profile_card {
     background-color: #f8f9fa;
     border-radius: 12px;
-    max-width: 800px;
-    width: 100%;
-    min-height: 400px;
+	height: 530px;
+	width:800px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 40px 20px 60px;
     margin: 20px auto;
@@ -32,27 +33,21 @@ h1 {
     position: relative;
 }
 
-.member_header {
+.profile_header {
     display: flex;
     width: 100%;
     padding: 0 20px;
-    justify-content: space-between;
 }
 
 .profile_header_left {
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
+    flex-direction: column;
+    align-items: center;
 }
 
 .profile_img {
-    width: 120px;
-    height: 120px;
+	height: 150px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
 }
 
 .profile_img img {
@@ -61,21 +56,26 @@ h1 {
     object-fit: cover;
 }
 
-.btn_upload {
+.upload_button {
     display: inline-block;
     padding: 10px 15px;
     background-color: #C0C0C0;
     border-radius: 50px;
     cursor: pointer;
     text-align: center;
-    margin-top: 10px; 
+    margin-top: 10px;
 }
 
 .file_info {
     color: red;
     font-size: 0.7rem;
-    margin-top: 10px; 
     margin-left: 40px;
+}
+
+.divider {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #ddd; 
 }
 
 .profile_details {
@@ -85,7 +85,16 @@ h1 {
     padding: 0;
     margin: 0;
     list-style: none;
-    margin-top: 20px;
+    margin-top: 30px;
+    margin-left: 50px;
+}
+
+#member_name {
+   width: 50px; 
+}
+
+.national_number input {
+    width: 70px; 
 }
 
 .profile_details li {
@@ -103,27 +112,6 @@ h1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px 30px;
-}
-
-.profile_detail_address {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    width: 100%;
-    margin-top: 20px;
-}
-
-.profile_detail_address li {
-    margin-left: 330px;
-}
-
-.profile_detail_address label {
-    min-width: 80px;
-    font-weight: bold;
-    flex-shrink: 0;
 }
 
 .mobile_number, .internal_number {
@@ -172,14 +160,14 @@ select option {
     width: 100%;
 }
 
-.create_button, .btn_cancel {
+.edit_button, .cancel_button {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.create_button {
+.edit_button {
     background-color: #B1C2DD;
 }
 

@@ -116,8 +116,13 @@ public class MemberViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
 		
+	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	    List<PositionDto> positions = positionService.getAllPositionsForSelect();
+		
 		model.addAttribute("memberdto", memberdto);
 	    model.addAttribute("memberDtoList", memberDtoList);
+	    model.addAttribute("departments", departments);
+	    model.addAttribute("positions", positions);
 	    
 	    return "admin/member/edit";
 	}

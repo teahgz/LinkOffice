@@ -34,7 +34,7 @@
                     <div class="profile_header">
                         <div class="profile_header_left">
                         	<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" class="profile_img" id="profileImg">
-                            <label for="profile_image" class="btn_upload"><span>이미지 등록</span></label><br>
+                            <label for="profile_image" class="upload_button"><span>이미지 등록</span></label><br>
                             <p class="file_info">이미지는 PNG 또는 JPG만 등록 가능합니다.</p>
                             <input type="file" id="profile_image" name="profile_image" style="display: none;" onchange="previewImage(event)">
                         </div>
@@ -62,7 +62,7 @@
                             <span id="guide" style="color: #999; display: none"></span> 
                             <input type="text" id="sample4_detailAddress" class="input_address" placeholder="상세주소">
                             <input type="hidden" id="sample4_extraAddress" placeholder="참고항목">
-                            <input type="button" onclick="sample4_execDaumPostcode()" class="btn_address" value="주소 검색">
+                            <input type="button" onclick="sample4_execDaumPostcode()" class="address_button" value="주소 검색">
                         </li>
                         <li>
                             <div class="input_pw_container">
@@ -72,9 +72,9 @@
                             </div>
                         </li>
                     </ul>
-                    <div class="form_buttons">
-                        <button type="submit" class="btn_update">변경</button>
-                        <button type="button" class="btn_cancel" onclick="window.history.back();">취소</button>
+                    <div class="button_container">
+                        <button type="submit" class="edit_button">변경</button>
+                        <button type="button" class="cancel_button" onclick="window.history.back();">취소</button>
                     </div>
                 </div>
             </form>
