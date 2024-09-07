@@ -6,7 +6,7 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/inventory/inventory_create.css}" rel="stylesheet" type="text/css">
     <style>
-        /* 필요하다면 CSS를 추가하세요 */
+       
     </style>
 
 <section>
@@ -38,7 +38,7 @@
         <label for="category">카테고리명 :</label>
         <input type="text" id="category" name="category" readonly>
         <button type="button" id="openModalBtn">카테고리 선택</button>
-        <button type="button" id="openRegisterModalBtn">카테고리 등록</button> <!-- 카테고리 등록 버튼 추가 -->
+        <button type="button" id="openRegisterModalBtn">카테고리 등록</button> 
     </div>
 
     <div class="form-group">
@@ -77,7 +77,7 @@
             <span class="close">&times;</span>
             <h3>카테고리 선택</h3>
             <div id="categoryList">
-                <!-- 카테고리 동적 추가 영역 -->
+                
             </div>
 
             <div class="modal-buttons">
@@ -114,7 +114,7 @@
         var btn = document.getElementById("openModalBtn");
         var span = document.getElementsByClassName("close")[0];
         var confirmBtn = document.getElementById("confirmBtn");
-        var cancelBtn = document.getElementById("cancelBtn"); // 카테고리 선택 모달 취소 버튼
+        var cancelBtn = document.getElementById("cancelBtn"); 
 
         btn.onclick = function() {
             modal.style.display = "block";
@@ -126,7 +126,7 @@
                 if (xhr.status === 200) {
                     var categories = JSON.parse(xhr.responseText);
                     var categoryList = document.getElementById('categoryList');
-                    categoryList.innerHTML = ''; // 기존 리스트 제거
+                    categoryList.innerHTML = '';
 
                     for (var i = 0; i < categories.length; i++) {
                         var listItem = document.createElement('div');
@@ -194,7 +194,7 @@
 
         // 카테고리 등록 버튼 클릭 시
         registerCategoryBtn.onclick = function() {
-            registerCategory();  // 클릭 시 함수 호출
+            registerCategory();  
         };
 
         // 카테고리 등록 모달 취소 버튼 클릭 시 모달 닫기
@@ -214,7 +214,6 @@
                 xhr.onload = function() {
                     if (xhr.status === 200) {
                         alert(xhr.responseText);  
-                        // 카테고리 등록이 성공적으로 완료되면 모달 닫기
                         registerModal.style.display = "none";
                     } else {
                         alert('카테고리 등록 실패');

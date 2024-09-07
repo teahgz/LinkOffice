@@ -68,4 +68,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     String findMemberNameByMemberNumber(@Param("memberNumber") String memberNumber);
     
     
+    
 }
