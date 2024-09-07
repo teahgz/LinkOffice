@@ -72,12 +72,9 @@
 }
 
 #address{
-    display: flex;
-    justify-content: flex-start; 
-    align-items: center; 
+	display: flex;
     gap: 30px;
-    width: 280px;
-
+    margin-right: 55px;
 }
 
 .divider {
@@ -89,6 +86,12 @@
 .profile_details.paired {
     display: grid; 
     grid-template-columns: 1fr 1fr; 
+    gap: 30px 40px; 
+    width: 70%; 
+    margin-left: 220px; 
+}
+
+.profile_details.address {
     gap: 30px 40px; 
     width: 70%; 
     margin-left: 220px; 
