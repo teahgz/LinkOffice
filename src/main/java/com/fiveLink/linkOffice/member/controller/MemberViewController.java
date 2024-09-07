@@ -86,7 +86,7 @@ public class MemberViewController {
 		return "admin/member/list";
 	}
 	
-	// 관리자 사원 상세 조회 
+	// [전주영] 관리자 사원 상세 조회 
 	@GetMapping("/admin/member/detail/{member_no}")
 	public String detail(@PathVariable("member_no") Long memberNo, Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
@@ -109,7 +109,7 @@ public class MemberViewController {
 	    return "admin/member/detail";
 	}
 	
-	// 관리자 사원 수정
+	// [전주영] 관리자 사원 수정
 	@GetMapping("/admin/member/edit/{member_no}")
 	public String edit(@PathVariable("member_no") Long memberNo,Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
@@ -125,6 +125,21 @@ public class MemberViewController {
 	    model.addAttribute("positions", positions);
 	    
 	    return "admin/member/edit";
+	}
+	
+	// [전주영] 사용자 주소록
+	@GetMapping("/employee/member/list")
+	public String memberList(Model model) {
+		Long memberNo = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	    
+	    List<MemberDto> memberList = memberService.getAllMembers();
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("departments", departments);
+		model.addAttribute("memberList", memberList);
+		
+		return "employee/member/list";
 	}
 	
 }
