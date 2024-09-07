@@ -35,14 +35,6 @@ pwform.addEventListener('submit', (e) => {
 	})
 });
 
-// 페이지 로드 시 모달 상태 확인
-window.onload = function() {
-    const modalClosed = sessionStorage.getItem('modalClosed');
-    if (modalClosed === 'true') {
-        document.getElementById('myModal').style.display = 'none';
-    }
-}
-
 // 주소 API
 function sample4_execDaumPostcode() {
     new daum.Postcode({
