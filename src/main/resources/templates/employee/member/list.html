@@ -9,6 +9,7 @@
         <div class="search_sort_container">
           <div class="search_container">
             <select name="department">
+              <option value="0">부서명</option>
               <option th:each="department : ${departments}" th:value="${department.department_no}" th:text="${department.department_name}"></option>
             </select>
 
@@ -30,7 +31,6 @@
               <th>부서명</th>
               <th>직위</th>
               <th>입사일</th>
-              <th>상태</th>
             </tr>
           </thead>
       	  <tbody>
@@ -40,7 +40,6 @@
 		        <td th:text="${member.department_name}"></td>
 		        <td th:text="${member.position_name}">대리</td>
 		        <td th:text="${member.member_hire_date}"></td>
-		        <td th:text="${member.member_status == 1 ? '퇴사' : '재직'}"></td>
 		    </tr>
 		  </tbody>
         </table>
@@ -57,6 +56,6 @@
       </div>
     </section>
 
-    <script th:src="@{/js/admin/member/list.js}"></script>
+    <script th:src="@{/js/employee/member/list.js}"></script>
   </th:block>
 </html>

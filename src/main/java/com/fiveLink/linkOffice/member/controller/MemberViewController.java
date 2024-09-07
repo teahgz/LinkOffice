@@ -134,12 +134,35 @@ public class MemberViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    
-	    List<MemberDto> memberList = memberService.getAllMembers();
+	    List<MemberDto> memberList = memberService.getAllMemberPosition();
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("departments", departments);
 		model.addAttribute("memberList", memberList);
 		
 		return "employee/member/list";
+	}
+	
+	// [전주영] 사용자 사원 상세 조회 
+	@GetMapping("/employee/member/detail/{member_no}")
+	public String memberDetail(@PathVariable("member_no") Long memberNo, Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+	    
+		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        // 날짜를 문자열로 변환
+	        memberDtoList.forEach(member -> {
+	            if (member.getMember_end_date() != null) {
+	                String formattedEndDate = member.getMember_end_date().format(formatter);
+	                member.setFormat_end_date(formattedEndDate);
+	            }
+	        });
+		
+		model.addAttribute("memberdto", memberdto);
+	    model.addAttribute("memberDtoList", memberDtoList);
+	    
+	    return "employee/member/detail";
 	}
 	
 }
