@@ -1,11 +1,9 @@
 package com.fiveLink.linkOffice.vacation.service;
 
 
-import com.fiveLink.linkOffice.vacation.domain.Vacation;
-import com.fiveLink.linkOffice.vacation.domain.VacationDto;
+import com.fiveLink.linkOffice.vacation.domain.*;
 import com.fiveLink.linkOffice.mapper.VacationMapper;
-import com.fiveLink.linkOffice.vacation.domain.VacationType;
-import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
+import com.fiveLink.linkOffice.vacation.repository.VacationCheckRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +17,13 @@ public class VacationService {
     private final VacationRepository vacationRepository;
     private final VacationTypeRepository vacationTypeRepository;
     private final VacationMapper vacationMapper;
-
+    private final VacationCheckRepository vacationCheckRepository;
     @Autowired
-    public VacationService(VacationRepository vacationRepository, VacationMapper vacationMapper, VacationTypeRepository vacationTypeRepository){
+    public VacationService(VacationRepository vacationRepository, VacationMapper vacationMapper, VacationTypeRepository vacationTypeRepository, VacationCheckRepository vacationCheckRepository){
         this.vacationRepository = vacationRepository;
         this.vacationMapper = vacationMapper;
         this.vacationTypeRepository = vacationTypeRepository;
+        this.vacationCheckRepository = vacationCheckRepository;
     }
 //휴가 연차 생성
     public int addVacation(VacationDto dto) {
@@ -80,6 +79,24 @@ public class VacationService {
                 .orElseThrow(() -> new RuntimeException("휴가 타입을 찾을 수 없습니다."));
     }
 
+    //1년미만
+    public int checkOneYear(VacationOneUnderDto dto) {
+        int result = -1;
+        try {
+            VacationOneUnder vacationOneUnder = dto.toEntity();
+            vacationCheckRepository.save(vacationOneUnder);
 
+            result = 1;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public int countCheckOneYear() {
+        return vacationMapper.countCheckOneYear();
+
+
+    }
 
 }

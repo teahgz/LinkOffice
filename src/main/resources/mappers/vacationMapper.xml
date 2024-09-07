@@ -19,5 +19,7 @@
         SELECT *
         FROM fl_vacation_type
     </select>
-
+    <select id="countCheckOneYear" resultType="int">
+        SELECT count(*) FROM fl_vacation_under
+    </select>
 </mapper>

@@ -15,6 +15,6 @@ public interface VacationMapper {
 
     List<VacationTypeDto> selectVacationTypeList();
 
-    int countVacationTypeList();
+    int countCheckOneYear();
 
 }
