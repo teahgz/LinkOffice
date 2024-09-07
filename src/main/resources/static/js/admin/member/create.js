@@ -143,7 +143,7 @@ createFrm.addEventListener('submit',(e)=>{
 				text : data.res_msg,
 				confirmButtonText : "닫기"
 		}).then((result)=>{
-			location.href = "/admin/member/create";
+			location.href = "/admin/member/list";
 		});
 			}else if(data.res_code == '409'){
 				Swal.fire({

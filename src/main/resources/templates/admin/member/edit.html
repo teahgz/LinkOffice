@@ -43,15 +43,7 @@
                     </li>
                     <li>
                         <strong>퇴사일</strong>
-					    <div th:if="${member.member_end_date != null}">
-					        <span th:text="${member.format_end_date}"></span>
-					    </div>
-					    
-					    <form th:if="${member.member_end_date == null}" id="endFrm">
-					        <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
-					        <input type="hidden" id="member_no" th:value="${member.member_no}" />
-					        <button type="button" class="end_button" onclick="confirmEnd()">퇴사</button>
-					    </form>
+					    <span>-</span>
                     </li>
                     <li>
                         <strong>전화번호</strong>
@@ -67,8 +59,8 @@
                     </li>
                 </ul>
                 <div class="button_container">
-				   <a th:href="@{/admin/member/edit/{no}{no=${member.member_no}}}" id="edit_button">수정</a> 
-				   <button type="button" id="list_button" onclick="history.back()">목록</button>
+				   <button type="submit" id="edit_button">등록</button> 
+				   <button type="button" id="cancel_button" onclick="history.back()">취소</button>
 			    </div>
             </div>
         </div>
