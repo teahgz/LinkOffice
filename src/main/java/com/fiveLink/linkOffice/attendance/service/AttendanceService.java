@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,16 +15,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fiveLink.linkOffice.attendance.controller.AttendanceViewController;
 import com.fiveLink.linkOffice.attendance.domain.Attendance;
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.repository.AttendanceRepository;
-
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class AttendanceService {
@@ -53,6 +52,11 @@ public class AttendanceService {
 		return attendanceDtoList;
 	}
 	
+	// Service
+	public List<Attendance> findAttendanceList(Long memberNo, LocalDate startDate, LocalDate endDate) {
+	    return attendanceRepository.findByMemberNoAndWorkDateBetween(memberNo, startDate, endDate);
+	}
+
 	// 출근 여부 조회
 	public AttendanceDto findByMemberNoAndWorkDate(Long memberNo, LocalDate today) {
 		Attendance attendance = attendanceRepository.findByMemberNoAndWorkDate(memberNo, today);
