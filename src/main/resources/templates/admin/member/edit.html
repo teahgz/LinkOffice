@@ -5,10 +5,12 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/member/edit.css}" rel="stylesheet" type="text/css">
     <section th:each="member : ${memberDtoList}">
-            <h1>사원 정보</h1>
+       <h1>사원 정보</h1>
         <div class="my_profile">
-            <form id="editForm" enctype="multipart/form-data">
+            <form id="editFrm" enctype="multipart/form-data">
                 <div class="profile_card">
+                <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
+                <input type="hidden" id="member_no" th:value="${member.member_no}" />
                     <div class="profile_header">
                         <div class="profile_header_left">
                         	<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" class="profile_img" id="profileImg">
@@ -39,19 +41,19 @@
                     <ul class="profile_details paired">
                         <li>
                             <strong>부서</strong>
-                            <select id="departmentSelect" name="departmentNo">
+                            <select id="department" name="department">
                                 <option th:each="department : ${departments}" th:value="${department.department_no}" th:text="${department.department_name}" th:selected="${department.department_no == member.department_no}"></option>
                             </select>
                         </li>
                         <li>
                             <strong>직위</strong>
-                            <select id="positionSelect" name="positionNo">
+                            <select id="position" name="position">
                                 <option th:each="position : ${positions}" th:value="${position.position_no}" th:text="${position.position_name}" th:selected="${position.position_no == member.position_no}"></option>
                             </select>
                         </li>
                         <li>
                             <strong>입사일</strong>
-                            <input type="date" id="hireDate" name="hireDate" th:value="${member.member_hire_date}">
+                            <input type="date" id="hire_date" name="hire_date" th:value="${member.member_hire_date}">
                         </li>
                         <li>
                             <strong>퇴사일</strong>
@@ -70,11 +72,7 @@
 						<li>
 						    <strong>내선번호</strong>
 						    <div class="internal_number">
-						        <input type="text" id="internal1" name="internal1" maxlength="3" th:value="${#strings.substring(member.member_internal, 0, 2)}">
-						        <span>-</span>
-						        <input type="text" id="internal2" name="internal2" maxlength="4" th:value="${#strings.substring(member.member_internal, 3, 7)}">
-						        <span>-</span>
-						        <input type="text" id="internal3" name="internal3" maxlength="4" th:value="${#strings.substring(member.member_internal, 8)}">
+						        <input type="text" id="internal" name="internal" th:value="${member.member_internal}" maxlength="4">
 						    </div>
 						</li>
                         <li id="address">
@@ -90,6 +88,6 @@
             </form>
         </div>
     </section>
-    <script th:src="@{/js/admin/member/detail.js}"></script>
+    <script th:src="@{/js/admin/member/edit.js}"></script>
 </th:block>
 </html>

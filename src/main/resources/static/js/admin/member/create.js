@@ -14,9 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobile1 = document.getElementById('mobile1');
     const mobile2 = document.getElementById('mobile2');
     const mobile3 = document.getElementById('mobile3');
-	const internal1 = document.getElementById('internal1');
-	const internal2 = document.getElementById('internal2');
-	const internal3 = document.getElementById('internal3');
+	const internal = document.getElementById('internal');
 	
     mobile1.addEventListener('input', function() {
         if (mobile1.value.length === 3) {
@@ -32,17 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     mobile3.addEventListener('input',function(){
 		if(mobile3.value.length === 4){
-			internal1.focus();
-		}
-	});
-	 internal1.addEventListener('input',function(){
-		if(internal1.value.length === 3){
-			internal2.focus();
-		}
-	});
-	 internal2.addEventListener('input',function(){
-		if(internal2.value.length === 4){
-			internal3.focus();
+			internal.focus();
 		}
 	});
 
@@ -108,12 +96,9 @@ createFrm.addEventListener('submit',(e)=>{
 	 } else if(createFrm.mobile3.value ==""){
 		vali_text += '전화번호를 입력해주세요.';
 		mobile3.focus();
-	 } else if(createFrm.internal2.value == ""){
+	 } else if(createFrm.internal.value == ""){
 		vali_text += '내선번호를 입력해주세요.';
-		internal2.focus();
-	 } else if(createFrm.internal3.value == ""){
-		vali_text += '내선번호를 입력해주세요.';
-		internal3.focus();
+		internal.focus();
 	 } else {
 		vali_check = true;
 	 }
