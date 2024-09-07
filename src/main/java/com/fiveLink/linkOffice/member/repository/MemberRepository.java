@@ -61,4 +61,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
             "WHERE m.memberNo != 1")
      List<Object[]> findAllMembersWithDetails(); 
+     
+     @Query("SELECT m, p.positionName, d.departmentName " +
+             "FROM Member m " +
+             "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+             "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+             "WHERE m.memberNo != 1 AND m.memberStatus = 0" +
+             "ORDER BY p.positionLevel")
+      List<Object[]> findAllMemberWithDetailsOrderByPosition(); 
 }

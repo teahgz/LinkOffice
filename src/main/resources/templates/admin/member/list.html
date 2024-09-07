@@ -9,6 +9,7 @@
         <div class="search_sort_container">
           <div class="search_container">
             <select name="department">
+              <option value="0">부서명</option>
               <option th:each="department : ${departments}" th:value="${department.department_no}" th:text="${department.department_name}"></option>
             </select>
 
