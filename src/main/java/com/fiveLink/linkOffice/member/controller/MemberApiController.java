@@ -147,9 +147,7 @@ public class MemberApiController {
             @RequestParam("mobile1") String mobile1,
             @RequestParam("mobile2") String mobile2,
             @RequestParam("mobile3") String mobile3,
-            @RequestParam("internal1") String internal1,
-            @RequestParam("internal2") String internal2,
-            @RequestParam("internal3") String internal3,
+            @RequestParam("internal") String internal,
             @RequestParam("department") String department,
             @RequestParam("position") String position){
 		
@@ -190,7 +188,6 @@ public class MemberApiController {
 			String mobile = mobile1 + "-" + mobile2 + "-" + mobile3;
 			dto.setMember_mobile(mobile);
 			
-			String internal = internal1 + "-" + internal2 + "-" + internal3;
 			dto.setMember_internal(internal);
 			
 			long departmentNo = Long.parseLong(department);
@@ -250,8 +247,91 @@ public class MemberApiController {
 				response.put("res_code", "200");
 			    response.put("res_msg", "비밀번호 변경 성공하였습니다.");
 			}
+		    return response;
+	}
+	
+	// [전주영] 사원 상태 변경
+	@ResponseBody
+	@PutMapping("/admin/member/status/{member_no}")
+	public Map<String,String> statusUpdate(@PathVariable("member_no") Long memberNo){
+		 Map<String, String> response = new HashMap<>();
+		    response.put("res_code", "404");
+		    response.put("res_msg", "퇴사 처리 중 오류가 발생하였습니다.");
+		    
+		    MemberDto memberdto = memberService.selectMemberOne(memberNo);
+		    
+		    if(memberService.statusUpdate(memberdto) != null) {
+		    	response.put("res_code", "200");
+			    response.put("res_msg", "퇴사 처리하였습니다.");
+			}
 		    
 		    return response;
+	}
+	
+	// [전주영] 관리자 사원 정보 수정
+	@ResponseBody
+	@PutMapping("/admin/member/edit/{member_no}")
+	public Map<String,String> edit(@PathVariable("member_no") Long memberNo,
+			@RequestParam("profile_img") MultipartFile profileImage,
+            @RequestParam("member_name") String name,
+            @RequestParam("national_number_front") String nationalNumberFront,
+            @RequestParam("national_number_back") String nationalNumberBack,
+            @RequestParam("hire_date") String hireDate,
+            @RequestParam("mobile1") String mobile1,
+            @RequestParam("mobile2") String mobile2,
+            @RequestParam("mobile3") String mobile3,
+            @RequestParam("internal") String internal,
+            @RequestParam("department") String department,
+            @RequestParam("position") String position){
+		Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "퇴사 처리 중 오류가 발생하였습니다.");
+	    
+	    MemberDto memberdto = memberService.selectMemberOne(memberNo);
+	    
+	    if(profileImage != null && "".equals(profileImage.getOriginalFilename()) == false) {
+	    	String saveFileName = memberFileService.uploadProfile(profileImage);
+	    	if(saveFileName != null) {
+	    		memberdto.setMember_ori_profile_img(profileImage.getOriginalFilename());
+	    		memberdto.setMember_new_profile_img(saveFileName);
+	    		
+	    		if(memberFileService.profileDelete(memberNo) > 0) {
+	    			response.put("res_msg", "기존 파일이 삭제 되었습니다.");
+	    		} else {
+	    			response.put("res_msg", "기존 파일이 삭제 중 오류가 발생하었습니다.");
+	    		}
+	    	} else {
+	    		response.put("res_msg", "파일 업로드 실패");
+	    	}
+	    }
+	    
+	    
+	    memberdto.setMember_name(name);
+	    
+		String national = nationalNumberFront + "-" + nationalNumberBack;
+		
+		memberdto.setMember_national(national);
+		
+		memberdto.setMember_hire_date(hireDate);
+		
+		String mobile = mobile1 + "-" + mobile2 + "-" + mobile3;
+		memberdto.setMember_mobile(mobile);
+		
+		memberdto.setMember_internal(internal);
+		
+		
+		long departmentNo = Long.parseLong(department);
+	    long positionNo = Long.parseLong(position);		
+	    memberdto.setDepartment_no(departmentNo);
+	    memberdto.setPosition_no(positionNo);
+	    
+	    if(memberService.memberEdit(memberdto) != null) {
+	    	response.put("res_code", "200");
+	    	response.put("res_msg", "정보 수정 성공하였습니다.");
+
+	    }
+	    
+	    return response;
 	}
 
 }

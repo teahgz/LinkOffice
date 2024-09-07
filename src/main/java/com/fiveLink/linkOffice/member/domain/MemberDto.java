@@ -42,6 +42,7 @@ public class MemberDto {
 	private String member_new_digital_img;
 	private Long member_status;
 	private Long member_additional;
+	private String format_end_date;
 	
 	private List<GrantedAuthority> authorities;
 	//[김채영] 1년미만 여부

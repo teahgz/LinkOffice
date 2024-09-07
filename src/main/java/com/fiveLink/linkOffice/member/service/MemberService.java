@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.member.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -268,6 +269,31 @@ public class MemberService {
                 .position_name(member.getPosition() != null ? member.getPosition().getPositionName() : null)  
                 .department_name(member.getDepartment() != null ? member.getDepartment().getDepartmentName() : null) 
                 .build();
-    } 
+    }
+    
+    // [전주영] 상태값 변경 ( 퇴사 ) 
+    @Transactional
+    public Member statusUpdate(MemberDto memberdto) {
+    	MemberDto temp = selectMemberOne(memberdto.getMember_no());
+    	temp.setMember_status(1L);
+
+    	LocalDateTime currentDateTime = LocalDateTime.now();
+    	temp.setMember_end_date(currentDateTime);
+    	
+    	Member member = temp.toEntity();
+    	
+    	Member result = memberRepository.save(member);
+    	return result;
+    }
+    
+    // [전주영] 사원 정보 수정
+    @Transactional
+    public Member memberEdit(MemberDto memberdto) {
+    	Member member = memberdto.toEntity();
+    	Member result = memberRepository.save(member);
+    	return result;
+    	
+    }
+    
      
 } 

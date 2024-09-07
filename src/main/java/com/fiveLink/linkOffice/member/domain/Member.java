@@ -103,10 +103,11 @@ public class Member {
 	@Column(name="member_new_digital_img")
 	private String memberNewDigitalImg;
 	
-	@Column(name="member_status")
+	//insertable = false -> insert 할 때 제외
+	@Column(name="member_status", insertable = false, updatable = true)
 	private Long memberStatus;
-	
-	@Column(name="member_additional")
+
+	@Column(name="member_additional", insertable = false, updatable = true)
 	private Long memberAdditional;
 	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)

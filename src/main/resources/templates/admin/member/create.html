@@ -6,7 +6,7 @@
 <th:block layout:fragment="content">
 	    <link th:href="@{/css/admin/member/create.css}" rel="stylesheet" type="text/css">
         <section>
-                <h1>사원 등록</h1>
+           <h1>사원 등록</h1>
             <div class="create_member">
                 <form id="createMemberFrm">
                     <div class="member_card">
@@ -63,19 +63,15 @@
 								<li>
 								    <strong>내선번호</strong>
 								    <div class="internal_number">
-								        <input type="text" id="internal1" name="internal1" value="02" maxlength="3">
-								        <span>-</span>
-								        <input type="text" id="internal2" name="internal2" maxlength="4">
-								        <span>-</span>
-								        <input type="text" id="internal3" name="internal3" maxlength="4">
+								        <input type="text" id="internal" name="internal" maxlength="4">
 								    </div>
 								</li>
                             </ul>
                         </div>
 
-                        <div class="form_buttons">
-                            <button type="submit" class="btn_create">등록</button>
-                            <button type="button" class="btn_cancel" onclick="window.history.back();">취소</button>
+                        <div class="button_container">
+                            <button type="submit" class="create_button">등록</button>
+                            <button type="button" class="cancel_button" onclick="window.history.back();">취소</button>
                         </div>
                     </div>
                 </form>
