@@ -250,6 +250,23 @@ public class MemberApiController {
 				response.put("res_code", "200");
 			    response.put("res_msg", "비밀번호 변경 성공하였습니다.");
 			}
+		    return response;
+	}
+	
+	// [전주영] 사원 상태 변경
+	@ResponseBody
+	@PutMapping("/admin/member/status/{member_no}")
+	public Map<String,String> statusUpdate(@PathVariable("member_no") Long memberNo){
+		 Map<String, String> response = new HashMap<>();
+		    response.put("res_code", "404");
+		    response.put("res_msg", "퇴사 처리 중 오류가 발생하였습니다.");
+		    
+		    MemberDto memberdto = memberService.selectMemberOne(memberNo);
+		    
+		    if(memberService.statusUpdate(memberdto) != null) {
+		    	response.put("res_code", "200");
+			    response.put("res_msg", "퇴사 처리하였습니다.");
+			}
 		    
 		    return response;
 	}
