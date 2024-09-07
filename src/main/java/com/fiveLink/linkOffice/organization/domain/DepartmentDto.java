@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.organization.repository.DepartmentRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,4 +57,5 @@ public class DepartmentDto {
             .department_status(department.getDepartmentStatus())
             .build();
     }
+      
 }

@@ -1,7 +1,7 @@
 header {
     width: 100%;
     background-color: #4E597E;
-    height: 60px;
+    height: 120px;
 }
 
 #header_wrap {
@@ -12,6 +12,7 @@ header {
 }
 
 .header_logo_img {
+	margin-top:5px;
     max-height: 40px;
 }
 
