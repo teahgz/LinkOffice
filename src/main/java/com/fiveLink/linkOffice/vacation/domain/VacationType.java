@@ -25,4 +25,6 @@ public class VacationType {
     private double vacationTypeCalculate;
 
 
+    @Column(name="vacation_type_status")
+    private int vacationTypeStatus;
 }

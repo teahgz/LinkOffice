@@ -236,27 +236,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
+//휴가 카테고리 수정
 document.addEventListener('DOMContentLoaded', function () {
- const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
     document.querySelectorAll('.save-btn').forEach(function (button) {
         button.addEventListener('click', function () {
 
-            const vacationTypeNo = document.getElementById('editVacationTypeNo').value;
-            const vacationType = document.getElementById('editVacationTypeName').value;
-            const vacationValue = document.getElementById('editVacationTypeCalculate').value;
-            const countType = document.getElementById('countType').value;
+            const form = button.closest('form');
+            if (!form) return;
 
-            // 서버로 보낼 데이터 준비
+            const vacationTypeNo = form.querySelector('#editVacationTypeNo').value;
+            const vacationTypeName = form.querySelector('#editVacationTypeName').value;
+            const vacationTypeCalculate = form.querySelector('#editVacationTypeCalculate').value;
+            console.log(vacationTypeNo);
+
             const data = {
                 vacationTypeNo: vacationTypeNo,
-                vacationType: vacationType,
-                vacationValue: vacationValue,
-                countType : countType
+                vacationTypeName: vacationTypeName,
+                vacationTypeCalculate: vacationTypeCalculate
             };
-
             // Fetch API를 사용하여 데이터를 전송
-            fetch('/vacation/addTypeVacation', {
+            fetch('/vacation/updateVacation', {
                 method: 'POST', // 또는 PUT, 백엔드에서 처리할 방식에 맞게 설정
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,17 +266,107 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(data) // 데이터를 JSON으로 변환하여 전송
             })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-                throw new Error('네트워크 응답이 올바르지 않습니다.');
+                return response.json();
             })
-            .then(result => {
-                console.log('저장 성공:', result);
-                // 성공 후 필요한 처리 (예: 화면 갱신)
+            .then(data => {
+                if (data.res_code === '200') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '실패',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    });
+                }
             })
             .catch(error => {
-                console.error('저장 중 오류 발생:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '서버와의 통신 중 오류가 발생했습니다.',
+                    confirmButtonText: "닫기"
+                });
+            });
+
+        });
+    });
+});
+
+/*삭제버튼-상태값 변화*/
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+    document.querySelectorAll('.delete-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const row = button.closest('tr');
+            if (!row) return;
+
+            const vacationTypeNo = row.querySelector('#vacationTypeNo').value;
+            const vacationTypeName = row.querySelector('#vacationTypeName').value;
+            const vacationTypeCal = row.querySelector('#vacationTypeCal').value;
+
+            console.log(vacationTypeNo);
+ console.log(vacationTypeName); console.log(vacationTypeCal);
+
+            fetch('/vacation/deleteVacation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    vacationTypeNo : vacationTypeNo,
+                    vacationTypeName : vacationTypeName,
+                    vacationTypeCal : vacationTypeCal
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.res_code === '200') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            row.remove(); // 성공 시 행 제거
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '실패',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: '오류 발생',
+                    text: '서버와의 통신 중 오류가 발생했습니다.',
+                    confirmButtonText: "닫기"
+                });
             });
         });
     });
