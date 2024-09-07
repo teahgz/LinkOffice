@@ -17,6 +17,7 @@ public class VacationTypeDto {
     private Long vacation_type_no;
     private String vacation_type_name;
     private double vacation_type_calculate;
+    private int vacation_type_status;
     @Builder.Default
     private Map<String, String> vacationTypesData = new HashMap<>();
 
@@ -34,29 +35,18 @@ public class VacationTypeDto {
                 .vacationTypeNo(vacation_type_no)
                 .vacationTypeName(vacation_type_name)
                 .vacationTypeCalculate(vacation_type_calculate)
+                .vacationTypeStatus(vacation_type_status)
                 .build();
 
     }
-    // 추가 메서드: vacationData를 기반으로 여러 Vacation 엔티티 생성
-    public List<VacationType> toEntities() {
-        List<VacationType> type = new ArrayList<>();
-        for (Map.Entry<String, String> entry : vacationTypesData.entrySet()) {
-            type.add(VacationType.builder()
-                    .vacationTypeNo(vacation_type_no)
-                    .vacationTypeName(entry.getKey())
-                    .vacationTypeCalculate(Integer.parseInt(entry.getKey()))
 
-                    .build());
-        }
-        return type;
-    }
 
     public VacationTypeDto toDto(VacationType vacationType){
         return VacationTypeDto.builder()
                 .vacation_type_no(vacationType.getVacationTypeNo())
                 .vacation_type_name(vacationType.getVacationTypeName())
                 .vacation_type_calculate(vacationType.getVacationTypeCalculate())
-
+                .vacation_type_status(vacationType.getVacationTypeStatus())
                 .build();
 
     }

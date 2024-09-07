@@ -3,16 +3,47 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-    <link th:href="@{/css/#}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/admin/vacation/vacationStandard.css}" rel="stylesheet" type="text/css">
     <section>
-        <div>
-            <!--
-                구현 시작
-                section 에는 class, id 등 디자인 수정 X
-                div 부터 마음대로 구현하세요.
-            -->
+        <div class="vacationStandard_content">
+            <div class ="vacationStandard_title"> <h2>휴가 기준</h2> </div>
+            <div class="vacationStandardForms">
+                <form id="vacationStandard" class="vacationStandard">
+                    <div class="standard_click">
+                        <div class="standard_ele1">
+                            <div class="standard_ele_ele2">
+                                <h3>휴가 기준 설정</h3>
+                            </div>
+                            <div>
+                                <p style="color: red; font-size: 10px;">* 그룹 기준 휴가 갯수 초기화</p>
+                            </div>
+
+                        </div>
+                        <div class="standard_ele2">
+                            <div>
+                                <input type="checkbox" id="designated" name="designated" value="true">
+                                <label for="designated">지정 날짜</label>
+                            </div>
+                            <div>
+                                <input type="date" id="designatedDate" name="designatedDate">
+                            </div>
+
+                        </div>
+                        <div class="standard_ele2">
+
+                            <input type="checkbox" id="joined" name="joined" value="true">
+                            <label for="joined">입사일 기준</label>
+                        </div>
+                        <div class="standard_ele3" style="text-align: right; margin-top: 20px;">
+                            <button type="submit">등록</button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
         </div>
     </section>
-    <script th:src="@{/js/#}"></script>
+    <script th:src="@{/js/admin/vacation/vacationStandard.js}"></script>
 </th:block>
 </html>

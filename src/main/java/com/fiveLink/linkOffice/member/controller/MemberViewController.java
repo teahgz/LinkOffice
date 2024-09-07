@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.member.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class MemberViewController {
 	      model.addAttribute("positions", positions);
 		return "admin/member/create";
 	}
-	
+	//[전주영] 사원 목록 조회 
 	@GetMapping("/admin/member/list")
 	public String list(Model model) {
 		Long memberNo = memberService.getLoggedInMemberNo();
@@ -78,12 +79,91 @@ public class MemberViewController {
 	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    
 	    List<MemberDto> memberList = memberService.getAllMembers();
-	    System.out.println(memberList);
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("departments", departments);
 		model.addAttribute("memberList", memberList);
 		
 		return "admin/member/list";
 	}
+	
+	// [전주영] 관리자 사원 상세 조회 
+	@GetMapping("/admin/member/detail/{member_no}")
+	public String detail(@PathVariable("member_no") Long memberNo, Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+	    
+		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        // 날짜를 문자열로 변환
+	        memberDtoList.forEach(member -> {
+	            if (member.getMember_end_date() != null) {
+	                String formattedEndDate = member.getMember_end_date().format(formatter);
+	                member.setFormat_end_date(formattedEndDate);
+	            }
+	        });
+		
+		model.addAttribute("memberdto", memberdto);
+	    model.addAttribute("memberDtoList", memberDtoList);
+	    
+	    return "admin/member/detail";
+	}
+	
+	// [전주영] 관리자 사원 수정
+	@GetMapping("/admin/member/edit/{member_no}")
+	public String edit(@PathVariable("member_no") Long memberNo,Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+		
+	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	    List<PositionDto> positions = positionService.getAllPositionsForSelect();
+		
+		model.addAttribute("memberdto", memberdto);
+	    model.addAttribute("memberDtoList", memberDtoList);
+	    model.addAttribute("departments", departments);
+	    model.addAttribute("positions", positions);
+	    
+	    return "admin/member/edit";
+	}
+	
+	// [전주영] 사용자 주소록
+	@GetMapping("/employee/member/list")
+	public String memberList(Model model) {
+		Long memberNo = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	    
+	    List<MemberDto> memberList = memberService.getAllMemberPosition();
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("departments", departments);
+		model.addAttribute("memberList", memberList);
+		
+		return "employee/member/list";
+	}
+	
+	// [전주영] 사용자 사원 상세 조회 
+	@GetMapping("/employee/member/detail/{member_no}")
+	public String memberDetail(@PathVariable("member_no") Long memberNo, Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+	    
+		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        // 날짜를 문자열로 변환
+	        memberDtoList.forEach(member -> {
+	            if (member.getMember_end_date() != null) {
+	                String formattedEndDate = member.getMember_end_date().format(formatter);
+	                member.setFormat_end_date(formattedEndDate);
+	            }
+	        });
+		
+		model.addAttribute("memberdto", memberdto);
+	    model.addAttribute("memberDtoList", memberDtoList);
+	    
+	    return "employee/member/detail";
+	}
+	
 }
 

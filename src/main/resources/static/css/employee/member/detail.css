@@ -1,5 +1,7 @@
 @charset "UTF-8";
 
+@charset "UTF-8";
+
 .my_profile {
     position: relative; 
     display: flex;
@@ -19,18 +21,19 @@
     background-color: #f8f9fa;
     border-radius: 12px; 
     max-width: 800px; 
+    height: 380px;
     width: 100%;
-    min-height: 400px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 20px 60px; 
+    padding: 80px 20px 30px;
     margin-top: 20px; 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
     justify-content: flex-start; 
+    gap: 20px;
 }
 
-.profile-header {
+.profile_header {
     display: flex;
     align-items: flex-start; 
     gap: 28px; 
@@ -54,7 +57,7 @@
     object-fit: cover;
 }
 
-.profile-details {
+.profile_details {
     display: flex; 
     flex-direction: column; 
     gap: 35px; 
@@ -63,18 +66,13 @@
     list-style: none; 
 }
 
-.profile-details li {
+.profile_details li {
     display: flex;
     justify-content: flex-start; 
     align-items: center; 
     gap: 30px;
 }
 
-#address{
-	display: flex;
-    gap: 30px;
-    margin-right: 15px;
-}
 
 .divider {
     width: 100%;
@@ -87,13 +85,7 @@
     grid-template-columns: 1fr 1fr; 
     gap: 30px 40px; 
     width: 70%; 
-    margin-left: 220px; 
-}
-
-.profile_details.address {
-    gap: 30px 40px; 
-    width: 70%; 
-    margin-left: 220px; 
+    margin-left: 290px; 
 }
 
 .profile_details.paired li {
@@ -101,4 +93,21 @@
     justify-content: flex-start; 
     align-items: center; 
     gap: 30px; 
+}
+
+.button_container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-right: 30px;
+    gap: 20px; 
+}
+
+
+#list_button {
+    padding: 8px 15px;
+    background-color: #C0C0C0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

@@ -44,15 +44,31 @@ public class VacationViewController {
         int countVacationType = vacationService.countVacationType();
         List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
 
+        int countCheckOneYear = vacationService.countCheckOneYear();
+
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("vacationList", vacationList);
         model.addAttribute("countVacation", countVacation);
         model.addAttribute("countVacationType", countVacationType);
         model.addAttribute("vacationTypeList", vacationTypeList);
+        model.addAttribute("countCheckOneYear", countCheckOneYear);
 
         // 휴가 생성 페이지로 이동
         return "admin/vacation/addVacation";
     }
 
+    //휴가 기준 페이지 이동
+    @GetMapping("/vacation/vacationStandard/{member_no}")
+    public String addStandard(@PathVariable("member_no") Long memberNo, Model model) {
+
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+
+        model.addAttribute("memberdto", memberdto);
+
+
+        // 휴가 생성 페이지로 이동
+        return "admin/vacation/vacation";
+    }
 }
 

@@ -103,13 +103,17 @@ public class Member {
 	@Column(name="member_new_digital_img")
 	private String memberNewDigitalImg;
 	
-	@Column(name="member_status")
+	//insertable = false -> insert 할 때 제외
+	@Column(name="member_status", insertable = false, updatable = true)
 	private Long memberStatus;
-	
-	@Column(name="member_additional")
+
+	@Column(name="member_additional", insertable = false, updatable = true)
 	private Long memberAdditional;
 	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	private List<Inventory> inventory; 
+	private List<Inventory> inventory;
 
+	// [김채영] 1년 미만 멤버 확인
+	@Column(name="member_one_under")
+	private int memberOneUnder;
 }

@@ -79,7 +79,7 @@
 					<a href="#">메신저</a>
 
 				</li>
-				<li th:each = "member : ${memberdto}"><a th:href="@{/employe/member/list}">주소록</a></li>
+				<li th:each = "member : ${memberdto}"><a th:href="@{/employee/member/list}">주소록</a></li>
 
 				<li>
 					<a href="#">문서함</a>
@@ -125,7 +125,7 @@
 					<div class="dropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/admin/member/create}">사원 등록</a></li>
-							<li><a th:href="@{/admin/member/edit}">사원 수정</a></li>
+<!--							<li><a th:href="@{/admin/member/edit}">사원 수정</a></li>-->
 							<li><a th:href="@{/admin/member/list}">사원 조회</a></li>
 						</ul>
 					</div>
@@ -154,7 +154,7 @@
 					<div class="dropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
-							<li><a th:href="@{/vacation/vacations/{no}(no=${member.member_no})}">휴가 기준</a></li>
+							<li><a th:href="@{/vacation/vacationStandard/{no}(no=${member.member_no})}">휴가 기준</a></li>
 						</ul>
 					</div>
 				</li>
