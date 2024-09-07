@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
     var attendanceDates = [];
     
     // 모든 attendanceList의 work_date의 값을 가져옴
-    var attendanceCells = document.querySelectorAll("#attendanceTable .attendance_date");
+    var attendanceList = document.querySelectorAll(".hidden_table .hidden_date");
     
     // 날짜와 근태를 배열에 추가합니다.
-    attendanceCells.forEach(function(cell) {
+    attendanceList.forEach(function(cell) {
         var workDate = cell.textContent.trim();
         var checkInTime = cell.nextElementSibling ? cell.nextElementSibling.textContent.trim() : '';
         
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			// 출근 시간이 존재하면 시간과 분으로 나눔 
             var checkInHour = parseInt(checkInTime.split(':')[0]);
             // 출근 시간이 9시보다 늦으면 지각 
-            if (checkInHour > 9) {
+            if (checkInHour >= 9) {
                 status = 'bar_late'; 
             // 출근 시간 존재&9시 이전이면 출근 
             } else {
@@ -94,18 +94,18 @@ function attendanceCalendar(today, attendanceDates) {
     for (var i = prevMonthStartDate; i <= prevMonthLastDate.getDate(); i++) {
         var cell = row.insertCell();
         var dateToCheck = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        var dateBarHtml = '';
+        var dateBar = '';
 
         // attendanceDates 배열에서 해당 날짜가 있는지 확인
         var dateEntry = attendanceDates.find(entry => entry.date === dateToCheck);
         // 날짜가 존재한다면 근태를 표시할 수 있는 bar와 근태별 class(색상 표현을 위한) 추가 
         if (dateEntry) {
-            dateBarHtml = `<div class="date_bar ${dateEntry.statusClass}"></div>`; 
+            dateBar = `<div class="date_bar ${dateEntry.statusClass}"></div>`; 
         }
 		
         cell.innerHTML = `<div class="date_container">
                             <span style="color: #d3d3d3;">${i}</span>
-                            ${dateBarHtml}
+                            ${dateBar}
                           </div>`;
         cell.align = "center"; 
         cnt += 1;
@@ -122,18 +122,18 @@ function attendanceCalendar(today, attendanceDates) {
         cnt += 1;
 
         var dateToCheck = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        var dateBarHtml = '';
+        var dateBar = '';
 
         // attendanceDates 배열에서 해당 날짜가 있는지 확인
         var dateEntry = attendanceDates.find(entry => entry.date === dateToCheck);
         // 날짜가 존재한다면 근태를 표시할 수 있는 bar와 근태별 class(색상 표현을 위한) 추가 
         if (dateEntry) {
-            dateBarHtml = `<div class="date_bar ${dateEntry.statusClass}"></div>`; 
+            dateBar = `<div class="date_bar ${dateEntry.statusClass}"></div>`; 
         }
 
         cell.innerHTML = `<div class="date_container">
                             <span>${i}</span>
-                            ${dateBarHtml}
+                            ${dateBar}
                           </div>`;
         cell.align = "center"; 
 
@@ -149,8 +149,8 @@ function attendanceCalendar(today, attendanceDates) {
 
     // 마지막 주에 다음 달의 날짜 추가
     if (cnt % 7 != 0) {
-        var nextMonthDaysToShow = 7 - (cnt % 7);
-        for (var i = 1; i <= nextMonthDaysToShow; i++) {
+        var nextMonthDays = 7 - (cnt % 7);
+        for (var i = 1; i <= nextMonthDays; i++) {
             var cell = row.insertCell();
             cell.innerHTML = `<div class="date_container">
                                 <span style="color: #d3d3d3;">${i}</span>
@@ -159,3 +159,216 @@ function attendanceCalendar(today, attendanceDates) {
         }
     }
 }
+// 근태 조회 리스트 
+document.addEventListener('DOMContentLoaded', function() {
+	// 시작 날, 끝나는 날, 근태, 정렬 값과 리스트를 추가할 테이블, 페이징을 추가할 div 
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    const attendanceStateSelect = document.getElementById('attendance_state');
+    const sortSelect = document.getElementById('sort_select');
+    const attendanceTable = document.getElementById('attendance_table_body');
+    const paginationDiv = document.getElementById('pagination');
+	
+    // 날짜를 'yyyy-MM-dd' 형식의 String으로 변환하는 함수
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    // 시작 날짜를 끝나는 날보다 나중 날짜로 설정 못하게 하는 함수 
+    function startDateLimit() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (endDate < startDate) {
+            endDateInput.value = formatDate(startDate);
+        }
+        startDateInput.max = formatDate(endDate);
+    }
+	// 오늘 날짜와 이번 달의 1일을 포맷 
+    const today = new Date();
+    const todayStr = formatDate(today);
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayStr = formatDate(firstDayOfMonth);
+	
+	// startDate와 endDate의 기본 값을 이번 달의 1일과 오늘로 설정 
+    startDateInput.value = firstDayStr;
+    endDateInput.value = todayStr;
+	
+	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
+    startDateInput.max = todayStr;
+    endDateInput.max = todayStr;
+	
+	// memberNo의 값 
+    const memberNo = document.getElementById('mem_no').textContent;
+    // 전체 데이터를 저장할 배열 
+    let allAttendanceData = []; 
+    // 총 페이지 수
+    let totalPages = 1; 
+    // 현재 페이지
+    let currentPage = 0; 
+	
+	// 출석 리스트 가져오기 
+    function loadAttendanceList(page = 0) {
+        currentPage = page; 
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        const attendanceState = attendanceStateSelect.value;
+        const sortOrder = sortSelect.value === '최신 순' ? 'DESC' : 'ASC';
+
+        fetch(`/employee/attendance/myAttendance?member_no=${memberNo}&start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`)
+            .then(response => response.json())
+            .then(data => {
+                allAttendanceData = data;
+                filterAndPaginateData(page, attendanceState, sortOrder);
+            })
+            .catch(error => {
+                console.error('서버에 예상치 못한 문제가 발생하였습니다. ', error);
+            });
+    }
+
+    function filterAndPaginateData(page, attendanceState, sortOrder) {
+        // 필터링
+        const filteredData = allAttendanceData.filter(attendance => {
+            const checkInTime = attendance.checkInTime || '';
+            let checkInHour = 0;
+			
+			// checkInTime의 시간만 가져오기 
+            if (checkInTime) {
+                const timeParts = checkInTime.split(':');
+                checkInHour = parseInt(timeParts[0], 10);
+            }
+			
+			// checkInTime의 시간으로 근태 파악 
+            switch (attendanceState) {
+                case '출근':
+                    return checkInTime && checkInHour < 9;
+                case '지각':
+                    return checkInTime && checkInHour >= 9;
+                case '결근':
+                    return !checkInTime;
+                case '전체':
+                default:
+                    return true;
+            }
+        }).sort((first, end) => {
+            return sortOrder === 'ASC' 
+                ? new Date(first.workDate) - new Date(end.workDate) 
+                : new Date(end.workDate) - new Date(first.workDate);
+        });
+
+        // 페이지네이션
+        // 한 페이지에 10줄
+        const pageSize = 10;
+        totalPages = Math.ceil(filteredData.length / pageSize); 
+        const paginatedData = filteredData.slice(page * pageSize, (page + 1) * pageSize);
+
+        // 테이블에 리스트 추가 
+        attendanceTable.innerHTML = '';
+        paginatedData.forEach(attendance => {
+            const row = document.createElement('tr');
+            const checkInTime = attendance.checkInTime || '';
+            const checkOutTime = attendance.checkOutTime || '';
+            const status = checkInTime
+                ? (parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근')
+                : '결근';
+
+            row.innerHTML = `
+                <td>${attendance.workDate}</td>
+                <td>${checkInTime}</td>
+                <td>${checkOutTime}</td>
+                <td>${status}</td>
+            `;
+            attendanceTable.appendChild(row);
+        });
+
+        // 한 페이지에 행을 10개씩 맞추기 위한 빈 행 추가 
+        const emptyRows = pageSize - paginatedData.length;
+        for (let i = 0; i < emptyRows; i++) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            `;
+            attendanceTable.appendChild(emptyRow);
+        }
+		// 페이지 개수 업데이트 
+        updatePagination(page);
+    }
+
+    function updatePagination(currentPage) {
+        paginationDiv.innerHTML = '';
+
+        // 처음 페이지 버튼 (<<)
+        const firstButton = document.createElement('span');
+        firstButton.className = 'pagination_button';
+        firstButton.textContent = '<<';
+        firstButton.onclick = () => {
+            if (currentPage > 0) {
+                loadAttendanceList(0); 
+            }
+        };
+        paginationDiv.appendChild(firstButton);
+        
+        // 이전 페이지 버튼 (<)
+        const prevButton = document.createElement('span');
+        prevButton.className = 'pagination_button';
+        prevButton.textContent = '<';
+        prevButton.onclick = () => {
+            if (currentPage > 0) {
+                loadAttendanceList(currentPage - 1);
+            }
+        };
+        paginationDiv.appendChild(prevButton);
+
+        // 페이지 번호 버튼
+        for (let page = 0; page < totalPages; page++) {
+            const pageButton = document.createElement('span');
+            pageButton.className = `pagination_button ${page === currentPage ? 'active' : ''}`;
+            pageButton.textContent = page + 1;
+            pageButton.onclick = () => loadAttendanceList(page);
+            paginationDiv.appendChild(pageButton);
+        }
+
+        // 다음 페이지 버튼 (>)
+        const nextButton = document.createElement('span');
+        nextButton.className = 'pagination_button';
+        nextButton.textContent = '>';
+        nextButton.onclick = () => {
+            if (currentPage < totalPages - 1) {
+                loadAttendanceList(currentPage + 1);
+            }
+        };
+        paginationDiv.appendChild(nextButton);
+        
+        // 마지막 페이지 버튼 (>>)
+        const lastButton = document.createElement('span');
+        lastButton.className = 'pagination_button';
+        lastButton.textContent = '>>';
+        lastButton.onclick = () => {
+            if (currentPage < totalPages - 1) {
+                loadAttendanceList(totalPages - 1); 
+            }
+        };
+        paginationDiv.appendChild(lastButton);
+    }
+	// 시작 날짜를 선택하면 동작하는 함수 
+    startDateInput.addEventListener('change', () => {
+        startDateLimit();
+        loadAttendanceList();
+    });
+    // 끝나는 날짜를 선택하면 동작하는 함수 
+    endDateInput.addEventListener('change', () => {
+        startDateLimit();
+        loadAttendanceList();
+    });
+    // 근태와 정렬을 선택하면 동작하는 함수 
+    attendanceStateSelect.addEventListener('change', () => loadAttendanceList());
+    sortSelect.addEventListener('change', () => loadAttendanceList());
+	// 출석 리스트 가져오기 
+    loadAttendanceList(); 
+});

@@ -31,9 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // memberNo 값 가져오기 
     var memberNo = document.getElementById('attendance_memberNo').value;
 	
-	// 출퇴근 버튼 상태 
+	// 출근 버튼 상태 
 	var checkInButton = document.getElementById('check_in_button');
-    var checkOutButton = document.getElementById('check_out_button');
 	
     // 출근버튼이 활성화된 상태라면 출근 기능 실행 
     if(!checkInButton.disabled){		
@@ -63,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '출석 확인',
+                        title: '출근 확인',
                         text: data.res_msg,
                         confirmButtonText: '확인'
                     });

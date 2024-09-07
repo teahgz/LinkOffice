@@ -114,7 +114,7 @@
         var btn = document.getElementById("openModalBtn");
         var span = document.getElementsByClassName("close")[0];
         var confirmBtn = document.getElementById("confirmBtn");
-        var cancelBtn = document.getElementById("cancelBtn");
+        var cancelBtn = document.getElementById("cancelBtn"); // 카테고리 선택 모달 취소 버튼
 
         btn.onclick = function() {
             modal.style.display = "block";
@@ -163,6 +163,7 @@
             }
         };
 
+        // 카테고리 선택 취소 버튼 클릭 시 모달 닫기
         cancelBtn.onclick = function() {
             modal.style.display = "none";
         };
@@ -172,7 +173,7 @@
         var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
         var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];
         var registerCategoryBtn = document.getElementById("registerCategoryBtn");
-        var cancelRegisterBtn = document.getElementById("cancelRegisterBtn");
+        var cancelRegisterBtn = document.getElementById("cancelRegisterBtn"); // 카테고리 등록 모달 취소 버튼
 
         // 카테고리 등록 모달 열기
         openRegisterModalBtn.onclick = function() {
@@ -196,7 +197,12 @@
             registerCategory();  // 클릭 시 함수 호출
         };
 
-        // 카테고리 등록 함수
+        // 카테고리 등록 모달 취소 버튼 클릭 시 모달 닫기
+        cancelRegisterBtn.onclick = function() {
+            registerModal.style.display = "none";
+        };
+
+     // 카테고리 등록 함수
         function registerCategory() {
             var newCategory = document.getElementById("newCategory").value;
             var csrfToken = document.getElementById('csrfToken').value;
@@ -208,6 +214,8 @@
                 xhr.onload = function() {
                     if (xhr.status === 200) {
                         alert(xhr.responseText);  
+                        // 카테고리 등록이 성공적으로 완료되면 모달 닫기
+                        registerModal.style.display = "none";
                     } else {
                         alert('카테고리 등록 실패');
                     }
