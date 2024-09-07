@@ -6,10 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,8 +41,6 @@ public class AttendanceViewController {
    @GetMapping("/employee/attendance/myAttendance/{member_no}")
    public String documentPersonalPage(Model model,
                                       @PathVariable("member_no") Long memberNo) {
-       // 기본 페이지를 0으로 설정
-       int page = 0;
   
        List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
        // memberDto 불러오기
