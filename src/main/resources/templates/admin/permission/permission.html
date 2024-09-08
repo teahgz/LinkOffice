@@ -4,42 +4,53 @@
      layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
-         
         <link th:href="@{/css/admin/organization/organizationChart.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/admin/permission/permission.css}" rel="stylesheet" type="text/css">
         
         <section>
-            <div style="display: flex;">
+        	<div class="page_title">통합 권한 관리</div>
+            <div class="container">
                 <!-- 권한 기능 목록 -->
-                <div style="width: 30%; border-right: 1px solid #ccc; padding-right: 20px;">
-                    <div><strong>권한 기능 목록</strong></div>
-                    <!-- 권한 목록 -->
-                    <ul class="permission_Lists">
-                        <li th:each="permission : ${permissionList}">
-                            <a href="#" th:text="${permission.menu_name}" 
-                               th:data-id="${permission.menu_no}" 
-                               onclick="fetchPermissionMembers(this)"></a> 
-                        </li>
-                    </ul> 
+                <div class="permission_list_box">
+					<div class = "permission_title">권한 기능 목록</div>
+					<div class="permission-list">
+					    <ul class="permission_Lists">
+					        <li th:each="permission : ${permissionList}">
+					            <a href="#" th:text="${permission.menu_name}" 
+					               th:data-id="${permission.menu_no}" 
+					               onclick="fetchPermissionMembers(this)"></a> 
+					        </li>
+					    </ul> 
+					</div> 
                 </div>
                 
                 <!-- 선택한 기능명 + 권한자 목록 -->
-                <div style="width: 70%; padding-left: 20px;" id="permissionMembersSection">
-                    <div><strong id="sectionTitle">선택한 기능명: </strong>
+                <div class="member-section" id="permissionMembersSection">
+                    <div id="sectionTitle"> </div>
+                    <div class="button-container"> 
+					    <div class="left-buttons">
+					        <button id="deleteButton" type="button" class="modal_btn" disabled>삭제</button>
+					        <input type="text" id="searchMember" placeholder="부서명 또는 사원명으로 검색하세요.">
+					    </div> 
+					    <button id="openModalButton" type="button" class="modal_btn" onclick="openOrganizationChartModal()">권한자 등록</button>
+					</div>
+
+
                     <!-- 권한자 목록을 표 형식으로 출력 -->
-                    <table id="memberList" border="1" style="width: 100%; border-collapse: collapse;">
+                    <table id="memberList" class="permission_table">
                         <thead>
                             <tr>
+                            	<th> </th>
                                 <th>부서</th>
                                 <th>권한자</th>
                                 <th>권한 등록일</th>
                             </tr>
                         </thead>
                         <tbody>
-                             
+                            
                         </tbody>
                     </table>
-                    <button id="deleteButton" type="button" class="modal_btn" disabled>삭제</button>
-                    <button id="openModalButton" type="button" class="modal_btn" onclick="openOrganizationChartModal()">권한자 등록</button>
+                    <div id="pagination" class="pagination"></div> 
                 </div>
             </div>
         </section>
@@ -54,16 +65,12 @@
                             <div class="organizationchart_title" id="organizationChartModalLabel">권한자 등록</div>
                             <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
                         </div>
-                       <div class="modal-body"> 
-						    <div id="selected-members"> </div>
-						
-						    <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
-						
-						    <div id="organization-chart"></div>
-						
-						    <button id="confirmButton" type="button" class="modal_btn">확인</button>
-						</div>
-
+                        <div class="modal-body"> 
+                            <div id="selected-members"> </div>
+                            <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
+                            <div id="organization-chart"></div>
+                            <button id="confirmButton" type="button" class="modal_btn">확인</button>
+                        </div>
                     </form>
                 </div>
             </div>
