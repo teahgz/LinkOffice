@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.mapper;
 
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
+import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
@@ -16,5 +17,10 @@ public interface VacationMapper {
     List<VacationTypeDto> selectVacationTypeList();
 
     int countCheckOneYear();
+
+    int countStandard();
+
+    List<VacationStandardDto> selectVacationStandard();
+
 
 }
