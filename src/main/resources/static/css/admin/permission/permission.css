@@ -1,0 +1,261 @@
+@charset "UTF-8";
+ 
+.page_title {
+	font-size: 2.2rem; 
+    width: auto;
+    align-self: flex-start;
+    margin : 20px 0 0 60px;
+    color: #333;
+    font-weight: bold;
+}
+ 
+.container {
+    display: flex;
+    flex-direction: row;  
+    justify-content: space-between;  
+    gap: 20px;  
+    padding : 40px 60px;
+}
+
+.permission_list_box {
+    width: 25%;  
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
+    background-color: #ffffff;
+    padding: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.member-section {
+    width: 75%; 
+    padding : 0 30px 30px 30px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+} 
+ 
+.permission_title {
+    font-size: 1.3rem;
+    color: #333;
+    font-weight: 600;
+    padding : 10px 0 15px 30px;
+}
+ 
+.permission_Lists {
+    list-style: none;
+    padding-left : 20px;
+    margin: 0;
+}
+
+.permission_Lists li {
+    margin: 10px 0;
+}
+
+.permission_Lists a {
+    text-decoration: none;
+    font-weight : 400;
+    color: #2994da;
+    font-size: 1rem;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.permission_Lists a:hover {
+    background-color: #e9ecef;
+    color: #163e65;
+}
+
+.permission_Lists a.selected {
+    background-color: #e9ecef;
+    color: #163e65;
+}
+
+#sectionTitle {
+    font-size: 1.3rem;
+    color: #333;
+    font-weight: 600;
+    padding : 25px 0 15px 0;
+} 
+
+.button-container {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px;
+}
+
+.left-buttons {
+    display: flex;
+    gap: 10px;  
+}
+
+#deleteButton {
+	width : 120px;
+    padding: 10px 20px;
+    background-color: #EEB3B3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#deleteButton:hover {
+    background-color: #9CAFC7;
+}
+
+#deleteButton:disabled {
+    background-color: #d3d3d3;  
+    color: #a9a9a9; 
+    cursor: not-allowed;
+} 
+
+#searchMember {
+	width : 300px;
+	padding : 0 20px;
+}
+
+#openModalButton {
+	width : 15%;
+    padding: 10px 20px;
+    background-color: #B1C2DD;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#openModalButton:hover {
+    background-color: #9CAFC7;
+}
+
+.employee_table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.employee_table th, .employee_table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.employee_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+.employee_table tr:last-child td {
+    border-bottom: none;
+}
+
+.employee_table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+ 
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+
+.pagination button:hover {
+    background-color: #e9ecef;
+}
+
+.pagination button.active {
+    background-color: #B1C2DD;
+    color: white;
+    border-color: #B1C2DD;
+}
+  
+.organization_search {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    width: calc(100% - 22px);
+    margin-bottom: 15px;
+} 
+
+.permission_table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+} 
+
+.permission_table th, .permission_table td {
+    padding: 18px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.permission_table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+    font-size: 17px;
+}
+
+.permission_table tr:last-child td {
+    border-bottom: none;
+}
+
+.permission_table tbody tr {
+    transition: background-color 0.3s;
+}
+
+.permission_table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.sort-buttons {
+    text-align: right;  
+    margin-bottom: 15px;
+}
+
+.sort-buttons button {
+    background: none;  
+    border: none;      
+    color: #000000;    
+    font-size: 1rem;   
+    cursor: pointer; 
+    padding: 0;        
+    margin-left: 25px; 
+    transition: color 0.3s;  
+}
+
+.sort-buttons button:hover {
+    color: #0080ff; 
+}
+
+.sort-buttons button.selected {
+    color: #0080ff;
+    font-weight: bold;
+}
+

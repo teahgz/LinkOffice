@@ -1,21 +1,16 @@
 package com.fiveLink.linkOffice.vacation.controller;
 
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.vacation.domain.*;
+import com.fiveLink.linkOffice.vacation.service.VacationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.fiveLink.linkOffice.vacation.domain.Vacation;
-import com.fiveLink.linkOffice.vacation.domain.VacationDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationOneUnderDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
-import com.fiveLink.linkOffice.vacation.service.VacationService;
 
 @Controller
 @RequestMapping("/vacation")
@@ -202,11 +197,10 @@ public class VacationFunctionController {
         try {
             Boolean isChecked = (Boolean) payload.get("isChecked");
             VacationOneUnderDto dto = new VacationOneUnderDto();
-            // Boolean 값을 문자열 "true"와 비교하는 대신 Boolean.TRUE.equals()를 사용
             if (Boolean.TRUE.equals(isChecked)) {
-                dto.setVacation_under_status(1); // 체크된 경우
+                dto.setVacation_under_status(1);
             } else {
-                dto.setVacation_under_status(0); // 체크되지 않은 경우
+                dto.setVacation_under_status(0);
             }
             if(vacationService.checkOneYear(dto)>0) {
                 resultMap.put("res_code", "200");
@@ -222,5 +216,42 @@ public class VacationFunctionController {
         return resultMap;
 
     }
+
+    //휴가 기준 설정
+    @PostMapping("/checkStandard")
+    @ResponseBody
+    public Map<String, String> checkStandard(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "휴가 생성 중 오류가 발생했습니다.");
+
+        try {
+            String type = (String) payload.get("type");
+            VacationStandardDto dto = new VacationStandardDto();
+
+            System.out.println("타입:"+type);
+            if ("designated".equals(type)) {
+                String designatedDate = (String) payload.get("designatedDate"); //지정날짜
+                dto.setVacation_standard_status(1);
+                dto.setVacation_standard_date(designatedDate);
+
+            } else if ("joined".equals(type)) {
+                dto.setVacation_standard_status(0);
+
+            }
+
+            if (vacationService.checkStandard(dto) > 0) {
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "성공적으로 처리되었습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
+        }
+
+        return resultMap;
+    }
+
 
 }
