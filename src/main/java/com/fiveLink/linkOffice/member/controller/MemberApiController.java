@@ -108,8 +108,9 @@ public class MemberApiController {
 		    if(!newAdr.isEmpty()) {
 		    	memberdto.setMember_address(newAdr);
 		    }
+		    
 		    if(!newPassword.isEmpty()) {
-		    	memberdto.setMember_pw(newPassword);
+		    	memberdto.setMember_pw(passwordEncoder.encode(newPassword));
 		    }
 		    if(file != null && "".equals(file.getOriginalFilename()) == false) {
 		    	String saveFileName = memberFileService.uploadProfile(file);

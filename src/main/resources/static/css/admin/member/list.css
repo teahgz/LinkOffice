@@ -25,7 +25,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .search_container {
@@ -34,7 +34,25 @@ h1 {
     gap: 20px;
 }
 
-select, .search_input {
+.download_container{
+	margin-bottom: 20px;
+	float: right;
+}
+
+.download_button{
+	padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 16px;
+}
+
+.download_button:hover {
+    background-color: #9CAFC7;
+}
+
+select, .search_text {
     padding: 12px 18px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -42,27 +60,26 @@ select, .search_input {
     transition: border-color 0.3s;
 }
 
-select:focus, .search_input:focus {
+select:focus, .search_text:focus {
     outline: none;
     border-color: #B1C2DD;
 }
 
 select {
-    width: 220px;
+    width: 120px;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 15px center;
 }
 
-.search_input {
-    width: 280px;
+.search_text {
+    width: 150px;
 }
 
 .search_button {
     padding: 12px 25px;
     background-color: #B1C2DD;
-    color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
