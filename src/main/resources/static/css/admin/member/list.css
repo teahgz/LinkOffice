@@ -25,13 +25,31 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .search_container {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.download_container{
+	margin-bottom: 20px;
+	float: right;
+}
+
+.download_button{
+	padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 16px;
+}
+
+.download_button:hover {
+    background-color: #9CAFC7;
 }
 
 select, .search_text {
@@ -62,7 +80,6 @@ select {
 .search_button {
     padding: 12px 25px;
     background-color: #B1C2DD;
-    color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;

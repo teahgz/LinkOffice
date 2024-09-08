@@ -69,10 +69,8 @@ public class MemberService {
     	Page<Object[]> results = null;
     	
     	String searchText = searchdto.getSearch_text();
-    	System.out.println("검색어"+searchText);
     	if (searchText != null && !searchText.isEmpty()) {
     	    int searchType = searchdto.getSearch_type();
-    	    System.out.println("검색타입"+searchType);
     	    switch (searchType) {
     	        case 1:
     	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);

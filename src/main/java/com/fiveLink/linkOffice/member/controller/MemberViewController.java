@@ -1,14 +1,24 @@
 package com.fiveLink.linkOffice.member.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +31,7 @@ import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.domain.PositionDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 import com.fiveLink.linkOffice.organization.service.PositionService;
+
 
 @Controller
 public class MemberViewController {
@@ -78,6 +89,16 @@ public class MemberViewController {
 		return "admin/member/create";
 	}
 	
+	private Sort getSortOption(String sort) {
+		if ("latest".equals(sort)) {
+			return Sort.by(Sort.Order.desc("memberHireDate")); 
+		} else if ("oldest".equals(sort)) {
+			return Sort.by(Sort.Order.asc("memberHireDate")); 
+		}
+		return Sort.by(Sort.Order.desc("memberHireDate")); 
+	}
+	
+	
 	//[전주영] 사원 목록 조회 
 	@GetMapping("/admin/member/list")
 	public String list(
@@ -105,15 +126,63 @@ public class MemberViewController {
 	    
 	    return "admin/member/list";
 	}
+	
+	//[전주영] 관리자 사원 목록 조회 엑셀 다운로드 
+	@GetMapping("/admin/member/excelDownload")
+	public ResponseEntity<byte[]> downloadExcel(MemberDto searchDto) {
+	    
+	    Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+	    Page<MemberDto> memberPage = memberService.getAllMemberPage(pageable, searchDto);
 
-	private Sort getSortOption(String sort) {
-	    if ("latest".equals(sort)) {
-	        return Sort.by(Sort.Order.desc("memberHireDate")); 
-	    } else if ("oldest".equals(sort)) {
-	        return Sort.by(Sort.Order.asc("memberHireDate")); 
+	    // 엑셀 파일 생성
+	    Workbook workbook = new XSSFWorkbook();
+	     // 엑셀 파일 안 시트의 이름
+	    Sheet sheet = workbook.createSheet("사원리스트");
+	    int rowNum = 0;
+	    
+	    //행을 생성 후 +1
+	    Row headerRow = sheet.createRow(rowNum++);
+	    String[] headers = {"사번", "사원명", "부서명", "직위", "입사일", "상태"};
+	    // 생성 후 배열의 값 넣기
+	    for (int i = 0; i < headers.length; i++) {
+	        Cell cell = headerRow.createCell(i);
+	        cell.setCellValue(headers[i]);
 	    }
-	    return Sort.by(Sort.Order.desc("memberHireDate")); 
+	    
+	    // 행 안에 내용 
+	    for (MemberDto member : memberPage.getContent()) {
+	        Row row = sheet.createRow(rowNum++);
+	        row.createCell(0).setCellValue(member.getMember_number());
+	        row.createCell(1).setCellValue(member.getMember_name());
+	        row.createCell(2).setCellValue(member.getDepartment_name());
+	        row.createCell(3).setCellValue(member.getPosition_name());
+	        row.createCell(4).setCellValue(member.getMember_hire_date());
+	        row.createCell(5).setCellValue(member.getMember_status() == 1 ? "퇴사" : "재직");
+	    }
+
+	    // 엑셀 파일을 바이트 배열로 변환
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    try {
+	    	// 파일 출력
+	        workbook.write(out);
+	        workbook.close(); 
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    byte[] bytes = out.toByteArray();
+
+	    HttpHeaders headersResponse = new HttpHeaders();
+	    headersResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+	    headersResponse.setContentDispositionFormData("attachment", "사원리스트.xlsx");
+
+	    return ResponseEntity
+	            .ok()
+	            .headers(headersResponse)
+	            .body(bytes);
 	}
+
+
 
 	// [전주영] 관리자 사원 상세 조회 
 	@GetMapping("/admin/member/detail/{member_no}")

@@ -62,7 +62,6 @@ select {
 .search_button {
     padding: 12px 25px;
     background-color: #B1C2DD;
-    color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
