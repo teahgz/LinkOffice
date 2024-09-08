@@ -22,4 +22,13 @@
     <select id="countCheckOneYear" resultType="int">
         SELECT count(*) FROM fl_vacation_under
     </select>
+    <select id="countStandard" resultType="int">
+        SELECT count(*) FROM fl_vacation_standard
+    </select>
+
+    <select id="selectVacationStandard" resultType="com.fiveLink.linkOffice.vacation.domain.VacationStandardDto">
+        SELECT *
+        FROM fl_vacation_standard
+    </select>
+
 </mapper>

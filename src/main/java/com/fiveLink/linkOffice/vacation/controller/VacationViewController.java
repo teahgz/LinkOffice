@@ -4,6 +4,7 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
+import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import org.slf4j.Logger;
@@ -62,12 +63,13 @@ public class VacationViewController {
     public String addStandard(@PathVariable("member_no") Long memberNo, Model model) {
 
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        int countStandard = vacationService.countStandard();
 
-
+        List<VacationStandardDto> vacationStandard = vacationService.selectVacationStandard();
         model.addAttribute("memberdto", memberdto);
-
-
-        // 휴가 생성 페이지로 이동
+        model.addAttribute("countStandard", countStandard);
+        model.addAttribute("vacationStandard", vacationStandard);
+        //휴가 생성 페이지로 이동
         return "admin/vacation/vacation";
     }
 }
