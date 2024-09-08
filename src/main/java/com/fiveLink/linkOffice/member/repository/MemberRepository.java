@@ -63,6 +63,20 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
             "WHERE m.memberNo != 1")
      Page<Object[]> findAllMembersWithDetails(Pageable pageable); 
+     // 검색어(조건, 부서명)
+     @Query("SELECT m, p.positionName, d.departmentName " +
+    	       "FROM Member m " +
+    	       "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+    	       "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+    	       "WHERE m.memberNo != 1 AND d.departmentName LIKE %:searchText%")
+    	Page<Object[]> findMembersByDepartmentName(@Param("searchText") String searchText, Pageable pageable);
+    // 검색어(조건, 직위명)
+      @Query("SELECT m, p.positionName, d.departmentName " +
+             "FROM Member m " +
+             "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+             "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+             "WHERE m.memberNo != 1 AND p.positionName LIKE %:searchText%")
+      Page<Object[]> findMembersByPositionName(@Param("searchText") String searchText, Pageable pageable);
      
      // [전주영] 전체 사원 조회 (관리자 빼고, 직위순) - 사용자 사원 목록 조회
      @Query("SELECT m, p.positionName, d.departmentName " +

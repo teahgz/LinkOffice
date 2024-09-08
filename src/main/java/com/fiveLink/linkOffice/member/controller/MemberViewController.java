@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
@@ -75,25 +77,44 @@ public class MemberViewController {
 	      model.addAttribute("positions", positions);
 		return "admin/member/create";
 	}
+	
 	//[전주영] 사원 목록 조회 
 	@GetMapping("/admin/member/list")
-	public String list(@PageableDefault(size = 10, sort = "memberHireDate", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-		Long memberNo = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	public String list(
+	    @PageableDefault(size = 10, sort = "memberHireDate", direction = Sort.Direction.DESC) Pageable pageable,
+	    @RequestParam(value = "sort", defaultValue = "latest") String sort, // 정렬 파라미터 추가
+	    Model model, 
+	    MemberDto searchdto) {
 	    
-	    // 페이징
-	    Page<MemberDto> memberPage = memberService.getAllMemberPage(pageable);
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+	    // 정렬 설정
+	    Sort sortOption = getSortOption(sort);
+	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+
+	    // 페이징 + 정렬
+	    Page<MemberDto> memberPage = memberService.getAllMemberPage(sortedPageable, searchdto);
 	    
-		model.addAttribute("memberdto", memberdto);
-		model.addAttribute("departments", departments);
-		// 페이징 안에 content
-		model.addAttribute("memberList", memberPage.getContent());
-		model.addAttribute("page", memberPage); 
-		
-		return "admin/member/list";
+	    model.addAttribute("memberdto", memberdto);
+	    // 페이징 안에 content
+	    model.addAttribute("memberList", memberPage.getContent());
+	    model.addAttribute("page", memberPage); 
+	    model.addAttribute("searchDto", searchdto);
+	    model.addAttribute("currentSort", sort); 
+	    
+	    return "admin/member/list";
 	}
-	
+
+	private Sort getSortOption(String sort) {
+	    if ("latest".equals(sort)) {
+	        return Sort.by(Sort.Order.desc("memberHireDate")); 
+	    } else if ("oldest".equals(sort)) {
+	        return Sort.by(Sort.Order.asc("memberHireDate")); 
+	    }
+	    return Sort.by(Sort.Order.desc("memberHireDate")); 
+	}
+
 	// [전주영] 관리자 사원 상세 조회 
 	@GetMapping("/admin/member/detail/{member_no}")
 	public String detail(@PathVariable("member_no") Long memberNo, Model model) {
