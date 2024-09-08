@@ -40,7 +40,11 @@
 			    </form>
 			</div>
         </div>
-
+        
+		<div class="download_container">
+	    	<button id="excelDownloadBtn" class="download_button">엑셀 다운로드</button>
+		</div>
+		
         <table class="employee_table">
           <thead>
             <tr>
@@ -63,7 +67,7 @@
             </tr>
           </tbody>
         </table>
-
+		
         <div class="pagination">
           <button th:if="${page.hasPrevious()}" th:onclick="|location.href='@{/admin/member/list(page=0)}'|">&lt;&lt;</button>
           <button th:if="${page.hasPrevious()}" th:onclick="|location.href='@{/admin/member/list(page=${page.number - 1})}'|">&lt;</button>
