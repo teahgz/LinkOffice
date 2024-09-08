@@ -47,10 +47,18 @@ public class AttendanceService {
 		}
 		return attendanceDtoList;
 	}
-	
-	// Service
-	public List<Attendance> findAttendanceList(Long memberNo, LocalDate startDate, LocalDate endDate) {
-	    return attendanceRepository.findByMemberNoAndWorkDateBetween(memberNo, startDate, endDate);
+
+	// 날짜 선택 근태 조회 리스트
+	public List<AttendanceDto> findAttendanceList(Long memberNo, LocalDate startDate, LocalDate endDate) {
+	    List<Attendance> attendanceList = attendanceRepository.findByMemberNoAndWorkDateBetween(memberNo, startDate, endDate);
+	   
+	    List<AttendanceDto> attendanceDtoList = new ArrayList<AttendanceDto>();
+		
+		for(Attendance a : attendanceList) {
+			AttendanceDto attendanceDto = new AttendanceDto().toDto(a);
+			attendanceDtoList.add(attendanceDto);
+		}
+	    return attendanceDtoList;
 	}
 
 	// 출근 여부 조회
