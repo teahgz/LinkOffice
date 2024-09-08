@@ -74,7 +74,7 @@ function fetchPermissionMembers(element) {
         }
     });
 } 
-
+ 
 function displayMembers(data, page) {
     const memberListTableBody = document.getElementById('memberList').getElementsByTagName('tbody')[0];
     memberListTableBody.innerHTML = ''; 
@@ -85,16 +85,18 @@ function displayMembers(data, page) {
     const pageData = data.slice(start, end);
 
     if (pageData.length === 0) {
+        $('#memberList tr').hide(); 
+        
         const row = memberListTableBody.insertRow();
         row.insertCell().colSpan = 4;
-        row.cells[0].textContent = '등록된 권한자가 없습니다.';
+        row.cells[0].textContent = '등록된 권한자가 없습니다.'; 
         
-        // 페이징 버튼 숨기기
         document.getElementById('pagination').style.display = 'none';
    		document.getElementById('sortNewest').style.display = 'none';
         document.getElementById('sortOldest').style.display = 'none'
     } else {
         pageData.forEach(member => {
+			$('#memberList tr').show();
             const row = memberListTableBody.insertRow();
             const checkboxCell = row.insertCell();
             const checkbox = document.createElement('input');
@@ -105,7 +107,7 @@ function displayMembers(data, page) {
             
             row.insertCell().textContent = member[2]; // 부서
             row.insertCell().textContent = `${member[1]} ${member[3]}`; // 사원명 + 직위명
-            row.insertCell().textContent = new Date(member[4]).toLocaleDateString(); // 권한 등록일
+            row.insertCell().textContent = new Date(member[4]).toISOString().split('T')[0]; // 권한 등록일  
         });
  
         document.getElementById('pagination').style.display = 'flex';
