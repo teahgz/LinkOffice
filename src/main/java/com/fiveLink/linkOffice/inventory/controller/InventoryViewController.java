@@ -57,7 +57,6 @@ public class InventoryViewController {
     @ResponseBody
     public List<InventoryDto> selectInventoryByDepartment(@PathVariable("departmentNo") Long departmentNo) {
         List<InventoryDto> result = inventoryService.selectInventoryByDepartment(departmentNo);
-        LOGGER.info("selectInventoryByDepartment result: {}", result);
         return result;
     }
     
@@ -68,13 +67,13 @@ public class InventoryViewController {
 
         // Spring Security에서 로그인한 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String memberNumber = authentication.getName();  // 로그인한 사용자의 member_number
+        String memberNumber = authentication.getName();  
         
         // member_number로 member_name을 조회
         String memberName = inventoryService.findMemberNameByNumber(memberNumber);
         
         model.addAttribute("departments", departmentNames);
-        model.addAttribute("manager", memberName);  // memberName을 '관리자' 필드에 출력
+        model.addAttribute("manager", memberName);  
         
         return "admin/inventory/inventory_create";
     }
@@ -88,14 +87,14 @@ public class InventoryViewController {
     @ResponseBody
     @PostMapping("/submit-inventory")
     public Map<String, String> createOrUpdateInventory(
-        @RequestParam("department") Long departmentNo,
-        @RequestParam("date") String date,
-        @RequestParam("category") String categoryName,
-        @RequestParam("inventoryName") String inventoryName,
-        @RequestParam("inventoryLocation") String inventoryLocation,
-        @RequestParam("inventoryPrice") Integer inventoryPrice, 
-        @RequestParam("inventoryManager") String memberName,
-        @RequestParam("inventoryQuantity") Integer inventoryQuantity 
+            @RequestParam("department") Long departmentNo,
+            @RequestParam("date") String date,
+            @RequestParam("category") String categoryName,
+            @RequestParam("inventoryName") String inventoryName,
+            @RequestParam("inventoryLocation") String inventoryLocation,
+            @RequestParam("inventoryPrice") Integer inventoryPrice, 
+            @RequestParam("inventoryManager") String memberName,
+            @RequestParam("inventoryQuantity") Integer inventoryQuantity 
     ) {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
@@ -103,12 +102,6 @@ public class InventoryViewController {
         
         // '관리자'라는 단어 제거
         memberName = memberName.replace("관리자", "").trim();
-        
-        // 카테고리명으로 카테고리 번호 조회
-        Long categoryNo = inventoryService.findCategoryNoByName(categoryName);
-        
-        // 멤버 이름으로 멤버 번호 조회
-        Long memberNo = inventoryService.findMemberNoByName(memberName);
         
         // DTO 생성 및 값 설정
         InventoryDto dto = InventoryDto.builder()
@@ -139,13 +132,25 @@ public class InventoryViewController {
 
         return resultMap;
     }
+
     
     @PostMapping("/inventory/register-category")
-    @ResponseBody // @ResponseBody를 추가하여 문자열을 직접 클라이언트에게 반환
-    public String registerCategory(@RequestBody InventoryCategoryDto inventoryCategoryDto) {
-        String result = inventoryService.registerCategory(inventoryCategoryDto);
-        return result;
+    @ResponseBody
+    public Map<String, String> registerCategory(@RequestBody InventoryCategoryDto inventoryCategoryDto) {
+        Map<String, String> responseMap = new HashMap<>();
+
+        if (inventoryService.isCategoryNameDuplicate(inventoryCategoryDto.getInventory_category_name())) {
+            responseMap.put("res_code", "400");
+            responseMap.put("res_msg", "카테고리 이름이 이미 존재합니다.");
+        } else {
+            inventoryService.registerCategory(inventoryCategoryDto);
+            responseMap.put("res_code", "200");
+            responseMap.put("res_msg", "카테고리가 성공적으로 등록되었습니다.");
+        }
+
+        return responseMap;
     }
+
     
     @PostMapping("/inventory/update")
     @ResponseBody

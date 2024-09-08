@@ -138,17 +138,16 @@ public class InventoryService {
         return inventoryRepository.findMemberNameByMemberNumber(memberNumber);
     }
     
-    // 카테고리 등록
-    public String registerCategory(InventoryCategoryDto inventoryCategoryDto) {
-        // 카테고리 이름으로 검색
-        if (inventoryCategoryRepository.findByInventoryCategoryName(inventoryCategoryDto.getInventory_category_name()).isPresent()) {
-            return "이미 존재하는 카테고리입니다.";
-        }
-
-        // 카테고리가 없으면 새로 등록
-        inventoryCategoryRepository.save(inventoryCategoryDto.toEntity());
-        return "카테고리가 성공적으로 등록되었습니다.";
+    // 카테고리 이름 중복 여부 확인
+    public boolean isCategoryNameDuplicate(String categoryName) {
+        return inventoryCategoryRepository.existsByInventoryCategoryName(categoryName);
     }
+
+    // 카테고리 등록 메서드
+    public void registerCategory(InventoryCategoryDto inventoryCategoryDto) {
+        inventoryCategoryRepository.save(inventoryCategoryDto.toEntity());
+    }
+
 
     // 비품 수정
     @Transactional
@@ -164,7 +163,7 @@ public class InventoryService {
             inventory.setInventoryLocation(dto.getInventory_location());
             inventory.setInventoryPurchaseDate(dto.getInventory_purchase_date());
 
-            inventoryRepository.save(inventory);  // 수정된 내용을 DB에 반영
+            inventoryRepository.save(inventory);  
         } 
     }
 
@@ -172,6 +171,6 @@ public class InventoryService {
     // 비품 삭제
     @Transactional
     public void deleteInventory(Long no) {
-        inventoryRepository.deleteById(no);  // 해당 비품을 DB에서 삭제
+        inventoryRepository.deleteById(no); 
     }
 }
