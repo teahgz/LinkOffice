@@ -5,40 +5,13 @@
 <meta charset="UTF-8">
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/inventory/inventory_list.css}" rel="stylesheet" type="text/css">
-    <!-- DataTables CSS -->
     <link th:href="@{/css/datatable.css}" rel="stylesheet" type="text/css">
-    <style>
-        td.details-control {
-            background: url('https://cdn.datatables.net/1.11.5/images/sort_desc.png') no-repeat center center;
-            cursor: pointer;
-        }
-        tr.shown td.details-control {
-            background: url('https://cdn.datatables.net/1.11.5/images/sort_asc.png') no-repeat center center;
-        }
 
-        /* child-row를 위한 스타일 */
-        .child-row {
-            background-color: #f9f9f9;
-        }
-
-        .child-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .child-table th, .child-table td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }   
-    </style>
 <section>
     <div style="width: 80%; margin: 0 auto;">
-    <h1 style="border-bottom: 2px solid #000; padding-bottom: 5px;">비품 목록</h1>
-    <br>
-    <!-- 부서 선택을 테이블 위에 두기 -->
-    <div id="departmentSelectContainer">
+        <h1 style="border-bottom: 2px solid #000; padding-bottom: 5px;">비품 목록</h1>
+        <br>
+        <div id="departmentSelectContainer">
             <select id="departmentSelect" onchange="fetchInventoryByDepartment()">
                 <option value="">부서 선택</option>
                 <option th:each="department : ${departments}" 
@@ -62,54 +35,88 @@
                 </tr>
             </thead>
             <tbody id="categoryTableBody">
-                <!-- 카테고리 목록이 여기에 동적으로 추가됩니다 -->
             </tbody>
         </table>
     </div>
 </section>
 
-<script>
-    // 부서 선택 시 해당 부서의 카테고리를 가져오는 함수
-    function fetchInventoryByDepartment() {
-    var departmentNo = document.getElementById("departmentSelect").value;
-    var table = $('#example').DataTable();
+<!-- CSRF 토큰을 hidden input으로 추가 -->
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="csrfToken"/>
 
-    if (!departmentNo) {
-        table.clear(); 
-        table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
-        table.draw();  
-        return;  
+<!-- 모달 창 HTML -->
+<div id="inventoryModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h3>비품 정보 수정</h3>
+        <form id="inventoryForm">
+            <div class="form-group">
+                <label for="itemName">비품명:</label>
+                <input type="text" id="itemName" name="itemName">
+            </div>
+            <div class="form-group">
+                <label for="itemPrice">가격:</label>
+                <input type="number" id="itemPrice" name="itemPrice">
+            </div>
+            <div class="form-group">
+                <label for="itemQuantity">개수:</label>
+                <input type="number" id="itemQuantity" name="itemQuantity">
+            </div>
+            <div class="form-group">
+                <label for="itemLocation">위치:</label>
+                <input type="text" id="itemLocation" name="itemLocation">
+            </div>
+            <div class="form-group">
+                <label for="itemPurchaseDate">구입일자:</label>
+                <input type="date" id="itemPurchaseDate" name="itemPurchaseDate">
+            </div>
+            <!-- 비품 no를 hidden 필드로 추가 -->
+            <input type="hidden" id="itemNo" name="itemNo" value="[[${inventory_no}]]">
+        </form>
+        <div class="button-container">
+            <button type="button" class="button-edit" onclick="saveChanges()">수정</button>
+            <button type="button" class="button-delete" onclick="deleteItem()">삭제</button>
+            <button type="button" class="button-cancel" onclick="closeModal()">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function fetchInventoryByDepartment() {
+        var departmentNo = document.getElementById("departmentSelect").value;
+        var table = $('#example').DataTable();
+
+        if (!departmentNo) {
+            table.clear(); 
+            table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
+            table.draw();  
+            return;  
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/inventory/department/' + departmentNo, true);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    updateCategoryTable(data);
+                } else {
+                    console.error('요청 실패:', xhr.status, xhr.statusText);
+                }
+            }
+        };
+        xhr.send();
     }
 
-    // 부서가 선택된 경우에만 데이터를 불러옴
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/inventory/department/' + departmentNo, true);
-
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                console.log("Received department data:", data);  
-                updateCategoryTable(data);
-            } else {
-                console.error('요청 실패:', xhr.status, xhr.statusText);
-            }
-        }
-    };
-
-    xhr.send();
-}
-
-    // 카테고리 데이터를 테이블에 추가하는 함수
     function updateCategoryTable(data) {
         var table = $('#example').DataTable();
         table.clear(); 
 
-        data.forEach(function(item,index) {
+        data.forEach(function(item, index) {
             var row = `
                 <tr data-inventory_no="${item.inventory_category_no}">
                     <td class="details-control"></td>
-                    <td>${index+1}</td>
+                    <td>${index + 1}</td>
                     <td>${item.inventory_category_name}</td>
                     <td>${item.inventory_price}</td> 
                     <td>${item.inventory_quantity}</td> 
@@ -121,20 +128,18 @@
         });
     }
 
-    // 세부 비품 목록을 child row로 표시하는 함수 (실제 데이터를 받아서 사용)
+    // 화살표 클릭 시 세부 비품 표시
     function format(inventory_category_no, row) {
         var departmentNo = document.getElementById("departmentSelect").value;
         var detailsHtml = '<table class="child-table"><thead><tr><th>번호</th><th>비품명</th><th>가격</th><th>개수</th><th>위치</th><th>구입일자</th></tr></thead><tbody>';
 
         fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, function(data) {
-            console.log("Received inventory data:", data);
-
             if (Array.isArray(data) && data.length > 0) {
                 data.forEach(function(item, index) {
                     detailsHtml += `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${item.inventory_name}</td>
+                            <td><a href="#" class="inventory-name" data-id="${item.inventory_no}" data-item="${item.inventory_name}" data-price="${item.inventory_price}" data-quantity="${item.inventory_quantity}" data-location="${item.inventory_location}" data-purchase-date="${item.inventory_purchase_date}">${item.inventory_name}</a></td>
                             <td>${item.inventory_price}</td>
                             <td>${item.inventory_quantity}</td>
                             <td>${item.inventory_location}</td>
@@ -150,7 +155,6 @@
         });
     }
 
-    // 특정 카테고리 및 부서에 따른 비품 데이터를 가져오는 함수
     function fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/inventory/category/' + inventory_category_no + '/department/' + departmentNo, true);
@@ -172,9 +176,10 @@
 
         xhr.send(); 
     }
-
+    
     $(document).ready(function() {
-        // DataTables 설정
+        var csrfToken = $('#csrfToken').val();  // CSRF 토큰 값 가져오기
+
         var table = $('#example').DataTable({
             "paging": true,
             "searching": true,
@@ -182,13 +187,12 @@
             "info": false,
             "autoWidth": false,
             "language": {
-                "emptyTable": "부서를 선택해주세요." 
+                "emptyTable": "부서를 선택해주세요."
             }
         });
         $('.dataTables_length').remove();
-   
-		
-        // 세부 비품 표시 클릭 이벤트
+
+        // 화살표 클릭 시 세부 비품 표시
         $('#example tbody').on('click', 'td.details-control', function() {
             var tr = $(this).closest('tr');
             var row = table.row(tr);
@@ -202,12 +206,104 @@
                 tr.addClass('shown');
             }
         });
+
+        // 세부 비품명 클릭 시 모달 표시
+        $('#example tbody').on('click', 'a.inventory-name', function(e) {
+            e.preventDefault();
+
+            var itemNo = $(this).data('id');
+            var itemName = $(this).data('item');
+            var itemPrice = $(this).data('price');
+            var itemQuantity = $(this).data('quantity');
+            var itemLocation = $(this).data('location');
+            var itemPurchaseDate = $(this).data('purchase-date');
+
+            $('#itemNo').val(itemNo);
+            $('#itemName').val(itemName);
+            $('#itemPrice').val(itemPrice);
+            $('#itemQuantity').val(itemQuantity);
+            $('#itemLocation').val(itemLocation);
+            $('#itemPurchaseDate').val(itemPurchaseDate);
+
+            $('#inventoryModal').show();
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('inventoryModal')) {
+                document.getElementById('inventoryModal').style.display = 'none';
+            }
+        };
     });
+
+    function saveChanges() {
+        var csrfToken = $('#csrfToken').val();  
+
+        const formData = {
+            inventory_no: $('#itemNo').val(),  
+            inventory_name: $('#itemName').val(),
+            inventory_price: $('#itemPrice').val(),
+            inventory_quantity: $('#itemQuantity').val(),
+            inventory_location: $('#itemLocation').val(),
+            inventory_purchase_date: $('#itemPurchaseDate').val()
+        };
+
+        if (confirm('정말 수정하시겠습니까?')) {
+            $.ajax({
+                url: '/inventory/update',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken  
+                },
+                success: function(response) {
+                    if(response.res_code === "200") {
+                        alert(response.res_msg);
+                        $('#inventoryModal').hide();
+                        location.reload();
+                    } else {
+                        alert("수정 실패: " + response.res_msg);
+                    }
+                },
+                error: function() {
+                    alert('수정 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    }
+
+    function deleteItem() {
+        var csrfToken = $('#csrfToken').val();  
+
+        const no = $('#itemNo').val();
+
+        // 삭제 확인 메시지
+        if (confirm('정말 삭제하시겠습니까?')) {
+            $.ajax({
+                url: '/inventory/delete/' + no,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken  
+                },
+                success: function(response) {
+                    alert('삭제되었습니다.');
+                    $('#inventoryModal').hide();
+                    location.reload();
+                },
+                error: function() {
+                    alert('삭제 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    }
+
+    function closeModal() {
+        $('#inventoryModal').hide();
+    }
+
 </script>
 
-<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </th:block>
 </html>

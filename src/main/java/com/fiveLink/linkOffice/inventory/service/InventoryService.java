@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.inventory.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
-import com.fiveLink.linkOffice.inventory.domain.InventoryCategory;
 import com.fiveLink.linkOffice.inventory.domain.InventoryCategoryDto;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.repository.InventoryCategoryRepository;
@@ -89,8 +89,8 @@ public class InventoryService {
     public List<String> findAllCategories() {
         return inventoryRepository.findAllCategoryNames();
     }
-    
-    
+
+    // 카테고리 번호와 멤버 번호를 이용해 비품 생성 또는 수정
     @Transactional
     public boolean createOrUpdateInventory(InventoryDto dto) {
         // 카테고리명으로 카테고리 번호 조회
@@ -102,39 +102,43 @@ public class InventoryService {
         // 카테고리 및 멤버 번호를 DTO에 설정
         dto.setInventory_category_no(categoryNo);
         dto.setMember_no(memberNo);
-        
+
         // 수량을 제외한 동일한 비품이 있는지 찾기
         Inventory existingInventory = inventoryRepository.findByCategoryAndNameAndLocationAndPriceAndDate(
                 dto.getInventory_category_name(),
                 dto.getInventory_name(),
                 dto.getInventory_location(),
-                dto.getInventory_price(), 
-                dto.getInventory_purchase_date(),  
+                dto.getInventory_price(),
+                dto.getInventory_purchase_date(),
                 dto.getDepartment_no());
-        
+
         if (existingInventory != null) {
             existingInventory.setInventoryQuantity(dto.getInventory_quantity());
-            inventoryRepository.save(existingInventory);  
-            return true;  
+            inventoryRepository.save(existingInventory);  // 업데이트
+            return true;
         } else {
             Inventory newInventory = dto.toEntity();
-            inventoryRepository.save(newInventory);  
-            return false; 
+            inventoryRepository.save(newInventory);  // 새로 생성
+            return false;
         }
     }
     
+    // 카테고리명으로 카테고리 번호 조회
     public Long findCategoryNoByName(String categoryName) {
         return inventoryRepository.findCategoryNoByName(categoryName);
     }
 
+    // 멤버 이름으로 멤버 번호 조회
     public Long findMemberNoByName(String memberName) {
         return inventoryRepository.findMemberNoByName(memberName);
     }
-    
+
+    // 멤버 넘버로 멤버 이름 조회
     public String findMemberNameByNumber(String memberNumber) {
         return inventoryRepository.findMemberNameByMemberNumber(memberNumber);
     }
     
+    // 카테고리 등록
     public String registerCategory(InventoryCategoryDto inventoryCategoryDto) {
         // 카테고리 이름으로 검색
         if (inventoryCategoryRepository.findByInventoryCategoryName(inventoryCategoryDto.getInventory_category_name()).isPresent()) {
@@ -145,5 +149,29 @@ public class InventoryService {
         inventoryCategoryRepository.save(inventoryCategoryDto.toEntity());
         return "카테고리가 성공적으로 등록되었습니다.";
     }
-    
+
+    // 비품 수정
+    @Transactional
+    public void updateInventory(InventoryDto dto) {
+        Optional<Inventory> optionalInventory = inventoryRepository.findById(dto.getInventory_no());
+
+        if (optionalInventory.isPresent()) {
+            Inventory inventory = optionalInventory.get();
+            // 수정할 값 설정
+            inventory.setInventoryName(dto.getInventory_name());
+            inventory.setInventoryPrice(dto.getInventory_price());
+            inventory.setInventoryQuantity(dto.getInventory_quantity());
+            inventory.setInventoryLocation(dto.getInventory_location());
+            inventory.setInventoryPurchaseDate(dto.getInventory_purchase_date());
+
+            inventoryRepository.save(inventory);  // 수정된 내용을 DB에 반영
+        } 
+    }
+
+
+    // 비품 삭제
+    @Transactional
+    public void deleteInventory(Long no) {
+        inventoryRepository.deleteById(no);  // 해당 비품을 DB에서 삭제
+    }
 }
