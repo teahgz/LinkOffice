@@ -31,12 +31,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // memberNo 값 가져오기 
     var memberNo = document.getElementById('attendance_memberNo').value;
 	
-	// 출근 버튼 상태 
-	var checkInButton = document.getElementById('check_in_button');
-	
+	// 출근 버튼과 시간 표시 div
+   	var checkInButton = document.getElementById('check_in_button');
+    var checkOutButton = document.getElementById('check_out_button');
+    var checkInTimeDiv = document.getElementById('check_in_time');
+    var checkOutTimeDiv = document.getElementById('check_out_time');
+    
+	// 현재 시간을 'HH:mm:ss' 형식으로 반환하는 함수
+    function getCurrentTimeString() {
+        var now = new Date();
+        var hours = String(now.getHours()).padStart(2, '0');
+        var minutes = String(now.getMinutes()).padStart(2, '0');
+        var seconds = String(now.getSeconds()).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    }
+    
     // 출근버튼이 활성화된 상태라면 출근 기능 실행 
     if(!checkInButton.disabled){		
-	    document.getElementById('check_in_button').addEventListener('click', function() {
+		checkInButton.addEventListener('click', function(event) {
 			// submit이 자동으로 되지 않게 해줌 
 			event.preventDefault();
 			
@@ -66,6 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         text: data.res_msg,
                         confirmButtonText: '확인'
                     });
+                    // 출근 시간 
+                    checkInTimeDiv.textContent = getCurrentTimeString();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -105,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: data.res_msg,
                     confirmButtonText: '확인'
                 });
+                checkOutTimeDiv.textContent = getCurrentTimeString();
             } else {
                 Swal.fire({
                     icon: 'error',

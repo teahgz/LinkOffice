@@ -76,47 +76,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
-    const selectedMembersContainer = $('#selected-members');
-    const permissionPickList = $('.permission_pick_list');
-    selectedMembersContainer.empty();
-    permissionPickList.empty(); // Clear previous items
-
-    const selectedNodes = instance.get_selected(true);
-    selectedMembers = [];
-
-    selectedNodes.forEach(function(node) {
-        if (node.original.type === 'member') {
-            const memberId = node.id;  
-            const memberNumber = memberId.replace('member_', ''); // 사원 번호
-            const memberElement = $('<div class="selected-member"></div>');
-            const memberName = $('<span></span>').text(node.text);
-            const removeButton = $('<button class="remove-member">&times;</button>');
-
-            memberElement.append(memberName).append(removeButton);
-            selectedMembersContainer.append(memberElement);
-
-            selectedMembers.push(memberNumber);
-
-            removeButton.click(function() {
-                instance.uncheck_node(node);
-                memberElement.remove();
-                const index = selectedMembers.indexOf(memberNumber);
-                if (index !== -1) {
-                    selectedMembers.splice(index, 1);
-                }
-                
-                localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
-               
-                permissionPickList.find(`.permission-item[data-name="${node.text}"]`).remove();
-            });
-
-            const permissionItem = $(`<div class="permission-item" data-name="${node.text}"></div>`);
-            permissionItem.text(node.text);
-            permissionPickList.append(permissionItem);
-        }
-    });
-
-    localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+	    const selectedMembersContainer = $('#selected-members');
+	    const permissionPickList = $('.permission_pick_list');
+	    selectedMembersContainer.empty();
+	    permissionPickList.empty();  
+	
+	    const selectedNodes = instance.get_selected(true);
+	    selectedMembers = [];
+	
+	    selectedNodes.forEach(function(node) {
+	        if (node.original.type === 'member') {
+	            const memberId = node.id;  
+	            const memberNumber = memberId.replace('member_', ''); // 사원 번호
+	            const memberElement = $('<div class="selected-member"></div>');
+	            const memberName = $('<span></span>').text(node.text);
+	            const removeButton = $('<button class="remove-member">&times;</button>');
+	
+	            memberElement.append(memberName).append(removeButton);
+	            selectedMembersContainer.append(memberElement);
+	
+	            selectedMembers.push(memberNumber);
+	
+	            removeButton.click(function() {
+	                instance.uncheck_node(node);
+	                memberElement.remove();
+	                const index = selectedMembers.indexOf(memberNumber);
+	                if (index !== -1) {
+	                    selectedMembers.splice(index, 1);
+	                }
+	                
+	                localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+	               
+	                permissionPickList.find(`.permission-item[data-name="${node.text}"]`).remove();
+	            });
+	
+	            const permissionItem = $(`<div class="permission-item" data-name="${node.text}"></div>`);
+	            permissionItem.text(node.text);
+	            permissionPickList.append(permissionItem);
+	        }
+	    });
+	
+	    localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
 }
 
     // 확인 버튼 

@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (checkInTime === '') {
             status = 'bar_absent'; 
         } else {
-			// 출근 시간이 존재하면 시간과 분으로 나눔 
+            // 출근 시간이 존재하면 시간과 분으로 나눔 
             var checkInHour = parseInt(checkInTime.split(':')[0]);
             // 출근 시간이 9시보다 늦으면 지각 
             if (checkInHour >= 9) {
@@ -28,53 +28,74 @@ document.addEventListener("DOMContentLoaded", function() {
                 status = 'bar_normal'; 
             }
         }
-		
-		// 배열에 workDate와 근태를 담아줌 
+        
+        // 배열에 workDate와 근태를 담아줌 
         if (workDate) {
             attendanceDates.push({ date: workDate, statusClass: status });
         }
     });
     
-	// 오늘 날짜 
+    // 오늘 날짜 
     var today = new Date();
-    // attendanceCalendar function에 오늘 날짜와 attendanceDates 배열 보내기 
-    attendanceCalendar(today, attendanceDates);
-	
-	// 이전 달
+    // 공휴일 데이터와 함께 달력을 업데이트하는 함수 호출
+    fetchAndRenderHolidays(today, attendanceDates);
+    
+    // 이전 달
     function prevMonth() {
-		// 올해, 이번 달-1, 1일 
+        // 올해, 이번 달-1, 1일 
         today = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-        attendanceCalendar(today, attendanceDates);
+        fetchAndRenderHolidays(today, attendanceDates);
     }
-	
-	// 다음 달 
+    
+    // 다음 달 
     function nextMonth() {
-		// 올해, 이번 달+1, 1일 
+        // 올해, 이번 달+1, 1일 
         today = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-        attendanceCalendar(today, attendanceDates);
+        fetchAndRenderHolidays(today, attendanceDates);
     }
-	// 이전 달, 다음 달 보내기 
+    // 이전 달, 다음 달 보내기 
     window.prevMonth = prevMonth; 
     window.nextMonth = nextMonth; 
 });
 
+// 공휴일 
+function fetchAndRenderHolidays(today, attendanceDates) {
+    // 연도와 월 추출
+    var year = today.getFullYear();
+    var month = String(today.getMonth() + 1).padStart(2, '0'); // 1-based month, pad with zero
+    
+    // API 호출
+    fetch(`/holidays?year=${year}&month=${month}`)
+        .then(response => response.json())
+        .then(data => {
+            var items = data.response.body.items;
+            var holidays = [];
+            
+            if (items) {
+                if (Array.isArray(items.item)) {
+                    holidays = items.item;
+                } else {
+                    holidays = [items.item];
+                }
+            }
+            
+            // 공휴일 데이터를 달력 function의 매개변수로 보내기 
+            attendanceCalendar(today, attendanceDates, holidays);
+        })
+}
+
 // 달력 
-function attendanceCalendar(today, attendanceDates) {
+function attendanceCalendar(today, attendanceDates, holidays) {
     var row = null;
     var cnt = 0;
-    // 달력(월~일) table 
     var calendarTable = document.getElementById("calendar");
     var calendarTableTitle = document.getElementById("year_and_month");
 
-    // 올해, 이번달  
     var currentYear = today.getFullYear();
     var currentMonth = today.getMonth();
-    // 월을 1 기반으로 표시
     var currentMonthDisplay = currentMonth + 1; 
-    // 0000년 00월 형식으로 출력 
-    calendarTableTitle.innerHTML = currentYear + "년 " + (currentMonthDisplay < 10 ? '0' + currentMonthDisplay : currentMonthDisplay) + "월";
+    calendarTableTitle.innerHTML = `${currentYear}년 ${currentMonthDisplay < 10 ? '0' + currentMonthDisplay : currentMonthDisplay}월`;
 
-    // 달력의 첫날과 마지막 날, 이전 달과 다음 달의 날짜 계산
     var firstDate = new Date(currentYear, currentMonth, 1);
     var lastDate = new Date(currentYear, currentMonth + 1, 0);
     var prevMonthLastDate = new Date(currentYear, currentMonth, 0);
@@ -86,11 +107,10 @@ function attendanceCalendar(today, attendanceDates) {
 
     // 첫 주에 전 달의 마지막 주 날짜 추가
     row = calendarTable.insertRow();
-    // 이번 달의 첫 날이 시작되는 요일
     var daysFromPrevMonth = firstDate.getDay(); 
     var prevMonthStartDate = prevMonthLastDate.getDate() - daysFromPrevMonth + 1;
 
-    // 전 달의 날짜를 추가 
+    // 전 달의 날짜를 추가
     for (var i = prevMonthStartDate; i <= prevMonthLastDate.getDate(); i++) {
         var cell = row.insertCell();
         var dateToCheck = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
@@ -98,13 +118,17 @@ function attendanceCalendar(today, attendanceDates) {
 
         // attendanceDates 배열에서 해당 날짜가 있는지 확인
         var dateEntry = attendanceDates.find(entry => entry.date === dateToCheck);
-        // 날짜가 존재한다면 근태를 표시할 수 있는 bar와 근태별 class(색상 표현을 위한) 추가 
         if (dateEntry) {
-            dateBar = `<div class="date_bar ${dateEntry.statusClass}"></div>`; 
+            dateBar = `<div class="date_bar ${dateEntry.statusClass}"></div>`;
         }
-		
+
+        var formattedDateToCheck = `${currentYear}${String(currentMonth + 1).padStart(2, '0')}${String(i).padStart(2, '0')}`;
+
+        // 전 달 날짜는 회색
+        var textColor = '#d3d3d3';
+
         cell.innerHTML = `<div class="date_container">
-                            <span style="color: #d3d3d3;">${i}</span>
+                            <span style="color: ${textColor};">${i}</span>
                             ${dateBar}
                           </div>`;
         cell.align = "center"; 
@@ -113,7 +137,6 @@ function attendanceCalendar(today, attendanceDates) {
 
     // 이번 달 날짜 추가
     for (var i = 1; i <= lastDate.getDate(); i++) {
-		// 일요일부터 월요일까지 한 줄에 출력했다면 다음 줄 추가 
         if (cnt % 7 == 0) { 
             row = calendarTable.insertRow();
         }
@@ -126,25 +149,31 @@ function attendanceCalendar(today, attendanceDates) {
 
         // attendanceDates 배열에서 해당 날짜가 있는지 확인
         var dateEntry = attendanceDates.find(entry => entry.date === dateToCheck);
-        // 날짜가 존재한다면 근태를 표시할 수 있는 bar와 근태별 class(색상 표현을 위한) 추가 
         if (dateEntry) {
             dateBar = `<div class="date_bar ${dateEntry.statusClass}"></div>`; 
         }
 
+        var formattedDateToCheck = `${currentYear}${String(currentMonth + 1).padStart(2, '0')}${String(i).padStart(2, '0')}`;
+        
+        // 공휴일 확인
+        var holidayItem = holidays.find(item => item.locdate.toString() === formattedDateToCheck);
+        var holidayName = holidayItem ? holidayItem.dateName : '';
+        var isHoliday = holidayItem ? true : false;
+
+        // 주말 여부 확인
+        var isWeekend = (new Date(currentYear, currentMonth, i).getDay() === 0 || new Date(currentYear, currentMonth, i).getDay() === 6);
+        
+        // 날짜 색상 설정
+        var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? '#F79DC2' : 'skyblue') : 'black');
+
         cell.innerHTML = `<div class="date_container">
-                            <span>${i}</span>
+                            <span style="color: ${textColor};">${i}</span>
+                            ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
                             ${dateBar}
                           </div>`;
         cell.align = "center"; 
 
         cell.setAttribute('id', i);
-
-        // 일요일은 빨간색, 토요일은 파란색으로 표시
-        if (cnt % 7 == 1) {
-            cell.querySelector('span').style.color = '#F79DC2'; 
-        } else if (cnt % 7 == 0) {
-            cell.querySelector('span').style.color = 'skyblue'; 
-        }
     }
 
     // 마지막 주에 다음 달의 날짜 추가
@@ -159,6 +188,7 @@ function attendanceCalendar(today, attendanceDates) {
         }
     }
 }
+
 // 근태 조회 리스트 
 document.addEventListener('DOMContentLoaded', function() {
 	// 시작 날, 끝나는 날, 근태, 정렬 값과 리스트를 추가할 테이블, 페이징을 추가할 div 
@@ -224,15 +254,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 allAttendanceData = data;
                 filterAndPaginateData(page, attendanceState, sortOrder);
             })
-            .catch(error => {
-                console.error('서버에 예상치 못한 문제가 발생하였습니다. ', error);
-            });
     }
 
     function filterAndPaginateData(page, attendanceState, sortOrder) {
         // 필터링
         const filteredData = allAttendanceData.filter(attendance => {
-            const checkInTime = attendance.checkInTime || '';
+            const checkInTime = attendance.check_in_time || '';
             let checkInHour = 0;
 			
 			// checkInTime의 시간만 가져오기 
@@ -255,8 +282,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).sort((first, end) => {
             return sortOrder === 'ASC' 
-                ? new Date(first.workDate) - new Date(end.workDate) 
-                : new Date(end.workDate) - new Date(first.workDate);
+                ? new Date(first.work_date) - new Date(end.work_date) 
+                : new Date(end.work_date) - new Date(first.work_date);
         });
 
         // 페이지네이션
@@ -269,14 +296,14 @@ document.addEventListener('DOMContentLoaded', function() {
         attendanceTable.innerHTML = '';
         paginatedData.forEach(attendance => {
             const row = document.createElement('tr');
-            const checkInTime = attendance.checkInTime || '';
-            const checkOutTime = attendance.checkOutTime || '';
+            const checkInTime = attendance.check_in_time || '';
+            const checkOutTime = attendance.check_out_time || '';
             const status = checkInTime
                 ? (parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근')
                 : '결근';
 
             row.innerHTML = `
-                <td>${attendance.workDate}</td>
+                <td>${attendance.work_date}</td>
                 <td>${checkInTime}</td>
                 <td>${checkOutTime}</td>
                 <td>${status}</td>
@@ -305,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 처음 페이지 버튼 (<<)
         const firstButton = document.createElement('span');
-        firstButton.className = 'pagination_button';
+        firstButton.className = 'go_first_page_button';
         firstButton.textContent = '<<';
         firstButton.onclick = () => {
             if (currentPage > 0) {
@@ -347,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 마지막 페이지 버튼 (>>)
         const lastButton = document.createElement('span');
-        lastButton.className = 'pagination_button';
+        lastButton.className = 'go_last_page_button';
         lastButton.textContent = '>>';
         lastButton.onclick = () => {
             if (currentPage < totalPages - 1) {

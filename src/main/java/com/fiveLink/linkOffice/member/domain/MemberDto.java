@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.member.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class MemberDto {
 	private Long memberId;
     private String memberName;
     private Long departmentNo;
-    private Long positionNo;
+    private Long positionNo;  
     
 	public Member toEntity() {
 		return Member.builder()
@@ -107,6 +108,5 @@ public class MemberDto {
 					.member_status(member.getMemberStatus())
 					.member_additional(member.getMemberAdditional())
 					.build();
-	} 
-
+	}  
 }
