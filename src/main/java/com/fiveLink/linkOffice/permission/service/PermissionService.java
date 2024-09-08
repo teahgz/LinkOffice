@@ -94,4 +94,22 @@ public class PermissionService {
     	Long menuPermissionNo = (menuNo == 2) ? 3 : getMenuPermissionNo(menuNo); 
         return memberPermissionRepository.findMemberNosByMenuPermissionNo(menuPermissionNo);
     }
+    
+    // 삭제
+    @Transactional
+    public Long deleteSelectedMembers(List<Long> memberNos, Long menuNo) { 
+ 
+        Long menuPermissionNo = findMenuPermissionNosByMenuNo(menuNo); 
+ 
+        List<MemberPermission> memberPermissions = memberPermissionRepository.findByMemberNoInAndMenuPermissionNo(memberNos, menuPermissionNo);
+        
+        for (MemberPermission memberPermission : memberPermissions) {
+            memberPermission.setMemberPermissionStatus(1L);
+        } 
+        memberPermissionRepository.saveAll(memberPermissions); 
+
+        return menuPermissionNo;
+    }
+
+
 }

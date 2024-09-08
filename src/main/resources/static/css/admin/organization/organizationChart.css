@@ -25,15 +25,17 @@
 
 .modal-content {
     background-color: #fefefe;
-    margin: 13% auto;
+    margin: 5% auto; 
     padding: 30px;
     border: 1px solid #888;
     width: 80%;
     max-width: 400px;
+    max-height: 80vh;  
     border-radius: 8px;
     display: flex;
-    flex-direction: column;  
-}
+    flex-direction: column;
+    overflow-y: auto;  
+} 
 
 .button-container {
     display: flex;

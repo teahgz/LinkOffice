@@ -22,6 +22,7 @@ public class MenuPermissionDto {
 	private Long permission_code_no;
 	private LocalDateTime menu_permission_create_date;
 	private LocalDateTime menu_permission_update_date;
+	private Long menu_permission_status;
 	
 	public MenuPermission toEntity() {
 		return MenuPermission.builder()
@@ -30,6 +31,7 @@ public class MenuPermissionDto {
 					.permissionCodeNo(permission_code_no)
 					.menuPermissionCreateDate(menu_permission_create_date)
 					.menuPermissionUpdateDate(menu_permission_update_date)
+					.menuPermissionStatus(menu_permission_status)
 					.build();
 	}
 	 
@@ -40,6 +42,7 @@ public class MenuPermissionDto {
 	        .permission_code_no(menupermission.getPermissionCodeNo())
 	        .menu_permission_create_date(menupermission.getMenuPermissionCreateDate())
 	        .menu_permission_update_date(menupermission.getMenuPermissionUpdateDate())
+	        .menu_permission_status(menupermission.getMenuPermissionStatus())
 	        .build();
 	}
 
