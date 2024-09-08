@@ -159,7 +159,7 @@
 					</div>
 				</li>
 
-				<li><a th:href="@{/permission}">통합 권한 관리</a></li>
+				<li th:each = "member : ${memberdto}"><a th:href="@{/permission}">통합 권한 관리</a></li>
 			</ul>
 		</div>
 

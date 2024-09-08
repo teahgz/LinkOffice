@@ -43,7 +43,7 @@ body {
 }
 
 button {
-    background-color: #4E597E;
+    background-color: #B1C2DD;
     color: #fff;
     border: none;
     padding: 10px 15px;
@@ -194,7 +194,7 @@ form input[type="text"], form select {
 }
 
 #deleteButton {
-	background-color: #d33a3a;
+	background-color: #EEB3B3;
 }
 
 #departmentName{

@@ -1,16 +1,193 @@
 package com.fiveLink.linkOffice.permission.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.service.DepartmentService;
+import com.fiveLink.linkOffice.permission.domain.MenuDto;
+import com.fiveLink.linkOffice.permission.service.PermissionService;
 
 @Controller
 public class PermissionController {
-	
-	@GetMapping("/permission")
-	public String listPermissions (Model model) {
-		return "/admin/permission/permission_list";
-    }
-}
+ 
+    private final PermissionService permissionService;
+    private final MemberService memberService;
+    private final DepartmentService departmentService;
 
+    @Autowired
+    public PermissionController(PermissionService permissionService, MemberService memberService, DepartmentService departmentService) {
+        this.permissionService = permissionService;
+        this.memberService = memberService;
+        this.departmentService = departmentService;
+    }
+    
+    @GetMapping("/permission")
+    public String listPermissions(Model model) {
+        List<MenuDto> permissionList = permissionService.getPermissionList();
+        Long memberNo = memberService.getLoggedInMemberNo();  
+        List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
+
+        model.addAttribute("memberdto", memberDto);
+        model.addAttribute("permissionList", permissionList);
+         
+        return "/admin/permission/permission";
+    }
+    
+    @GetMapping("/permission/members")
+    @ResponseBody
+    public List<Object[]> getPermissionMembers(@RequestParam("menuNo") Long menuNo) {
+        // menu_permission_no 조회
+        Long menuPermissionNos = permissionService.findMenuPermissionNosByMenuNo(menuNo);
+        
+        // menu_permission_no를 기반으로 사원 목록 조회
+        List<Object[]> members = permissionService.findMembersByMenuNo(menuPermissionNos);
+         
+        return members;
+    }
+ 
+    // 권한자 등록
+    @PostMapping("/permission/addMembers")
+    public @ResponseBody Map<String, String> addMembers(@RequestBody Map<String, Object> requestBody) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "사원 등록 중 오류가 발생했습니다.");
+        
+        try {
+            String menuNo = (String) requestBody.get("menuNo");
+            List<String> memberNos = (List<String>) requestBody.get("memberNos");
+
+            permissionService.saveSelectedMembers(menuNo, memberNos);
+
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "권한자 등록이 완료되었습니다.");
+        } catch (Exception e) {
+            // 예외 발생 시 오류 메시지 유지
+            resultMap.put("res_msg", "사원 등록 중 오류가 발생했습니다");
+        }
+
+        return resultMap;
+    }
+
+    // 조직도 데이터 불러오기
+    @GetMapping("/permission/chart")
+    @ResponseBody
+    public Map<String, Object> getOrganizationChart(@RequestParam(value = "selectedMemberNos", required = false) List<Long> selectedMemberNos,
+                                                    @RequestParam("menuNo") Long menuNo) {
+        List<DepartmentDto> departments = departmentService.getAllDepartments();
+        List<MemberDto> members = memberService.getAllMembersChart();
+        
+        if (selectedMemberNos == null || selectedMemberNos.isEmpty()) {
+            List<Object[]> permissionMembers = permissionService.findMembersByMenuNo(menuNo);
+            selectedMemberNos = permissionMembers.stream()
+                .map(member -> Long.parseLong(member[0].toString()))
+                .collect(Collectors.toList());
+        }
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("chartData", buildTree(departments, members));
+        result.put("selectedMemberNos", selectedMemberNos);
+        
+        return result;
+    }
+
+    private List<Map<String, Object>> buildTree(List<DepartmentDto> departments, List<MemberDto> members) {
+        Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
+        Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
+        
+        // 부서별 구성원 그룹화
+        for (MemberDto member : members) {
+            membersByDepartment
+                .computeIfAbsent(member.getDepartment_no(), k -> new ArrayList<>())
+                .add(member);
+        }
+        
+        // 부서 노드
+        for (DepartmentDto dept : departments) {
+            Map<String, Object> node = new HashMap<>();
+            node.put("id", "dept_" + dept.getDepartment_no());
+            node.put("text", dept.getDepartment_name());
+            node.put("type", "department");
+            node.put("children", new ArrayList<>());
+            departmentMap.put(dept.getDepartment_no(), node);
+        }
+        
+        // 부서 계층 구조
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (DepartmentDto dept : departments) {
+            if (dept.getDepartment_high() == 0) {
+                result.add(buildDepartmentHierarchy(dept, departmentMap, membersByDepartment));
+            }
+        }
+        
+        return result;
+    }
+
+    private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept, 
+                                                         Map<Long, Map<String, Object>> departmentMap, 
+                                                         Map<Long, List<MemberDto>> membersByDepartment) {
+        Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
+        List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
+        
+        if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
+            for (DepartmentDto subDept : dept.getSubDepartments()) {
+                Map<String, Object> subDeptNode = new HashMap<>();
+                subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
+                subDeptNode.put("text", subDept.getDepartment_name());
+                subDeptNode.put("type", "subdepartment");
+                subDeptNode.put("children", new ArrayList<>());
+                
+                // 하위 부서에 속한 구성원 추가
+                List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
+                if (subDeptMembers != null) {
+                    for (MemberDto member : subDeptMembers) {
+                        Map<String, Object> memberNode = createMemberNode(member);
+                        ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
+                    }
+                }
+                
+                children.add(subDeptNode);
+            }
+        } else {
+            // 하위 부서가 없는 경우 상위 부서에 추가
+            List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
+            if (deptMembers != null) {
+                for (MemberDto member : deptMembers) {
+                    Map<String, Object> memberNode = createMemberNode(member);
+                    children.add(memberNode);
+                }
+            }
+        } 
+        return node;
+    }
+
+    private Map<String, Object> createMemberNode(MemberDto member) {
+        Map<String, Object> memberNode = new HashMap<>();
+        memberNode.put("id", "member_" + member.getMember_no());
+        memberNode.put("text", member.getMember_name() + " " + member.getPosition_name());
+        memberNode.put("type", "member");
+        return memberNode;
+    }  
+    
+    @GetMapping("/permission/assigned-members")
+    @ResponseBody
+    public List<Long> getAssignedMembers(@RequestParam("menuNo") Long menuNo) {
+        return permissionService.getAssignedMembersByMenuNo(menuNo);
+    } 
+  
+}
