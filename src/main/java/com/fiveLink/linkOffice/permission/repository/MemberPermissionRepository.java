@@ -13,10 +13,14 @@ import com.fiveLink.linkOffice.member.domain.MemberPermission;
 @Repository
 public interface MemberPermissionRepository extends JpaRepository<MemberPermission, Long> {
 
-    @Query("SELECT mp.memberNo FROM MemberPermission mp WHERE mp.menuPermissionNo = :menuPermissionNo")
-    List<Long> findMemberNosByMenuPermissionNo(@Param("menuPermissionNo") Long menuPermissionNo);
+	@Query("SELECT mp.memberNo FROM MemberPermission mp WHERE mp.menuPermissionNo = :menuPermissionNo AND mp.memberPermissionStatus = 0")
+	List<Long> findMemberNosByMenuPermissionNo(@Param("menuPermissionNo") Long menuPermissionNo);
 
-    @Query("SELECT m, mp.memberPermissionCreateDate FROM Member m JOIN MemberPermission mp ON m.memberNo = mp.memberNo WHERE mp.menuPermissionNo IN :menuPermissionNos")
-    List<Object[]> findMembersByMenuPermissionNos(@Param("menuPermissionNos") List<Long> menuPermissionNos);
+	@Query("SELECT m, mp.memberPermissionCreateDate FROM Member m JOIN MemberPermission mp ON m.memberNo = mp.memberNo WHERE mp.menuPermissionNo IN :menuPermissionNos AND mp.memberPermissionStatus = 0")
+	List<Object[]> findMembersByMenuPermissionNos(@Param("menuPermissionNos") List<Long> menuPermissionNos);
 
+	@Query("SELECT mp FROM MemberPermission mp WHERE mp.memberNo = :memberNo")
+    List<MemberPermission> findByMemberNo(@Param("memberNo") Long memberNo);
+	 
+	List<MemberPermission> findByMemberNoInAndMenuPermissionNo(List<Long> memberNos, Long menuPermissionNo);
 }

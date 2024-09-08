@@ -189,5 +189,39 @@ public class PermissionController {
     public List<Long> getAssignedMembers(@RequestParam("menuNo") Long menuNo) {
         return permissionService.getAssignedMembersByMenuNo(menuNo);
     } 
+    
+    // 삭제
+    @PostMapping("/permission/deleteMembers")
+    public @ResponseBody Map<String, String> deleteMembers(@RequestBody Map<String, Object> requestBody) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "500");
+        resultMap.put("res_msg", "삭제 중 오류가 발생했습니다.");
+
+        try { 
+            List<Long> memberNos = (List<Long>) requestBody.get("memberNos");
+            if (memberNos == null || memberNos.isEmpty()) {
+                resultMap.put("res_msg", "삭제할 권한자가 선택되지 않았거나 메뉴 번호가 없습니다.");
+                return resultMap;
+            }
+ 
+            Long menuNo = null;
+            Object menuNoObj = requestBody.get("menuNo");
+            menuNo = ((Number) menuNoObj).longValue();
+
+            permissionService.deleteSelectedMembers(memberNos, menuNo);
+
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "권한자가 삭제되었습니다");
+        } catch (IllegalArgumentException e) {
+            resultMap.put("res_msg", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_msg", "삭제 처리 중 오류가 발생했습니다: " + e.getMessage());
+        } 
+        return resultMap;
+    }
+
+
+
   
 }

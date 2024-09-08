@@ -39,5 +39,7 @@ public class MenuPermission {
 	@Column(name="menu_permission_update_date")
 	private LocalDateTime menuPermissionUpdateDate;
 	
+	@Column(name="menu_permission_status", insertable = false, updatable = true)
+	private Long menuPermissionStatus;
 	
 }
