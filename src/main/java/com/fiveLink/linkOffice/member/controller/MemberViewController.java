@@ -4,6 +4,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,15 +77,19 @@ public class MemberViewController {
 	}
 	//[전주영] 사원 목록 조회 
 	@GetMapping("/admin/member/list")
-	public String list(Model model) {
+	public String list(@PageableDefault(size = 10, sort = "memberHireDate", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 		Long memberNo = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    
-	    List<MemberDto> memberList = memberService.getAllMembers();
+	    // 페이징
+	    Page<MemberDto> memberPage = memberService.getAllMemberPage(pageable);
+	    
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("departments", departments);
-		model.addAttribute("memberList", memberList);
+		// 페이징 안에 content
+		model.addAttribute("memberList", memberPage.getContent());
+		model.addAttribute("page", memberPage); 
 		
 		return "admin/member/list";
 	}

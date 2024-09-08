@@ -44,6 +44,10 @@ public class MemberDto {
 	private Long member_additional;
 	private String format_end_date;
 	
+	private int search_type = 1;
+	private String search_input;
+	
+	
 	private List<GrantedAuthority> authorities;
 	//[김채영] 1년미만 여부
 	private int member_one_under;
