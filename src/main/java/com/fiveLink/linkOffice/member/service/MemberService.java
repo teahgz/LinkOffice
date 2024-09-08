@@ -65,8 +65,30 @@ public class MemberService {
     }
 
     // [전주영] 멤버 조회 (목록 조회) 
-    public Page<MemberDto> getAllMemberPage(Pageable pageable) {
-        Page<Object[]> results = memberRepository.findAllMembersWithDetails(pageable);
+    public Page<MemberDto> getAllMemberPage(Pageable pageable, MemberDto searchdto) {
+    	Page<Object[]> results = null;
+    	
+    	String searchText = searchdto.getSearch_text();
+    	System.out.println("검색어"+searchText);
+    	if (searchText != null && !searchText.isEmpty()) {
+    	    int searchType = searchdto.getSearch_type();
+    	    System.out.println("검색타입"+searchType);
+    	    switch (searchType) {
+    	        case 1:
+    	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);
+    	            System.out.println("부서명"+results);
+    	            break;
+    	        case 2:
+    	            results = memberRepository.findMembersByPositionName(searchText, pageable);
+    	            break;
+    	        default:
+    	            results = memberRepository.findAllMembersWithDetails(pageable);
+    	            break;
+    	    }
+    	} else {
+    	    results = memberRepository.findAllMembersWithDetails(pageable);
+    	}
+    	
         List<MemberDto> memberDtoList = convertToDtoList(results.getContent());
         return new PageImpl<>(memberDtoList, pageable, results.getTotalElements());
     }

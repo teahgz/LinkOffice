@@ -46,7 +46,7 @@ public class MemberDto {
 	private String format_end_date;
 	
 	private int search_type = 1;
-	private String search_input;
+	private String search_text;
 	
 	
 	private List<GrantedAuthority> authorities;
