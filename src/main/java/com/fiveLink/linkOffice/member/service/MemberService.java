@@ -124,7 +124,6 @@ public class MemberService {
     // [전주영] 프로필 이미지 및 비밀번호, 주소 변경
     @Transactional
     public Member updateMemberProfile(MemberDto dto) {
-        dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
         return memberRepository.save(dto.toEntity());
     }
     
