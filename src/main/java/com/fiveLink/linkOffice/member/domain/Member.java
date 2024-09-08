@@ -113,7 +113,7 @@ public class Member {
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<Inventory> inventory;
 
-//  [김채영] 1년 미만 멤버 확인
+	// [김채영] 1년 미만 멤버 확인
 	@Column(name="member_one_under")
 	private int memberOneUnder;
 }
