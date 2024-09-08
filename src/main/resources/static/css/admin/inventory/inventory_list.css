@@ -1,25 +1,163 @@
-/* DataTables 스타일을 동일하게 적용 */
-table.dataTable tbody th, table.dataTable tbody td {
-    padding: 8px 10px;
-    border-bottom: 1px solid #ddd;
-}
+td.details-control {
+            background: url('https://cdn.datatables.net/1.11.5/images/sort_desc.png') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('https://cdn.datatables.net/1.11.5/images/sort_asc.png') no-repeat center center;
+        }
 
-#departmentSelectContainer select {
-    width: 150px;
-    padding: 5px;
-    margin-right: 10px;           
-}
+        /* child-row를 위한 스타일 */
+        .child-row {
+            background-color: #f9f9f9;
+        }
 
-#departmentSelectContainer {
-    position: relative;
-    z-index: 10;  
-    margin-bottom: -32px;  
-    display: flex;
-    justify-content: flex-start;  
-}
+        .child-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
 
-#departmentSelectContainer select {
-    width: 150px;
-    padding: 5px;
-    margin-right: 10px; 
-}
+        .child-table th, .child-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        /* 모달 기본 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000; /* 모달이 최상위에 배치되도록 설정 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* 모달 컨텐츠 스타일 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            z-index: 1001;
+        }
+
+        /* 닫기 버튼 스타일 */
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 모달 내부 버튼 스타일 */
+        .modal-buttons button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        /* 링크의 색상을 고정시키는 스타일 */
+        a.inventory-name:link,
+        a.inventory-name:visited {
+            color: blue; /* 클릭 전후에도 파란색 유지 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
+
+        a.inventory-name:hover {
+            text-decoration: underline; /* 마우스를 올렸을 때 밑줄 */
+        }
+
+        a.inventory-name:active {
+            color: blue; /* 클릭 시에도 파란색 유지 */
+        }
+
+        /* 모달 창의 input 필드 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            font-size: 1rem;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button-edit {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .button-delete {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .button-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        table.dataTable tbody th, table.dataTable tbody td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #departmentSelectContainer select {
+            width: 150px;
+            padding: 5px;
+            margin-right: 10px;           
+        }
+
+        #departmentSelectContainer {
+            position: relative;
+            z-index: 1;  
+            margin-bottom: -32px;  
+            display: flex;
+            justify-content: flex-start;  
+        }
+
+        #departmentSelectContainer select {
+            width: 150px;
+            padding: 5px;
+            margin-right: 10px; 
+        }

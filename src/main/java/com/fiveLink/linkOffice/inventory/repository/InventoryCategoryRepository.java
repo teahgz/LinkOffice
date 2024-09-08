@@ -9,7 +9,7 @@ import com.fiveLink.linkOffice.inventory.domain.InventoryCategory;
 
 public interface InventoryCategoryRepository extends JpaRepository<InventoryCategory, Long> {
 	
-	    Optional<InventoryCategory> findByInventoryCategoryName(String categoryName);
+	 Optional<InventoryCategory> findByInventoryCategoryName(String categoryName);
 	
     
 }

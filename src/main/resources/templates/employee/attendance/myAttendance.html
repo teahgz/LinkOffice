@@ -13,7 +13,7 @@
                 <td id="mem_no" th:text="${member.member_no}"></td>
             </tr>
         </table>
-            <h1>근태 조회</h1>
+            <div id="title">근태 조회</div>
             <hr>
             <div class="attendance_div">
                 <div class="attendance_left">
@@ -23,8 +23,6 @@
                         <span>결근 <span id="attendance_absent"></span></span>
                         <span>휴가 <span id="attendance_vacation"></span></span>
                     </div>
-                    
-                    <!-- Calendar section -->
                     <div class="calendar_div">
                         <div id="calendar_title">
                             <span id="prev_button" onclick="prevMonth()"> &lt; </span>
@@ -47,9 +45,18 @@
                 <hr>
                 <div class="attendance_right">
                 	<div class="count_div">
-                		<div>이번 달 근무 일수 </div>
-                		<div>지각</div>
-                		<div>결근</div>
+                		<div id="attendance_count">
+                			이번 달 근무 일수 
+                			<div id="count" th:text="${countAttendance}"></div>
+                		</div>
+                		<div id="late_count">
+                			이번 달 지각
+                			<div id="count" th:text="${countLate}"></div>
+                		</div>
+                		<div id="absence_count">
+                			이번 달 결근
+                			<div id="count" th:text="${countAbsence}"></div>
+                		</div>
                 	</div>
                 	<div class="search">
                 		<select id="attendance_state">

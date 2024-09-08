@@ -70,17 +70,24 @@ public class HomeController {
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 	    String time = now.format(dtf);
 	    
-	    // [박혜선] 출근 기록 조회
+	    // [박혜선] 출퇴근 기록 조회
 	    Long memberNo = memberdto.get(0).getMember_no();
 	    LocalDate today = LocalDate.now();
 	    AttendanceDto attendanceDto = attendanceService.findByMemberNoAndWorkDate(memberNo, today);
 	    logger.info("AttendanceDto: {}", attendanceDto);
 	    String isCheckedIn = "false";
-	    if(attendanceDto != null) {
-	    	if(attendanceDto.getCheck_in_time() != null) {
-	    		isCheckedIn = "true";
-	    	}
-	    }
+        String isCheckedOut = "false";
+        
+        if (attendanceDto != null) {
+            if (attendanceDto.getCheck_in_time() != null) {
+                isCheckedIn = "true";
+                model.addAttribute("checkInTime", attendanceDto.getCheck_in_time().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+            }
+            if (attendanceDto.getCheck_out_time() != null) {
+                isCheckedOut = "true";
+                model.addAttribute("checkOutTime", attendanceDto.getCheck_out_time().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+            }
+        }
 
 	    //[전주영] 멤버 객체 전달
 	    model.addAttribute("memberdto", memberdto);
@@ -88,8 +95,9 @@ public class HomeController {
 	    // [박혜선] 현재 시간 전달
 	    model.addAttribute("time", time);
 	    
-	    // [박혜선] 출근 여부 전달
+	    // [박혜선] 출퇴근 여부 전달
 	    model.addAttribute("isCheckedIn", isCheckedIn);
+	    model.addAttribute("isCheckedOut", isCheckedOut);
 	    
 	    return "home";
 

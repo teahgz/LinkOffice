@@ -34,26 +34,29 @@
               <th>상태</th>
             </tr>
           </thead>
-      	  <tbody>
-		    <tr th:each="member : ${memberList}" th:data_member_no="${member.member_no}" class="member_row">
-		        <td th:text="${member.member_number}"></td>
-		        <td th:text="${member.member_name}"></td>
-		        <td th:text="${member.department_name}"></td>
-		        <td th:text="${member.position_name}">대리</td>
-		        <td th:text="${member.member_hire_date}"></td>
-		        <td th:text="${member.member_status == 1 ? '퇴사' : '재직'}"></td>
-		    </tr>
-		  </tbody>
+          <tbody>
+            <tr th:each="member : ${memberList}" th:data_member_no="${member.member_no}" class="member_row">
+              <td th:text="${member.member_number}"></td>
+              <td th:text="${member.member_name}"></td>
+              <td th:text="${member.department_name}"></td>
+              <td th:text="${member.position_name}">대리</td>
+              <td th:text="${member.member_hire_date}"></td>
+              <td th:text="${member.member_status == 1 ? '퇴사' : '재직'}"></td>
+            </tr>
+          </tbody>
         </table>
 
         <div class="pagination">
-          <button>&lt;&lt;</button>
-          <button>&lt;</button>
-          <button class="active">1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>&gt;</button>
-          <button>&gt;&gt;</button>
+          <button th:if="${page.hasPrevious()}" th:onclick="|location.href='@{/admin/member/list(page=0)}'|">&lt;&lt;</button>
+          <button th:if="${page.hasPrevious()}" th:onclick="|location.href='@{/admin/member/list(page=${page.number - 1})}'|">&lt;</button>
+          <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+            <button th:class="${i == page.number} ? 'active'" 
+                    th:onclick="|location.href='@{/admin/member/list(page=${i})}'|"
+                    th:text="${i + 1}">
+            </button>
+          </span>
+          <button th:if="${page.hasNext()}" th:onclick="|location.href='@{/admin/member/list(page=${page.number + 1})}'|">&gt;</button>
+          <button th:if="${page.hasNext()}" th:onclick="|location.href='@{/admin/member/list(page=${page.totalPages - 1})}'|">&gt;&gt;</button>
         </div>
       </div>
     </section>
