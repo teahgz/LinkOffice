@@ -5,6 +5,7 @@ import com.fiveLink.linkOffice.vacation.domain.*;
 import com.fiveLink.linkOffice.mapper.VacationMapper;
 import com.fiveLink.linkOffice.vacation.repository.VacationCheckRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationRepository;
+import com.fiveLink.linkOffice.vacation.repository.VacationStandardRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,15 @@ public class VacationService {
     private final VacationTypeRepository vacationTypeRepository;
     private final VacationMapper vacationMapper;
     private final VacationCheckRepository vacationCheckRepository;
+    private final VacationStandardRepository vacationStandardRepository;
+
     @Autowired
-    public VacationService(VacationRepository vacationRepository, VacationMapper vacationMapper, VacationTypeRepository vacationTypeRepository, VacationCheckRepository vacationCheckRepository){
+    public VacationService(VacationRepository vacationRepository, VacationMapper vacationMapper, VacationTypeRepository vacationTypeRepository, VacationCheckRepository vacationCheckRepository ,VacationStandardRepository vacationStandardRepository){
         this.vacationRepository = vacationRepository;
         this.vacationMapper = vacationMapper;
         this.vacationTypeRepository = vacationTypeRepository;
         this.vacationCheckRepository = vacationCheckRepository;
+        this.vacationStandardRepository =vacationStandardRepository;
     }
 //휴가 연차 생성
     public int addVacation(VacationDto dto) {
@@ -98,5 +102,28 @@ public class VacationService {
 
 
     }
+
+    //휴가 지급 기준
+    public int checkStandard(VacationStandardDto dto) {
+        int result = -1;
+        try {
+            VacationStandard vacationStandard = dto.toEntity();
+            vacationStandardRepository.save(vacationStandard);
+            result = 1;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public int countStandard() {
+        return vacationMapper.countStandard();
+
+
+    }
+    public List<VacationStandardDto> selectVacationStandard(){
+        return vacationMapper.selectVacationStandard();
+    }
+
 
 }
