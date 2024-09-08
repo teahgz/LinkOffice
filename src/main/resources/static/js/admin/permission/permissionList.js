@@ -20,22 +20,30 @@ function fetchPermissionMembers(element) {
         url: `/permission/members?menuNo=${menuNo}`,
         method: 'GET',
         success: function(data) {
-            var memberListTableBody = document.getElementById('memberList').getElementsByTagName('tbody')[0];
+            const memberListTableBody = document.getElementById('memberList').getElementsByTagName('tbody')[0];
             memberListTableBody.innerHTML = ''; 
             selectedMembers = []; 
 
             if (data.length === 0) {
-                var row = memberListTableBody.insertRow();
-                row.insertCell().colSpan = 3;
+                const row = memberListTableBody.insertRow();
+                row.insertCell().colSpan = 4;
                 row.cells[0].textContent = '등록된 권한자가 없습니다.';
             } else {
                 data.forEach(member => {
-                    var row = memberListTableBody.insertRow();
+                    const row = memberListTableBody.insertRow();
+                    const checkboxCell = row.insertCell();
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'member-checkbox';
+                    checkbox.dataset.memberNo = member[0];
+                    checkboxCell.appendChild(checkbox);
+                    
                     row.insertCell().textContent = member[2]; // 부서
                     row.insertCell().textContent = `${member[1]} ${member[3]}`; // 사원명 + 직위명
                     row.insertCell().textContent = new Date(member[4]).toLocaleDateString(); // 권한 등록일
-                    selectedMembers.push({ no: member[0], name: member[1] });
                 });
+
+                updateDeleteButtonState();
             }
 
             if ($('#organization-chart').jstree(true)) {
@@ -51,11 +59,15 @@ function fetchPermissionMembers(element) {
             });
         }
     });
-}
+} 
 
-function openOrganizationChartModal() { 
-	
+function openOrganizationChartModal() {
     selectedMembers = []; // 선택된 멤버 목록 초기화
+ 
+    const displayElement = document.getElementById('selected-members');
+    if (displayElement) {
+        displayElement.innerHTML = '';
+    }
 
     $('#organizationChartModal').modal('show');
 
@@ -224,14 +236,14 @@ $('#confirmButton').click(function() {
         }),
         success: function(response) {
             if (response.res_code === "200") {
-                Swal.fire('성공', response.res_msg, 'success').then((result) => {
+                Swal.fire('권한자 등록', response.res_msg, 'success').then((result) => {
                     if (result.isConfirmed) {
                         $('#organizationChartModal').modal('hide');
                          fetchPermissionMembersByMenuNo(selectedMenuNo); 
                     }
                 });
             } else {
-                Swal.fire('실패', response.res_msg, 'error');
+                Swal.fire('권한자 등록', response.res_msg, 'error');
             }
         },
         error: function () {
@@ -246,3 +258,55 @@ function fetchPermissionMembersByMenuNo(menuNo) {
         fetchPermissionMembers(element);
     }
 }
+
+// 삭제
+$(document).on('change', '.member-checkbox', function() {
+    updateDeleteButtonState();
+});
+
+function updateDeleteButtonState() {
+    const anyChecked = $('.member-checkbox:checked').length > 0;
+    $('#deleteButton').prop('disabled', !anyChecked);
+}
+
+$('#deleteButton').click(function() {
+    const selectedMemberNos = $('.member-checkbox:checked').map(function() {
+        return $(this).data('memberNo');
+    }).get();
+
+    if (selectedMemberNos.length === 0) {
+        Swal.fire('삭제 오류', '선택된 항목이 없습니다.', 'error');
+        return;
+    }
+
+    const menuNo = Number(selectedMenuNo); 
+    
+    if (!menuNo) {
+        Swal.fire('삭제 오류', '현재 메뉴 번호를 찾을 수 없습니다.', 'error');
+        return;
+    }
+
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+    $.ajax({
+        url: '/permission/deleteMembers',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({ 
+            memberNos: selectedMemberNos,
+            menuNo: menuNo  
+        }),
+        success: function(response) {
+            if (response.res_code === "200") {
+                Swal.fire('권한자 삭제', response.res_msg, 'success').then(() => {
+                    fetchPermissionMembersByMenuNo(menuNo);
+                });
+            } else {
+                Swal.fire('권한자 삭제', response.res_msg, 'error');
+            }
+        }
+    });
+});

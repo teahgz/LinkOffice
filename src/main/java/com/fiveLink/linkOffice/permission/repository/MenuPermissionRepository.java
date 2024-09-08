@@ -14,5 +14,5 @@ public interface MenuPermissionRepository extends JpaRepository<MenuPermission, 
     MenuPermission findByMenuNo(Long menuNo);
     
     @Query("SELECT mp.menuPermissionNo FROM MenuPermission mp WHERE mp.menuNo = :menuNo")
-    Long findMenuPermissionNosByMenuNo(@Param("menuNo") Long menuNo);
+    Long findMenuPermissionNosByMenuNo(@Param("menuNo") Long menuNo); 
 }

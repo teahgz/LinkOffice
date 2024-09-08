@@ -13,12 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="fl_member_permission")
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @AllArgsConstructor(access=AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Builder
 public class MemberPermission {
 	@Id
@@ -37,4 +39,7 @@ public class MemberPermission {
 	
 	@Column(name="member_permission_update_date")
 	private LocalDateTime memberPermissionUpdateDate;
+	
+	@Column(name="member_permission_status", insertable = false, updatable = true)
+	private Long memberPermissionStatus;
 }
