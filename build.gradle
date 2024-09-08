@@ -43,6 +43,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	
+	// 엑셀 다운로드 의존성
 	implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
