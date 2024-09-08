@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,115 +30,139 @@ public class MemberService {
 		this.memberRepository = memberRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
-	// 멤버 조회 
-	public List<MemberDto> getAllMembers() {
-        List<Object[]> results = memberRepository.findAllMembersWithDetails();
+	
+	// Object[] 결과를 MemberDto로 변환
+    private List<MemberDto> convertToDtoList(List<Object[]> results) {
+        return results.stream().map(result -> {
+            Member member = (Member) result[0];
+            String positionName = (String) result[1];
+            String departmentName = (String) result[2];
+            return MemberDto.builder()
+                    .member_no(member.getMemberNo())
+                    .member_number(member.getMemberNumber())
+                    .member_pw(member.getMemberPw())
+                    .member_name(member.getMemberName())
+                    .member_national(member.getMemberNational())
+                    .member_internal(member.getMemberInternal())
+                    .member_mobile(member.getMemberMobile())
+                    .department_no(member.getDepartmentNo())
+                    .position_no(member.getPositionNo())
+                    .department_name(departmentName)
+                    .position_name(positionName)
+                    .member_address(member.getMemberAddress())
+                    .member_hire_date(member.getMemberHireDate())
+                    .member_end_date(member.getMemberEndDate())
+                    .member_create_date(member.getMemberCreateDate())
+                    .member_update_date(member.getMemberUpdateDate())
+                    .member_ori_profile_img(member.getMemberOriProfileImg())
+                    .member_new_profile_img(member.getMemberNewProfileImg())
+                    .member_ori_digital_img(member.getMemberOriDigitalImg())
+                    .member_new_digital_img(member.getMemberNewDigitalImg())
+                    .member_status(member.getMemberStatus())
+                    .member_additional(member.getMemberAdditional())
+                    .build();
+        }).collect(Collectors.toList());
+    }
 
-        return results.stream()
-            .map(result -> {
-                Member member = (Member) result[0];
-                String positionName = (String) result[1];
-                String departmentName = (String) result[2];
-
-                return MemberDto.builder()
-                        .member_no(member.getMemberNo())
-                        .member_number(member.getMemberNumber())
-                        .member_pw(member.getMemberPw())
-                        .member_name(member.getMemberName())
-                        .member_national(member.getMemberNational())
-                        .member_internal(member.getMemberInternal())
-                        .member_mobile(member.getMemberMobile())
-                        .department_no(member.getDepartmentNo())
-                        .position_no(member.getPositionNo())
-                        .department_name(departmentName)
-                        .position_name(positionName)
-                        .member_address(member.getMemberAddress())
-                        .member_hire_date(member.getMemberHireDate())
-                        .member_end_date(member.getMemberEndDate())
-                        .member_create_date(member.getMemberCreateDate())
-                        .member_update_date(member.getMemberUpdateDate())
-                        .member_ori_profile_img(member.getMemberOriProfileImg())
-                        .member_new_profile_img(member.getMemberNewProfileImg())
-                        .member_ori_digital_img(member.getMemberOriDigitalImg())
-                        .member_new_digital_img(member.getMemberNewDigitalImg())
-                        .member_status(member.getMemberStatus())
-                        .member_additional(member.getMemberAdditional())
-                        .build();
-            })
-            .collect(Collectors.toList());
+    // [전주영] 멤버 조회 (목록 조회) 
+    public Page<MemberDto> getAllMemberPage(Pageable pageable) {
+        Page<Object[]> results = memberRepository.findAllMembersWithDetails(pageable);
+        List<MemberDto> memberDtoList = convertToDtoList(results.getContent());
+        return new PageImpl<>(memberDtoList, pageable, results.getTotalElements());
     }
     
-	// 사번으로 조회 
-	public List<MemberDto> getMemberByNumber(String memberNumber) {  
-		 List<Object[]> results = memberRepository.findMemberNumber(memberNumber);
-		 return results.stream().map(result -> {
-	            Member member = (Member) result[0];
-	            String positionName = (String) result[1];
-	            String departmentName = (String) result[2];
+    // [전주영] 사번으로 조회
+    public List<MemberDto> getMemberByNumber(String memberNumber) {
+        List<Object[]> results = memberRepository.findMemberNumber(memberNumber);
+        return convertToDtoList(results);
+    }
 
-	            return MemberDto.builder()
-	                    .member_no(member.getMemberNo())
-	                    .member_number(member.getMemberNumber())
-	                    .member_pw(member.getMemberPw())
-	                    .member_name(member.getMemberName())
-	                    .member_national(member.getMemberNational())
-	                    .member_internal(member.getMemberInternal())
-	                    .member_mobile(member.getMemberMobile())
-	                    .department_no(member.getDepartmentNo())
-	                    .position_no(member.getPositionNo())
-	                    .department_name(departmentName)
-	                    .position_name(positionName)
-	                    .member_address(member.getMemberAddress())
-	                    .member_hire_date(member.getMemberHireDate())
-	                    .member_end_date(member.getMemberEndDate())
-	                    .member_create_date(member.getMemberCreateDate())
-	                    .member_update_date(member.getMemberUpdateDate())
-	                    .member_ori_profile_img(member.getMemberOriProfileImg())
-	                    .member_new_profile_img(member.getMemberNewProfileImg())
-	                    .member_ori_digital_img(member.getMemberOriDigitalImg())
-	                    .member_new_digital_img(member.getMemberNewDigitalImg())
-	                    .member_status(member.getMemberStatus())
-	                    .member_additional(member.getMemberAdditional())
-	                    .build();
-	        }).collect(Collectors.toList());
-	    }
-	
-	// mypage 정보 조회
-	 public List<MemberDto> getMembersByNo(Long memberNo) {
-	        List<Object[]> results = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
+    // [전주영] mypage 정보 조회
+    public List<MemberDto> getMembersByNo(Long memberNo) {
+        List<Object[]> results = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
+        return convertToDtoList(results);
+    }
+    
+    // [전주영] 전자결재 서명 dto 조회 
+    public MemberDto selectMemberOne(Long memberNo) {
+    	Member member = memberRepository.findByMemberNo(memberNo);
+    	MemberDto dto = MemberDto.toDto(member);
+    	return dto;
+    }
+    
+    // [전주영]전자결재 서명 update
+    @Transactional
+    public Member updateMemberDigital(MemberDto dto) {
+        MemberDto temp = selectMemberOne(dto.getMember_no());
+        if (dto.getMember_ori_digital_img() != null && !dto.getMember_ori_digital_img().isEmpty()) {
+            temp.setMember_ori_digital_img(dto.getMember_ori_digital_img());
+            temp.setMember_new_digital_img(dto.getMember_new_digital_img());
+        }
+        return memberRepository.save(temp.toEntity());
+    }
+    
+    // [전주영] 프로필 이미지 및 비밀번호, 주소 변경
+    @Transactional
+    public Member updateMemberProfile(MemberDto dto) {
+        dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
+        return memberRepository.save(dto.toEntity());
+    }
+    
+    // [전주영] 사원 생성
+    public Member createMember(MemberDto dto) {
+        dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
+        return memberRepository.save(dto.toEntity());
+    }
+    
+    // [전주영] 사번으로 member 조회
+    public MemberDto selectMemNumberOne(String memberNumber) {
+        Member member = memberRepository.findByMemberNumber(memberNumber);
+        return MemberDto.toDto(member);
+    }
+    
+    // [전주영] 사원등록, 비밀번호 변경 멤버 조회
+    public List<MemberDto> getAllMembers() {
+        List<Object[]> results = memberRepository.findAllMembers();
+        return convertToDtoList(results);
+    }
 
-	        return results.stream().map(result -> {
-	            Member member = (Member) result[0];
-	            String positionName = (String) result[1];
-	            String departmentName = (String) result[2];
-
-	            return MemberDto.builder()
-	                    .member_no(member.getMemberNo())
-	                    .member_number(member.getMemberNumber())
-	                    .member_pw(member.getMemberPw())
-	                    .member_name(member.getMemberName())
-	                    .member_national(member.getMemberNational())
-	                    .member_internal(member.getMemberInternal())
-	                    .member_mobile(member.getMemberMobile())
-	                    .department_no(member.getDepartmentNo())
-	                    .position_no(member.getPositionNo())
-	                    .department_name(departmentName)
-	                    .position_name(positionName)
-	                    .member_address(member.getMemberAddress())
-	                    .member_hire_date(member.getMemberHireDate())
-	                    .member_end_date(member.getMemberEndDate())
-	                    .member_create_date(member.getMemberCreateDate())
-	                    .member_update_date(member.getMemberUpdateDate())
-	                    .member_ori_profile_img(member.getMemberOriProfileImg())
-	                    .member_new_profile_img(member.getMemberNewProfileImg())
-	                    .member_ori_digital_img(member.getMemberOriDigitalImg())
-	                    .member_new_digital_img(member.getMemberNewDigitalImg())
-	                    .member_status(member.getMemberStatus())
-	                    .member_additional(member.getMemberAdditional())
-	                    .build();
-	        }).collect(Collectors.toList());
-	    }
-	 
+    // [전주영] 비밀번호 변경해주기
+    @Transactional
+    public Member pwchange(MemberDto dto) {
+    	
+    	MemberDto temp = selectMemNumberOne(dto.getMember_number());
+    	
+    	Member member = temp.toEntity();
+    	// dto 에서 받아온 비밀번호 암호화
+    	String encodedPw = passwordEncoder.encode(dto.getMember_pw());
+    	
+    	// member번호에 인코딩된 비밀번호 암호화
+    	member.setMemberPw(encodedPw);
+    	Member result = memberRepository.save(member);
+    	
+    	return result;
+    }
+    
+    // [전주영] 상태값 변경 (퇴사)
+    @Transactional
+    public Member statusUpdate(MemberDto memberdto) {
+        MemberDto temp = selectMemberOne(memberdto.getMember_no());
+        temp.setMember_status(1L);
+        temp.setMember_end_date(LocalDateTime.now());
+        return memberRepository.save(temp.toEntity());
+    }
+    
+    // [전주영] 사원 정보 수정
+    @Transactional
+    public Member memberEdit(MemberDto memberdto) {
+        return memberRepository.save(memberdto.toEntity());
+    }
+    
+    // [전주영] 멤버 조회 (직위 순)
+    public List<MemberDto> getAllMemberPosition() {
+        List<Object[]> results = memberRepository.findAllMemberWithDetailsOrderByPosition();
+        return convertToDtoList(results);
+    }
 	 // [서혜원] 부서별 사원
 	 public List<MemberDto> getMembersByDepartmentNo(Long departmentNo) {
 	    List<Member> members = memberRepository.findByDepartmentNo(departmentNo);
@@ -173,68 +200,7 @@ public class MemberService {
 	        )
 	        .collect(Collectors.toList());
 	}
- 
-    // [전주영] 전자결재 서명 dto 조회 
-    public MemberDto selectMemberOne(Long memberNo) {
-    	Member member = memberRepository.findByMemberNo(memberNo);
-    	MemberDto dto = MemberDto.toDto(member);
-    	return dto;
-    }
-    
-    // [전주영] 전자결재 서명 update
-    @Transactional
-    public Member updateMemberDigital(MemberDto dto) {
-    	MemberDto temp = selectMemberOne(dto.getMember_no());
-    	if(dto.getMember_ori_digital_img() != null && "".equals(dto.getMember_ori_digital_img()) == false) {
-    		temp.setMember_ori_digital_img(dto.getMember_ori_digital_img());
-    		temp.setMember_new_digital_img(dto.getMember_new_digital_img());
-    	} 
-    	
-    	Member member = temp.toEntity();
-    	
-    	Member result = memberRepository.save(member);
-    	return result;
-    } 
-    
-    // [전주영] 프로필 이미지 및 비밀번호, 주소 변경 
-    @Transactional
-    public Member updateMemberProfile(MemberDto dto) {
-    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw()));
-    	Member member = dto.toEntity();
-    	Member result = memberRepository.save(member);
-    	return result;
-    }
-    
-    // [전주영] 사원 생성
-    public Member createMember(MemberDto dto) {
-    	dto.setMember_pw(passwordEncoder.encode(dto.getMember_pw())); 
-    	Member member = dto.toEntity();
-    	return memberRepository.save(member);
-    }
-    
-    
-    // [전주영] 사번으로 member 조회
-    public MemberDto selectMemNumberOne(String MemberNumber) {
-    	Member member = memberRepository.findByMemberNumber(MemberNumber);
-    	MemberDto dto = MemberDto.toDto(member);
-    	return dto;
-    }
-    // [전주영] 비밀번호 변경해주기
-    @Transactional
-    public Member pwchange(MemberDto dto) {
-    	
-    	MemberDto temp = selectMemNumberOne(dto.getMember_number());
-    	
-    	Member member = temp.toEntity();
-    	// dto 에서 받아온 비밀번호 암호화
-    	String encodedPw = passwordEncoder.encode(dto.getMember_pw());
-    	
-    	// member번호에 인코딩된 비밀번호 암호화
-    	member.setMemberPw(encodedPw);
-    	Member result = memberRepository.save(member);
-    	
-    	return result;
-    }
+
 
     // [서혜원] 조직도
     public List<MemberDto> getAllMembersChart() {
@@ -270,67 +236,5 @@ public class MemberService {
                 .department_name(member.getDepartment() != null ? member.getDepartment().getDepartmentName() : null) 
                 .build();
     }
-    
-    // [전주영] 상태값 변경 ( 퇴사 ) 
-    @Transactional
-    public Member statusUpdate(MemberDto memberdto) {
-    	MemberDto temp = selectMemberOne(memberdto.getMember_no());
-    	temp.setMember_status(1L);
 
-    	LocalDateTime currentDateTime = LocalDateTime.now();
-    	temp.setMember_end_date(currentDateTime);
-    	
-    	Member member = temp.toEntity();
-    	
-    	Member result = memberRepository.save(member);
-    	return result;
-    }
-    
-    // [전주영] 사원 정보 수정
-    @Transactional
-    public Member memberEdit(MemberDto memberdto) {
-    	Member member = memberdto.toEntity();
-    	Member result = memberRepository.save(member);
-    	return result;
-    	
-    }
-    
-    //[전주영] 멤버 조회 (직위 순)
-    public List<MemberDto> getAllMemberPosition() {
-        List<Object[]> results = memberRepository.findAllMemberWithDetailsOrderByPosition();
-
-        return results.stream()
-            .map(result -> {
-                Member member = (Member) result[0];
-                String positionName = (String) result[1];
-                String departmentName = (String) result[2];
-
-                return MemberDto.builder()
-                        .member_no(member.getMemberNo())
-                        .member_number(member.getMemberNumber())
-                        .member_pw(member.getMemberPw())
-                        .member_name(member.getMemberName())
-                        .member_national(member.getMemberNational())
-                        .member_internal(member.getMemberInternal())
-                        .member_mobile(member.getMemberMobile())
-                        .department_no(member.getDepartmentNo())
-                        .position_no(member.getPositionNo())
-                        .department_name(departmentName)
-                        .position_name(positionName)
-                        .member_address(member.getMemberAddress())
-                        .member_hire_date(member.getMemberHireDate())
-                        .member_end_date(member.getMemberEndDate())
-                        .member_create_date(member.getMemberCreateDate())
-                        .member_update_date(member.getMemberUpdateDate())
-                        .member_ori_profile_img(member.getMemberOriProfileImg())
-                        .member_new_profile_img(member.getMemberNewProfileImg())
-                        .member_ori_digital_img(member.getMemberOriDigitalImg())
-                        .member_new_digital_img(member.getMemberNewDigitalImg())
-                        .member_status(member.getMemberStatus())
-                        .member_additional(member.getMemberAdditional())
-                        .build();
-            })
-            .collect(Collectors.toList());
-    }
-     
 } 

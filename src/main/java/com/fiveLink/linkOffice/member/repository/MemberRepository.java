@@ -2,6 +2,8 @@ package com.fiveLink.linkOffice.member.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -54,14 +56,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // [서혜원] 조직도
     List<Member> findAllByMemberStatus(Long status);
       
-    // [전주영] 전체 사원 조회 (관리자 빼고)
+    // [전주영] 전체 사원 조회 (관리자 빼고, 입사일 최신순) - 관리자 사원 목록 조회
     @Query("SELECT m, p.positionName, d.departmentName " +
             "FROM Member m " +
             "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
             "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
             "WHERE m.memberNo != 1")
-     List<Object[]> findAllMembersWithDetails(); 
+     Page<Object[]> findAllMembersWithDetails(Pageable pageable); 
      
+     // [전주영] 전체 사원 조회 (관리자 빼고, 직위순) - 사용자 사원 목록 조회
      @Query("SELECT m, p.positionName, d.departmentName " +
              "FROM Member m " +
              "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
@@ -69,4 +72,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
              "WHERE m.memberNo != 1 AND m.memberStatus = 0" +
              "ORDER BY p.positionLevel")
       List<Object[]> findAllMemberWithDetailsOrderByPosition(); 
+      
+      // [전주영] 사원 조회 
+      @Query("SELECT m, p.positionName, d.departmentName " +
+    		  "FROM Member m " +
+    		  "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+    		  "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+    		  "WHERE m.memberNo != 1"
+    		  + "ORDER BY m.memberHireDate DESC")
+      List<Object[]> findAllMembers(); 
 }
+
