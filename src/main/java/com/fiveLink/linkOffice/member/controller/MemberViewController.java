@@ -158,15 +158,21 @@ public class MemberViewController {
 	
 	// [전주영] 사용자 주소록
 	@GetMapping("/employee/member/list")
-	public String memberList(Model model) {
+	public String memberList(Model model, MemberDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		Long memberNo = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    
-	    List<MemberDto> memberList = memberService.getAllMemberPosition();
+	    Sort sortOption = getSortOption(sort);
+	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+	    
+	    Page<MemberDto> memberPage = memberService.getAllMemberPosition(sortedPageable,searchdto);
+	    
 		model.addAttribute("memberdto", memberdto);
-		model.addAttribute("departments", departments);
-		model.addAttribute("memberList", memberList);
+		model.addAttribute("memberList", memberPage.getContent());
+		model.addAttribute("page", memberPage);
+		model.addAttribute("searchDto", searchdto);
+		model.addAttribute("currentSort", sort);
+		
 		
 		return "employee/member/list";
 	}

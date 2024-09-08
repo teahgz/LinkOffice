@@ -83,9 +83,25 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
              "FROM Member m " +
              "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
              "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
-             "WHERE m.memberNo != 1 AND m.memberStatus = 0" +
-             "ORDER BY p.positionLevel")
-      List<Object[]> findAllMemberWithDetailsOrderByPosition(); 
+             "WHERE m.memberNo != 1 AND m.memberStatus = 0")
+      Page<Object[]> findAllMemberStatusOrderByPosition(Pageable pageable); 
+      // 검색어(조건, 부서)
+      @Query("SELECT m, p.positionName, d.departmentName " +
+              "FROM Member m " +
+              "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+              "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+              "WHERE m.memberNo != 1 AND m.memberStatus = 0 AND d.departmentName LIKE %:searchText%")
+       Page<Object[]> findAllMemberStatusByDepartmentName(@Param("searchText") String searchText,Pageable pageable); 
+       // 검색어(조건, 직위명) 
+       @Query("SELECT m, p.positionName, d.departmentName " +
+               "FROM Member m " +
+               "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+               "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+               "WHERE m.memberNo != 1 AND m.memberStatus = 0 AND p.positionName LIKE %:searchText%")
+        Page<Object[]> findAllMemberStatusByPositionName(@Param("searchText") String searchText,Pageable pageable); 
+      
+      
+      
       
       // [전주영] 사원 조회 
       @Query("SELECT m, p.positionName, d.departmentName " +

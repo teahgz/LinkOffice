@@ -181,9 +181,31 @@ public class MemberService {
     }
     
     // [전주영] 멤버 조회 (직위 순)
-    public List<MemberDto> getAllMemberPosition() {
-        List<Object[]> results = memberRepository.findAllMemberWithDetailsOrderByPosition();
-        return convertToDtoList(results);
+    public Page<MemberDto> getAllMemberPosition(Pageable pageable, MemberDto searchdto) {
+        Page<Object[]> results = null;
+        
+        String searchText = searchdto.getSearch_text();
+        
+        if(searchText != null && !searchText.isEmpty()) {
+        	int searchType = searchdto.getSearch_type();
+        	switch(searchType) {
+        		case 1 : 
+        			results = memberRepository.findAllMemberStatusByDepartmentName(searchText,pageable);
+        			break;
+        		case 2 : 
+        			results = memberRepository.findAllMemberStatusByPositionName(searchText,pageable);
+        			break;
+        		default:
+        			results = memberRepository.findAllMemberStatusOrderByPosition(pageable);
+        			break;
+        	}
+        	
+        } else {
+        	results = memberRepository.findAllMemberStatusOrderByPosition(pageable);
+        }
+        
+        List<MemberDto> memberDtoList = convertToDtoList(results.getContent());
+        return new PageImpl<>(memberDtoList, pageable, results.getTotalElements());
     }
 	 // [서혜원] 부서별 사원
 	 public List<MemberDto> getMembersByDepartmentNo(Long departmentNo) {
