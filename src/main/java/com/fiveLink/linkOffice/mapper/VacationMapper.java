@@ -28,4 +28,5 @@ public interface VacationMapper {
     int contVacationYear(int year);
     String selectVacationDesignated(int num);
  int selectVacationStandardStatus();
+    int checkType(String name);
 }

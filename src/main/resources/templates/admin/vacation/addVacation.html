@@ -166,7 +166,7 @@
                         </div>
                         <!-- 분리되는 부분 -->
                         <div>
-                            <p style="color: red; font-size: 15px;">* 최초 설정만 가능</p>
+                            <p style="color: red; font-size: 13px;">* 최초 설정만 가능</p>
                         </div>
 
                     </div>
@@ -234,22 +234,23 @@
                             </td>
                         </tr>
                         <tr class="edit-row" style="display: none;">
-                            <form id ="editVacationType">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <td colspan="3">
+                                <form id ="editVacationType">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                                <td>
+
                                     <input type="hidden" id="editVacationTypeNo" th:value="${list.vacation_type_no}" />
                                     <input type="text" id="editVacationTypeName" th:value="${list.vacation_type_name}" />
-                                </td>
-                                <td>
+
                                     <input type="number" id="editVacationTypeCalculate" th:value="${list.vacation_type_calculate}" />
-                                </td>
-                                <td>
+
                                     <button type="button" class="save-btn">저장</button>
                                     <button type="button" class="cancel-btn">취소</button>
-                                </td>
 
-                            </form>
+
+                                </form>
+                            </td>
+
 
                         </tr>
 
