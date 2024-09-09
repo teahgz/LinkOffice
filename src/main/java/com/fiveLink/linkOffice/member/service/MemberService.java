@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fiveLink.linkOffice.mapper.VacationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,12 +24,14 @@ public class MemberService {
 	
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-
-	
+    //[김채영] 1년미만 재직자
+    private final VacationMapper vacationMapper;
+    
 	@Autowired
-	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, VacationMapper vacationMapper) {
 		this.memberRepository = memberRepository;
 		this.passwordEncoder = passwordEncoder;
+        this.vacationMapper =vacationMapper;
 	}
 	
 	// Object[] 결과를 MemberDto로 변환
@@ -74,7 +77,6 @@ public class MemberService {
     	    switch (searchType) {
     	        case 1:
     	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);
-    	            System.out.println("부서명"+results);
     	            break;
     	        case 2:
     	            results = memberRepository.findMembersByPositionName(searchText, pageable);
@@ -276,6 +278,13 @@ public class MemberService {
                 .position_name(member.getPosition() != null ? member.getPosition().getPositionName() : null)  
                 .department_name(member.getDepartment() != null ? member.getDepartment().getDepartmentName() : null) 
                 .build();
+    }
+
+    //[김채영] 1년 미만 재직자 정보
+    public List<MemberDto> selectUnderYearMember(int num) {
+
+        return vacationMapper.selectUnderYearMember(num);
+
     }
 
 } 

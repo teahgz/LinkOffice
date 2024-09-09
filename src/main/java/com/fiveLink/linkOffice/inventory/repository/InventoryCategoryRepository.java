@@ -11,5 +11,5 @@ public interface InventoryCategoryRepository extends JpaRepository<InventoryCate
 	
 	 Optional<InventoryCategory> findByInventoryCategoryName(String categoryName);
 	
-    
+	 boolean existsByInventoryCategoryName(String inventoryCategoryName);
 }

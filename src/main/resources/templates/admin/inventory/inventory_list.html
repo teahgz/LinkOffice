@@ -6,6 +6,10 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/inventory/inventory_list.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/css/datatable.css}" rel="stylesheet" type="text/css">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <section>
     <div style="width: 80%; margin: 0 auto;">
@@ -69,7 +73,6 @@
                 <label for="itemPurchaseDate">구입일자:</label>
                 <input type="date" id="itemPurchaseDate" name="itemPurchaseDate">
             </div>
-            <!-- 비품 no를 hidden 필드로 추가 -->
             <input type="hidden" id="itemNo" name="itemNo" value="[[${inventory_no}]]">
         </form>
         <div class="button-container">
@@ -178,7 +181,7 @@
     }
     
     $(document).ready(function() {
-        var csrfToken = $('#csrfToken').val();  // CSRF 토큰 값 가져오기
+        var csrfToken = $('#csrfToken').val();  
 
         var table = $('#example').DataTable({
             "paging": true,
@@ -186,8 +189,15 @@
             "ordering": true,
             "info": false,
             "autoWidth": false,
+            "pagingType": "full_numbers",  // 처음(First)과 마지막(Last) 버튼 추가
             "language": {
-                "emptyTable": "부서를 선택해주세요."
+                "emptyTable": "부서를 선택해주세요.",
+                "paginate": {
+                    "first": "<<",
+                    "last": ">>",
+                    "next": ">",
+                    "previous": "<"
+                }
             }
         });
         $('.dataTables_length').remove();
@@ -224,7 +234,6 @@
             $('#itemQuantity').val(itemQuantity);
             $('#itemLocation').val(itemLocation);
             $('#itemPurchaseDate').val(itemPurchaseDate);
-
             $('#inventoryModal').show();
         });
 
@@ -233,6 +242,9 @@
                 document.getElementById('inventoryModal').style.display = 'none';
             }
         };
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('inventoryModal').style.display = 'none';
+        });
     });
 
     function saveChanges() {
@@ -247,29 +259,39 @@
             inventory_purchase_date: $('#itemPurchaseDate').val()
         };
 
-        if (confirm('정말 수정하시겠습니까?')) {
-            $.ajax({
-                url: '/inventory/update',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken  
-                },
-                success: function(response) {
-                    if(response.res_code === "200") {
-                        alert(response.res_msg);
-                        $('#inventoryModal').hide();
-                        location.reload();
-                    } else {
-                        alert("수정 실패: " + response.res_msg);
+        // SweetAlert confirm 대체
+        Swal.fire({
+            title: '정말 수정하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '수정',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/inventory/update',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken  
+                    },
+                    success: function(response) {
+                        if(response.res_code === "200") {
+                            Swal.fire('성공', response.res_msg, 'success').then(() => {
+                                $('#inventoryModal').hide();
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire('실패', "수정 실패: " + response.res_msg, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('오류', '수정 중 오류가 발생했습니다.', 'error');
                     }
-                },
-                error: function() {
-                    alert('수정 중 오류가 발생했습니다.');
-                }
-            });
-        }
+                });
+            }
+        });
     }
 
     function deleteItem() {
@@ -277,24 +299,33 @@
 
         const no = $('#itemNo').val();
 
-        // 삭제 확인 메시지
-        if (confirm('정말 삭제하시겠습니까?')) {
-            $.ajax({
-                url: '/inventory/delete/' + no,
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken  
-                },
-                success: function(response) {
-                    alert('삭제되었습니다.');
-                    $('#inventoryModal').hide();
-                    location.reload();
-                },
-                error: function() {
-                    alert('삭제 중 오류가 발생했습니다.');
-                }
-            });
-        }
+        // SweetAlert confirm 대체
+        Swal.fire({
+            title: '정말 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/inventory/delete/' + no,
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken  
+                    },
+                    success: function(response) {
+                        Swal.fire('성공', '삭제되었습니다.', 'success').then(() => {
+                            $('#inventoryModal').hide();
+                            location.reload();
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
+                    }
+                });
+            }
+        });
     }
 
     function closeModal() {

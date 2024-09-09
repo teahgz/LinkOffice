@@ -116,4 +116,12 @@ public class Member {
 	// [김채영] 1년 미만 멤버 확인
 	@Column(name="member_one_under")
 	private int memberOneUnder;
+
+	//[김채영] 휴가 지급 개수
+	@Column(name="member_vacation_count")
+	private int memberVacationCount;
+
+	//[김채영] 휴가 지급 날짜
+	@Column(name="member_vacation_date")
+	private String memberVacationDate;
 }

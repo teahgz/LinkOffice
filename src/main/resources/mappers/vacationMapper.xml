@@ -31,4 +31,10 @@
         FROM fl_vacation_standard
     </select>
 
+
+    <select id="selectUnderYearMember" parameterType="int" resultType="com.fiveLink.linkOffice.member.domain.MemberDto">
+        SELECT *
+        FROM fl_member
+        WHERE member_one_under = #{num}
+    </select>
 </mapper>
