@@ -64,7 +64,7 @@ public class VacationViewController {
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
         int countStandard = vacationService.countStandard();
 
-        List<VacationStandardDto> vacationStandard = vacationService.selectVacatiSonStandard();
+        List<VacationStandardDto> vacationStandard = vacationService.selectVacationStandard();
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("countStandard", countStandard);
         model.addAttribute("vacationStandard", vacationStandard);

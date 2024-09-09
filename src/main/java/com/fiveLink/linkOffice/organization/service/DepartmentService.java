@@ -222,7 +222,7 @@ public class DepartmentService {
         return false;
     }
     
-    // [전주영] 사원 등록 ( 부서 조회 )
+    // [전주영] 사원 등록 (부서 조회 )
     
    public List<DepartmentDto> findSubDepartment(){
 	   
