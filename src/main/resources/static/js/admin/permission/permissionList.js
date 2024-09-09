@@ -6,7 +6,7 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let totalItems = 0;
 
-let allPemissionData = [];  
+let allPermissionData = [];  
 let sortOrder = 'newest'; 
 
 const defaultMenuNo = 2; 
@@ -40,6 +40,8 @@ function fetchPermissionMembers(element) {
     const sectionTitle = `${functionName} 권한자 목록`;
     document.getElementById('sectionTitle').textContent = sectionTitle; 
 
+	document.getElementById('searchMember').value = '';
+
 	var selectedElements = document.querySelectorAll('.permission_Lists a.selected');
     selectedElements.forEach(function(item) {
         item.classList.remove('selected');
@@ -56,7 +58,7 @@ function fetchPermissionMembers(element) {
                 : data.sort((a, b) => new Date(a[4]) - new Date(b[4]));
             
             totalItems = data.length;
-            allPemissionData = data; 
+            allPermissionData = data; 
             displayMembers(data, currentPage);
             setupPagination();
 
@@ -127,11 +129,19 @@ function setupPagination() {
         const paginationDiv = document.createElement('div');
         paginationDiv.id = 'pagination';
         document.getElementById('permissionMembersSection').appendChild(paginationDiv);
-    } 
+    }
+
     let paginationHTML = '';
 
+    // 첫 페이지 버튼 (<<)
+    if (currentPage > 1) {
+        paginationHTML += `<button onclick="goToFirstPage()">&lt;&lt;</button>`;
+    }
+
     // 이전 버튼
-    paginationHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
+    if (currentPage > 1) {
+        paginationHTML += `<button onclick="changePage(${currentPage - 1})">&lt;</button>`;
+    }
 
     // 페이지 번호 버튼
     let startPage = Math.max(1, currentPage - 1);
@@ -148,10 +158,29 @@ function setupPagination() {
     }
 
     // 다음 버튼
-    paginationHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
+    if (currentPage < totalPages) {
+        paginationHTML += `<button onclick="changePage(${currentPage + 1})">&gt;</button>`;
+    }
 
+    // 마지막 페이지 버튼 (>>)
+    if (currentPage < totalPages) {
+        paginationHTML += `<button onclick="goToLastPage()">&gt;&gt;</button>`;
+    } 
     document.getElementById('pagination').innerHTML = paginationHTML;
 }
+
+function goToFirstPage() {
+    if (currentPage > 1) {
+        changePage(1);
+    }
+}
+
+function goToLastPage() {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (currentPage < totalPages) {
+        changePage(totalPages);
+    }
+} 
  
 function changePage(page) {
     currentPage = page;
@@ -360,15 +389,15 @@ $('#deleteButton').click(function() {
     const selectedMemberNos = $('.member-checkbox:checked').map(function() {
         return $(this).data('memberNo');
     }).get();
- 
     Swal.fire({
         title: '삭제 확인',
         text: '선택한 권한자를 삭제하시겠습니까?',
         icon: 'warning',
         showCancelButton: true,
+        confirmButtonColor: '#EEB3B3',
+        cancelButtonColor: '#C0C0C0',
         confirmButtonText: '삭제',
-        cancelButtonText: '취소',
-        reverseButtons: true
+        cancelButtonText: '취소' 
     }).then((result) => {
         if (result.isConfirmed) {
             const menuNo = Number(selectedMenuNo); 
@@ -415,7 +444,7 @@ $(document).ready(function() {
 function filterMembersBySearch() {
     const searchQuery = document.getElementById('searchMember').value.toLowerCase();
 
-    const filteredData = allPemissionData.filter(member => {
+    const filteredData = allPermissionData.filter(member => {
         const department = member[2].toLowerCase();
         const employeeName = `${member[1]} ${member[3]}`.toLowerCase();
         return department.includes(searchQuery) || employeeName.includes(searchQuery);
