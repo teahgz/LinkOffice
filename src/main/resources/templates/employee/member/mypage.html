@@ -57,7 +57,8 @@
                 <ul class="profile_details address">
                     <li id="address">
                         <strong>주소</strong>
-                        <span th:text="${member.member_address}"></span>
+                        <span th:if="${member.member_address == null}" id="editAddress">정보 수정에서 주소를 등록해주세요.</span>
+                        <span th:if="${member.member_address != null}" th:text="${member.member_address}"></span>
                     </li>
                 </ul>
             </div>
