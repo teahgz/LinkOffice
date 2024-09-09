@@ -82,7 +82,6 @@ public class MemberViewController {
 	      // 직위명 조회 
 	      List<PositionDto> positions = positionService.getAllPositionsForSelect();
 	        
-	        
 	      model.addAttribute("memberdto", memberdto);
 	      model.addAttribute("departments", departments);
 	      model.addAttribute("positions", positions);
