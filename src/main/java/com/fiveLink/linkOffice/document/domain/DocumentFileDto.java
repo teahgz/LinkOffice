@@ -21,7 +21,7 @@ public class DocumentFileDto {
     private String document_new_file_name;  
     private Long document_folder_no;      
     private Long member_no;          
-    private String documemt_file_size;
+    private String document_file_size;
     private LocalDateTime document_file_upload_date; 
     private LocalDateTime document_file_update_date; 
     private Long document_file_status; 
@@ -34,7 +34,7 @@ public class DocumentFileDto {
                 .documentNewFileName(document_new_file_name)
                 .documentFolderNo(document_folder_no)
                 .memberNo(member_no)
-                .documentFileSize(documemt_file_size)
+                .documentFileSize(document_file_size)
                 .documentFileUploadDate(document_file_upload_date)
                 .documentFileUpdateDate(document_file_update_date)
                 .documentFileStatus(document_file_status)
@@ -48,6 +48,7 @@ public class DocumentFileDto {
                 .document_new_file_name(documentFile.getDocumentNewFileName())
                 .document_folder_no(documentFile.getDocumentFolderNo())
                 .member_no(documentFile.getMemberNo())
+                .document_file_size(documentFile.getDocumentFileSize())
                 .document_file_upload_date(documentFile.getDocumentFileUploadDate())
                 .document_file_update_date(documentFile.getDocumentFileUpdateDate())
                 .document_file_status(documentFile.getDocumentFileStatus())
