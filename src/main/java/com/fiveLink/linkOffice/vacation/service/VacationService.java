@@ -5,16 +5,6 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.vacation.domain.*;
 import com.fiveLink.linkOffice.mapper.VacationMapper;
-
-import com.fiveLink.linkOffice.vacation.domain.Vacation;
-import com.fiveLink.linkOffice.vacation.domain.VacationDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationOneUnder;
-import com.fiveLink.linkOffice.vacation.domain.VacationOneUnderDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationStandard;
-import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationType;
-import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
-
 import com.fiveLink.linkOffice.vacation.repository.VacationCheckRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationStandardRepository;
@@ -136,7 +126,7 @@ public class VacationService {
 
 
     }
-    public List<VacationStandardDto> selectVacatiSonStandard(){
+    public List<VacationStandardDto> selectVacationStandard(){
         return vacationMapper.selectVacationStandard();
     }
 
