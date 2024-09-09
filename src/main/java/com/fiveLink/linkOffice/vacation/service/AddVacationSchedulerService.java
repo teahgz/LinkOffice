@@ -32,8 +32,8 @@ public class AddVacationSchedulerService {
         this.memberService = memberService;
         this.vacationService = vacationService;
     }
-    //@Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
+    //@Scheduled(cron = "*/5 * * * * ?")
     @Transactional
     public void addVacationScheduler() {
         if(vacationService.countCheckOneYear() != 0){
