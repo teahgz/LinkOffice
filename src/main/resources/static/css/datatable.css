@@ -46,7 +46,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    width: 250px;
+    width: 180px !important;
 }
 
 /* 페이징 버튼 스타일 */

@@ -103,7 +103,7 @@ public class AttendanceService {
 		return result;
 	}	
     
-	// 공휴일 API 제공 메소드. 년도와 달의 값을 매개변수로 받음.
+	// 공휴일 API. 년도와 달의 값을 매개변수로 받음.
     public static Map<String, Object> holidayInfoAPI(String year, String month) throws IOException {
     	// 공휴일 API에서 받은 key 값 
     	String secretKey = "K%2FCnoTIK3E6FzNpZG%2BnO6g%2FuNJgDKu1sQqq3r9bF5EExcoUhfnjuaFvlRpdpD2deCOvTeOEwJ3TUW7z8m4mKxQ%3D%3D";
@@ -146,7 +146,7 @@ public class AttendanceService {
         return string2Map(sb.toString());
     }
     
-    // 공휴일 API 제공 메소드. json을 map으로 변환 
+    // 공휴일 API. json을 map으로 변환 
     public static Map<String, Object> string2Map(String json) {
     	// ObjectMapper를 사용하여 JSON 문자열을 Map으로 변환 
         ObjectMapper mapper = new ObjectMapper();
@@ -162,39 +162,52 @@ public class AttendanceService {
         return map;
     }
     
-    // 공휴일 method 
+    // 출근 스케줄링 공휴일인지 체크하기 
     public boolean isHoliday(LocalDate date, String year, String month) {
         try {
-        	// 공휴일 API로 이번 달의 공휴일 정보 가져오기 
+            // 공휴일 API로 이번 달의 공휴일 정보 가져오기 
             Map<String, Object> holidayMap = holidayInfoAPI(year, month);
-            
-            // 이번 달에 공휴일이 존재한다면 
+
+            // 이번 달에 공휴일이 존재한다면
             if (holidayMap != null && holidayMap.containsKey("response")) {
                 Map<String, Object> response = (Map<String, Object>) holidayMap.get("response");
                 Map<String, Object> body = (Map<String, Object>) response.get("body");
                 Map<String, Object> items = (Map<String, Object>) body.get("items");
-                List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
-                // 날짜를 yyyyMMdd 형식으로 변환(공휴일 API에 날짜가 yyyyMMdd 형태로 저장됨)
-                String dateStr = date.format(DateTimeFormatter.ofPattern("yyyyMMdd")); 
+                // items의 "item" 값을 List로 변환
+                List<Map<String, Object>> itemList = null;
+                Object itemsObj = items.get("item");
+
+                if (itemsObj instanceof List) {
+                    itemList = (List<Map<String, Object>>) itemsObj;
+                } else if (itemsObj instanceof Map) {
+                    // "item"이 Map인 경우, 단일 객체를 리스트로 변환
+                    Map<String, Object> singleItem = (Map<String, Object>) itemsObj;
+                    itemList = List.of(singleItem);
+                } else {
+                    // 예상하지 못한 타입의 경우 경고 로그를 남기고 빈 리스트로 초기화
+                    LOGGER.warn("Expected List or Map for 'item' but found: " + itemsObj.getClass().getName());
+                    itemList = List.of(); // 빈 리스트 반환
+                }
+
+                // 날짜를 yyyyMMdd 형식으로 변환
+                String dateStr = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
                 for (Map<String, Object> item : itemList) {
-                	// 공휴일 Map에 날짜 key가 locdate임 
+                    // 공휴일 Map에 날짜 key가 locdate임 
                     Object locdateObj = item.get("locdate");
                     String locdate;
-                    // locdate의 value를 String 형태로 변환 
-                    // locdate가 String 인스턴스라면 
+
+                    // locdate의 value를 String 형태로 변환
                     if (locdateObj instanceof String) {
                         locdate = (String) locdateObj;
-                    // locdate가 int 인스턴스라면 
                     } else if (locdateObj instanceof Integer) {
-                        locdate = String.valueOf(locdateObj); 
-                    // 예상하지 못한 타입의 경우 건너뛰기
+                        locdate = String.valueOf(locdateObj);
                     } else {
-                        continue; 
+                        continue; // 예상하지 못한 타입의 경우 건너뛰기
                     }
-                    
-                    // 받아온 날짜가 공휴일이라면 true 반환 
+
+                    // 받아온 날짜가 공휴일이라면 true 반환
                     if (locdate.equals(dateStr)) {
                         return true;
                     }
@@ -203,7 +216,8 @@ public class AttendanceService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // 공휴일이 아니라면 false 반환 
-        return false;  
+        // 공휴일이 아니라면 false 반환
+        return false;
     }
+
 }

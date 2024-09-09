@@ -71,9 +71,11 @@
 }
 #check_in_time{
 	margin-right: 1vw;
+	color: gray;
 }
 #check_out_time{
 	margin-left: 1vw;
+	color: gray;
 }
 /* 근태 조회 버튼 */
 #attendance_check {

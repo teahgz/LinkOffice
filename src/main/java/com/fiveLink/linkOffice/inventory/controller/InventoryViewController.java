@@ -139,10 +139,25 @@ public class InventoryViewController {
     public Map<String, String> registerCategory(@RequestBody InventoryCategoryDto inventoryCategoryDto) {
         Map<String, String> responseMap = new HashMap<>();
 
-        if (inventoryService.isCategoryNameDuplicate(inventoryCategoryDto.getInventory_category_name())) {
+        // 원본 카테고리 이름
+        String originalCategoryName = inventoryCategoryDto.getInventory_category_name();
+        // 공백을 모두 제거한 카테고리 이름
+        String normalizedCategoryName = originalCategoryName.replaceAll("\\s+", "");
+
+        // 공백을 모두 제거한 이름이 비어 있는 경우 처리
+        if (normalizedCategoryName.isEmpty()) {
+            responseMap.put("res_code", "400");
+            responseMap.put("res_msg", "카테고리 이름을 입력해주세요.");
+        }
+        // 공백을 제거한 이름이 이미 존재하는 경우
+        else if (inventoryService.isCategoryNameDuplicate(normalizedCategoryName)) {
             responseMap.put("res_code", "400");
             responseMap.put("res_msg", "카테고리 이름이 이미 존재합니다.");
-        } else {
+        }
+        // 중복이 아닌 경우 카테고리 등록
+        else {
+            // DTO에 공백이 제거된 이름을 설정하여 저장
+            inventoryCategoryDto.setInventory_category_name(normalizedCategoryName);
             inventoryService.registerCategory(inventoryCategoryDto);
             responseMap.put("res_code", "200");
             responseMap.put("res_msg", "카테고리가 성공적으로 등록되었습니다.");
@@ -150,6 +165,8 @@ public class InventoryViewController {
 
         return responseMap;
     }
+
+
 
     
     @PostMapping("/inventory/update")

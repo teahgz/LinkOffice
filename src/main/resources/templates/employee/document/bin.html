@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+    <meta charset="UTF-8">
+    <th:block layout:fragment="content">
+    <link th:href="@{/css/employee/document/bin.css}" rel="stylesheet" type="text/css">
+        <section>
+        	<div id="title">휴지통</div>          
+            <hr>
+            <div class="document_file_list"></div>
+        </section>
+    </th:block>
+</html>
