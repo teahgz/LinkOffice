@@ -1,9 +1,9 @@
 package com.fiveLink.linkOffice.organization.controller;
- 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,119 +18,136 @@ import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 
 @Controller
-@RequestMapping("/api/organization")
 public class OrganizationChartController {
-	
-    private final DepartmentService departmentService;
-    private final MemberService memberService;
 
-    @Autowired
-    public OrganizationChartController(DepartmentService departmentService, MemberService memberService) {
-        this.departmentService = departmentService;
-        this.memberService = memberService;
-    }
+	private final DepartmentService departmentService;
+	private final MemberService memberService;
 
-    @GetMapping("/chart")
-    @ResponseBody
-    public List<Map<String, Object>> getOrganizationChart() {
-        List<DepartmentDto> departments = departmentService.getAllDepartments();
-        List<MemberDto> members = memberService.getAllMembersChart(); 
-        return buildTree(departments, members);
-    }
+	@Autowired
+	public OrganizationChartController(DepartmentService departmentService, MemberService memberService) {
+		this.departmentService = departmentService;
+		this.memberService = memberService;
+	}
 
-    // 선택된 사원 데이터 처리 
-    @PostMapping("/saveSelectedMembers")
-    @ResponseBody
-    public Map<String, Object> saveSelectedMembers(@RequestBody Map<String, List<String>> selectedMembers) {
-        List<String> memberNumbers = selectedMembers.get("members");
-        
-        // 조직도에서 선택한 사원 번호 출력
-        System.out.println("선택한 사원 번호 목록: " + memberNumbers);
+	@GetMapping("/organizationChart")
+	public String showOrganizationChartPage() {
+		return "admin/organization/organizationChart";
+	}
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "선택한 사원이 성공적으로 저장되었습니다.");
-        return response;
-    }
+	@GetMapping("/organizationChart/chart")
+	@ResponseBody
+	public List<Map<String, Object>> getOrganizationChart() {
+		List<DepartmentDto> departments = departmentService.getAllDepartments();
+		List<MemberDto> members = memberService.getAllMembersChart();
+		return buildTree(departments, members);
+	}
 
-    
-    private List<Map<String, Object>> buildTree(List<DepartmentDto> departments, List<MemberDto> members) {
-        Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
-        Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
-        
-        // 부서별 구성원 그룹화
-        for (MemberDto member : members) {
-            membersByDepartment
-                .computeIfAbsent(member.getDepartment_no(), k -> new ArrayList<>())
-                .add(member);
-        }
-        
-        // 부서 노드 
-        for (DepartmentDto dept : departments) {
-            Map<String, Object> node = new HashMap<>();
-            node.put("id", "dept_" + dept.getDepartment_no());
-            node.put("text", dept.getDepartment_name());
-            node.put("type", "department");
-            node.put("children", new ArrayList<>());
-            departmentMap.put(dept.getDepartment_no(), node);
-        }
-        
-        // 부서 계층 구조
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (DepartmentDto dept : departments) {
-            if (dept.getDepartment_high() == 0) {
-                result.add(buildDepartmentHierarchy(dept, departmentMap, membersByDepartment));
-            }
-        }
-        
-        return result;
-    }
+	// 선택된 사원 데이터 처리
+	@PostMapping("/saveSelectedMembers")
+	@ResponseBody
+	public Map<String, Object> saveSelectedMembers(@RequestBody Map<String, List<String>> selectedMembers) {
+		List<String> memberNumbers = selectedMembers.get("members");
 
-    private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept, 
-                                                         Map<Long, Map<String, Object>> departmentMap, 
-                                                         Map<Long, List<MemberDto>> membersByDepartment) {
-        Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
-        List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
-        
-        if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
-            for (DepartmentDto subDept : dept.getSubDepartments()) {
-                Map<String, Object> subDeptNode = new HashMap<>();
-                subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
-                subDeptNode.put("text", subDept.getDepartment_name());
-                subDeptNode.put("type", "subdepartment");
-                subDeptNode.put("children", new ArrayList<>());
-                
-                // 하위 부서에 속한 구성원 추가
-                List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
-                if (subDeptMembers != null) {
-                    for (MemberDto member : subDeptMembers) {
-                        Map<String, Object> memberNode = createMemberNode(member);
-                        ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
-                    }
-                }
-                
-                children.add(subDeptNode);
-            }
-        } else {
-            // 하위 부서가 없는 경우 상위 부서에 추가
-            List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
-            if (deptMembers != null) {
-                for (MemberDto member : deptMembers) {
-                    Map<String, Object> memberNode = createMemberNode(member);
-                    children.add(memberNode);
-                }
-            }
-        } 
-        return node;
-    }
+		// 조직도에서 선택한 사원 번호 출력
+		System.out.println("선택한 사원 번호 목록: " + memberNumbers);
 
-    private Map<String, Object> createMemberNode(MemberDto member) {
-        Map<String, Object> memberNode = new HashMap<>();
-        memberNode.put("id", "member_" + member.getMember_no());
-        memberNode.put("text", member.getMember_name() + " " + member.getPosition_name());
-        memberNode.put("type", "member");
-        return memberNode;
-    }
+		Map<String, Object> response = new HashMap<>();
+		response.put("status", "success");
+		response.put("message", "선택한 사원이 성공적으로 저장되었습니다.");
+		return response;
+	}
 
+	private List<Map<String, Object>> buildTree(List<DepartmentDto> departments, List<MemberDto> members) {
+		Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
+		Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
+
+		// 부서별 구성원 그룹화
+		for (MemberDto member : members) {
+	        Long departmentNo = member.getDepartment_no();
+	         
+	        List<MemberDto> memberList = membersByDepartment.get(departmentNo);
+	         
+	        if (memberList == null) {
+	            memberList = new ArrayList<>();
+	            membersByDepartment.put(departmentNo, memberList);
+	        }
+	         
+	        memberList.add(member);
+	    }
+
+		// 부서 노드
+		for (DepartmentDto dept : departments) {
+			Map<String, Object> node = new HashMap<>();
+			node.put("id", "dept_" + dept.getDepartment_no());
+			node.put("text", dept.getDepartment_name());
+			node.put("type", "department");
+			node.put("children", new ArrayList<>());
+			departmentMap.put(dept.getDepartment_no(), node);
+		}
+
+		// 부서 계층 구조
+		List<Map<String, Object>> result = new ArrayList<>();
+		for (DepartmentDto dept : departments) {
+			if (dept.getDepartment_high() == 0) {
+				result.add(buildDepartmentHierarchy(dept, departmentMap, membersByDepartment));
+			}
+		}
+
+		return result;
+	}
+
+	private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept,
+			Map<Long, Map<String, Object>> departmentMap, Map<Long, List<MemberDto>> membersByDepartment) {
+		Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
+		List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
+
+		boolean hasSubDepartments = false;
+
+		if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
+			for (DepartmentDto subDept : dept.getSubDepartments()) {
+				List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
+				boolean hasMembers = subDeptMembers != null && !subDeptMembers.isEmpty();
+
+				if (hasMembers || (subDept.getSubDepartments() != null && !subDept.getSubDepartments().isEmpty())) {
+					Map<String, Object> subDeptNode = new HashMap<>();
+					subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
+					subDeptNode.put("text", subDept.getDepartment_name());
+					subDeptNode.put("type", "subdepartment");
+					subDeptNode.put("children", new ArrayList<>());
+
+					// 하위 부서에 속한 구성원 추가
+					for (MemberDto member : subDeptMembers) {
+	                    Map<String, Object> memberNode = createMemberNode(member);
+	                    ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
+	                }
+	                
+	                // 하위 부서 추가
+	                children.add(subDeptNode);
+	                hasSubDepartments = true;
+				}
+			}
+		}
+
+		// 하위 부서 없는 경우
+		if (!hasSubDepartments) {
+			List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
+			if (deptMembers != null) {
+				for (MemberDto member : deptMembers) {
+					Map<String, Object> memberNode = createMemberNode(member);
+					children.add(memberNode);
+				}
+			}
+		}
+
+		return node;
+	}
+
+	private Map<String, Object> createMemberNode(MemberDto member) {
+		Map<String, Object> memberNode = new HashMap<>();
+		memberNode.put("id", "member_" + member.getMember_no());
+		memberNode.put("text", member.getMember_name() + " " + member.getPosition_name());
+		memberNode.put("type", "member");
+		return memberNode;
+	}
 
 }

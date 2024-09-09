@@ -52,7 +52,11 @@ public class MemberDto {
 	private List<GrantedAuthority> authorities;
 	//[김채영] 1년미만 여부
 	private int member_one_under;
-	
+	//[김채영] 휴가 개수
+	private int member_vacation_count;
+	//[김채영] 지급날짜
+	private String member_vacation_date;
+
 	// [서혜원] 부서별 사원
 	private Long memberId;
     private String memberName;
@@ -82,6 +86,8 @@ public class MemberDto {
 					.memberStatus(member_status)
 					.memberAdditional(member_additional)
 					.memberOneUnder(member_one_under)
+					.memberVacationCount(member_vacation_count)
+					.memberVacationDate(member_vacation_date)
 					.build();
 	}
 	
@@ -107,6 +113,8 @@ public class MemberDto {
 					.member_new_digital_img(member.getMemberNewDigitalImg())
 					.member_status(member.getMemberStatus())
 					.member_additional(member.getMemberAdditional())
+					.member_vacation_count(member.getMemberVacationCount())
+					.member_vacation_date(member.getMemberVacationDate())
 					.build();
 	}  
 }
