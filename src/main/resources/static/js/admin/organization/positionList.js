@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 text: '직위를 삭제하시겠습니까?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#EEB3B3',
+                cancelButtonColor: '#C0C0C0',
                 confirmButtonText: '삭제',
                 cancelButtonText: '취소'
             }).then((result) => {
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         success: function (response) {
                             if (response.res_code === "200") {
                                 Swal.fire('삭제 완료', response.res_msg, 'success').then(() => {
-                                    location.reload();
+                                    location.href = "/position"; 
                                 });
                             } else {
                                 Swal.fire('삭제 실패', response.res_msg, 'error');
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         };
-    });
+    });d
 
     Array.from(closeButtons).forEach(function (closeButton) {
         closeButton.onclick = closeModal;
