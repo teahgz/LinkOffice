@@ -78,10 +78,10 @@ public class MemberViewController {
 	      // 번호
 	      List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	      // 부서명 조회 
-	      List<DepartmentDto> departments = departmentService.getAllDepartments();
+	      List<DepartmentDto> departments = departmentService.findSubDepartment();
 	      // 직위명 조회 
 	      List<PositionDto> positions = positionService.getAllPositionsForSelect();
-	        
+	        System.out.println(departments);
 	      model.addAttribute("memberdto", memberdto);
 	      model.addAttribute("departments", departments);
 	      model.addAttribute("positions", positions);
