@@ -11,6 +11,8 @@ import com.fiveLink.linkOffice.vacation.domain.Vacation;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationOneUnder;
 import com.fiveLink.linkOffice.vacation.domain.VacationOneUnderDto;
+import com.fiveLink.linkOffice.vacation.domain.VacationStandard;
+import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationType;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.repository.VacationCheckRepository;
