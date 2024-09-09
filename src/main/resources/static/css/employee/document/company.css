@@ -7,7 +7,6 @@
 .document_box_type{
 	display: flex;
     height: 95%;
-    overflow: hidden; 
 }
 .document_folder_tree{
     border-radius: 20px;
@@ -19,19 +18,18 @@
     max-height: 95%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-size: 1.1vw;
-    overflow-y: auto;
 }
 #jstree{
 	margin-top: 0.5vh;
-	display: block;
+	display: flex;
 }
 .document_file_list{
 	border-radius: 20px;
+    margin: 1.2vw;
 	background-color: white;
 	width: 80%;
 	height: 95%;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	overflow-y: auto;
 }
 .tree ul {
     padding-left: 1vw;
@@ -51,7 +49,7 @@
     text-align: center;
     font-size: 1.7vw;
 }
-#add_folder_button {
+#add-folder-button {
     border: none;
     background-color: white;
     width: 3vw;

@@ -6,11 +6,11 @@
     <th:block layout:fragment="content" th:each="member : ${memberdto}">
     <link th:href="@{/css/employee/attendance/myAttendance.css}" rel="stylesheet" type="text/css">
         <section>
+        <div id="mem_no" style="display: none;" th:text="${member.member_no}"></div>
         <table style="display: none;" class="hidden_table">
             <tr th:each="attendance : ${attendanceList}">
                 <td class="hidden_date" th:text="${attendance.work_date}"></td>
                 <td th:text="${attendance.check_in_time != null ? attendance.check_in_time : ''}"></td>
-                <td id="mem_no" th:text="${member.member_no}"></td>
             </tr>
         </table>
             <div id="title">근태 조회</div>
