@@ -112,7 +112,7 @@
 <script>
 
 document.getElementById("inventoryForm").addEventListener("submit", function(event) {
-    event.preventDefault();  
+    event.preventDefault();  // 기본 제출 방지
 
     // 필수 입력값이 비어 있는지 확인
     var inventoryName = document.getElementById("inventoryName").value.trim();
@@ -234,7 +234,8 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
         modal.style.display = "none";
     };
 
-    // 카테고리 등록 모달
+
+ // 카테고리 등록 모달
     var registerModal = document.getElementById("registerModal");
     var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
     var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];
