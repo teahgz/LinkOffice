@@ -18,6 +18,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     List<Department> findAllByDepartmentStatusOrderByDepartmentHighAscDepartmentNameAsc(Long departmentStatus);
     
     // 부서명 수정 중복 확인
-    boolean existsByDepartmentNameAndDepartmentStatus(String departmentName, Long departmentStatus); 
+    boolean existsByDepartmentNameAndDepartmentStatus(String departmentName, Long departmentStatus);   
     
+    @Query("SELECT d FROM Department d WHERE d.departmentHigh = :departmentNo AND d.departmentStatus = 0")
+    List<Department> findSubDepartmentsByDepartmentNo(@Param("departmentNo") Long departmentNo);
 }

@@ -79,6 +79,8 @@ public class MemberViewController {
 	      List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	      // 부서명 조회 
 	      List<DepartmentDto> departments = departmentService.getAllDepartments();
+	      
+	      System.out.println("departments" + departments);
 	      // 직위명 조회 
 	      List<PositionDto> positions = positionService.getAllPositionsForSelect();
 	        
