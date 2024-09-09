@@ -37,4 +37,18 @@
         FROM fl_member
         WHERE member_one_under = #{num}
     </select>
+
+    <select id="contVacationYear" resultType="int">
+        SELECT vacation_annual_leave FROM fl_vacation
+        WHERE vacation_year = #{year}
+    </select>
+
+    <select id="selectVacationDesignated" resultType="String">
+        SELECT vacation_standard_date FROM fl_vacation_standard
+        WHERE vacation_standard_status = #{num}
+    </select>
+
+    <select id="selectVacationStandardStatus" resultType="int">
+        SELECT vacation_standard_status FROM fl_vacation_standard
+    </select>
 </mapper>

@@ -169,5 +169,21 @@ public class VacationService {
             e.printStackTrace();
         }
     }
+    // 1년이상 재직자 입사일 기준 지급
+    public int contVacationYear(int years){
+        int count =vacationMapper.contVacationYear(years);
+        return count;
+    }
+
+    //1년이상 재직자 지정일 기준 지급
+    public String selectVacationDesignated(int num){
+        return vacationMapper.selectVacationDesignated(num);
+    }
+
+
+    public int selectVacationStandardStatus(){
+        return vacationMapper.selectVacationStandardStatus();
+    }
+
 
 }
