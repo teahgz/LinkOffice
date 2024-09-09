@@ -156,6 +156,13 @@
     height: 3vh;
     text-align: center;
 }
+/* 오늘 날짜를 강조 */
+.today_date {
+    background-color: #f0f0f0;
+    padding: 0.4vh 0.5vw 0.3vh 0.5vw;
+	border-radius: 5px;
+}
+
 /* 달력 안에 근태 bar */
 .date_bar {
     position: absolute;

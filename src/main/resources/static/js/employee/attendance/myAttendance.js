@@ -100,6 +100,9 @@ function attendanceCalendar(today, attendanceDates, holidays) {
     var lastDate = new Date(currentYear, currentMonth + 1, 0);
     var prevMonthLastDate = new Date(currentYear, currentMonth, 0);
 
+	// 오늘 날짜
+    var todayDate = new Date();
+
     // 기존 행 삭제
     while (calendarTable.rows.length > 2) {
         calendarTable.deleteRow(calendarTable.rows.length - 1);
@@ -167,11 +170,13 @@ function attendanceCalendar(today, attendanceDates, holidays) {
         var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? '#F79DC2' : 'skyblue') : 'black');
 
         cell.innerHTML = `<div class="date_container">
-                            <span style="color: ${textColor};">${i}</span>
+                            <span class="${todayDate.getFullYear() === currentYear &&
+                                todayDate.getMonth() === currentMonth &&
+                                todayDate.getDate() === i ? 'today_date' : ''}" style="color: ${textColor};">${i}</span>
                             ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
                             ${dateBar}
                           </div>`;
-        cell.align = "center"; 
+        cell.align = "center";
 
         cell.setAttribute('id', i);
     }
