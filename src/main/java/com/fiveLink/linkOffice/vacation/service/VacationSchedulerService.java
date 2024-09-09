@@ -23,20 +23,12 @@ public class VacationSchedulerService {
         this.vacationCheckRepository = vacationCheckRepository;
     }
 
-   //@Scheduled(cron = "0 0 0 * * ?")
-   @Scheduled(cron = "*/5 * * * * ?") // 매 5초마다 실행(test)
+   @Scheduled(cron = "0 0 0 * * ?")
+  // @Scheduled(cron = "*/5 * * * * ?") // 매 5초마다 실행(test)
     @Transactional
     public void updateVacationStatus() {
         LocalDate now = LocalDate.now();
-/*
 
-        // 1년 미만 지급 여부가 1인 경우
-        boolean isVacationUnderActive = vacationCheckRepository.findById(1L)
-                .map(v -> v.getVacationUnderStatus() == 1)
-                .orElse(false);
-*/
-
-      /*  if (isVacationUnderActive) {*/
             memberRepository.findAll().forEach(member -> {
                 String hire= member.getMemberHireDate();
                 LocalDate hireDate = LocalDate.parse(hire, DATE_FORMATTER);
@@ -52,6 +44,6 @@ public class VacationSchedulerService {
                     memberRepository.save(member);
                 }
             });
-       /* }*/
+
     }
 }
