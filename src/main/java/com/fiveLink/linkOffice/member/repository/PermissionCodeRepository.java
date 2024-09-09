@@ -26,7 +26,7 @@ public interface PermissionCodeRepository extends JpaRepository<PermissionCode, 
 		       "WHERE mp.menuPermissionNo = :menuPermissionNo " +
 		       "AND m.memberStatus = 0 " +
 		       "AND mp.memberPermissionStatus = 0 " +   
-		       "ORDER BY mp.memberPermissionCreateDate ASC")
+		       "ORDER BY mp.memberPermissionCreateDate DESC")
 	List<Object[]> findMembersByMenuNoWithDetails(@Param("menuPermissionNo") Long menuPermissionNo);
 
 

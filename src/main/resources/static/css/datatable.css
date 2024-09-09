@@ -28,9 +28,34 @@
     background-color: #fff;
 }
 
+/* 필터 입력 박스 스타일 */
+.dataTables_filter {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.dataTables_filter label {
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.dataTables_filter input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 250px;
+}
+
 /* 페이징 버튼 스타일 */
 .dataTables_paginate {
-    margin-top: 10px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    float: none !important; 
 }
 
 .dataTables_paginate a {
@@ -60,9 +85,12 @@
 }
 
 .dataTables_filter input {
-    padding: 6px;
+    padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 14px;
+    width: 250px;
+    background-color: #fff !important; 
 }
 
 /* 정렬 아이콘 스타일 */
