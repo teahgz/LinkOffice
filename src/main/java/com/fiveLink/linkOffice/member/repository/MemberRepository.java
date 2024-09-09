@@ -55,7 +55,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     long countByPositionNo(Long positionNo);
      
     // [서혜원] 조직도
-    List<Member> findAllByMemberStatus(Long status);
+    List<Member> findAllByMemberStatusOrderByPosition_PositionLevelAsc(Long status);
       
     // [전주영] 전체 사원 조회 (관리자 빼고, 입사일 최신순) - 관리자 사원 목록 조회
     @Query("SELECT m, p.positionName, d.departmentName " +

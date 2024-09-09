@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     var createModal = document.getElementById("createModal");
-    var editModal = document.getElementById("editModal");
+    // var editModal = document.getElementById("editModal");
     var openModalBtn = document.getElementById("openModal");
     var closeButtons = document.getElementsByClassName("close");
     var createForm = document.getElementById("positionForm");
-    var editForm = document.getElementById("editForm");
+    // var editForm = document.getElementById("editForm");
     var csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     if (openModalBtn) {
@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
             createModal.style.display = "block";
         };
     }
+    
+    Array.from(closeButtons).forEach(function (closeButton) {
+        closeButton.onclick = closeModal;
+    });
 
     // 수정
 /*    document.querySelectorAll("button#editButton").forEach(function (editButton) {
@@ -79,10 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         };
-    });d
-
-    Array.from(closeButtons).forEach(function (closeButton) {
-        closeButton.onclick = closeModal;
     });
 
     window.onclick = function (event) {
