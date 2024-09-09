@@ -117,7 +117,7 @@ const editorConfig = {
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         // 에디터의 높이 설정
-        editor.ui.view.editable.element.style.height = '500px'; // 높이 설정
+        editor.ui.view.editable.element.style.height = '500px';
     })
     .catch(error => {
         console.error(error);

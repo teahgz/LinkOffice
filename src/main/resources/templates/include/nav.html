@@ -144,7 +144,7 @@
 					<a href="#">전자 결재 양식 관리</a>
 					<div class="dropdown">
 						<ul th:each = "member : ${memberdto}">
-							<li><a th:href="@{/admin/approval/create/{no}(no=${member.member_no})}">결재 양식함</a></li>
+							<li><a th:href="@{/admin/approval/form/{no}(no=${member.member_no})}">결재 양식함</a></li>
 							<li><a th:href="@{/admin/approval/create/{no}(no=${member.member_no})}">결재 양식 등록</a></li>
 						</ul>
 					</div>
