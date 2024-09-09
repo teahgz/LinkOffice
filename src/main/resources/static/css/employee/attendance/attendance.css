@@ -103,3 +103,7 @@
 #attendance_check:hover {
     background-color: #eee;
 }
+.swal2-confirm {
+	background-color: #B1C2DD;
+	color: black;
+}
