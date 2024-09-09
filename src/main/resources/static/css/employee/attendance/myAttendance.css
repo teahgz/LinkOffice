@@ -9,11 +9,32 @@
 	width: 96%;
 	height : 75vh;
 }
+.today_button{
+	width: 2.4vw;
+	height: 3vh;
+	font-size: 0.7vw;
+	margin-left: auto;
+	margin-right: 0.8vw;
+	margin-top: 0.2vh;
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;	
+	background-color: #B3C7EE;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.today_button:hover{
+	background-color: #BDBDBD;
+	transition: background-color 0.3s;	
+}
 /* 근태 상태 */
 .attendance_status{
 	margin-left: 1vw;
-	margin-bottom: 2vh;
+	margin-bottom: 1.4vh;
 	font-size: 1vw;
+	display: flex;
+	align-items: center; 
 }
 /* 출근 */
 #attendance_normal{
@@ -158,11 +179,10 @@
 }
 /* 오늘 날짜를 강조 */
 .today_date {
-    background-color: #f0f0f0;
+    background-color: lightgray;
     padding: 0.4vh 0.5vw 0.3vh 0.5vw;
 	border-radius: 5px;
 }
-
 /* 달력 안에 근태 bar */
 .date_bar {
     position: absolute;
@@ -192,7 +212,7 @@
 	align-items: center;
 }
 #attendance_count, #late_count, #absence_count{
-	font-size: 1.1vw;
+	font-size: 0.8vw;
 	height: 100%;
 	display: flex;
     align-items: center; 

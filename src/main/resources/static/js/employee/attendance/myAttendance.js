@@ -53,6 +53,13 @@ document.addEventListener("DOMContentLoaded", function() {
         today = new Date(today.getFullYear(), today.getMonth() + 1, 1);
         fetchAndRenderHolidays(today, attendanceDates);
     }
+    
+    // 오늘 버튼 클릭 이벤트 추가
+    document.querySelector(".today_button").addEventListener("click", function() {
+        today = new Date(); // 오늘 날짜로 설정
+        fetchAndRenderHolidays(today, attendanceDates);
+    });
+    
     // 이전 달, 다음 달 보내기 
     window.prevMonth = prevMonth; 
     window.nextMonth = nextMonth; 
