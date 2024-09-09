@@ -50,7 +50,7 @@
 				<li>
 					<a href="#">전자결재</a>
 					<div class="dropdown">
-						<ul>
+						<ul >
 							<li><a href="#">결재 작성하기</a></li>
 							<li>
 								<a href="#">결재 상신함</a>
@@ -143,9 +143,9 @@
 				<li>
 					<a href="#">전자 결재 양식 관리</a>
 					<div class="dropdown">
-						<ul>
-							<li><a href="#">결재 양식함</a></li>
-							<li><a href="#">결재 양식 등록</a></li>
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/admin/approval/create/{no}(no=${member.member_no})}">결재 양식함</a></li>
+							<li><a th:href="@{/admin/approval/create/{no}(no=${member.member_no})}">결재 양식 등록</a></li>
 						</ul>
 					</div>
 				</li>

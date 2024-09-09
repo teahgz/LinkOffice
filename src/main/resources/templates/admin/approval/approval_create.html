@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/admin/approval/approval_create.css}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <section>
+            <h1>결재 양식 등록</h1>
+            <div class="container">
+                <div class="main-container">
+                    <div class="editor-container editor-container_classic-editor">
+                    <div class="form-group">
+                        <label for="approval_name">양식 이름</label>
+                        <input type="text" id="approval_name" name="approval_name">
+                    </div>
+                        <div class="editor-container__editor" id="editor"></div>
+                      <div class="button-container">
+					    <button class="submit-button">등록</button>
+					    <button class="cancel-button">취소</button>
+					  </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
+            }
+        }
+        </script>
+        <script type="module" th:src="@{/js/admin/approval/approval_create.js}"></script>
+    </th:block>
+</html>
