@@ -94,10 +94,10 @@
 }
 
 #deleteButton {
-	width : 120px;
+	width : 110px;
     padding: 10px 20px;
     background-color: #EEB3B3;
-    color: white;
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -120,10 +120,10 @@
 }
 
 #openModalButton {
-	width : 15%;
+	width : 110px;
     padding: 10px 20px;
     background-color: #B1C2DD;
-    color: white;
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -239,23 +239,12 @@
     margin-bottom: 15px;
 }
 
-.sort-buttons button {
-    background: none;  
-    border: none;      
-    color: #000000;    
-    font-size: 1rem;   
-    cursor: pointer; 
-    padding: 0;        
-    margin-left: 25px; 
-    transition: color 0.3s;  
+#sortOrderSelect {
+	width : 110px;
+	padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
 }
-
-.sort-buttons button:hover {
-    color: #0080ff; 
-}
-
-.sort-buttons button.selected {
-    color: #0080ff;
-    font-weight: bold;
-}
-
+ 

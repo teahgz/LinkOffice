@@ -282,7 +282,7 @@ public class MemberService {
 
     // [서혜원] 조직도
     public List<MemberDto> getAllMembersChart() {
-        List<Member> members = memberRepository.findAllByMemberStatus(0L);
+        List<Member> members = memberRepository.findAllByMemberStatusOrderByPosition_PositionLevelAsc(0L);
         return members.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
