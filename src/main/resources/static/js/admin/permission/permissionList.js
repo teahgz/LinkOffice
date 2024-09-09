@@ -76,7 +76,8 @@ function fetchPermissionMembers(element) {
         }
     });
 } 
- 
+
+// 권한자 목록 조회
 function displayMembers(data, page) {
     const memberListTableBody = document.getElementById('memberList').getElementsByTagName('tbody')[0];
     memberListTableBody.innerHTML = ''; 
@@ -268,6 +269,7 @@ function loadOrganizationChart() {
     });
 }
 
+// 등록된 사원 체크박스 비활성화
 function disableCheckedMembers(assignedMemberNos) {
     var jstree = $('#organization-chart').jstree(true);
     if (jstree) {
