@@ -11,8 +11,11 @@
 			<div class="search_container" th:if="${searchDto != null}">
 			    <form th:action="@{/employee/member/list}" th:object="${searchDto}" method="get">
 			        <select name="search_type" th:value="${searchDto.search_type}">
-			            <option th:value="1" th:selected="${searchDto.search_type == 1}">부서명</option>
-			            <option th:value="2" th:selected="${searchDto.search_type == 2}">직위명</option>
+			            <option th:value="1" th:selected="${searchDto.search_type == 1}">전체</option>
+			            <option th:value="2" th:selected="${searchDto.search_type == 2}">사번</option>
+			            <option th:value="3" th:selected="${searchDto.search_type == 3}">사원명</option>
+			            <option th:value="4" th:selected="${searchDto.search_type == 4}">부서명</option>
+			            <option th:value="5" th:selected="${searchDto.search_type == 5}">직위명</option>
 			        </select>
 			        <input type="text" class="search_text" name="search_text" th:field="*{search_text}" placeholder="검색어를 입력하세요.">
 			        <button type="submit" class="search_button">검색</button>
@@ -23,8 +26,11 @@
 			<div class="search_container" th:if="${searchDto == null}">
 			    <form th:action="@{/employee/member/list}" method="get">
 			        <select name="search_text">
-			            <option th:value="1">부서명</option>
-			            <option th:value="2">직위명</option>
+			            <option th:value="1">전체</option>
+			            <option th:value="2">사번</option>
+			            <option th:value="3">사원명</option>
+			            <option th:value="4">부서명</option>
+			            <option th:value="5">직위명</option>
 			        </select>
 			        <input type="text" class="search_text" name="search_text" placeholder="검색어 입력">
 			        <button type="submit" class="search_button">검색</button>
@@ -42,16 +48,31 @@
         </div>
 
         <table class="employee_table">
+        	<colgroup>
+				<col width="20%">
+				<col width="20%">
+				<col width="20%">
+				<col width="20%">
+				<col width="20%">
+			</colgroup>       
           <thead>
             <tr>
               <th>사번</th>
               <th>사원명</th>
               <th>부서명</th>
-              <th>직위</th>
+              <th>직위명</th>
               <th>입사일</th>
             </tr>
           </thead>
       	  <tbody>
+      	  
+          <th:block th:if="${#lists.isEmpty(memberList)}">
+          <tr>
+			<td colspan="5">조회된 목록이 없습니다.</td>
+		  </tr>
+          </th:block>
+          
+          <th:block th:if="${!#lists.isEmpty(memberList)}">
 		    <tr th:each="member : ${memberList}" th:data_member_no="${member.member_no}" class="member_row">
 		        <td th:text="${member.member_number}"></td>
 		        <td th:text="${member.member_name}"></td>
@@ -59,13 +80,14 @@
 		        <td th:text="${member.position_name}">대리</td>
 		        <td th:text="${member.member_hire_date}"></td>
 		    </tr>
+		  </th:block>
 		  </tbody>
         </table>
 
         <div class="pagination">
           <button th:if="${page.hasPrevious()}" th:onclick="|location.href='@{/employee/member/list(page=0)}'|">&lt;&lt;</button>
           <button th:if="${page.hasPrevious()}" th:onclick="|location.href='@{/employee/member/list(page=${page.number - 1})}'|">&lt;</button>
-          <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+          <span th:if="${page.totalPages > 0}" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
             <button th:class="${i == page.number} ? 'active'" 
                     th:onclick="|location.href='@{/employee/member/list(page=${i})}'|"
                     th:text="${i + 1}">

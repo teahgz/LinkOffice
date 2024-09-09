@@ -1,12 +1,11 @@
 package com.fiveLink.linkOffice.vacation.service;
 
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
+import com.fiveLink.linkOffice.vacation.domain.*;
 import com.fiveLink.linkOffice.mapper.VacationMapper;
+
 import com.fiveLink.linkOffice.vacation.domain.Vacation;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationOneUnder;
@@ -15,10 +14,16 @@ import com.fiveLink.linkOffice.vacation.domain.VacationStandard;
 import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationType;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
+
 import com.fiveLink.linkOffice.vacation.repository.VacationCheckRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationStandardRepository;
 import com.fiveLink.linkOffice.vacation.repository.VacationTypeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class VacationService {
@@ -28,14 +33,16 @@ public class VacationService {
     private final VacationMapper vacationMapper;
     private final VacationCheckRepository vacationCheckRepository;
     private final VacationStandardRepository vacationStandardRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public VacationService(VacationRepository vacationRepository, VacationMapper vacationMapper, VacationTypeRepository vacationTypeRepository, VacationCheckRepository vacationCheckRepository ,VacationStandardRepository vacationStandardRepository){
+    public VacationService(VacationRepository vacationRepository, VacationMapper vacationMapper, VacationTypeRepository vacationTypeRepository, VacationCheckRepository vacationCheckRepository ,VacationStandardRepository vacationStandardRepository, MemberRepository memberRepository){
         this.vacationRepository = vacationRepository;
         this.vacationMapper = vacationMapper;
         this.vacationTypeRepository = vacationTypeRepository;
         this.vacationCheckRepository = vacationCheckRepository;
         this.vacationStandardRepository =vacationStandardRepository;
+        this.memberRepository = memberRepository;
     }
 //휴가 연차 생성
     public int addVacation(VacationDto dto) {
@@ -131,6 +138,61 @@ public class VacationService {
     }
     public List<VacationStandardDto> selectVacatiSonStandard(){
         return vacationMapper.selectVacationStandard();
+    }
+
+
+    //1년미만 재직자 한달에 한번 휴가 지급
+    public void incrementVacation(Long memberNo, int num){
+        try {
+            Member member = memberRepository.findById(memberNo)
+                    .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다"));
+            // 휴가 일수 증가
+            member.setMemberVacationCount(member.getMemberVacationCount() + num);
+
+            // 현재 날짜로 휴가 지급일 업데이트
+            member.setMemberVacationDate(String.valueOf(LocalDate.now()));
+
+            // 변경 사항 저장
+            memberRepository.save(member);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //1년이상 재직자 입사일 기준 경과 시, 휴가 지급
+    public void resetVacation(Long memberNo, int num){
+        try {
+            Member member = memberRepository.findById(memberNo)
+                    .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다"));
+
+            // 기존 휴가 수 초기화
+            member.setMemberVacationCount(num);
+
+            // 현재 날짜로 휴가 지급일 업데이트
+            member.setMemberVacationDate(String.valueOf(LocalDate.now()));
+
+            // 변경 사항 저장
+            memberRepository.save(member);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    // 1년이상 재직자 입사일 기준 지급
+    public int contVacationYear(int years){
+        int count =vacationMapper.contVacationYear(years);
+        return count;
+    }
+
+    //1년이상 재직자 지정일 기준 지급
+    public String selectVacationDesignated(int num){
+        return vacationMapper.selectVacationDesignated(num);
+    }
+
+
+    public int selectVacationStandardStatus(){
+        return vacationMapper.selectVacationStandardStatus();
     }
 
 

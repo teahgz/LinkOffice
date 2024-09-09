@@ -112,10 +112,13 @@ public class PermissionController {
         
         // 부서별 구성원 그룹화
         for (MemberDto member : members) {
-            membersByDepartment
-                .computeIfAbsent(member.getDepartment_no(), k -> new ArrayList<>())
-                .add(member);
-        }
+            List<MemberDto> departmentMembers = membersByDepartment.get(member.getDepartment_no());
+            if (departmentMembers == null) {
+                departmentMembers = new ArrayList<>();
+                membersByDepartment.put(member.getDepartment_no(), departmentMembers);
+            }
+            departmentMembers.add(member);
+        } 
         
         // 부서 노드
         for (DepartmentDto dept : departments) {

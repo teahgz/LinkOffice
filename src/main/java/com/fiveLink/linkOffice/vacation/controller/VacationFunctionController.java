@@ -83,6 +83,7 @@ public class VacationFunctionController {
 
         return resultMap;
     }
+
     @PostMapping("/addTypeVacation")
     @ResponseBody
     public Map<String, String> addTypeVacation(@RequestBody Map<String, Object> payload) {
@@ -171,7 +172,7 @@ public class VacationFunctionController {
 
             if(vacationService.addTypeVacation(dto)>0) {
                 resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "성공적으로 수정되었습니다.");
+                resultMap.put("res_msg", "삭제되었습니다.");
             }
 
 
@@ -185,7 +186,7 @@ public class VacationFunctionController {
         return resultMap;
 
     }
-    // 휴가 종류 삭제
+
     @PostMapping("/checkOneYear")
     @ResponseBody
     public Map<String, String> checkOneYear(@RequestBody Map<String, Object> payload) {
@@ -204,7 +205,7 @@ public class VacationFunctionController {
             }
             if(vacationService.checkOneYear(dto)>0) {
                 resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "성공적으로 삭제되었습니다.");
+                resultMap.put("res_msg", "기준 설정되었습니다.");
             }
         } catch (Exception e) {
             e.printStackTrace();

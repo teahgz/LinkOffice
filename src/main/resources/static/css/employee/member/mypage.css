@@ -102,3 +102,7 @@
     align-items: center; 
     gap: 30px; 
 }
+
+#editAddress{
+	color:#ff0000;
+}
