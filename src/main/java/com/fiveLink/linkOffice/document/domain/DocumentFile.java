@@ -42,7 +42,7 @@ public class DocumentFile {
     @Column(name = "member_no")
     private Long memberNo;
     
-    @Column(name = "documemt_file_size")
+    @Column(name = "document_file_size")
     private String documentFileSize;
 
     @Column(name = "document_file_upload_date")

@@ -53,6 +53,13 @@ document.addEventListener("DOMContentLoaded", function() {
         today = new Date(today.getFullYear(), today.getMonth() + 1, 1);
         fetchAndRenderHolidays(today, attendanceDates);
     }
+    
+    // 오늘 버튼 클릭 이벤트 추가
+    document.querySelector(".today_button").addEventListener("click", function() {
+        today = new Date(); // 오늘 날짜로 설정
+        fetchAndRenderHolidays(today, attendanceDates);
+    });
+    
     // 이전 달, 다음 달 보내기 
     window.prevMonth = prevMonth; 
     window.nextMonth = nextMonth; 
@@ -99,6 +106,9 @@ function attendanceCalendar(today, attendanceDates, holidays) {
     var firstDate = new Date(currentYear, currentMonth, 1);
     var lastDate = new Date(currentYear, currentMonth + 1, 0);
     var prevMonthLastDate = new Date(currentYear, currentMonth, 0);
+
+	// 오늘 날짜
+    var todayDate = new Date();
 
     // 기존 행 삭제
     while (calendarTable.rows.length > 2) {
@@ -167,11 +177,16 @@ function attendanceCalendar(today, attendanceDates, holidays) {
         var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? '#F79DC2' : 'skyblue') : 'black');
 
         cell.innerHTML = `<div class="date_container">
-                            <span style="color: ${textColor};">${i}</span>
-                            ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
-                            ${dateBar}
-                          </div>`;
-        cell.align = "center"; 
+                    <span class="${todayDate.getFullYear() === currentYear &&
+                        todayDate.getMonth() === currentMonth &&
+                        todayDate.getDate() === i ? 'today_date' : ''}" 
+                        style="color: ${todayDate.getFullYear() === currentYear &&
+                                todayDate.getMonth() === currentMonth &&
+                                todayDate.getDate() === i ? 'white' : textColor};">${i}</span>
+                    ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
+                    ${dateBar}
+                  </div>`;
+        cell.align = "center";
 
         cell.setAttribute('id', i);
     }
@@ -246,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const startDate = new Date(startDateInput.value);
         const endDate = new Date(endDateInput.value);
         const attendanceState = attendanceStateSelect.value;
-        const sortOrder = sortSelect.value === '최신 순' ? 'DESC' : 'ASC';
+        const sortOrder = sortSelect.value === '최신순' ? 'DESC' : 'ASC';
 
         fetch(`/employee/attendance/myAttendance?member_no=${memberNo}&start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`)
             .then(response => response.json())
@@ -327,62 +342,64 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePagination(page);
     }
 
-    function updatePagination(currentPage) {
-        paginationDiv.innerHTML = '';
+	function updatePagination(currentPage) {
+	    paginationDiv.innerHTML = '';
+	
+	    // 총 페이지 수가 1일 때 페이지 번호 버튼만 표시
+	    if (totalPages === 1) {
+	        const pageButton = document.createElement('span');
+	        pageButton.className = 'pagination_button active';
+	        pageButton.textContent = '1';
+	        paginationDiv.appendChild(pageButton);
+	        return;
+	    }
+	
+	    // 처음 페이지 버튼 (<<)
+	    if (currentPage > 0) {
+	        const firstButton = document.createElement('span');
+	        firstButton.className = 'go_first_page_button';
+	        firstButton.textContent = '<<';
+	        firstButton.onclick = () => loadAttendanceList(0);
+	        paginationDiv.appendChild(firstButton);
+	    }
+	
+	    // 이전 페이지 버튼 (<)
+	    if (currentPage > 0) {
+	        const prevButton = document.createElement('span');
+	        prevButton.className = 'pagination_button';
+	        prevButton.textContent = '<';
+	        prevButton.onclick = () => loadAttendanceList(currentPage - 1);
+	        paginationDiv.appendChild(prevButton);
+	    }
+	
+	    // 페이지 번호 버튼
+	    for (let page = 0; page < totalPages; page++) {
+	        const pageButton = document.createElement('span');
+	        pageButton.className = `pagination_button ${page === currentPage ? 'active' : ''}`;
+	        pageButton.textContent = page + 1;
+	        pageButton.onclick = () => loadAttendanceList(page);
+	        paginationDiv.appendChild(pageButton);
+	    }
+	
+	    // 다음 페이지 버튼 (>)
+	    if (currentPage < totalPages - 1) {
+	        const nextButton = document.createElement('span');
+	        nextButton.className = 'pagination_button';
+	        nextButton.textContent = '>';
+	        nextButton.onclick = () => loadAttendanceList(currentPage + 1);
+	        paginationDiv.appendChild(nextButton);
+	    }
+	
+	    // 마지막 페이지 버튼 (>>)
+	    if (currentPage < totalPages - 1) {
+	        const lastButton = document.createElement('span');
+	        lastButton.className = 'go_last_page_button';
+	        lastButton.textContent = '>>';
+	        lastButton.onclick = () => loadAttendanceList(totalPages - 1);
+	        paginationDiv.appendChild(lastButton);
+	    }
+	}
 
-        // 처음 페이지 버튼 (<<)
-        const firstButton = document.createElement('span');
-        firstButton.className = 'go_first_page_button';
-        firstButton.textContent = '<<';
-        firstButton.onclick = () => {
-            if (currentPage > 0) {
-                loadAttendanceList(0); 
-            }
-        };
-        paginationDiv.appendChild(firstButton);
-        
-        // 이전 페이지 버튼 (<)
-        const prevButton = document.createElement('span');
-        prevButton.className = 'pagination_button';
-        prevButton.textContent = '<';
-        prevButton.onclick = () => {
-            if (currentPage > 0) {
-                loadAttendanceList(currentPage - 1);
-            }
-        };
-        paginationDiv.appendChild(prevButton);
-
-        // 페이지 번호 버튼
-        for (let page = 0; page < totalPages; page++) {
-            const pageButton = document.createElement('span');
-            pageButton.className = `pagination_button ${page === currentPage ? 'active' : ''}`;
-            pageButton.textContent = page + 1;
-            pageButton.onclick = () => loadAttendanceList(page);
-            paginationDiv.appendChild(pageButton);
-        }
-
-        // 다음 페이지 버튼 (>)
-        const nextButton = document.createElement('span');
-        nextButton.className = 'pagination_button';
-        nextButton.textContent = '>';
-        nextButton.onclick = () => {
-            if (currentPage < totalPages - 1) {
-                loadAttendanceList(currentPage + 1);
-            }
-        };
-        paginationDiv.appendChild(nextButton);
-        
-        // 마지막 페이지 버튼 (>>)
-        const lastButton = document.createElement('span');
-        lastButton.className = 'go_last_page_button';
-        lastButton.textContent = '>>';
-        lastButton.onclick = () => {
-            if (currentPage < totalPages - 1) {
-                loadAttendanceList(totalPages - 1); 
-            }
-        };
-        paginationDiv.appendChild(lastButton);
-    }
 	// 시작 날짜를 선택하면 동작하는 함수 
     startDateInput.addEventListener('change', () => {
         startDateLimit();
