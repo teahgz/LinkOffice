@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.mapper;
 
+import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
@@ -21,6 +22,8 @@ public interface VacationMapper {
     int countStandard();
 
     List<VacationStandardDto> selectVacationStandard();
+
+    List<MemberDto> selectUnderYearMember(int num);
 
 
 }
