@@ -24,7 +24,6 @@ public class VacationSchedulerService {
     }
 
    @Scheduled(cron = "0 0 0 * * ?")
-  // @Scheduled(cron = "*/5 * * * * ?") // 매 5초마다 실행(test)
     @Transactional
     public void updateVacationStatus() {
         LocalDate now = LocalDate.now();
