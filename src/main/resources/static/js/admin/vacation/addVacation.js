@@ -6,147 +6,158 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        const memberNo = document.getElementById('memberNo').value;
-        const yearInputs = document.querySelectorAll('[id^="year"]');
-        const countVacation =document.getElementById('countVacation').value;
+        Swal.fire({
+            title: '확인',
+            text: '입력되지 않은 연차의 개수는 0으로 지정됩니다. 계속하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#B1C2DD',
+            cancelButtonColor: '#EEB3B3',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 사용자가 확인했을 때 처리 진행
+                const memberNo = document.getElementById('memberNo').value;
+                const yearInputs = document.querySelectorAll('[id^="year"]');
+                const countVacation = document.getElementById('countVacation').value;
+                const vacationPkElements = document.querySelectorAll('[id^="vacationPk"]');
 
-      const vacationPkElements = document.querySelectorAll('[id^="vacationPk"]');
+                let count = 1;
+                const vacationData = {};
+                const vacationPkData = [];
 
-        let count = 1;
-        const vacationData = {};
-        const vacationPkData = [];
-        if (countVacation > 0) {
-                vacationPkElements.forEach(input => {
-                    if (input.value) {
-                        vacationPkData.push(input.value);
-                    }
-                });
-           yearInputs.forEach(input => {
-           const year = input.id.replace('year', '');
-           const vacationDays = input.value;
+                if (countVacation > 0) {
+                    vacationPkElements.forEach(input => {
+                        if (input.value) {
+                            vacationPkData.push(input.value);
+                        }
+                    });
+                    yearInputs.forEach(input => {
+                        const year = input.id.replace('year', '');
+                        const vacationDays = input.value;
 
-           vacationData[count] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
+                        // 0으로 지정
+                        vacationData[count] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
+                        count++;
+                    });
 
-           count++;
-            });
-
-            const requestData = {
-                memberNo: memberNo,
-                vacationData: vacationData,
-                lessThanOneYear: lessThanOneYear,
-                countVacation : countVacation,
-                count : count,
-                vacationPkData :vacationPkData
-            };
-
-        fetch('/vacation/addVacationAction', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.res_code === '200') {
-                Swal.fire({
-                    icon: 'success',
-                    title: '성공',
-                    text: data.res_msg,
-                    confirmButtonText: "닫기"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                       location.reload();
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: '실패',
-                    text: data.res_msg,
-                    confirmButtonText: "닫기"
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: '오류 발생',
-                text: '서버와의 통신 중 오류가 발생했습니다.',
-                confirmButtonText: "닫기"
-            });
-        });
-        }else {
-             yearInputs.forEach(input => {
-             const year = input.id.replace('year', '');
-             const vacationDays = input.value;
-
-             vacationData[year] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
-
-            });
-
-            const requestData = {
+                    const requestData = {
                         memberNo: memberNo,
                         vacationData: vacationData,
                         lessThanOneYear: lessThanOneYear,
-                        countVacation : countVacation,
-             };
+                        countVacation: countVacation,
+                        count: count,
+                        vacationPkData: vacationPkData
+                    };
 
-        fetch('/vacation/addVacationAction', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+                    fetch('/vacation/addVacationAction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify(requestData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.res_code === '200') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '성공',
+                                text: data.res_msg,
+                                confirmButtonText: "닫기"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '실패',
+                                text: data.res_msg,
+                                confirmButtonText: "닫기"
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '오류 발생',
+                            text: '서버와의 통신 중 오류가 발생했습니다.',
+                            confirmButtonText: "닫기"
+                        });
+                    });
+                } else {
+                    yearInputs.forEach(input => {
+                        const year = input.id.replace('year', '');
+                        const vacationDays = input.value;
+
+                        vacationData[year] = vacationDays.trim() === "" ? 0 : parseInt(vacationDays);
+                    });
+
+                    const requestData = {
+                        memberNo: memberNo,
+                        vacationData: vacationData,
+                        lessThanOneYear: lessThanOneYear,
+                        countVacation: countVacation
+                    };
+
+                    fetch('/vacation/addVacationAction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify(requestData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.res_code === '200') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '성공',
+                                text: data.res_msg,
+                                confirmButtonText: "닫기"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '실패',
+                                text: data.res_msg,
+                                confirmButtonText: "닫기"
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '오류 발생',
+                            text: '서버와의 통신 중 오류가 발생했습니다.',
+                            confirmButtonText: "닫기"
+                        });
+                    });
+                }
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.res_code === '200') {
-                Swal.fire({
-                    icon: 'success',
-                    title: '성공',
-                    text: data.res_msg,
-                    confirmButtonText: "닫기"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                       location.reload();
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: '실패',
-                    text: data.res_msg,
-                    confirmButtonText: "닫기"
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: '오류 발생',
-                text: '서버와의 통신 중 오류가 발생했습니다.',
-                confirmButtonText: "닫기"
-            });
         });
-        }
-
-
-
     });
 });
+
 
 //휴가 종류 생성
 document.addEventListener('DOMContentLoaded', () => {
