@@ -75,12 +75,30 @@ public class MemberService {
     	if (searchText != null && !searchText.isEmpty()) {
     	    int searchType = searchdto.getSearch_type();
     	    switch (searchType) {
+    	    	// 전체 검색
     	        case 1:
-    	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);
+    	        	results = memberRepository.findMembersByNumberMemberNameDepartmentNamePositionNameStatus(searchText, pageable);
     	            break;
+    	        // 사번 검색
     	        case 2:
+    	            results = memberRepository.findMembersByNumber(searchText, pageable);
+    	            break;
+    	        // 사원명 검색
+    	        case 3:
+    	            results = memberRepository.findMembersByMemberName(searchText, pageable);
+    	            break;
+    	        // 부서명 검색
+    	        case 4:
+    	        	results = memberRepository.findMembersByDepartmentName(searchText, pageable);
+    	            break;
+    	        // 직위명 검색
+    	        case 5:
     	            results = memberRepository.findMembersByPositionName(searchText, pageable);
     	            break;
+    	         // 상태 검색
+    	        case 6:
+    	        	  results = memberRepository.findMembersByMemberStatus(searchText, pageable);
+    	        	  break;
     	        default:
     	            results = memberRepository.findAllMembersWithDetails(pageable);
     	            break;
