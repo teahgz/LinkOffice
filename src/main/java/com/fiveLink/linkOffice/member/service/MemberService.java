@@ -77,7 +77,6 @@ public class MemberService {
     	    switch (searchType) {
     	        case 1:
     	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);
-    	            System.out.println("부서명"+results);
     	            break;
     	        case 2:
     	            results = memberRepository.findMembersByPositionName(searchText, pageable);
