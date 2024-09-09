@@ -161,51 +161,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //휴가 종류 생성
 document.addEventListener('DOMContentLoaded', () => {
-    const forms = document.getElementById("vacationTypeForm");
+    const form = document.getElementById("vacationTypeForm");
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
-    forms.addEventListener('submit', function(event) {
 
-        event.preventDefault();
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
 
-       const vacationType = document.getElementById('vacationType').value;
-       const vacationValue = document.getElementById('vacationValue').value;
+        const vacationType = document.getElementById('vacationType').value.trim();
+        const vacationValue = document.getElementById('vacationValue').value.trim();
 
-        fetch('/vacation/addTypeVacation', {
+        // Check if vacationType and vacationValue fields are filled
+        if (!vacationType || !vacationValue) {
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 오류',
+                text: '모든 필드를 입력해주세요.',
+                confirmButtonText: "닫기"
+            });
+            return;
+        }
+
+        // Check with the server if vacation type already exists
+        fetch('/vacation/checkVacationTypeExists', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             },
-             body: JSON.stringify({
-                vacationType:vacationType,
-                vacationValue :vacationValue
-             })
+            body: JSON.stringify({ vacationType: vacationType })
         })
         .then(response => {
-        if (!response.ok) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.exists) {
+                // If vacation type already exists, show warning
+                Swal.fire({
+                    icon: 'warning',
+                    title: '중복된 휴가 종류',
+                    text: '이미 존재하는 휴가 종류입니다. 다른 이름을 입력해주세요.',
+                    confirmButtonText: "닫기"
+                });
+            } else {
+                console.log(vacationType);
+                 console.log(vacationValue);
+                // If vacation type does not exist, proceed to submit the form
+                const requestData = {
+                    vacationType: vacationType,
+                    vacationValue: vacationValue
+                };
+
+                fetch('/vacation/addTypeVacation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => {
+                    if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
                     return response.json();
-        })
-        .then(data => {
-          console.log(data); // 응답 데이터 확인
-            if (data.res_code === '200') {
-                Swal.fire({
-                    icon: 'success',
-                    title: '성공',
-                    text: data.res_msg,
-                    confirmButtonText: "닫기"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                         location.reload();
+                })
+                .then(data => {
+                    if (data.res_code === '200') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '성공',
+                            text: '휴가 종류가 성공적으로 추가되었습니다.',
+                            confirmButtonText: "닫기"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '실패',
+                            text: data.res_msg,
+                            confirmButtonText: "닫기"
+                        });
                     }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: '실패',
-                    text: data.res_msg,
-                    confirmButtonText: "닫기"
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류 발생',
+                        text: '서버와의 통신 중 오류가 발생했습니다.',
+                        confirmButtonText: "닫기"
+                    });
                 });
             }
         })
@@ -219,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
 
 document.addEventListener('DOMContentLoaded', function () {
     // 수정 버튼 클릭 이벤트 처리
@@ -258,6 +307,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const vacationTypeNo = form.querySelector('#editVacationTypeNo').value;
             const vacationTypeName = form.querySelector('#editVacationTypeName').value;
             const vacationTypeCalculate = form.querySelector('#editVacationTypeCalculate').value;
+            console.log(vacationTypeName);
+            console.log(vacationTypeCalculate);
 
             const data = {
                 vacationTypeNo: vacationTypeNo,
