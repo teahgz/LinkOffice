@@ -35,15 +35,21 @@
 					    <p><span class="department_info">부서명</span> <span class="info_content1" th:text="${department.department_name}"></span></p>
 					    <p><span class="department_info">상위 부서명</span> <span class="info_content2" th:text="${department.department_high_name}"></span></p>
 					    <div class="sub-departments" th:if="${department.subDepartments}">
-					        <span class="department_info">하위 부서</span>
-					        <ul class="department_ul department_list">
-					            <th:block th:each="sub : ${department.subDepartments}">
-					                <li class="department_li info_content_tag">
-					                    <a th:href="@{/department(id=${sub.department_no})}" th:text="${sub.department_name}"></a>
-					                </li>
-					            </th:block>
-					        </ul>
-					    </div>
+						    <span class="department_info">하위 부서</span>
+						    <ul class="department_ul department_list"> 
+						        <th:block th:if="${#lists.size(department.subDepartments) > 0}">
+						            <th:block th:each="sub : ${department.subDepartments}">
+						                <li class="department_li info_content_tag">
+						                    <a th:href="@{/department(id=${sub.department_no})}" th:text="${sub.department_name}"></a>
+						                </li>
+						            </th:block>
+						        </th:block>  
+						        <th:block th:if="${#lists.size(department.subDepartments) == 0}">
+						            <li>-</li>
+						        </th:block>
+						    </ul>
+						</div> 
+
 					    <!-- <div class="members" th:if="${department.members}">
 					        <h3>소속 직원</h3>
 					        <ul>

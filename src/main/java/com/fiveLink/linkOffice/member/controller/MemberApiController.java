@@ -103,8 +103,9 @@ public class MemberApiController {
 		    response.put("res_msg", "파일 등록 중 오류가 발생하였습니다.");
 		    
 		    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
+		     
+		    String newAdr = roadAddress + " " + detailAddress; 
 		    
-		    String newAdr = roadAddress +" "+ detailAddress;
 		    if(!newAdr.isEmpty()) {
 		    	memberdto.setMember_address(newAdr);
 		    }
