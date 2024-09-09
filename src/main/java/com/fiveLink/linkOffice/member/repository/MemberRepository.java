@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.member.domain.MemberDto;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -63,6 +64,41 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
             "WHERE m.memberNo != 1")
      Page<Object[]> findAllMembersWithDetails(Pageable pageable); 
+     
+     // 검색어(전체 : 사번, 사원명, 부서명, 직위명, 상태)
+     @Query("SELECT m, p.positionName, d.departmentName " +
+    	       "FROM Member m " +
+    	       "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+    	       "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+    	       "WHERE m.memberNo != 1 " +
+    	       "AND (m.memberNumber LIKE %:searchText% " +
+    	       "     OR m.memberName LIKE %:searchText% " +
+    	       "     OR d.departmentName LIKE %:searchText% " +
+    	       "     OR p.positionName LIKE %:searchText% " +
+    	       "     OR CASE " +
+    	       "         WHEN :searchText = '재직' THEN m.memberStatus = 0 " +
+    	       "         WHEN :searchText = '퇴사' THEN m.memberStatus = 1 " +
+    	       "         ELSE false " +
+    	       "       END)")
+    	Page<Object[]> findMembersByNumberMemberNameDepartmentNamePositionNameStatus(@Param("searchText") String searchText, Pageable pageable);
+
+     
+    // 검색어(조건, 사번)
+        @Query("SELECT m, p.positionName, d.departmentName " +
+       	       "FROM Member m " +
+       	       "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+       	       "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+       	       "WHERE m.memberNo != 1 AND m.memberNumber LIKE %:searchText%")
+       	Page<Object[]> findMembersByNumber(@Param("searchText") String searchText, Pageable pageable);
+
+     // 검색어(조건, 사원명)
+        @Query("SELECT m, p.positionName, d.departmentName " +
+       	       "FROM Member m " +
+       	       "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+       	       "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+       	       "WHERE m.memberNo != 1 AND m.memberName LIKE %:searchText%")
+       	Page<Object[]> findMembersByMemberName(@Param("searchText") String searchText, Pageable pageable);
+     
      // 검색어(조건, 부서명)
      @Query("SELECT m, p.positionName, d.departmentName " +
     	       "FROM Member m " +
@@ -77,7 +113,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
              "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
              "WHERE m.memberNo != 1 AND p.positionName LIKE %:searchText%")
       Page<Object[]> findMembersByPositionName(@Param("searchText") String searchText, Pageable pageable);
-     
+     // 검색어(조건,상태 )
+      @Query("SELECT m, p.positionName, d.departmentName FROM Member m " +
+    	       "LEFT JOIN Position p ON m.positionNo = p.positionNo " +
+    	       "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
+    	       "WHERE m.memberNo != 1 " +
+    	       "AND ((:searchText = '재직' AND m.memberStatus = 0) " +
+    	       "     OR (:searchText = '퇴사' AND m.memberStatus = 1))")
+    	Page<Object[]> findMembersByMemberStatus(@Param("searchText") String searchText, Pageable pageable);
+   
+      
      // [전주영] 전체 사원 조회 (관리자 빼고, 직위순) - 사용자 사원 목록 조회
      @Query("SELECT m, p.positionName, d.departmentName " +
              "FROM Member m " +
