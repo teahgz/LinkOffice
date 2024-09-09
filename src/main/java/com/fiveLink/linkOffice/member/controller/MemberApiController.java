@@ -104,7 +104,7 @@ public class MemberApiController {
 		    
 		    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
 		    
-		    String newAdr = roadAddress + detailAddress;
+		    String newAdr = roadAddress + " "+detailAddress;
 		    if(!newAdr.isEmpty()) {
 		    	memberdto.setMember_address(newAdr);
 		    }

@@ -157,8 +157,16 @@
 							<li><a th:href="@{/vacation/vacationStandard/{no}(no=${member.member_no})}">휴가 기준</a></li>
 						</ul>
 					</div>
-				</li>
-
+				</li> 
+				<li>
+					<a href="#">회의실 관리</a>
+					<div class="dropdown">
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/meetingroomList}">회의실 관리</a></li>
+							<li><a th:href="@{/#}">예약 관리</a></li>
+						</ul>
+					</div>
+				</li> 
 				<li th:each = "member : ${memberdto}"><a th:href="@{/permission}">통합 권한 관리</a></li>
 			</ul>
 		</div>

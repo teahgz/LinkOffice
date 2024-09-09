@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/#}" rel="stylesheet" type="text/css">
+        <section>
+         	<div>
+	     		<h1>회의실 목록</h1>
+			    <table>
+			        <thead>
+			            <tr>
+			                <th>회의실 이름</th>
+			                <th>정원</th>
+			                <th>이용 가능 시간</th>
+			                <th>이용 마감 시간</th>
+			                <th>이미지</th>
+			                <th>새 이미지</th>
+			                <th>설명</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            <tr th:each="meeting : ${meetings}">
+			                <td th:text="${meeting.meeting_name}">Meeting Name</td>
+			                <td th:text="${meeting.meeting_max}">Max Capacity</td>
+			                <td th:text="${meeting.meeting_available_start}">Available Start</td>
+			                <td th:text="${meeting.meeting_available_end}">Available End</td>
+			                <td th:text="${meeting.meeting_ori_image}">Original Image</td>
+			                <td th:text="${meeting.meeting_new_image}">New Image</td>
+			                <td th:text="${meeting.meeting_comment}">Comment</td>
+			            </tr>
+			        </tbody>
+			    </table>
+			</div>
+        </section>
+        <script th:src="@{/js/#}"></script>
+    </th:block>
+</html>
