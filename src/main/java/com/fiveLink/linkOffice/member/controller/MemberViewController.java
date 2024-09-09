@@ -78,11 +78,10 @@ public class MemberViewController {
 	      // 번호
 	      List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	      // 부서명 조회 
-	      List<DepartmentDto> departments = departmentService.getAllDepartments();
+	      List<DepartmentDto> departments = departmentService.findSubDepartment();
 	      // 직위명 조회 
 	      List<PositionDto> positions = positionService.getAllPositionsForSelect();
-	        
-	        
+	        System.out.println(departments);
 	      model.addAttribute("memberdto", memberdto);
 	      model.addAttribute("departments", departments);
 	      model.addAttribute("positions", positions);
@@ -103,7 +102,7 @@ public class MemberViewController {
 	@GetMapping("/admin/member/list")
 	public String list(
 	    @PageableDefault(size = 10, sort = "memberHireDate", direction = Sort.Direction.DESC) Pageable pageable,
-	    @RequestParam(value = "sort", defaultValue = "latest") String sort, // 정렬 파라미터 추가
+	    @RequestParam(value = "sort", defaultValue = "latest") String sort,
 	    Model model, 
 	    MemberDto searchdto) {
 	    

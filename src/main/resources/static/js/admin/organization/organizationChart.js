@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 조직도 로딩
     function loadOrganizationChart() {
         $.ajax({
-            url: '/api/organization/chart',
+            url: '/organizationChart/chart',
             method: 'GET',
             success: function(data) {
                 console.log('조직도 데이터:', data);
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         'member': {
 			            	'icon': 'fa fa-user'  
 			        	}
-                    } 
+                    }
                 }).on('ready.jstree', function (e, data) {
                     restoreSelection(data.instance);
                 });

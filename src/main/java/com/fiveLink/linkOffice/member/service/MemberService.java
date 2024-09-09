@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fiveLink.linkOffice.mapper.VacationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,12 +24,14 @@ public class MemberService {
 	
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-
-	
+    //[김채영] 1년미만 재직자
+    private final VacationMapper vacationMapper;
+    
 	@Autowired
-	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, VacationMapper vacationMapper) {
 		this.memberRepository = memberRepository;
 		this.passwordEncoder = passwordEncoder;
+        this.vacationMapper =vacationMapper;
 	}
 	
 	// Object[] 결과를 MemberDto로 변환
@@ -72,13 +75,30 @@ public class MemberService {
     	if (searchText != null && !searchText.isEmpty()) {
     	    int searchType = searchdto.getSearch_type();
     	    switch (searchType) {
+    	    	// 전체 검색
     	        case 1:
-    	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);
-    	            System.out.println("부서명"+results);
+    	        	results = memberRepository.findMembersByNumberMemberNameDepartmentNamePositionNameStatus(searchText, pageable);
     	            break;
+    	        // 사번 검색
     	        case 2:
+    	            results = memberRepository.findMembersByNumber(searchText, pageable);
+    	            break;
+    	        // 사원명 검색
+    	        case 3:
+    	            results = memberRepository.findMembersByMemberName(searchText, pageable);
+    	            break;
+    	        // 부서명 검색
+    	        case 4:
+    	        	results = memberRepository.findMembersByDepartmentName(searchText, pageable);
+    	            break;
+    	        // 직위명 검색
+    	        case 5:
     	            results = memberRepository.findMembersByPositionName(searchText, pageable);
     	            break;
+    	         // 상태 검색
+    	        case 6:
+    	        	  results = memberRepository.findMembersByMemberStatus(searchText, pageable);
+    	        	  break;
     	        default:
     	            results = memberRepository.findAllMembersWithDetails(pageable);
     	            break;
@@ -186,10 +206,24 @@ public class MemberService {
         if(searchText != null && !searchText.isEmpty()) {
         	int searchType = searchdto.getSearch_type();
         	switch(searchType) {
+        		// 전체 검색
         		case 1 : 
+        			results = memberRepository.findAllMemberStatusByNumberNameDepartmentNamePositionName(searchText,pageable);
+        			break;
+        		// 사번 검색
+        		case 2 : 
+        			results = memberRepository.findAllMemberStatusByMemberNumber(searchText,pageable);
+        			break;
+        		// 사원명 검색
+        		case 3 : 
+        			results = memberRepository.findAllMemberStatusByMemberName(searchText,pageable);
+        			break;
+        		// 부서명 검색
+        		case 4 : 
         			results = memberRepository.findAllMemberStatusByDepartmentName(searchText,pageable);
         			break;
-        		case 2 : 
+        		// 직위명 검색
+        		case 5 : 
         			results = memberRepository.findAllMemberStatusByPositionName(searchText,pageable);
         			break;
         		default:
@@ -276,6 +310,13 @@ public class MemberService {
                 .position_name(member.getPosition() != null ? member.getPosition().getPositionName() : null)  
                 .department_name(member.getDepartment() != null ? member.getDepartment().getDepartmentName() : null) 
                 .build();
+    }
+
+    //[김채영] 1년 미만 재직자 정보
+    public List<MemberDto> selectUnderYearMember(int num) {
+
+        return vacationMapper.selectUnderYearMember(num);
+
     }
 
 } 
