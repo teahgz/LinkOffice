@@ -181,8 +181,12 @@ public class VacationService {
     }
 
 
-    public int selectVacationStandardStatus(){
+    public int selectVacationStandardStatus() {
         return vacationMapper.selectVacationStandardStatus();
+    }
+
+    public int checkType(String name){
+        return vacationMapper.checkType(name);
     }
 
 

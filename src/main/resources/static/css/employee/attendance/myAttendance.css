@@ -9,11 +9,32 @@
 	width: 96%;
 	height : 75vh;
 }
+.today_button{
+	width: 2.4vw;
+	height: 3vh;
+	font-size: 0.7vw;
+	margin-left: auto;
+	margin-right: 0.8vw;
+	margin-top: 0.2vh;
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;	
+	background-color: #B1C2DD;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.today_button:hover{
+	background-color: #a8b2cb;
+	transition: background-color 0.3s;	
+}
 /* 근태 상태 */
 .attendance_status{
 	margin-left: 1vw;
-	margin-bottom: 2vh;
+	margin-bottom: 1.4vh;
 	font-size: 1vw;
+	display: flex;
+	align-items: center; 
 }
 /* 출근 */
 #attendance_normal{
@@ -156,6 +177,12 @@
     height: 3vh;
     text-align: center;
 }
+/* 오늘 날짜를 강조 */
+.today_date {
+    background-color: lightgray;
+    padding: 0.5vh 0.6vw 0.4vh 0.6vw;
+	border-radius: 5px;
+}
 /* 달력 안에 근태 bar */
 .date_bar {
     position: absolute;
@@ -185,26 +212,25 @@
 	align-items: center;
 }
 #attendance_count, #late_count, #absence_count{
-	font-size: 1.1vw;
+	font-size: 0.8vw;
 	height: 100%;
 	display: flex;
     align-items: center; 
+    justify-content: space-around;
 	background-color: white;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	margin-right: 2vw;
-	padding-left: 1.1vw;
 	padding-top: 0.2vh;
 	border-radius: 10px;
 }
 #attendance_count{
-	width: 10.5vw;
+	width: 11vw;
 }
 #count{
-	margin-left: 1.1vw;
 	font-weight: bold;
 }
 #late_count, #absence_count{
-	width: 8vw;
+	width: 10vw;
 }
 .search{
 	display: flex;
@@ -213,7 +239,7 @@
 }
 .attendance_list{
 	width: 95%;
-	height: 84%;
+	height: 85%;
 	background-color: white;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	border-radius: 20px;
@@ -222,7 +248,7 @@
 	display: inline-block;
 	overflow: hidden;
     position: relative;
-    font-size: 1.2vw;
+    font-size: 1vw;
 }
 .attendance_table{
 	width: 100%;
@@ -238,13 +264,13 @@
 	border-top: 1px solid #ddd;
 }
 .attendance_table th {
-	height: 3vh;
+	height: 2.7vh;
 	padding: 0.8vh;
     text-align: center;
     border-bottom: 2px solid gray;
 }
 .attendance_table tbody tr {
-    height: 4.9vh; 
+    height: 4.7vh; 
     vertical-align: middle; 
 }
 #table_foot{
@@ -281,27 +307,35 @@
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 0.3vh;
 }
 .pagination_button {
-	width: 0.7vw;
-    padding: 0.9vh 0.9vw;
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
     cursor: pointer;
-    background-color: white;
+    transition: all 0.3s;
+    border-radius: 4px;
 }
 .pagination_button:hover {
 	color: white;
-    background-color: black;
-    border-radius: 10px;
+    background-color: #e9ecef;
+}
+.pagination_button.active{
+	background-color: #B1C2DD;
+    color: white;
+    border-color: #B1C2DD;
 }
 .go_first_page_button, .go_last_page_button{
-	width: 0.5vw;
-	padding: 0.9vh 1.4vw 0.7vh 0.6vw;
-	cursor: pointer;
-    background-color: white;
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
 }
 .go_first_page_button:hover, .go_last_page_button:hover{
-	color: white;
-    background-color: black;
-    border-radius: 10px;
+    color: white;
+    background-color: #e9ecef;
 }

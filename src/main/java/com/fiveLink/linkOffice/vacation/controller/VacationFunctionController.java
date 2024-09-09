@@ -113,6 +113,36 @@ public class VacationFunctionController {
 
         return resultMap;
     }
+
+    @PostMapping("/checkVacationTypeExists")
+    @ResponseBody
+    public Map<String, Object> checkTypeVacation(@RequestBody Map<String, Object> payload) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        try {
+            String vacationType = (String) payload.get("vacationType");
+
+            boolean exists = vacationService.checkType(vacationType) > 0;
+            if (exists) {
+                resultMap.put("exists", true);
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "이미 존재하는 휴가 종류입니다.");
+            } else {
+
+                resultMap.put("exists", false);
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "새로운 휴가 종류를 생성할 수 있습니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
+        }
+
+        return resultMap;
+    }
+
     // 휴가 종류 수정
     @PostMapping("/updateVacation")
     @ResponseBody
