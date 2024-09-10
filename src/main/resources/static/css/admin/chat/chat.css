@@ -1,0 +1,47 @@
+.chatArea {
+    display:flex;
+    flex-direction:row;
+    gap : 5vw;
+    justify-content : center;
+}
+.chatContainer {
+    border : none;
+    width : 30%;
+    border-radius : 10px;
+    background-color : white;
+}
+.chatContent {
+
+    width : 40%;
+    border-radius : 10px;
+    background-color : white;
+}
+#searchInput {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#addChatButton {
+    border:none;
+    background-color:white;
+}
+#searchChatButton {
+    border:none;
+    background-color:white;
+}
+.chatList {
+    max-height: 400px;
+    overflow-y: auto;
+    border-top: 1px solid #ddd;
+}
+
+.chatItem {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.chatItem:hover {
+    background-color: #f0f0f0;
+}

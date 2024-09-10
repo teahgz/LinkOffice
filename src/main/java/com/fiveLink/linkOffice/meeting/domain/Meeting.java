@@ -2,6 +2,9 @@ package com.fiveLink.linkOffice.meeting.domain;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,9 +53,11 @@ public class Meeting {
     private String meetingComment;
 
     @Column(name = "meeting_create_date")
+    @CreationTimestamp
     private LocalDateTime meetingCreateDate;
 
     @Column(name = "meeting_update_date")
+    @UpdateTimestamp
     private LocalDateTime meetingUpdateDate;
 
     @Column(name = "meeting_status")

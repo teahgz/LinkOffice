@@ -75,8 +75,9 @@
 
 					</div>
 				</li>
-				<li>
-					<a href="#">메신저</a>
+				<li th:each = "member : ${memberdto}">
+
+					<a th:href="@{/api/chat/{no}(no=${member.member_no})}">메신저</a>
 
 				</li>
 				<li th:each = "member : ${memberdto}"><a th:href="@{/employee/member/list}">주소록</a></li>

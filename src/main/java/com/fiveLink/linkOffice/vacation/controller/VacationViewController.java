@@ -35,7 +35,6 @@ public class VacationViewController {
     @GetMapping("/vacation/addVacation/{member_no}")
     public String addVacation(@PathVariable("member_no") Long memberNo, Model model) {
         // 로그에 정보 출력
-        logger.info("Navigating to addVacation page for member_no: {}", memberNo);
         int countVacation = vacationService.countVacation();
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
