@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<th:block layout:fragment="content">
+    <link th:href="@{/css/}" rel="stylesheet" type="text/css">
+    <section th:each="form : ${formList}">
+        <div class="form_page">
+            <h1>양식 조회</h1>
+          	<div th:text="${form.approval_form_title}"></div>
+        </div>
+    </section>
+    <script th:src="@{/js/}"></script>
+</th:block>
+</html>

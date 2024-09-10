@@ -20,6 +20,16 @@ public class ApprovalFormService {
         this.approvalFormRepository = approvalFormRepository;
     }
     
+    private ApprovalFormDto convertToDto(ApprovalForm form) {
+    	return ApprovalFormDto.builder()
+    			.approval_form_no(form.getApprovalFormNo())
+    			.approval_form_title(form.getApprovalFormTitle())
+    			.approval_form_content(form.getApprovalFormContent())
+    			.approval_form_create_date(form.getApprovalFormCreateDate())
+    			.approval_form_status(form.getApprovalFormStatus())
+    			.build();
+    }
+    // 관리자 전자결재 양식함 목록 조회 
     public Page<ApprovalFormDto> getAllApprovalForms(Pageable pageable, ApprovalFormDto searchdto) {
     	
         Page<ApprovalForm> forms = null;
@@ -37,18 +47,16 @@ public class ApprovalFormService {
         	approvalFormDtoList.add(dto);
         }
         
-        
         return new PageImpl<>(approvalFormDtoList, pageable, forms.getTotalElements());
     }
-
-    private ApprovalFormDto convertToDto(ApprovalForm form) {
-        return ApprovalFormDto.builder()
-                .approval_form_no(form.getApprovalFormNo())
-                .approval_form_title(form.getApprovalFormTitle())
-                .approval_form_content(form.getApprovalFormContent())
-                .approval_form_create_date(form.getApprovalFormCreateDate())
-                .approval_form_status(form.getApprovalFormStatus())
-                .build();
+    
+    // 관리자 전자결재 양식함 상세 조회 
+    public ApprovalFormDto getApprovalFormOne(Long formNo){
+    	ApprovalForm origin = approvalFormRepository.findByApprovalFormNo(formNo);
+    	System.out.println(origin);
+    	return origin.toDto();
     }
+    
+
     
 }

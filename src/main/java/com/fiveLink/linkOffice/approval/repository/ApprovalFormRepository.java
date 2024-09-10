@@ -15,7 +15,7 @@ public interface ApprovalFormRepository extends JpaRepository<ApprovalForm, Long
 	Page<ApprovalForm> findAllByApprovalFormStatusNot(Pageable pageable, Long approvalFormStatus);
 
     @Query("SELECT af FROM ApprovalForm af WHERE af.approvalFormTitle LIKE %:searchText% AND af.approvalFormStatus <> :status")
-    Page<ApprovalForm> findByaprovalFormTitleContaining(@Param("searchText") String searchText,
-    		 											Pageable pageable,
-                                                       @Param("status") Long approvalFormStatus);
+    Page<ApprovalForm> findByaprovalFormTitleContaining(@Param("searchText") String searchText, Pageable pageable, @Param("status") Long approvalFormStatus);
+    
+    ApprovalForm findByApprovalFormNo(Long formNo);
 }
