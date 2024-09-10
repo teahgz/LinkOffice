@@ -11,4 +11,6 @@ import com.fiveLink.linkOffice.document.domain.DocumentFile;
 public interface DocumentFileRepository extends JpaRepository<DocumentFile, Long>{
 
 	List<DocumentFile> findByMemberNoAndDocumentFileStatus(Long memberNo, Long documentFileStatus);
+	
+	List<DocumentFile> findByMemberNoAndDocumentFolderNoAndDocumentFileStatus(Long memberNo, Long folderId, Long fileStatus);
 }
