@@ -47,6 +47,9 @@ dependencies {
 	implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
+	//웹소켓
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 
 }
 
