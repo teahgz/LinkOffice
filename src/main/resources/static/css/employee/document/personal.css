@@ -55,7 +55,7 @@
     background-position: center;
     background-repeat: no-repeat;
 } 
-.document_no_folder{
+.document_no_folder, .document_select_folder{
     display: flex;
     justify-content: center; 
     align-items: center; 
@@ -91,8 +91,8 @@
     justify-content: center; 
     height: 100%;
     position: relative;
-}
-#document_no_file_msg, #document_first_msg{
+} 
+#document_first_msg{
 	text-align: center;
     font-size: 1.7vw;
 }
@@ -121,7 +121,7 @@
 	margin-top: 0.6vh;
 	height: 2.7vh;
 	width: 8vw;
-	font-size: 1vw;
+	font-size: 0.8vw;
 	margin-right: 1vw;
 	margin-left: 10px;
     padding: 0.5vh 0.5vw;
@@ -188,6 +188,7 @@
 #folder_name{
 	margin-right: 1vw;
 	font-size: 1.2vw;
+	width: 6vw;
 }
 #change_name_button{
 	margin-right: 0.5vw;
@@ -313,7 +314,7 @@
     text-align: center;
 	border-collapse: collapse;
 	table-layout: fixed; 
-	height: 46vh;
+	height: 54.1vh;
 	border-top: 2px solid #ddd;
 }
 .file_table td { 
@@ -331,6 +332,7 @@
     height: 4.5vh; 
     vertical-align: middle; 
 }
+
 #table_foot{
 	border-top: solid 2px gray;
 	height: 4.5vh; 

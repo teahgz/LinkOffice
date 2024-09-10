@@ -72,8 +72,7 @@ $(function () {
                     });
 					// 폴더가 존재하면 폴더를 선택하세요 메시지 띄우기 
                     $('.document_no_folder').hide();
-                    $('.document_no_file').show();
-                    $('#document_first_msg').show();
+                    $('.document_select_folder').show();
                 } else {
 					// 폴더가 없으면 폴더 생성 버튼 띄우기 
                     $('#tree').hide();
@@ -122,8 +121,7 @@ $(function () {
 
                 // 파일 목록이 존재할 때
                 if (fileList.length > 0) {
-                    $('.document_no_file').hide();
-                    $('#document_first_msg').hide();
+                    $('.document_select_folder').hide();
                     $('.document_file_list').show();
 
                     // 한 페이지에 10개씩 추가 
@@ -162,10 +160,13 @@ $(function () {
                     // 페이징 업데이트 
                     updatePagination();
                 } else {
-                    $('.document_file_list').hide();
-                    $('#document_first_msg').hide();
-                    $('.document_no_file').show();
-                    $('#document_no_file_msg').show();
+                    $('.document_file_list').show();
+                    $('.document_select_folder').hide();
+                    fileTableBody.innerHTML = '<tr><td colspan="6">파일 목록이 존재하지 않습니다.</td></tr>';
+
+                    // 페이징 버튼 숨기기
+                    paginationDiv.innerHTML = '';
+
                 }
             }
         });
