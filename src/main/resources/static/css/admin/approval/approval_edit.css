@@ -1,86 +1,75 @@
 @charset "UTF-8";
-
-.form_page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-}
-
 h1 {
     font-size: 2rem;
     margin-bottom: 20px;
-    width: auto;
-    align-self: flex-start;
+    width: auto; 
+    align-self: flex-start; 
     margin-left: 100px;
 }
 
-
-.approval_form {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 30px; 
-    width: 100%;
-    max-width: 800px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.main_container{
+	font-size:14px;
 }
 
-.form_header {
+.container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px; 
-    padding-bottom: 15px; 
-    border-bottom: 1px solid #ddd;
-    font-size: 18px; 
+    justify-content: center;
+    width: 100%;
 }
 
-.form_label, .form_date {
-    font-weight: bold;
-    margin-right: 15px; 
+.editor-container {
+    background-color: #f8f9fa;
+    border-radius: 12px; 
+    max-width: 800px; 
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 60px 80px 30px;
+    margin-top: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    gap: 20px;
 }
 
-.form_title {
-    font-weight: bold;
-    font-size: 20px; 
-    flex-grow: 1;
-}
-
-.form_date {
-    color: #666;
-    font-size: 16px; 
-}
-
-.form_content {
-    margin-bottom: 25px; 
-    min-height: 250px; 
+#approval_name{
+    width: 150px; 
+    border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 15px; 
-    font-size: 16px; 
+    padding: 8px;
 }
 
-.form_value {
-    white-space: pre-wrap;
-    color: #333;
+.ck.ck-editor {
+    max-width: 800px;
+    min-width: 800px;
+}
+.ck-editor__editable {
+    min-height: 500px;
+    max-height: 500px;
 }
 
-.right_buttons {
+.button_container {
     display: flex;
     justify-content: flex-end;
-    padding-top: 10px;
+    width: 100%;
+    margin-right: 30px;
+    gap: 20px; 
+}
+
+.submit_button {
+    padding: 8px 15px;
+    background-color: #B3C7EE; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; 
+    font-size:14px;
+    color: #000000;
 }
 
 .cancel_button {
-    margin: 0; 
     padding: 8px 15px;
-    background-color: #e38a8a;
+    background-color: #C0C0C0;
     border: none;
     border-radius: 5px;
-    font-size: 14px;
     cursor: pointer;
-}
-
-.cancel_button:hover {
-    opacity: 0.8;
 }
