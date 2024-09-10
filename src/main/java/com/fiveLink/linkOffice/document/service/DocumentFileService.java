@@ -25,6 +25,21 @@ public class DocumentFileService {
 	public DocumentFileService(DocumentFileRepository documentFileRepository) {
 		this.documentFileRepository = documentFileRepository;
 	}
+	
+	public List<DocumentFileDto> selectPersonalfileList(Long memberNo, Long folderId){
+		// 파일 상태 = 0
+		Long fileStatus = 0L;
+		List<DocumentFile> documentFileList =
+				documentFileRepository.findByMemberNoAndDocumentFolderNoAndDocumentFileStatus(memberNo, folderId, fileStatus);
+		List<DocumentFileDto> documentFileDtoList = new ArrayList<DocumentFileDto>();
+		for(DocumentFile d : documentFileList) {
+			DocumentFileDto fileDto = new DocumentFileDto().toDto(d);
+			documentFileDtoList.add(fileDto);
+		}		
+		
+		LOGGER.debug("documentFileList: {}", documentFileList);
+		return documentFileDtoList;
+	}
 	public List<DocumentFileDto> documentBinList(Long member_no){
 		// 파일 상태 = 1
 		Long document_file_status = 1L;
