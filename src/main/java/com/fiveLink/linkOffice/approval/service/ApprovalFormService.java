@@ -53,7 +53,6 @@ public class ApprovalFormService {
     // 관리자 전자결재 양식함 상세 조회 
     public ApprovalFormDto getApprovalFormOne(Long formNo){
     	ApprovalForm origin = approvalFormRepository.findByApprovalFormNo(formNo);
-    	System.out.println(origin);
     	return origin.toDto();
     }
     

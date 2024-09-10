@@ -72,8 +72,6 @@ public class ApprovalViewController {
 			}
 		});
 		
-		System.out.println(memberdto);
-		System.out.println(formList);
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList.getContent());
 		model.addAttribute("page", formList);
@@ -90,10 +88,31 @@ public class ApprovalViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
 		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
-		System.out.println(formList);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		if (formList.getApproval_form_create_date() != null) {
+		    String formattedCreateDate = formList.getApproval_form_create_date().format(formatter);
+		    formList.setFormat_create_date(formattedCreateDate);
+		}
+		
+		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
 		return "admin/approval/approval_detail";
 	}
 	
+	// 관리자 전자결재 양식 수정 페이지
+	@GetMapping("/admin/approval/edit/{form_no}")
+	public String adminApprovalEdit(Model model, @PathVariable("form_no") Long formNo) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
+		
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("formList", formList);
+		
+		return "admin/approval/approval_edit";
+	}
 	
 }
