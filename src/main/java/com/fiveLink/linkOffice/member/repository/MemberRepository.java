@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
@@ -182,6 +183,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     		  "WHERE m.memberNo != 1"
     		  + "ORDER BY m.memberHireDate DESC")
       List<Object[]> findAllMembers(); 
+      
+      @Transactional
+      @Modifying
+      @Query("UPDATE Member m SET m.memberAdditional = :status WHERE m.memberNo = :memberNo")
+      void updateMemberAdditionalStatus(@Param("memberNo") Long memberNo, @Param("status") long status);
         
 }
 

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fiveLink.linkOffice.member.domain.MemberPermission;
 import com.fiveLink.linkOffice.member.domain.MenuPermission;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.repository.PermissionCodeRepository;
 import com.fiveLink.linkOffice.member.service.MemberPermissionService;
 import com.fiveLink.linkOffice.permission.domain.Menu;
@@ -26,15 +27,17 @@ public class PermissionService {
     private final MemberPermissionRepository memberPermissionRepository;
     private final MenuPermissionRepository menuPermissionRepository;
     private final MemberPermissionService memberPermissionService;
+    private final MemberRepository memberRepository;
 
     @Autowired
     public PermissionService(MenuRepository menuRepository, PermissionCodeRepository permissionCodeRepository, 
-                             MemberPermissionRepository memberPermissionRepository, MenuPermissionRepository menuPermissionRepository, MemberPermissionService memberPermissionService) {
+                             MemberPermissionRepository memberPermissionRepository, MenuPermissionRepository menuPermissionRepository, MemberPermissionService memberPermissionService, MemberRepository memberRepository) {
         this.menuRepository = menuRepository;
         this.permissionCodeRepository = permissionCodeRepository;
         this.memberPermissionRepository = memberPermissionRepository;
         this.menuPermissionRepository = menuPermissionRepository;
         this.memberPermissionService = memberPermissionService;
+        this.memberRepository = memberRepository;
     }
 
     public List<MenuDto> getPermissionList() {
@@ -117,5 +120,16 @@ public class PermissionService {
         return menuPermissionNo;
     }
 
+    // member_permission_status가 0인 값 존재 확인
+    public boolean hasInactivePermissions(Long memberNo) {
+        return memberPermissionRepository.existsByMemberNoAndMemberPermissionStatus(memberNo, 0);
+    }
 
+    // member_additional 상태 업데이트
+    @Transactional
+    public void updateMemberAdditionalStatus(Long memberNo) {
+        // member_permission_status가 0인 레코드가 있으면 1, 없으면 0으로 업데이트
+        Long newStatus = hasInactivePermissions(memberNo) ? 1L : 0L;
+        memberRepository.updateMemberAdditionalStatus(memberNo, newStatus);
+    }
 }
