@@ -32,7 +32,8 @@ public class ApprovalViewController {
 		this.memberService = memberService;
 		this.approvalFormService = approvalFormService;
 	}
-	// 전자결재 양식 등록 페이지
+	
+	// 관리자 전자결재 양식 등록 페이지
 	@GetMapping("/admin/approval/create")
 	public String adminApprovalCreate(Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
@@ -52,17 +53,15 @@ public class ApprovalViewController {
 		return Sort.by(Sort.Order.desc("approvalFormCreateDate")); 
 	}
 	
-	// 전자결재 양식함 페이지
+	// 관리자 전자결재 양식함 페이지
 	@GetMapping("/admin/approval/form")
-	public String adminApprovalForm( Model model, ApprovalFormDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+	public String adminApprovalForm(Model model, ApprovalFormDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
-		// 정렬
-				Sort sortOption = getSortOption(sort);
-			    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+		Sort sortOption = getSortOption(sort);
+		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 		
-		// 등록된 양식 조회 후 model로 전달
 		Page<ApprovalFormDto> formList = approvalFormService.getAllApprovalForms(sortedPageable, searchdto);
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -82,6 +81,18 @@ public class ApprovalViewController {
 		model.addAttribute("currentSort", sort);
 		
 		return "admin/approval/approval_form";
+	}
+	
+	// 관리자 전자결재 양식 상세 페이지
+	@GetMapping("/admin/approval/detail/{form_no}")
+	public String adminApprovalDetail(Model model, @PathVariable("form_no") Long formNo) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
+		System.out.println(formList);
+		model.addAttribute("formList", formList);
+		return "admin/approval/approval_detail";
 	}
 	
 	

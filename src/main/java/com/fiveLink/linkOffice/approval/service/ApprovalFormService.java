@@ -20,11 +20,19 @@ public class ApprovalFormService {
         this.approvalFormRepository = approvalFormRepository;
     }
     
+    private ApprovalFormDto convertToDto(ApprovalForm form) {
+    	return ApprovalFormDto.builder()
+    			.approval_form_no(form.getApprovalFormNo())
+    			.approval_form_title(form.getApprovalFormTitle())
+    			.approval_form_content(form.getApprovalFormContent())
+    			.approval_form_create_date(form.getApprovalFormCreateDate())
+    			.approval_form_status(form.getApprovalFormStatus())
+    			.build();
+    }
+    // 관리자 전자결재 양식함 목록 조회 
     public Page<ApprovalFormDto> getAllApprovalForms(Pageable pageable, ApprovalFormDto searchdto) {
     	
         Page<ApprovalForm> forms = null;
-        
-        
         
         String searchText = searchdto.getSearch_text();
         if(searchText != null && "".equals(searchText) == false) {
@@ -35,25 +43,20 @@ public class ApprovalFormService {
         
         List<ApprovalFormDto> approvalFormDtoList = new ArrayList<ApprovalFormDto>();
         for(ApprovalForm af : forms) {
-        	ApprovalFormDto dto = new ApprovalFormDto().toDto(af);
+        	ApprovalFormDto dto = af.toDto();
         	approvalFormDtoList.add(dto);
         }
         
-        
         return new PageImpl<>(approvalFormDtoList, pageable, forms.getTotalElements());
     }
-
     
-    
-    private ApprovalFormDto convertToDto(ApprovalForm form) {
-        return ApprovalFormDto.builder()
-                .approval_form_no(form.getApprovalFormNo())
-                .approval_form_title(form.getApprovalFormTitle())
-                .approval_form_content(form.getApprovalFormContent())
-                .approval_form_create_date(form.getApprovalFormCreateDate())
-                .approval_form_update_date(form.getApprovalFormUpdateDate())
-                .approval_form_status(form.getApprovalFormStatus())
-                .build();
+    // 관리자 전자결재 양식함 상세 조회 
+    public ApprovalFormDto getApprovalFormOne(Long formNo){
+    	ApprovalForm origin = approvalFormRepository.findByApprovalFormNo(formNo);
+    	System.out.println(origin);
+    	return origin.toDto();
     }
+    
+
     
 }
