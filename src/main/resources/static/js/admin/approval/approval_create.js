@@ -113,11 +113,14 @@ const editorConfig = {
         contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
     }
 };
+
+
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
 
-        document.querySelector('.submit-button').addEventListener('click', () => {
+        document.querySelector('.submit-button').addEventListener('click', (e) => {
+            e.preventDefault();
             const editorData = editor.getData();
             const approvalTitle = document.querySelector('#approval_title').value;
             const csrfToken = document.querySelector('#csrf_token').value;
@@ -126,28 +129,57 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             console.log('양식 이름', approvalTitle);
             console.log('토큰', csrfToken);
 
-            const formData = new FormData();
-            formData.append('approval_title', approvalTitle);
-            formData.append('editor_content', editorData);
-            formData.append('csrf', csrfToken);
+            let vali_check = false;
+            let vali_text = "";
 
-            fetch('/admin/approval/create', {
-                method: 'post',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken 
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('넘어오는 Map', data);
-            })
-            .catch(error => {
-                console.error('에러', error);
-            });
+            if (approvalTitle === "") {  
+                vali_text += '양식 이름을 입력해주세요.';
+                document.querySelector('#approval_title').focus();
+            } else if (editorData === "") {
+                vali_text += '양식 입력해주세요.';
+                editor.ui.view.editable.element.focus();  
+            } else {
+                vali_check = true;
+            }
+
+            if (vali_check == false) {
+                Swal.fire({
+                    icon: 'error',
+                    text: vali_text,
+                    confirmButtonText: "닫기"
+                });
+            } else {
+                const formData = new FormData();
+                formData.append('approval_title', approvalTitle);
+                formData.append('editor_content', editorData);
+                formData.append('csrf', csrfToken);
+
+                fetch('/admin/approval/create', {
+                    method: 'post',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.res_code == '200') {
+                        Swal.fire({
+                            icon: 'success',
+                            text: data.res_msg,
+                            confirmButtonText: "닫기"
+                        }).then((result) => {
+                            location.href = "/admin/approval/form";
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            text: data.res_msg,
+                            confirmButtonText: "닫기"
+                        });
+                    }
+                });  
+            }
         });
-    })
-    .catch(error => {
-        console.error('에디터 에러', error);
     });

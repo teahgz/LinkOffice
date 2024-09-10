@@ -58,7 +58,7 @@ public class ApprovalFormService {
     
     public ApprovalForm saveApprovalForm(ApprovalFormDto dto) {
         ApprovalForm approvalForm = dto.toEntity();
-
+        System.out.println(approvalForm);
         return approvalFormRepository.save(approvalForm);
     }
     
