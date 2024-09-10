@@ -50,15 +50,4 @@ public class ApprovalForm {
 	@Column(name="approval_form_status")
 	private Long approvalFormStatus;
 	
-	public static ApprovalFormDto toDto(ApprovalForm approvalForm) {
-		return ApprovalFormDto.builder()
-				.approval_form_no(approvalForm.approvalFormNo)
-				.approval_form_title(approvalForm.approvalFormTitle)
-				.approval_form_content(approvalForm.approvalFormContent)
-				.approval_form_create_date(approvalForm.approvalFormCreateDate)
-				.approval_form_update_date(approvalForm.approvalFormUpdateDate)
-				.approval_form_status(approvalForm.approvalFormStatus)
-				.build();
-	}
-	
 }

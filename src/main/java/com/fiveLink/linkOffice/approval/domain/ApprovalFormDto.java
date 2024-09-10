@@ -25,6 +25,8 @@ public class ApprovalFormDto {
 	private Long approval_form_status;
 	
 	private String format_create_date;
+	private String search_text;
+	
 	
 	public ApprovalForm toEntity() {
 		return ApprovalForm.builder()
@@ -36,4 +38,16 @@ public class ApprovalFormDto {
 				.approvalFormStatus(approval_form_status)
 				.build();
 	}
+	
+	public static ApprovalFormDto toDto(ApprovalForm approvalForm) {
+		return ApprovalFormDto.builder()
+				.approval_form_no(approvalForm.getApprovalFormNo())
+				.approval_form_title(approvalForm.getApprovalFormTitle())
+				.approval_form_content(approvalForm.getApprovalFormContent())
+				.approval_form_create_date(approvalForm.getApprovalFormCreateDate())
+				.approval_form_update_date(approvalForm.getApprovalFormUpdateDate())
+				.approval_form_status(approvalForm.getApprovalFormStatus())
+				.build();
+	}
+	
 }
