@@ -51,7 +51,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    width: 180px !important;
+    width: 160px !important;
+    background-color: white !important;
 }
 
 /* 페이징 버튼 스타일 */
