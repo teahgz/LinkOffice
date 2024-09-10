@@ -5,7 +5,7 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/approval/approval_detail.css}" rel="stylesheet" type="text/css">
     <section th:each="form : ${formList}">
-       <h1>결재 양식 조회 </h1>
+        <h1>결재 양식 조회</h1>
         <div class="form_page">
             <div class="approval_form">
                 <div class="form_header">
@@ -26,6 +26,6 @@
             </div>
         </div>
     </section>
-    <script th:src="@{/js/}"></script>
+    <script th:src="@{/js/admin/approval/approval_detail.js}"></script>
 </th:block>
 </html>
