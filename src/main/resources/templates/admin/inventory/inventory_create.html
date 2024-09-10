@@ -18,7 +18,7 @@
     <form id="inventoryForm">
     <!-- CSRF 토큰 추가 -->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
-
+	<input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
     <div class="form-group">
         <label for="department">부서 :</label>
         <select id="department" name="department">
@@ -159,6 +159,7 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     }
     var formData = new FormData(this);  // 폼 데이터를 수집
 
+ 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/submit-inventory", true);
     xhr.onload = function() {
@@ -166,7 +167,8 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
             var data = JSON.parse(xhr.responseText);
             if (data.res_code === "200") {
                 Swal.fire('성공', data.res_msg, 'success').then(function() {
-                	window.location.href = '/inventory/list';
+                	var memberNo = document.getElementById('memberNo').value;
+                    window.location.href = '/inventory/list/' + memberNo;
                 });
             } else {
                 Swal.fire('실패', data.res_msg, 'error');
@@ -234,7 +236,8 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
         modal.style.display = "none";
     };
 
-    // 카테고리 등록 모달
+
+ // 카테고리 등록 모달
     var registerModal = document.getElementById("registerModal");
     var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
     var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];

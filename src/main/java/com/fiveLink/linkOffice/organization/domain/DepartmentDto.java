@@ -3,6 +3,7 @@ package com.fiveLink.linkOffice.organization.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.organization.repository.DepartmentRepository;
@@ -33,7 +34,8 @@ public class DepartmentDto {
     private Long departmentId;
     private String departmentName;
     private Long departmentHigh;
-
+    private Long memberCount;
+    
     private List<MemberDto> members;
     
     public Department toEntity() { 
@@ -57,5 +59,5 @@ public class DepartmentDto {
             .department_status(department.getDepartmentStatus())
             .build();
     }
-      
+     
 }

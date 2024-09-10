@@ -28,11 +28,11 @@ public class DepartmentService {
     private MemberRepository memberRepository;
 
     @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository, MemberRepository memberRepository){
+    public DepartmentService(DepartmentRepository departmentRepository, MemberRepository memberRepository) {
         this.departmentRepository = departmentRepository;
         this.memberRepository = memberRepository;
     }
-    
+
     public List<DepartmentDto> getAllDepartments() {
         List<Department> departments = departmentRepository.findAllByDepartmentStatusOrderByDepartmentHighAscDepartmentNameAsc(0L);
         return buildHierarchy(mapToDto(departments));
@@ -51,50 +51,50 @@ public class DepartmentService {
     @Transactional
     public void addDepartment(String departmentName, Long departmentHigh) {
         try {
-        	// 중복 부서명 체크
+            // 중복 부서명 체크
             boolean isDuplicate = departmentRepository.existsByDepartmentNameAndDepartmentStatus(departmentName, 0L);
             if (isDuplicate) {
                 throw new CustomDuplicateDepartmentException("중복된 부서명이 존재합니다.");
             }
-            
+
             Department department = Department.builder()
                 .departmentName(departmentName)
                 .departmentHigh(departmentHigh)
                 .departmentStatus(0L)
                 .build();
-             
+
             department = departmentRepository.save(department);
-     
+
             Long newDepartmentNo = department.getDepartmentNo();
-             
-            if (departmentHigh != null && departmentHigh != 0) { 
-                List<Member> members = memberRepository.findByDepartmentNo(departmentHigh);
-                 
+
+            if (departmentHigh != null && departmentHigh != 0) {
+                List<Member> members = memberRepository.findByDepartmentNoAndMemberStatus(departmentHigh, 0L);
+
                 if (!members.isEmpty()) {
                     for (Member member : members) {
-                        member.setDepartmentNo(newDepartmentNo); 
-                    } 
+                        member.setDepartmentNo(newDepartmentNo);
+                    }
                     memberRepository.saveAll(members);
                 }
             }
-        } catch (DataIntegrityViolationException e) {  
+        } catch (DataIntegrityViolationException e) {
             throw new CustomDuplicateDepartmentException("중복된 부서명이 존재합니다.");
         }
     }
-    
+
     public static class CustomDuplicateDepartmentException extends RuntimeException {
         public CustomDuplicateDepartmentException(String message) {
             super(message);
         }
     }
-    
-    public List<DepartmentDto> getTopLevelDepartments() { 
+
+    public List<DepartmentDto> getTopLevelDepartments() {
         List<Department> departments = departmentRepository.findByDepartmentHighAndDepartmentStatus(0L, 0L);
         return departments.stream()
                           .map(this::mapToDto)
                           .collect(Collectors.toList());
     }
- 
+
     private DepartmentDto mapToDto(Department department) {
         return DepartmentDto.builder()
             .department_no(department.getDepartmentNo())
@@ -106,7 +106,7 @@ public class DepartmentService {
             .department_high_name(getHighDepartmentName(department.getDepartmentHigh()))
             .build();
     }
- 
+
     private List<DepartmentDto> mapToDto(List<Department> departments) {
         List<DepartmentDto> dtos = new ArrayList<>();
         for (Department department : departments) {
@@ -115,7 +115,7 @@ public class DepartmentService {
         return dtos;
     }
 
-    // 부서 계층 구조 
+    // 부서 계층 구조
     private List<DepartmentDto> buildHierarchy(List<DepartmentDto> allDepartments) {
         Map<Long, DepartmentDto> departmentMap = allDepartments.stream()
             .collect(Collectors.toMap(DepartmentDto::getDepartment_no, Function.identity()));
@@ -135,13 +135,13 @@ public class DepartmentService {
                     parent.getSubDepartments().add(department);
                 }
             }
-        } 
+        }
         return topLevelDepartments;
     }
 
-    // 하위 부서 목록 
+    // 하위 부서 목록
     private List<DepartmentDto> getSubDepartments(Long parentId) {
-        List<Department> subDepartments = departmentRepository.findByDepartmentHigh(parentId);
+        List<Department> subDepartments = departmentRepository.findByDepartmentHighAndDepartmentStatus(parentId, 0L);
         return mapToDto(subDepartments);
     }
 
@@ -178,7 +178,7 @@ public class DepartmentService {
 
     // 부서 삭제
     public long getMemberCountByDepartmentNo(Long departmentNo) {
-        return memberRepository.countByDepartmentNo(departmentNo);
+        return memberRepository.countByDepartmentNoAndMemberStatus(departmentNo, 0L);
     }
 
     @Transactional
@@ -191,7 +191,7 @@ public class DepartmentService {
 
             if (subDepartments.isEmpty()) {
                 // 부서 소속 사원 수
-                long memberCount = memberRepository.countByDepartmentNo(departmentId);
+                long memberCount = memberRepository.countByDepartmentNoAndMemberStatus(departmentId, 0L);
 
                 if (memberCount > 0) {
                     return false;
@@ -203,7 +203,7 @@ public class DepartmentService {
             } else {
                 // 하위 부서 소속 사원 존재 여부
                 boolean hasMembersInSubDepartments = subDepartments.stream()
-                    .anyMatch(sub -> memberRepository.countByDepartmentNo(sub.getDepartmentNo()) > 0);
+                    .anyMatch(sub -> memberRepository.countByDepartmentNoAndMemberStatus(sub.getDepartmentNo(), 0L) > 0);
 
                 if (hasMembersInSubDepartments) {
                     return false;
@@ -222,7 +222,7 @@ public class DepartmentService {
         return false;
     }
     
-    // [전주영] 사원 등록 ( 부서 조회 )
+    // [전주영] 사원 등록 (부서 조회 )
     
    public List<DepartmentDto> findSubDepartment(){
 	   

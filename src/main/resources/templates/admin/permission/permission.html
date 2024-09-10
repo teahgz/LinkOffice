@@ -35,9 +35,11 @@
 					    <button id="openModalButton" type="button" class="modal_btn" onclick="openOrganizationChartModal()">권한자 등록</button>
 					</div>
 					<div class="sort-buttons">
-				        <button id="sortNewest" type="button" class="modal_btn">최신순</button>
-				        <button id="sortOldest" type="button" class="modal_btn">과거순</button>
-				    </div>
+					    <select id="sortOrderSelect" class="modal_btn">
+					        <option value="newest" selected>최신순</option>
+					        <option value="oldest">과거순</option>
+					    </select>
+					</div>
 
 
                     <!-- 권한자 목록을 표 형식으로 출력 -->

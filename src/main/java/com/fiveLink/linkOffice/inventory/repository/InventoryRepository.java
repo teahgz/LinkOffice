@@ -26,11 +26,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
             "ORDER BY ic.inventoryCategoryNo")
     List<Object[]> findCategorySummaryByDepartment(@Param("departmentNo") Long departmentNo);
 
-    // 모든 부서 목록 조회
-    @Query("SELECT DISTINCT d.departmentNo, d.departmentName " +
-           "FROM Inventory i " +
-           "JOIN i.department d")
-    List<Object[]> findAllDepartments();
+    
     
     @Query("SELECT i FROM Inventory i " +
 		       "WHERE i.inventoryCategory.inventoryCategoryNo = :inventoryCategoryNo " +

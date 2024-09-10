@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/admin/approval/approval_create.css}" rel="stylesheet" type="text/css">
+       <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <section th:each="form : ${formList}">
+            <h1>결재 양식 조회</h1>
+            <div class="container">
+                <div class="main-container">
+                        <div class="form-group">
+                            <label for="approval_name">양식 이름</label>
+                            <input type="text" id="approval_name" name="approval_name" th:value="${form.approval_form_title}">
+                        </div>
+                    <div class="editor-container">
+                        <div class="editor-container__editor" id="editor" th:utext="${form.approval_form_content}"></div>
+                        <div class="button-container">
+                            <button class="cancel-button" onclick="history.back()">취소</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+         <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
+            }
+        }
+        </script>
+        <script type="module" th:src="@{/js/admin/approval/approval_create.js}"></script>
+    </th:block>
+</html>

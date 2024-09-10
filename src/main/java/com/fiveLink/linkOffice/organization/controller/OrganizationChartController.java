@@ -58,57 +58,56 @@ public class OrganizationChartController {
 	}
 
 	private List<Map<String, Object>> buildTree(List<DepartmentDto> departments, List<MemberDto> members) {
-		Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
-		Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
+        Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
+        Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
+        
+        // 부서별 구성원 그룹화
+        for (MemberDto member : members) {
+            List<MemberDto> departmentMembers = membersByDepartment.get(member.getDepartment_no());
+            if (departmentMembers == null) {
+                departmentMembers = new ArrayList<>();
+                membersByDepartment.put(member.getDepartment_no(), departmentMembers);
+            }
+            departmentMembers.add(member);
+        } 
+        
+        // 부서 노드
+        for (DepartmentDto dept : departments) {
+            Map<String, Object> node = new HashMap<>();
+            node.put("id", "dept_" + dept.getDepartment_no());
+            node.put("text", dept.getDepartment_name());
+            node.put("type", "department");
+            node.put("children", new ArrayList<>());
+            departmentMap.put(dept.getDepartment_no(), node);
+        }
+        
+        // 부서 계층 구조
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (DepartmentDto dept : departments) {
+            if (dept.getDepartment_high() == 0) {
+                Map<String, Object> departmentNode = buildDepartmentHierarchy(dept, departmentMap, membersByDepartment);
+                if (departmentNode != null) {
+                    result.add(departmentNode);
+                }
+            }
+        }
+        
+        return result;
+    }
 
-		// 부서별 구성원 그룹화
-		for (MemberDto member : members) {
-	        Long departmentNo = member.getDepartment_no();
-	         
-	        List<MemberDto> memberList = membersByDepartment.get(departmentNo);
-	         
-	        if (memberList == null) {
-	            memberList = new ArrayList<>();
-	            membersByDepartment.put(departmentNo, memberList);
-	        }
-	         
-	        memberList.add(member);
-	    }
-
-		// 부서 노드
-		for (DepartmentDto dept : departments) {
-			Map<String, Object> node = new HashMap<>();
-			node.put("id", "dept_" + dept.getDepartment_no());
-			node.put("text", dept.getDepartment_name());
-			node.put("type", "department");
-			node.put("children", new ArrayList<>());
-			departmentMap.put(dept.getDepartment_no(), node);
-		}
-
-		// 부서 계층 구조
-		List<Map<String, Object>> result = new ArrayList<>();
-		for (DepartmentDto dept : departments) {
-			if (dept.getDepartment_high() == 0) {
-				result.add(buildDepartmentHierarchy(dept, departmentMap, membersByDepartment));
-			}
-		}
-
-		return result;
-	}
-
-	private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept,
+    private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept,
 			Map<Long, Map<String, Object>> departmentMap, Map<Long, List<MemberDto>> membersByDepartment) {
 		Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
 		List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
 
 		boolean hasSubDepartments = false;
+		boolean hasMembers = false;
 
 		if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
 			for (DepartmentDto subDept : dept.getSubDepartments()) {
 				List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
-				boolean hasMembers = subDeptMembers != null && !subDeptMembers.isEmpty();
-
-				if (hasMembers || (subDept.getSubDepartments() != null && !subDept.getSubDepartments().isEmpty())) {
+				boolean hasSubDeptMembers = subDeptMembers != null && !subDeptMembers.isEmpty();
+				if (hasSubDeptMembers || (subDept.getSubDepartments() != null && !subDept.getSubDepartments().isEmpty())) {
 					Map<String, Object> subDeptNode = new HashMap<>();
 					subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
 					subDeptNode.put("text", subDept.getDepartment_name());
@@ -116,32 +115,38 @@ public class OrganizationChartController {
 					subDeptNode.put("children", new ArrayList<>());
 
 					// 하위 부서에 속한 구성원 추가
-					for (MemberDto member : subDeptMembers) {
-	                    Map<String, Object> memberNode = createMemberNode(member);
-	                    ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
-	                }
-	                
-	                // 하위 부서 추가
-	                children.add(subDeptNode);
-	                hasSubDepartments = true;
-				}
+					if (hasSubDeptMembers) {
+                        for (MemberDto member : subDeptMembers) {
+                            Map<String, Object> memberNode = createMemberNode(member);
+                            ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
+                        }
+                    }
+                    
+                    // 하위 부서 추가
+                    children.add(subDeptNode);
+                    hasSubDepartments = true;
+                }
+            }
+		}
+
+		// 현재 부서의 구성원 확인 및 추가
+		List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
+		if (deptMembers != null && !deptMembers.isEmpty()) {
+			hasMembers = true;
+			for (MemberDto member : deptMembers) {
+				Map<String, Object> memberNode = createMemberNode(member);
+				children.add(memberNode);
 			}
 		}
 
-		// 하위 부서 없는 경우
-		if (!hasSubDepartments) {
-			List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
-			if (deptMembers != null) {
-				for (MemberDto member : deptMembers) {
-					Map<String, Object> memberNode = createMemberNode(member);
-					children.add(memberNode);
-				}
-			}
+		// 부서에 하위 부서나 구성원이 있는 경우에만 노드 반환
+		if (hasMembers || hasSubDepartments) {
+			return node;
+		} else {
+			return null;
 		}
-
-		return node;
 	}
-
+    
 	private Map<String, Object> createMemberNode(MemberDto member) {
 		Map<String, Object> memberNode = new HashMap<>();
 		memberNode.put("id", "member_" + member.getMember_no());

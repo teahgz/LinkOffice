@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -36,9 +37,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      List<Object[]> findMemberWithDepartmentAndPosition(@Param("memberNo") Long memberNo); 
 
     
-    // [서혜원] 부서 등록
-    @Query(value = "SELECT * FROM fl_member WHERE department_no = :departmentNo", nativeQuery = true)
-    List<Member> findByDepartmentNo(@Param("departmentNo") Long departmentNo);
+    // [서혜원] 부서 등록 
+     List<Member> findByDepartmentNoAndMemberStatus(Long departmentNo, Long memberStatus);
 
     // [서혜원] 조직도
     @Query("SELECT m FROM Member m WHERE m.positionNo = :positionNo")
@@ -49,13 +49,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByDepartmentNo(@Param("departmentNo") Long departmentNo);
 
     // [서혜원] 하위 부서 소속 사원 여부
-    long countByDepartmentNo(Long departmentNo);
+    long countByDepartmentNoAndMemberStatus(Long departmentNo, Long memberStatus);
     
     // [서혜원] 직위 소속 사원 여부
     long countByPositionNo(Long positionNo);
      
     // [서혜원] 조직도
-    List<Member> findAllByMemberStatus(Long status);
+    List<Member> findAllByMemberStatusOrderByPosition_PositionLevelAsc(Long status);
       
     // [전주영] 전체 사원 조회 (관리자 빼고, 입사일 최신순) - 관리자 사원 목록 조회
     @Query("SELECT m, p.positionName, d.departmentName " +
@@ -173,7 +173,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
                "LEFT JOIN Department d ON m.departmentNo = d.departmentNo " +
                "WHERE m.memberNo != 1 AND m.memberStatus = 0 AND p.positionName LIKE %:searchText%")
         Page<Object[]> findAllMemberStatusByPositionName(@Param("searchText") String searchText,Pageable pageable); 
-      
+ 
       // [전주영] 사원 조회 
       @Query("SELECT m, p.positionName, d.departmentName " +
     		  "FROM Member m " +
@@ -182,5 +182,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     		  "WHERE m.memberNo != 1"
     		  + "ORDER BY m.memberHireDate DESC")
       List<Object[]> findAllMembers(); 
+        
 }
 
