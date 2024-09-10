@@ -84,50 +84,39 @@
 		  </tbody>
         </table>
 
-<div class="pagination">
-  <th:block th:if="${page.totalElements > 1}"> <!-- 검색 결과가 2개 이상일 때만 표시 -->
-    <!-- 첫 페이지 버튼 (<<) -->
-    <button th:if="${page.number > 0}"
-            th:onclick="|location.href='@{/employee/member/list(page=0, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;&lt;
-    </button>
-
-    <!-- 이전 페이지 버튼 (<) -->
-    <button th:if="${page.hasPrevious()}"
-            th:onclick="|location.href='@{/employee/member/list(page=${page.number - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;
-    </button>
-
-    <!-- 페이지 번호 버튼 -->
-    <th:block th:with="totalPages=${page.totalPages}, currentPage=${page.number}">
-      <!-- 시작 페이지와 종료 페이지 계산 -->
-      <th:block th:with="
-          startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)}, 
-          endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
-        <span th:if="${totalPages > 0}"
-              th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
-          <button th:classappend="${i == currentPage} ? 'active'"
-                  th:onclick="|location.href='@{/employee/member/list(page=${i}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|"
-                  th:text="${i + 1}">
-          </button>
-        </span>
-      </th:block>
-    </th:block>
-
-    <!-- 다음 페이지 버튼 (>) -->
-    <button th:if="${page.hasNext()}"
-            th:onclick="|location.href='@{/employee/member/list(page=${page.number + 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;
-    </button>
-
-    <!-- 마지막 페이지 버튼 (>>) -->
-    <button th:if="${page.number < page.totalPages - 1}"
-            th:onclick="|location.href='@{/employee/member/list(page=${page.totalPages - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;&gt;
-    </button>
-  </th:block>
-
-  <!-- 페이지가 1개만 있을 때는 1만 표시 -->
-  <th:block th:if="${page.totalElements == 1}">
-    <button class="active">1</button>
-  </th:block>
-</div>
+		<div class="pagination">
+		  <th:block th:if="${page.totalElements > 1}"> 
+		    <button th:if="${page.number > 0}"
+		            th:onclick="|location.href='@{/employee/member/list(page=0, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;&lt;
+		    </button>
+		    <button th:if="${page.hasPrevious()}"
+		            th:onclick="|location.href='@{/employee/member/list(page=${page.number - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;
+		    </button>
+		    <th:block th:with="totalPages=${page.totalPages}, currentPage=${page.number}">
+		      <th:block th:with="
+		          startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)}, 
+		          endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
+		        <span th:if="${totalPages > 0}"
+		              th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
+		          <button th:classappend="${i == currentPage} ? 'active'"
+		                  th:onclick="|location.href='@{/employee/member/list(page=${i}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|"
+		                  th:text="${i + 1}">
+		          </button>
+		        </span>
+		      </th:block>
+		    </th:block>
+		    <button th:if="${page.hasNext()}"
+		            th:onclick="|location.href='@{/employee/member/list(page=${page.number + 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;
+		    </button>
+		    <button th:if="${page.number < page.totalPages - 1}"
+		            th:onclick="|location.href='@{/employee/member/list(page=${page.totalPages - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;&gt;
+		    </button>
+		  </th:block>
+		
+		  <th:block th:if="${page.totalElements == 1}">
+		    <button class="active">1</button>
+		  </th:block>
+		</div>
 
 
       </div>
