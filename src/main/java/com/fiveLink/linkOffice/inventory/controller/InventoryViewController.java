@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fiveLink.linkOffice.inventory.domain.InventoryCategoryDto;
 import com.fiveLink.linkOffice.inventory.domain.InventoryDto;
 import com.fiveLink.linkOffice.inventory.service.InventoryService;
-
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.service.DepartmentService;
 
 @Controller
 public class InventoryViewController {
@@ -29,22 +32,38 @@ public class InventoryViewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryViewController.class);
 
     private final InventoryService inventoryService;
+    private final DepartmentService departmentService;
+    private final MemberService memberService;
 
     @Autowired
-    public InventoryViewController(InventoryService inventoryService) {
+    public InventoryViewController(MemberService memberService, DepartmentService departmentService, InventoryService inventoryService) {
+    	this.memberService = memberService;
         this.inventoryService = inventoryService;
+        this.departmentService = departmentService;
     }
+    
+    // 비품 목록 페이지
+    @GetMapping("/inventory/list/{member_no}")
+    public String inventoryList(@PathVariable("member_no") Long memberNo, Model model) {
+        // 멤버 정보 조회
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
+        model.addAttribute("memberdto", memberdto);
 
-    // 메인 화면 - 부서 목록 및 카테고리 요약 목록 조회
-    @GetMapping("/inventory/list")
-    public String selectInventoryList(Model model) {
-        // 부서 목록을 조회하여 model에 추가
-        List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
-        model.addAttribute("departments", departmentNames);
+        // 부서 목록 조회
+        List<DepartmentDto> departments = departmentService.findSubDepartment();
+        model.addAttribute("departments", departments);
 
         return "admin/inventory/inventory_list";
     }
 
+    // 부서에 속한 비품 목록 조회
+    @GetMapping("/inventory/department/{departmentNo}")
+    @ResponseBody
+    public List<InventoryDto> selectInventoryByDepartment(@PathVariable("departmentNo") Long departmentNo) {
+        return inventoryService.selectInventoryByDepartment(departmentNo);
+    }
+
+    // 카테고리와 부서 기준 비품 조회
     @GetMapping("/inventory/category/{inventory_category_no}/department/{department_no}")
     @ResponseBody
     public List<InventoryDto> selectInventoryByCategoryAndDepartment(
@@ -53,37 +72,34 @@ public class InventoryViewController {
         return inventoryService.selectInventoryByCategoryAndDepartment(inventoryCategoryNo, departmentNo);
     }
 
-    @GetMapping("/inventory/department/{departmentNo}")
-    @ResponseBody
-    public List<InventoryDto> selectInventoryByDepartment(@PathVariable("departmentNo") Long departmentNo) {
-        List<InventoryDto> result = inventoryService.selectInventoryByDepartment(departmentNo);
-        return result;
-    }
-    
-    @GetMapping("/inventory/create")
-    public String selectInventoryCreate(Model model) {
-        // 부서 목록을 조회하여 model에 추가
-        List<InventoryDto> departmentNames = inventoryService.findAllDepartments();
+    // 비품 등록 페이지 (멤버 정보 포함)
+    @GetMapping("/inventory/create/{member_no}")
+    public String inventoryCreate(@PathVariable("member_no") Long memberNo, Model model) {
+        // 멤버 정보 조회
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        model.addAttribute("memberdto", memberdto);
 
-        // Spring Security에서 로그인한 사용자 정보 가져오기
+        // 부서 목록 조회
+        List<DepartmentDto> departments = departmentService.findSubDepartment();
+        model.addAttribute("departments", departments);
+
+        // 로그인한 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String memberNumber = authentication.getName();  
-        
-        // member_number로 member_name을 조회
+        String memberNumber = authentication.getName();
         String memberName = inventoryService.findMemberNameByNumber(memberNumber);
-        
-        model.addAttribute("departments", departmentNames);
-        model.addAttribute("manager", memberName);  
-        
+        model.addAttribute("manager", memberName);  // 관리자 이름 전달
+
         return "admin/inventory/inventory_create";
     }
-    
+
+    // 모든 카테고리 목록 조회
     @GetMapping("/inventory/categories")
     @ResponseBody
     public List<String> getAllCategories() {
         return inventoryService.findAllCategories();
     }
-    
+
+    // 비품 등록/수정 처리
     @ResponseBody
     @PostMapping("/submit-inventory")
     public Map<String, String> createOrUpdateInventory(
@@ -99,10 +115,10 @@ public class InventoryViewController {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "비품 처리 중 오류가 발생했습니다.");
-        
+
         // '관리자'라는 단어 제거
         memberName = memberName.replace("관리자", "").trim();
-        
+
         // DTO 생성 및 값 설정
         InventoryDto dto = InventoryDto.builder()
             .department_no(departmentNo)
@@ -114,10 +130,9 @@ public class InventoryViewController {
             .member_name(memberName)
             .inventory_quantity(inventoryQuantity)
             .build();
-        try {
-            // 서비스 호출해서 업데이트 또는 생성
-            boolean isUpdated = inventoryService.createOrUpdateInventory(dto);
 
+        try {
+            boolean isUpdated = inventoryService.createOrUpdateInventory(dto);
             if (isUpdated) {
                 resultMap.put("res_code", "200");
                 resultMap.put("res_msg", "비품이 성공적으로 업데이트되었습니다.");
@@ -133,16 +148,25 @@ public class InventoryViewController {
         return resultMap;
     }
 
-    
+    // 카테고리 등록 처리
     @PostMapping("/inventory/register-category")
     @ResponseBody
     public Map<String, String> registerCategory(@RequestBody InventoryCategoryDto inventoryCategoryDto) {
         Map<String, String> responseMap = new HashMap<>();
 
-        if (inventoryService.isCategoryNameDuplicate(inventoryCategoryDto.getInventory_category_name())) {
+        // 입력된 카테고리명 처리
+        String originalCategoryName = inventoryCategoryDto.getInventory_category_name();
+        String normalizedCategoryName = originalCategoryName.replaceAll("\\s+", "");
+
+        // 카테고리 이름이 비어 있거나 중복된 경우 처리
+        if (normalizedCategoryName.isEmpty()) {
+            responseMap.put("res_code", "400");
+            responseMap.put("res_msg", "카테고리 이름을 입력해주세요.");
+        } else if (inventoryService.isCategoryNameDuplicate(normalizedCategoryName)) {
             responseMap.put("res_code", "400");
             responseMap.put("res_msg", "카테고리 이름이 이미 존재합니다.");
         } else {
+            inventoryCategoryDto.setInventory_category_name(normalizedCategoryName);
             inventoryService.registerCategory(inventoryCategoryDto);
             responseMap.put("res_code", "200");
             responseMap.put("res_msg", "카테고리가 성공적으로 등록되었습니다.");
@@ -151,17 +175,15 @@ public class InventoryViewController {
         return responseMap;
     }
 
-    
+    // 비품 수정 처리
     @PostMapping("/inventory/update")
     @ResponseBody
     public Map<String, String> updateInventory(@RequestBody InventoryDto dto) {
         Map<String, String> resultMap = new HashMap<>();
         try {
-
             if (dto.getInventory_no() == null) {
-                throw new RuntimeException("수정할 비품의 번호가 없습니다.");
+                throw new RuntimeException("수정할 비품 번호가 없습니다.");
             }
-
             inventoryService.updateInventory(dto);
             resultMap.put("res_code", "200");
             resultMap.put("res_msg", "비품이 성공적으로 수정되었습니다.");
@@ -172,9 +194,7 @@ public class InventoryViewController {
         return resultMap;
     }
 
-
-
-
+    // 비품 삭제 처리
     @PostMapping("/inventory/delete/{no}")
     @ResponseBody
     public Map<String, String> deleteInventory(@PathVariable("no") Long no) {
@@ -189,5 +209,4 @@ public class InventoryViewController {
         }
         return resultMap;
     }
-    
 }

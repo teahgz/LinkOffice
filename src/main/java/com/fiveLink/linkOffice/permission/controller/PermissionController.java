@@ -74,10 +74,14 @@ public class PermissionController {
 
             permissionService.saveSelectedMembers(menuNo, memberNos);
 
+            for (String memberNoStr : memberNos) {
+                Long memberNo = Long.parseLong(memberNoStr);   
+                permissionService.updateMemberAdditionalStatus(memberNo);
+            }
+            
             resultMap.put("res_code", "200");
             resultMap.put("res_msg", "권한자 등록이 완료되었습니다.");
-        } catch (Exception e) {
-            // 예외 발생 시 오류 메시지 유지
+        } catch (Exception e) { 
             resultMap.put("res_msg", "사원 등록 중 오류가 발생했습니다");
         }
 
@@ -134,50 +138,67 @@ public class PermissionController {
         List<Map<String, Object>> result = new ArrayList<>();
         for (DepartmentDto dept : departments) {
             if (dept.getDepartment_high() == 0) {
-                result.add(buildDepartmentHierarchy(dept, departmentMap, membersByDepartment));
+                Map<String, Object> departmentNode = buildDepartmentHierarchy(dept, departmentMap, membersByDepartment);
+                if (departmentNode != null) {
+                    result.add(departmentNode);
+                }
             }
         }
         
         return result;
     }
 
-    private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept, 
-                                                         Map<Long, Map<String, Object>> departmentMap, 
-                                                         Map<Long, List<MemberDto>> membersByDepartment) {
-        Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
-        List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
-        
-        if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
-            for (DepartmentDto subDept : dept.getSubDepartments()) {
-                Map<String, Object> subDeptNode = new HashMap<>();
-                subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
-                subDeptNode.put("text", subDept.getDepartment_name());
-                subDeptNode.put("type", "subdepartment");
-                subDeptNode.put("children", new ArrayList<>());
-                
-                // 하위 부서에 속한 구성원 추가
-                List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
-                if (subDeptMembers != null) {
-                    for (MemberDto member : subDeptMembers) {
-                        Map<String, Object> memberNode = createMemberNode(member);
-                        ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
+    private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept,
+			Map<Long, Map<String, Object>> departmentMap, Map<Long, List<MemberDto>> membersByDepartment) {
+		Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
+		List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
+
+		boolean hasSubDepartments = false;
+		boolean hasMembers = false;
+
+		if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
+			for (DepartmentDto subDept : dept.getSubDepartments()) {
+				List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
+				boolean hasSubDeptMembers = subDeptMembers != null && !subDeptMembers.isEmpty();
+				if (hasSubDeptMembers || (subDept.getSubDepartments() != null && !subDept.getSubDepartments().isEmpty())) {
+					Map<String, Object> subDeptNode = new HashMap<>();
+					subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
+					subDeptNode.put("text", subDept.getDepartment_name());
+					subDeptNode.put("type", "subdepartment");
+					subDeptNode.put("children", new ArrayList<>());
+
+					// 하위 부서에 속한 구성원 추가
+					if (hasSubDeptMembers) {
+                        for (MemberDto member : subDeptMembers) {
+                            Map<String, Object> memberNode = createMemberNode(member);
+                            ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
+                        }
                     }
-                }
-                
-                children.add(subDeptNode);
-            }
-        } else {
-            // 하위 부서가 없는 경우 상위 부서에 추가
-            List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
-            if (deptMembers != null) {
-                for (MemberDto member : deptMembers) {
-                    Map<String, Object> memberNode = createMemberNode(member);
-                    children.add(memberNode);
+                    
+                    // 하위 부서 추가
+                    children.add(subDeptNode);
+                    hasSubDepartments = true;
                 }
             }
-        } 
-        return node;
-    }
+		}
+
+		// 현재 부서의 구성원 확인 및 추가
+		List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
+		if (deptMembers != null && !deptMembers.isEmpty()) {
+			hasMembers = true;
+			for (MemberDto member : deptMembers) {
+				Map<String, Object> memberNode = createMemberNode(member);
+				children.add(memberNode);
+			}
+		}
+
+		// 부서에 하위 부서나 구성원이 있는 경우에만 노드 반환
+		if (hasMembers || hasSubDepartments) {
+			return node;
+		} else {
+			return null;
+		}
+	}
 
     private Map<String, Object> createMemberNode(MemberDto member) {
         Map<String, Object> memberNode = new HashMap<>();
@@ -187,13 +208,14 @@ public class PermissionController {
         return memberNode;
     }  
     
+    // 등록된 사원 정보
     @GetMapping("/permission/assigned-members")
     @ResponseBody
     public List<Long> getAssignedMembers(@RequestParam("menuNo") Long menuNo) {
         return permissionService.getAssignedMembersByMenuNo(menuNo);
     } 
     
-    // 삭제
+    // 권한자 삭제
     @PostMapping("/permission/deleteMembers")
     public @ResponseBody Map<String, String> deleteMembers(@RequestBody Map<String, Object> requestBody) {
         Map<String, String> resultMap = new HashMap<>();
@@ -225,3 +247,4 @@ public class PermissionController {
     }
  
 }
+                   

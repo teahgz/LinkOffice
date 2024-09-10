@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fiveLink.linkOffice.mapper.VacationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,9 +12,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fiveLink.linkOffice.mapper.VacationMapper;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
+import com.fiveLink.linkOffice.permission.repository.MemberPermissionRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -26,12 +27,14 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
     //[김채영] 1년미만 재직자
     private final VacationMapper vacationMapper;
+    private final MemberPermissionRepository memberPermissionRepository;
     
 	@Autowired
-	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, VacationMapper vacationMapper) {
+	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, VacationMapper vacationMapper, MemberPermissionRepository memberPermissionRepository) {
 		this.memberRepository = memberRepository;
 		this.passwordEncoder = passwordEncoder;
         this.vacationMapper =vacationMapper;
+        this.memberPermissionRepository = memberPermissionRepository;
 	}
 	
 	// Object[] 결과를 MemberDto로 변환
@@ -75,12 +78,30 @@ public class MemberService {
     	if (searchText != null && !searchText.isEmpty()) {
     	    int searchType = searchdto.getSearch_type();
     	    switch (searchType) {
+    	    	// 전체 검색
     	        case 1:
-    	            results = memberRepository.findMembersByDepartmentName(searchText, pageable);
+    	        	results = memberRepository.findMembersByNumberMemberNameDepartmentNamePositionNameStatus(searchText, pageable);
     	            break;
+    	        // 사번 검색
     	        case 2:
+    	            results = memberRepository.findMembersByNumber(searchText, pageable);
+    	            break;
+    	        // 사원명 검색
+    	        case 3:
+    	            results = memberRepository.findMembersByMemberName(searchText, pageable);
+    	            break;
+    	        // 부서명 검색
+    	        case 4:
+    	        	results = memberRepository.findMembersByDepartmentName(searchText, pageable);
+    	            break;
+    	        // 직위명 검색
+    	        case 5:
     	            results = memberRepository.findMembersByPositionName(searchText, pageable);
     	            break;
+    	         // 상태 검색
+    	        case 6:
+    	        	  results = memberRepository.findMembersByMemberStatus(searchText, pageable);
+    	        	  break;
     	        default:
     	            results = memberRepository.findAllMembersWithDetails(pageable);
     	            break;
@@ -188,10 +209,24 @@ public class MemberService {
         if(searchText != null && !searchText.isEmpty()) {
         	int searchType = searchdto.getSearch_type();
         	switch(searchType) {
+        		// 전체 검색
         		case 1 : 
+        			results = memberRepository.findAllMemberStatusByNumberNameDepartmentNamePositionName(searchText,pageable);
+        			break;
+        		// 사번 검색
+        		case 2 : 
+        			results = memberRepository.findAllMemberStatusByMemberNumber(searchText,pageable);
+        			break;
+        		// 사원명 검색
+        		case 3 : 
+        			results = memberRepository.findAllMemberStatusByMemberName(searchText,pageable);
+        			break;
+        		// 부서명 검색
+        		case 4 : 
         			results = memberRepository.findAllMemberStatusByDepartmentName(searchText,pageable);
         			break;
-        		case 2 : 
+        		// 직위명 검색
+        		case 5 : 
         			results = memberRepository.findAllMemberStatusByPositionName(searchText,pageable);
         			break;
         		default:
@@ -208,7 +243,7 @@ public class MemberService {
     }
 	 // [서혜원] 부서별 사원
 	 public List<MemberDto> getMembersByDepartmentNo(Long departmentNo) {
-	    List<Member> members = memberRepository.findByDepartmentNo(departmentNo);
+	    List<Member> members = memberRepository.findByDepartmentNoAndMemberStatus(departmentNo, 0L);
 	    return members.stream().map(member -> MemberDto.builder()
 	            .memberId(member.getMemberNo())
 	            .memberName(member.getMemberName())
@@ -247,7 +282,7 @@ public class MemberService {
 
     // [서혜원] 조직도
     public List<MemberDto> getAllMembersChart() {
-        List<Member> members = memberRepository.findAllByMemberStatus(0L);
+        List<Member> members = memberRepository.findAllByMemberStatusOrderByPosition_PositionLevelAsc(0L);
         return members.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -283,8 +318,7 @@ public class MemberService {
     //[김채영] 1년 미만 재직자 정보
     public List<MemberDto> selectUnderYearMember(int num) {
 
-        return vacationMapper.selectUnderYearMember(num);
-
-    }
-
+        return vacationMapper.selectUnderYearMember(num); 
+    }  
+    
 } 

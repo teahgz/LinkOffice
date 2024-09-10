@@ -6,7 +6,7 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let totalItems = 0;
 
-let allPemissionData = [];  
+let allPermissionData = [];  
 let sortOrder = 'newest'; 
 
 const defaultMenuNo = 2; 
@@ -17,19 +17,10 @@ if (defaultPermissionLink) {
 }
 
 // 정렬 
-document.getElementById('sortNewest').classList.add('selected');
-
-document.getElementById('sortNewest').addEventListener('click', function() {
-    sortOrder = 'newest';
-    document.getElementById('sortNewest').classList.add('selected');
-    document.getElementById('sortOldest').classList.remove('selected');
-    fetchPermissionMembers(document.querySelector(`.permission_Lists a[data-id="${selectedMenuNo}"]`));
-});
-
-document.getElementById('sortOldest').addEventListener('click', function() {
-    sortOrder = 'oldest';
-    document.getElementById('sortOldest').classList.add('selected');
-    document.getElementById('sortNewest').classList.remove('selected');
+document.getElementById('sortOrderSelect').value = 'newest';
+ 
+document.getElementById('sortOrderSelect').addEventListener('change', function() {
+    sortOrder = this.value;
     fetchPermissionMembers(document.querySelector(`.permission_Lists a[data-id="${selectedMenuNo}"]`));
 });
 
@@ -38,26 +29,28 @@ function fetchPermissionMembers(element) {
     const menuNo = selectedMenuNo;
     const functionName = element.textContent;
     const sectionTitle = `${functionName} 권한자 목록`;
-    document.getElementById('sectionTitle').textContent = sectionTitle; 
+    document.getElementById('sectionTitle').textContent = sectionTitle;
 
-	var selectedElements = document.querySelectorAll('.permission_Lists a.selected');
+    document.getElementById('searchMember').value = '';
+
+    var selectedElements = document.querySelectorAll('.permission_Lists a.selected');
     selectedElements.forEach(function(item) {
         item.classList.remove('selected');
     });
-    
+
     element.classList.add('selected');
-      
+
     $.ajax({
         url: `/permission/members?menuNo=${menuNo}`,
         method: 'GET',
         success: function(data) {
-			allPermissionData = sortOrder === 'newest'
+            allPermissionData = sortOrder === 'newest'
                 ? data.sort((a, b) => new Date(b[4]) - new Date(a[4]))
                 : data.sort((a, b) => new Date(a[4]) - new Date(b[4]));
-            
-            totalItems = data.length;
-            allPemissionData = data; 
-            displayMembers(data, currentPage);
+
+            totalItems = allPermissionData.length;  
+            currentPage = 1;  
+            displayMembers(allPermissionData, currentPage);
             setupPagination();
 
             if ($('#organization-chart').jstree(true)) {
@@ -73,8 +66,9 @@ function fetchPermissionMembers(element) {
             });
         }
     });
-} 
- 
+}
+
+// 권한자 목록 조회
 function displayMembers(data, page) {
     const memberListTableBody = document.getElementById('memberList').getElementsByTagName('tbody')[0];
     memberListTableBody.innerHTML = ''; 
@@ -92,8 +86,7 @@ function displayMembers(data, page) {
         row.cells[0].textContent = '등록된 권한자가 없습니다.'; 
         
         document.getElementById('pagination').style.display = 'none';
-   		document.getElementById('sortNewest').style.display = 'none';
-        document.getElementById('sortOldest').style.display = 'none'
+   		document.getElementById('sortOrderSelect').style.display = 'none'; 
     } else {
         pageData.forEach(member => {
 			$('#memberList tr').show();
@@ -106,13 +99,14 @@ function displayMembers(data, page) {
             checkboxCell.appendChild(checkbox);
             
             row.insertCell().textContent = member[2]; // 부서
-            row.insertCell().textContent = `${member[1]} ${member[3]}`; // 사원명 + 직위명
-            row.insertCell().textContent = new Date(member[4]).toISOString().split('T')[0]; // 권한 등록일  
+            row.insertCell().textContent = `${member[1]} ${member[3]}`; // 사원명 + 직위명 
+			const date = new Date(member[4]); 
+			const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+			row.insertCell().textContent = formattedDate; // 권한 등록일  
         });
- 
+ 		setupPagination();
         document.getElementById('pagination').style.display = 'flex';
-    	 document.getElementById('sortNewest').style.display = 'inline-block';
-        document.getElementById('sortOldest').style.display = 'inline-block'
+    	 document.getElementById('sortOrderSelect').style.display = 'inline-block'; 
     }
 
     updateDeleteButtonState();
@@ -121,17 +115,25 @@ function displayMembers(data, page) {
 // 페이징
 function setupPagination() {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const paginationElement = document.getElementById('pagination');
-
+    let paginationElement = document.getElementById('pagination');
+ 
     if (!paginationElement) {
-        const paginationDiv = document.createElement('div');
-        paginationDiv.id = 'pagination';
-        document.getElementById('permissionMembersSection').appendChild(paginationDiv);
-    } 
+        paginationElement = document.createElement('div');
+        paginationElement.id = 'pagination';
+        document.getElementById('permissionMembersSection').appendChild(paginationElement);
+    }
+
     let paginationHTML = '';
 
-    // 이전 버튼
-    paginationHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
+    // 첫 페이지 버튼 (<<)
+    if (currentPage > 1) {
+        paginationHTML += `<button onclick="goToFirstPage()">&lt;&lt;</button>`;
+    }
+
+    // 이전 버튼 (<)
+    if (currentPage > 1) {
+        paginationHTML += `<button onclick="changePage(${currentPage - 1})">&lt;</button>`;
+    }
 
     // 페이지 번호 버튼
     let startPage = Math.max(1, currentPage - 1);
@@ -147,15 +149,36 @@ function setupPagination() {
         paginationHTML += `<button onclick="changePage(${i})" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
     }
 
-    // 다음 버튼
-    paginationHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
+    // 다음 버튼 (>)
+    if (currentPage < totalPages) {
+        paginationHTML += `<button onclick="changePage(${currentPage + 1})">&gt;</button>`;
+    }
 
-    document.getElementById('pagination').innerHTML = paginationHTML;
+    // 마지막 페이지 버튼 (>>)
+    if (currentPage < totalPages) {
+        paginationHTML += `<button onclick="goToLastPage()">&gt;&gt;</button>`;
+    }
+
+    paginationElement.innerHTML = paginationHTML;
 }
- 
+
+function goToFirstPage() {
+    currentPage = 1;
+    displayMembers(allPermissionData, currentPage);
+    setupPagination();  
+}
+
+function goToLastPage() {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    currentPage = totalPages;
+    displayMembers(allPermissionData, currentPage);
+    setupPagination();  
+}
+
 function changePage(page) {
     currentPage = page;
-    fetchPermissionMembers(document.querySelector(`.permission_Lists a[data-id="${selectedMenuNo}"]`));
+    displayMembers(allPermissionData, currentPage);
+    setupPagination(); 
 }
 
 function openOrganizationChartModal() {
@@ -239,6 +262,7 @@ function loadOrganizationChart() {
     });
 }
 
+// 등록된 사원 체크박스 비활성화
 function disableCheckedMembers(assignedMemberNos) {
     var jstree = $('#organization-chart').jstree(true);
     if (jstree) {
@@ -360,15 +384,15 @@ $('#deleteButton').click(function() {
     const selectedMemberNos = $('.member-checkbox:checked').map(function() {
         return $(this).data('memberNo');
     }).get();
- 
     Swal.fire({
         title: '삭제 확인',
         text: '선택한 권한자를 삭제하시겠습니까?',
         icon: 'warning',
         showCancelButton: true,
+        confirmButtonColor: '#EEB3B3',
+        cancelButtonColor: '#C0C0C0',
         confirmButtonText: '삭제',
-        cancelButtonText: '취소',
-        reverseButtons: true
+        cancelButtonText: '취소' 
     }).then((result) => {
         if (result.isConfirmed) {
             const menuNo = Number(selectedMenuNo); 
@@ -415,7 +439,7 @@ $(document).ready(function() {
 function filterMembersBySearch() {
     const searchQuery = document.getElementById('searchMember').value.toLowerCase();
 
-    const filteredData = allPemissionData.filter(member => {
+    const filteredData = allPermissionData.filter(member => {
         const department = member[2].toLowerCase();
         const employeeName = `${member[1]} ${member[3]}`.toLowerCase();
         return department.includes(searchQuery) || employeeName.includes(searchQuery);

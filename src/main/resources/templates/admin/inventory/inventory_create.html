@@ -18,7 +18,7 @@
     <form id="inventoryForm">
     <!-- CSRF 토큰 추가 -->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
-
+	<input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
     <div class="form-group">
         <label for="department">부서 :</label>
         <select id="department" name="department">
@@ -92,12 +92,12 @@
     <div id="registerModal" class="modal modal-register">
         <div class="modal-content">
             <span class="closeRegisterModal">&times;</span>
-            <h3>카테고리 등록</h3>
+            <h3>카테고리 등록</h3><br>
             <form id="categoryForm">
                 <div class="form-group">
                     <label for="newCategory">카테고리 명 :</label>
                     <input type="text" id="newCategory" name="newCategory">
-                </div>
+                </div><br>
             </form>
             <div class="modal-buttons">
                 <button type="button" class="confirm-register" id="registerCategoryBtn">등록</button>
@@ -110,7 +110,7 @@
 </section>
 
 <script>
-// 폼 제출을 AJAX로 처리
+
 document.getElementById("inventoryForm").addEventListener("submit", function(event) {
     event.preventDefault();  
 
@@ -159,6 +159,7 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     }
     var formData = new FormData(this);  // 폼 데이터를 수집
 
+ 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/submit-inventory", true);
     xhr.onload = function() {
@@ -166,7 +167,8 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
             var data = JSON.parse(xhr.responseText);
             if (data.res_code === "200") {
                 Swal.fire('성공', data.res_msg, 'success').then(function() {
-                    window.location.reload();  
+                	var memberNo = document.getElementById('memberNo').value;
+                    window.location.href = '/inventory/list/' + memberNo;
                 });
             } else {
                 Swal.fire('실패', data.res_msg, 'error');
@@ -234,7 +236,8 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
         modal.style.display = "none";
     };
 
-    // 카테고리 등록 모달
+
+ // 카테고리 등록 모달
     var registerModal = document.getElementById("registerModal");
     var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
     var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];
@@ -248,12 +251,14 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
 
     // 등록 모달 닫기
     closeRegisterModal.onclick = function() {
+        document.getElementById("newCategory").value = "";  
         registerModal.style.display = "none";
     };
 
     // 모달 외부 클릭 시 닫기
     window.onclick = function(event) {
         if (event.target == registerModal) {
+            document.getElementById("newCategory").value = "";  
             registerModal.style.display = "none";
         }
     };
@@ -263,8 +268,9 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
         registerCategory();  
     };
 
-    // 카테고리 등록 모달 취소 버튼 클릭 시 모달 닫기
+    // 카테고리 등록 모달 취소 버튼 클릭 시 모달 닫기 및 입력 필드 초기화
     cancelRegisterBtn.onclick = function() {
+        document.getElementById("newCategory").value = "";  
         registerModal.style.display = "none";
     };
 
@@ -283,6 +289,7 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
                     var data = JSON.parse(xhr.responseText);
                     if (data.res_code === "200") {
                         Swal.fire('성공', data.res_msg, 'success').then(function() {
+                            document.getElementById("newCategory").value = "";  
                             registerModal.style.display = "none";
                         });
                     } else {

@@ -5,7 +5,7 @@ function confirmEnd(){
 		showCancelButton: true,
 		confirmButtonColor: '#B1C2DD',
         cancelButtonColor: '#C0C0C0',
-        confirmButtonText: '에',
+        confirmButtonText: '확인',
         cancelButtonText: '취소'
 	}).then((result) => {
 		if(result.isConfirmed){

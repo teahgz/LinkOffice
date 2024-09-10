@@ -20,7 +20,12 @@ public interface MemberPermissionRepository extends JpaRepository<MemberPermissi
 	List<Object[]> findMembersByMenuPermissionNos(@Param("menuPermissionNos") List<Long> menuPermissionNos);
 
 	@Query("SELECT mp FROM MemberPermission mp WHERE mp.memberNo = :memberNo")
-    List<MemberPermission> findByMemberNo(@Param("memberNo") Long memberNo);
+	MemberPermission findByMemberNo(@Param("memberNo") Long memberNo); 
 	 
 	List<MemberPermission> findByMemberNoInAndMenuPermissionNo(List<Long> memberNos, Long menuPermissionNo);
+	
+	@Query("SELECT COUNT(mp) > 0 FROM MemberPermission mp WHERE mp.memberNo = :memberNo AND mp.menuPermissionNo BETWEEN :startNo AND :endNo AND mp.memberPermissionStatus = 0")
+	boolean existsByMemberNoAndMenuPermissionNoRange(@Param("memberNo") Long memberNo, @Param("startNo") Long startNo, @Param("endNo") Long endNo); 
+	
+	boolean existsByMemberNoAndMemberPermissionStatus(Long memberNo, int status);
 }

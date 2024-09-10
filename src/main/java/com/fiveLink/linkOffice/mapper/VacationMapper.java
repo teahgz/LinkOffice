@@ -25,5 +25,8 @@ public interface VacationMapper {
 
     List<MemberDto> selectUnderYearMember(int num);
 
-
+    int contVacationYear(int year);
+    String selectVacationDesignated(int num);
+ int selectVacationStandardStatus();
+    int checkType(String name);
 }

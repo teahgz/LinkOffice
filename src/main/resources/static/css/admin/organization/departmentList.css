@@ -44,7 +44,7 @@ body {
 
 button {
     background-color: #B1C2DD;
-    color: #fff;
+    color: rgb(0, 0, 0);
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -53,17 +53,40 @@ button {
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #9CAFC7;
 }
+
+.sub-departments {
+    display: flex; 
+}
+
+.department_info {
+    font-size: 17px;
+    font-weight: bold;
+    margin-right: 10px; /* 제목과 리스트 사이의 간격 */
+}
+ 
 
 .department_ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .department_li {
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* 리스트 항목 사이의 간격 */
 }
+
+.info_content_tag a {
+    text-decoration: none;
+    color: #2994da;
+    transition: color 0.3s;
+}
+
+.info_content_tag a:hover {
+    color: #163e65;
+}
+
 
 .container a, .details a {
     color: #2994da;
@@ -158,18 +181,17 @@ form input[type="text"], form select {
     justify-content: flex-end;
     padding: 10px 20px;
 }
-
-.department_info {
-	font-size: 17px;
-	font-weight: bold;
-}
-
+ 
 .info_content1 {
 	margin-left : 92px;
 }
 
 .info_content2 {
 	margin-left : 57px;
+}
+
+.department_list {
+	margin-left : 80px;
 }
 
 .list_subdep {
@@ -203,4 +225,9 @@ form input[type="text"], form select {
 
 form label {
 	font-weight: bold;
+}
+
+.selected {
+    color: red;
+    font-weight: bold;
 }

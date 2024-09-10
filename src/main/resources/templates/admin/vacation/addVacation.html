@@ -22,7 +22,7 @@
                                 <h3>연차별 휴가 지정</h3>
                             </div>
                             <div>
-                                <p style="color: red; font-size: 10px;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
+                                <p style="color: red; font-size: 15px;">* 입사일 기준 해당 년도 연차 갯수 지정</p>
                             </div>
 
                         </div>
@@ -49,7 +49,7 @@
                                    th:value="${list.vacation_annual_leave}"
                                    maxlength="4" placeholder="휴가 갯수 입력">
                             <input type="hidden" id="vacationPk" th:value="${list.vacation_no}"/>
-                        </div>
+                        </div> 
                         <div class="input-group" th:if="${countVacation == 0}">
                             <label for="year1">1년차</label>
                             <input type="number" id="year1" maxlength="4" name="year1" placeholder="휴가 갯수 입력">
@@ -152,11 +152,6 @@
                         </div>
 
                     </div>
-
-
-
-
-
                 </form>
 
                 <form id="oneUnderForm" class="oneUnderForm">
@@ -164,15 +159,16 @@
                     <div>
                         <div class="vacation_ele1">
                             <h3>1년 미만 월차 지급 여부</h3>
+                            <div class="checkButton" style="text-align: center; margin-top: 20px;">
+                                <!-- countCheckOneYear가 0보다 크면 버튼을 비활성화 -->
+                                <button type="submit" th:disabled="${countCheckOneYear > 0}">등록</button>
+                            </div>
                         </div>
                         <!-- 분리되는 부분 -->
                         <div>
-                            <p style="color: red; font-size: 10px;">* 최초 설정만 가능</p>
+                            <p style="color: red; font-size: 13px;">* 최초 설정만 가능</p>
                         </div>
-                        <div class="checkButton" style="text-align: center; margin-top: 20px;">
-                            <!-- countCheckOneYear가 0보다 크면 버튼을 비활성화 -->
-                            <button type="submit" th:disabled="${countCheckOneYear > 0}">등록</button>
-                        </div>
+
                     </div>
 
                     <div>
@@ -238,24 +234,22 @@
                             </td>
                         </tr>
                         <tr class="edit-row" style="display: none;">
+                            <td colspan="3">
+                                <form id ="editVacationType">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
 
+                                    <input type="hidden" id="editVacationTypeNo" th:value="${list.vacation_type_no}" />
+                                    <input type="text" id="editVacationTypeName" th:value="${list.vacation_type_name}" />
 
-                                <td colspan="3">
-                                    <form id ="editVacationType">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                        <input type="hidden" id="editVacationTypeNo" th:value="${list.vacation_type_no}" />
-                                        <input type="text" id="editVacationTypeName" th:value="${list.vacation_type_name}" />
+                                    <input type="number" id="editVacationTypeCalculate" th:value="${list.vacation_type_calculate}" />
 
-                                        <input type="number" id="editVacationTypeCalculate" th:value="${list.vacation_type_calculate}" />
-                                        <button type="button" class="save-btn">저장</button>
-                                        <button type="button" class="cancel-btn">취소</button>
-                                    </form>
-                                </td>
+                                    <button type="button" class="save-btn">저장</button>
+                                    <button type="button" class="cancel-btn">취소</button>
 
 
-
-
+                                </form>
+                            </td>
 
 
                         </tr>

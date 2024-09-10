@@ -36,7 +36,7 @@ public class PositionController {
     @GetMapping("/position")
     public String listPositions(Model model, @RequestParam(value = "id", required = false) Long id) {
         List<PositionDto> positions = positionService.getAllPositionsForSelect();
-        List<PositionDto> topLevelPositions = positionService.getAllPositionsForSelect(id);
+        List<PositionDto> topLevelPositions = positionService.getAllPositionsForSelect();
         Long memberNo = memberService.getLoggedInMemberNo();
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
 

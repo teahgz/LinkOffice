@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.domain.MemberPermission;
 import com.fiveLink.linkOffice.member.domain.MenuPermission;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.repository.PermissionCodeRepository;
+import com.fiveLink.linkOffice.member.service.MemberPermissionService;
 import com.fiveLink.linkOffice.permission.domain.Menu;
 import com.fiveLink.linkOffice.permission.domain.MenuDto;
 import com.fiveLink.linkOffice.permission.repository.MemberPermissionRepository;
@@ -25,14 +26,18 @@ public class PermissionService {
     private final PermissionCodeRepository permissionCodeRepository;
     private final MemberPermissionRepository memberPermissionRepository;
     private final MenuPermissionRepository menuPermissionRepository;
+    private final MemberPermissionService memberPermissionService;
+    private final MemberRepository memberRepository;
 
     @Autowired
     public PermissionService(MenuRepository menuRepository, PermissionCodeRepository permissionCodeRepository, 
-                             MemberPermissionRepository memberPermissionRepository, MenuPermissionRepository menuPermissionRepository) {
+                             MemberPermissionRepository memberPermissionRepository, MenuPermissionRepository menuPermissionRepository, MemberPermissionService memberPermissionService, MemberRepository memberRepository) {
         this.menuRepository = menuRepository;
         this.permissionCodeRepository = permissionCodeRepository;
         this.memberPermissionRepository = memberPermissionRepository;
         this.menuPermissionRepository = menuPermissionRepository;
+        this.memberPermissionService = memberPermissionService;
+        this.memberRepository = memberRepository;
     }
 
     public List<MenuDto> getPermissionList() {
@@ -69,6 +74,7 @@ public class PermissionService {
         Long menuNoLong = Long.parseLong(menuNo);
         Long menuPermissionNo = (menuNoLong == 2) ? 3 : getMenuPermissionNo(menuNoLong);
 
+        // 새 권한 부여
         for (String memberNo : memberNos) {
             try {
                 Long memberNoLong = Long.parseLong(memberNo);
@@ -78,12 +84,15 @@ public class PermissionService {
                     .memberPermissionCreateDate(LocalDateTime.now())
                     .memberPermissionUpdateDate(LocalDateTime.now())
                     .build();
+                    
                 memberPermissionRepository.save(memberPermission); 
+                  
             } catch (Exception e) {
                 System.err.println("권한자 등록 오류: " + e.getMessage());
             }
         } 
     }
+
 
     private Long getMenuPermissionNo(Long menuNo) {
         MenuPermission menuPermission = menuPermissionRepository.findByMenuNo(menuNo);
@@ -105,11 +114,22 @@ public class PermissionService {
         
         for (MemberPermission memberPermission : memberPermissions) {
             memberPermission.setMemberPermissionStatus(1L);
-        } 
+        }  
         memberPermissionRepository.saveAll(memberPermissions); 
 
         return menuPermissionNo;
     }
 
+    // member_permission_status가 0인 값 존재 확인
+    public boolean hasInactivePermissions(Long memberNo) {
+        return memberPermissionRepository.existsByMemberNoAndMemberPermissionStatus(memberNo, 0);
+    }
 
+    // member_additional 상태 업데이트
+    @Transactional
+    public void updateMemberAdditionalStatus(Long memberNo) {
+        // member_permission_status가 0인 레코드가 있으면 1, 없으면 0으로 업데이트
+        Long newStatus = hasInactivePermissions(memberNo) ? 1L : 0L;
+        memberRepository.updateMemberAdditionalStatus(memberNo, newStatus);
+    }
 }

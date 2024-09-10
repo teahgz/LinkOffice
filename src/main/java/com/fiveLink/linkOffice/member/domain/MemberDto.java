@@ -113,6 +113,7 @@ public class MemberDto {
 					.member_new_digital_img(member.getMemberNewDigitalImg())
 					.member_status(member.getMemberStatus())
 					.member_additional(member.getMemberAdditional())
+					.member_one_under(member.getMemberOneUnder())
 					.member_vacation_count(member.getMemberVacationCount())
 					.member_vacation_date(member.getMemberVacationDate())
 					.build();

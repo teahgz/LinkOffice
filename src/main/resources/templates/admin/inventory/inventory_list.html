@@ -115,20 +115,28 @@
         var table = $('#example').DataTable();
         table.clear(); 
 
-        data.forEach(function(item, index) {
-            var row = `
-                <tr data-inventory_no="${item.inventory_category_no}">
-                    <td class="details-control"></td>
-                    <td>${index + 1}</td>
-                    <td>${item.inventory_category_name}</td>
-                    <td>${item.inventory_price}</td> 
-                    <td>${item.inventory_quantity}</td> 
-                    <td>${item.inventory_location}</td> 
-                    <td>${item.inventory_purchase_date}</td> 
-                </tr>
-            `;
-            table.row.add($(row)).draw(false);
-        });
+        if (data.length === 0) {
+            table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
+            table.draw();  
+            table.page.len(-1).draw(); 
+        } else {
+            data.forEach(function(item, index) {
+                var row = `
+                    <tr data-inventory_no="${item.inventory_category_no}">
+                        <td class="details-control"></td>
+                        <td>${index + 1}</td>
+                        <td>${item.inventory_category_name}</td>
+                        <td>${item.inventory_price}</td> 
+                        <td>${item.inventory_quantity}</td> 
+                        <td>${item.inventory_location}</td> 
+                        <td>${item.inventory_purchase_date}</td> 
+                    </tr>
+                `;
+                table.row.add($(row));
+            });
+            table.draw(false);
+            table.page.len(10).draw(); 
+        }
     }
 
     // 화살표 클릭 시 세부 비품 표시
@@ -181,25 +189,53 @@
     }
     
     $(document).ready(function() {
-        var csrfToken = $('#csrfToken').val();  
-
         var table = $('#example').DataTable({
             "paging": true,
             "searching": true,
             "ordering": true,
             "info": false,
             "autoWidth": false,
-            "pagingType": "full_numbers",  // 처음(First)과 마지막(Last) 버튼 추가
+            "pagingType": "full_numbers",  
             "language": {
                 "emptyTable": "부서를 선택해주세요.",
+                "zeroRecords": "검색 결과가 없습니다.",
                 "paginate": {
                     "first": "<<",
                     "last": ">>",
                     "next": ">",
                     "previous": "<"
                 }
+            },
+            "drawCallback": function(settings) {
+                // 데이터가 없을 때 페이징 숨기기
+                var api = this.api();
+                var records = api.rows({ page: 'current' }).data().length;
+                if (records === 0) {
+                    $('.dataTables_paginate').hide();  
+                } else {
+                    $('.dataTables_paginate').show(); 
+                }
+
+                // 페이지 정보를 얻어서 첫 페이지, 마지막 페이지 처리
+                var pageInfo = api.page.info();
+                
+                // 첫 페이지에서는 'previous'와 'first' 숨기기
+                if (pageInfo.page === 0) {
+                    $('.paginate_button.previous, .paginate_button.first').hide();
+                } else {
+                    $('.paginate_button.previous, .paginate_button.first').show();
+                }
+
+                // 마지막 페이지에서는 'next'와 'last' 숨기기
+                if (pageInfo.page === pageInfo.pages - 1) {
+                    $('.paginate_button.next, .paginate_button.last').hide();
+                } else {
+                    $('.paginate_button.next, .paginate_button.last').show();
+                }
             }
         });
+
+        // 페이지 길이 옵션 제거
         $('.dataTables_length').remove();
 
         // 화살표 클릭 시 세부 비품 표시
@@ -208,7 +244,7 @@
             var row = table.row(tr);
             var inventory_category_no = tr.attr('data-inventory_no');
 
-            if (row.child.isShown()) {             
+            if (row.child.isShown()) {
                 row.child.hide();
                 tr.removeClass('shown');
             } else {
@@ -216,6 +252,8 @@
                 tr.addClass('shown');
             }
         });
+  
+
 
         // 세부 비품명 클릭 시 모달 표시
         $('#example tbody').on('click', 'a.inventory-name', function(e) {
@@ -280,7 +318,7 @@
                         if(response.res_code === "200") {
                             Swal.fire('성공', response.res_msg, 'success').then(() => {
                                 $('#inventoryModal').hide();
-                                location.reload();
+                                fetchInventoryByDepartment(); 
                             });
                         } else {
                             Swal.fire('실패', "수정 실패: " + response.res_msg, 'error');
@@ -295,11 +333,9 @@
     }
 
     function deleteItem() {
-        var csrfToken = $('#csrfToken').val();  
-
+        const csrfToken = $('#csrfToken').val();
         const no = $('#itemNo').val();
 
-        // SweetAlert confirm 대체
         Swal.fire({
             title: '정말 삭제하시겠습니까?',
             icon: 'warning',
@@ -308,25 +344,32 @@
             cancelButtonText: '취소'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: '/inventory/delete/' + no,
+                fetch(`/inventory/delete/${no}`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken  
-                    },
-                    success: function(response) {
-                        Swal.fire('성공', '삭제되었습니다.', 'success').then(() => {
-                            $('#inventoryModal').hide();
-                            location.reload();
-                        });
-                    },
-                    error: function() {
-                        Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 좋지 않습니다.');
+                    }
+                    return response.json(); 
+                })
+                .then(() => {
+                    Swal.fire('성공', '삭제되었습니다.', 'success').then(() => {
+                        $('#inventoryModal').hide();
+                        fetchInventoryByDepartment(); 
+                    });
+                })
+                .catch(() => {
+                    Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
                 });
             }
         });
     }
+
 
     function closeModal() {
         $('#inventoryModal').hide();

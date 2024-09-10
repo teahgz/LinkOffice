@@ -4,6 +4,8 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacation.domain.Vacation;
+import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import com.fiveLink.linkOffice.vacation.repository.VacationCheckRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,35 +33,44 @@ public class AddVacationSchedulerService {
         this.vacationService = vacationService;
     }
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
-// @Scheduled(cron = "*/5 * * * * ?")
-@Transactional
+    @Transactional
     public void addVacationScheduler() {
+        if(vacationService.countCheckOneYear() != 0){
+            // 1년 미만 재직자 처리
+            List<MemberDto> underOneYearMembers = memberService.selectUnderYearMember(1);
+            for (MemberDto dto : underOneYearMembers) {
+                if (dto.getMember_vacation_date() == null || dto.getMember_vacation_date().isEmpty()) {
+                    if (firstVacation(dto.getMember_hire_date())) {
+                        int monthDif = (int) Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).toTotalMonths();
+                        //만약에 테스트용으로 입사기준 날짜가 다다르게 들어갈 경우를 대비해서 3개월 차이 나면 3개입력될 수 있도록 구성
+                        vacationService.incrementVacation(dto.getMember_no(), monthDif);
+                    }
+                } else {
+                    if (monthVacation(dto.getMember_vacation_date())) {
+                        vacationService.incrementVacation(dto.getMember_no(), 1);
+                    }
+                }
+            }
 
-        // 1년 미만 재직자 처리
-        List<MemberDto> underOneYearMembers = memberService.selectUnderYearMember(1);
-        for (MemberDto dto : underOneYearMembers) {
-            if (dto.getMember_vacation_date() == null || dto.getMember_vacation_date().isEmpty()) {
-                if (firstVacation(dto.getMember_hire_date())) {
-                    int monthDif = (int) Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).toTotalMonths();
-                    //만약에 테스트용으로 입사기준 날짜가 다다르게 들어갈 경우를 대비해서 3개월 차이 나면 3개입력될 수 있도록 구성
-                    vacationService.incrementVacation(dto.getMember_no(), monthDif);
-                }
-            } else {
-                if (monthVacation(dto.getMember_vacation_date())) {
-                    vacationService.incrementVacation(dto.getMember_no(), 1);
+        }else if(vacationService.countCheckOneYear() != 0 || vacationService.countCheckOneYear() == 0){
+            // 1년 이상 재직자 처리
+            List<MemberDto> overOneYearMembers = memberService.selectUnderYearMember(0);
+            for (MemberDto dto : overOneYearMembers) {
+                String vacationDate = vacationService.selectVacationDesignated(1); //지정일 조회
+
+                int vacationStandardStatus = vacationService.selectVacationStandardStatus();
+                String referenceDate = (vacationDate != null) ? vacationDate : dto.getMember_hire_date(); // 입사일 기준
+
+                if (resetDate(referenceDate, vacationStandardStatus)) {
+                    int yearSinceJoin = Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).getYears();
+                    int vacationDay = getVacationDaysByYears(yearSinceJoin);
+                    vacationService.resetVacation(dto.getMember_no(), vacationDay);
                 }
             }
         }
-        // 1년 이상 재직자 처리
-        List<MemberDto> overOneYearMembers = memberService.selectUnderYearMember(0);
-        for (MemberDto dto : overOneYearMembers) {
-            if (oneUpJoined(dto.getMember_hire_date())) {
-                // 입사일 기준으로 1년이 경과한 경우 새로운 휴가 지급
-                int yearSinceJoin = Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).getYears();
-                int vacationDay = getVacationDaysByYears(yearSinceJoin);
-                vacationService.resetVacation(dto.getMember_no(), vacationDay);
-            }
-        }
+
+
+
     }
 
     // 입사일 기준 첫 번째 휴가 지급 시점 확인
@@ -88,26 +99,33 @@ public class AddVacationSchedulerService {
         }
     }
 
-    // 1년 경과 확인
-    private boolean oneUpJoined(String joiningDate) {
+    // 기준일에 맞춰서 휴가 리셋 시점 확인
+    private boolean resetDate(String referenceDate, int status) {
         try {
-            LocalDate jDate = LocalDate.parse(joiningDate);
-            return Period.between(jDate, LocalDate.now()).getYears() >= 1;
-        } catch (DateTimeParseException e) {
-            // 날짜 파싱 실패 시 예외 처리
+            LocalDate refDate = LocalDate.parse(referenceDate);
+
+            if (status == 1) {
+                // 지정일 기준
+                return LocalDate.now().isEqual(refDate) || LocalDate.now().isAfter(refDate);
+            } else if (status == 0) {
+                // 입사일 기준
+                return LocalDate.now().isEqual(refDate) || LocalDate.now().isAfter(refDate);
+            }
+
             return false;
+
+
+        } catch (DateTimeParseException e) {
+           return false;
         }
     }
 
     // 연차에 따른 휴가 개수 반환
     private int getVacationDaysByYears(int years) {
-        // 회사 정책에 따른 휴가 개수 로직 구현
-        if (years >= 10) {
-            return 20; // 예시: 10년 이상일 경우 20일
-        } else if (years >= 5) {
-            return 15; // 예시: 5년 이상일 경우 15일
-        }
-        return 10; // 기본 10일
+        // 휴가 일수 저장된 테이블에서 연차에 따른 휴가 개수 조회
+        int count = vacationService.contVacationYear(years);
+
+        return count;
     }
 
 }

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/admin/meeting/meetingroomList.css}" rel="stylesheet" type="text/css">
+        <section>
+            <div>
+                <h1>회의실 목록</h1>
+                <div class="button-wrapper">
+                    <button type="button" id="addMeetingButton">회의실 등록</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>회의실 이름</th>
+                            <th>정원</th>
+                            <th>이용 가능 시간</th>
+                            <th>이용 마감 시간</th>
+                            <th>이미지</th>
+                            <th>새 이미지</th>
+                            <th>설명</th>
+                            <th>상세보기</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="meeting : ${meetings}">
+                            <td th:text="${meeting.meeting_name}">Meeting Name</td>
+                            <td th:text="${meeting.meeting_max}">Max Capacity</td>
+                            <td th:text="${meeting.meeting_available_start}">Available Start</td>
+                            <td th:text="${meeting.meeting_available_end}">Available End</td>
+                            <td th:text="${meeting.meeting_ori_image}">Original Image</td>
+                            <td th:text="${meeting.meeting_new_image}">New Image</td>
+                            <td th:text="${meeting.meeting_comment}">Comment</td>
+                            <td>
+                                <button type="button" th:data-id="${meeting.meeting_no}" class="btn-details">상세보기</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+		
+        <!-- 등록 모달 -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 class="modal-title">회의실 정보 등록</h2>
+                <form id="addForm">
+                    <div class="form-group">
+                        <label for="meetingName">회의실 이름</label>
+                        <input type="text" id="meetingName" name="meetingName">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingMax">수용 인원</label>
+                        <input type="number" id="meetingMax" name="meetingMax" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingAvailableStart">이용 가능 시간</label>
+                        <div class="time-range">
+                            <input type="time" id="meetingAvailableStart" name="meetingAvailableStart">
+                            <span>~</span>
+                            <input type="time" id="meetingAvailableEnd" name="meetingAvailableEnd" disabled>
+                        </div>
+                    </div>
+
+                    <div class="time-set-msg">
+                        30분 단위 설정
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingComment">설명</label>
+                        <textarea id="meetingComment" name="meetingComment"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingImage">이미지</label>
+                        <div class="file-input-wrapper">
+                            <img id="imagePreview" src="" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label></label>
+                        <input type="file" id="meetingImage" name="meetingImage" accept=".png, .jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label></label>
+                        <button type="submit">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div> 
+
+        <script th:src="@{/js/admin/meeting/meetingroomList.js}"></script>
+    </th:block>
+</html>

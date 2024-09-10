@@ -26,8 +26,10 @@
     flex-direction: column;
 }
 .vacation_ele1 {
-    display: flex;
     flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
  .vacation_title {
      width: 85%;
@@ -44,18 +46,17 @@
     margin-left : 1vw;
 }
 
-.addVacation_button button {
+button {
   padding: 0.5vw 1vw;
   border: none;
   border-radius: 0.4vw;
   cursor: pointer;
   background-color: #f9f9f9;
-  margin-
   font-size: 1.2vw;
 }
 
 
-.addVacation_button button:hover {
+button:hover {
   opacity: 0.8;
 }
 
@@ -96,7 +97,16 @@
     text-align: center;
 }
 
-.addVacation_submit button {
+.delete-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius : 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #EEB3B3;
+}
+
+button{
     padding: 10px 20px;
     font-size: 16px;
     border-radius : 10px;
@@ -104,31 +114,23 @@
     cursor: pointer;
     background-color: #B1C2DD;
 }
-
-addVacation_update button{
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius : 10px;
-    border: none;
-    cursor: pointer;
-    background-color: B3C7EE
-}
 .vacationType_click {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom : 1vw;
 }
 .vacationTypeFormContainer {
     display: flex;
-    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    flex-wrap: wrap;
     max-width: 100%;
-    gap: 1.2vw; /* Optional: Add a gap between items */
+    gap: 1.2vw;
 }
 
 .vacationTypeFormContainer .input-group {
     display: flex;
     align-items: center;
-    width: calc(50% - 1vw); /* Set width to 50% minus the gap for two items per row */
+    width: calc(50% - 1vw);
     box-sizing: border-box;
     margin-bottom: 1vw;
 }
@@ -197,4 +199,8 @@ th {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1vw;
+}
+
+.oneUnderForm {
+    margin-bottom : 2vw;
 }

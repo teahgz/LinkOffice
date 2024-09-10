@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<th:block layout:fragment="content">
+    <link th:href="@{/css/admin/approval/approval_detail.css}" rel="stylesheet" type="text/css">
+    <section th:each="form : ${formList}">
+        <h1>결재 양식 조회</h1>
+        <div class="form_page">
+            <div class="approval_form">
+                <div class="form_header">
+                    <span class="form_title" th:text="${form.approval_form_title}"></span>
+                    <span class="form_date">등록일 </span>
+                    <span class="form_date" th:text="${form.format_create_date}"></span>
+                </div>
+                <div class="form_content">
+                    <div class="table_container" th:utext="${form.approval_form_content}"></div>
+                </div>
+                <div class="button_container">
+                    <button class="delete_button">삭제</button>
+                    <div class="right_buttons">
+                        <a th:href="@{/admin/approval/edit/{no}(no=${form.approval_form_no})}" class="edit_button">수정</a>
+                        <button class="list_button" onclick="history.back()">목록</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script th:src="@{/js/admin/approval/approval_detail.js}"></script>
+</th:block>
+</html>
