@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fiveLink.linkOffice.mapper.ChatMapper"> <!-- namespace 수정 -->
+<!-- 채팅방 목록 가져오기   -->
+    <select id="selectChatList" parameterType="java.lang.Long" resultType="com.fiveLink.linkOffice.chat.domain.ChatMemberDto">
+        SELECT *
+        FROM fl_chat_member
+        WHERE member_no = #{memberNo}
+    </select>
+<!-- 채팅 내용 가져오기   -->
+    <select id="getChatMessages" parameterType="java.lang.Long" resultType="com.fiveLink.linkOffice.chat.domain.ChatMessageDto">
+        SELECT *
+        FROM fl_chat_message
+        WHERE chat_room_no = #{roomNo}
+        ORDER BY chat_message_create_date ASC;
+    </select>
+
+</mapper>
