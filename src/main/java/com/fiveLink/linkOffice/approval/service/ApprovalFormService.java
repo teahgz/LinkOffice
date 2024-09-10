@@ -74,7 +74,13 @@ public class ApprovalFormService {
     	ApprovalForm result = approvalFormRepository.save(approvalform);
     	
     	return result;
-    	
+    }
+    
+    // 관리자 전자결재 양식 삭제(update)
+    public ApprovalForm deleteApprovalForm(ApprovalFormDto dto) {
+    	ApprovalForm approvalform = dto.toEntity();
+    	ApprovalForm result = approvalFormRepository.save(approvalform);
+    	return result;
     }
     
 }
