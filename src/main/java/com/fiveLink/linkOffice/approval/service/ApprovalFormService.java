@@ -24,8 +24,6 @@ public class ApprovalFormService {
     	
         Page<ApprovalForm> forms = null;
         
-        
-        
         String searchText = searchdto.getSearch_text();
         if(searchText != null && "".equals(searchText) == false) {
         	forms = approvalFormRepository.findByaprovalFormTitleContaining(searchText, pageable, 1L);
@@ -35,7 +33,7 @@ public class ApprovalFormService {
         
         List<ApprovalFormDto> approvalFormDtoList = new ArrayList<ApprovalFormDto>();
         for(ApprovalForm af : forms) {
-        	ApprovalFormDto dto = new ApprovalFormDto().toDto(af);
+        	ApprovalFormDto dto = af.toDto();
         	approvalFormDtoList.add(dto);
         }
         
@@ -43,15 +41,12 @@ public class ApprovalFormService {
         return new PageImpl<>(approvalFormDtoList, pageable, forms.getTotalElements());
     }
 
-    
-    
     private ApprovalFormDto convertToDto(ApprovalForm form) {
         return ApprovalFormDto.builder()
                 .approval_form_no(form.getApprovalFormNo())
                 .approval_form_title(form.getApprovalFormTitle())
                 .approval_form_content(form.getApprovalFormContent())
                 .approval_form_create_date(form.getApprovalFormCreateDate())
-                .approval_form_update_date(form.getApprovalFormUpdateDate())
                 .approval_form_status(form.getApprovalFormStatus())
                 .build();
     }

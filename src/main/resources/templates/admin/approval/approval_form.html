@@ -8,22 +8,19 @@
        		 <h1>양식함</h1>
 		      <div class="list_form">
 				<div class="search_sort_container">
-				   <!-- 검색 조건이 있을 때 -->
 					<div class="search_container" th:if="${searchDto != null}">
 					    <form th:action="@{/admin/approval/form}" th:object="${searchDto}" method="get">
-					        <input type="text" class="search_text" name="search_text" th:field="*{search_text}" placeholder="검색어를 입력하세요.">
+					        <input type="text" class="search_text" name="search_text" th:field="*{search_text}" placeholder="양식을 입력하세요.">
 					        <button type="submit" class="search_button">검색</button>
 					    </form>
 					</div>
 					
-					<!-- 검색 조건이 없을 때 -->
 					<div class="search_container" th:if="${searchDto == null}">
 					    <form th:action="@{/admin/approval/form}" method="get">
 					        <input type="text" class="search_text" name="search_text" placeholder="검색어 입력">
 					        <button type="submit" class="search_button">검색</button>
 					    </form>
 					</div>
-					<!-- 정렬 -->
 					<div class="sort_container">
 					    <form th:action="@{/admin/approval/form}" method="get">
 					        <select name="sort" id="sort" onchange="this.form.submit()">
@@ -42,7 +39,7 @@
 		          <thead>
 		            <tr>
 		              <th>번호</th>
-		              <th>제목</th>
+		              <th>양식</th>
 		              <th>등록일</th>
 		            </tr>
 		          </thead>
@@ -55,8 +52,8 @@
 				  </tr>
 		          </th:block>
 		          <th:block th:if="${!#lists.isEmpty(formList)}">
-		            <tr th:each="form : ${formList}" th:data_form_no="${form.approval_form_no}"class="form_row">
-		              <td ></td>
+		            <tr th:each="form ,formStat : ${formList}" th:data_form_no="${form.approval_form_no}"class="form_row">
+		              <td th:text="${(page.pageable.pageSize*page.pageable.pageNumber)+formStat.count}"></td>
 		              <td th:text="${form.approval_form_title}"></td>
 		              <td th:text="${form.format_create_date}"></td>
 		            </tr>

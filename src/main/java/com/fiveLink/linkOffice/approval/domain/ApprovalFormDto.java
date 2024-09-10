@@ -21,7 +21,6 @@ public class ApprovalFormDto {
 	private String approval_form_title;
 	private String approval_form_content;
 	private LocalDateTime approval_form_create_date;
-	private LocalDateTime approval_form_update_date;
 	private Long approval_form_status;
 	
 	private String format_create_date;
@@ -34,19 +33,7 @@ public class ApprovalFormDto {
 				.approvalFormTitle(approval_form_title)
 				.approvalFormContent(approval_form_content)
 				.approvalFormCreateDate(approval_form_create_date)
-				.approvalFormUpdateDate(approval_form_update_date)
 				.approvalFormStatus(approval_form_status)
-				.build();
-	}
-	
-	public static ApprovalFormDto toDto(ApprovalForm approvalForm) {
-		return ApprovalFormDto.builder()
-				.approval_form_no(approvalForm.getApprovalFormNo())
-				.approval_form_title(approvalForm.getApprovalFormTitle())
-				.approval_form_content(approvalForm.getApprovalFormContent())
-				.approval_form_create_date(approvalForm.getApprovalFormCreateDate())
-				.approval_form_update_date(approvalForm.getApprovalFormUpdateDate())
-				.approval_form_status(approvalForm.getApprovalFormStatus())
 				.build();
 	}
 	
