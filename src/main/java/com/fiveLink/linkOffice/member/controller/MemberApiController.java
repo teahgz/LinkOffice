@@ -106,7 +106,9 @@ public class MemberApiController {
 		     
 		    String newAdr = roadAddress + " " + detailAddress; 
 		    
-		    if(!newAdr.isEmpty()) {
+		    if(newAdr.trim().isEmpty()) {
+		    	memberdto.setMember_address(memberdto.getMember_address());
+		    } else {
 		    	memberdto.setMember_address(newAdr);
 		    }
 		    
