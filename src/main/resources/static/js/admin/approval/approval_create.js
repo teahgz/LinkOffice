@@ -113,12 +113,41 @@ const editorConfig = {
         contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
     }
 };
-
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
-        // 에디터의 높이 설정
         editor.ui.view.editable.element.style.height = '500px';
+
+        document.querySelector('.submit-button').addEventListener('click', () => {
+            const editorData = editor.getData();
+            const approvalTitle = document.querySelector('#approval_title').value;
+            const csrfToken = document.querySelector('#csrf_token').value;
+
+            console.log('에디터내용', editorData);
+            console.log('양식 이름', approvalTitle);
+            console.log('토큰', csrfToken);
+
+            const formData = new FormData();
+            formData.append('approval_title', approvalTitle);
+            formData.append('editor_content', editorData);
+            formData.append('csrf', csrfToken);
+
+            fetch('/admin/approval/create', {
+                method: 'post',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken 
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('넘어오는 Map', data);
+            })
+            .catch(error => {
+                console.error('에러', error);
+            });
+        });
     })
     .catch(error => {
-        console.error(error);
+        console.error('에디터 에러', error);
     });

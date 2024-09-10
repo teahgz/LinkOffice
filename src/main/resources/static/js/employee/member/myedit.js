@@ -29,7 +29,7 @@ pwform.addEventListener('submit', (e) => {
 	            title: '비밀번호가 일치하지 않습니다!',
 	            confirmButtonText: '닫기'
 	        }).then(() => {
-	            document.getElementById('pw_verify').value = ""; // 비밀번호 입력 필드 초기화
+	            document.getElementById('pw_verify').value = ""; 
 	        });
     }
 	})
