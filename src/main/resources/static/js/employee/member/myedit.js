@@ -22,7 +22,6 @@ pwform.addEventListener('submit', (e) => {
 	.then(data=>{
 		if(data.res_code == '200'){
 			document.getElementById('myModal').style.display = 'none';
-        	sessionStorage.setItem('modalClosed', 'true');
 		}else {
 	        Swal.fire({
 	            icon: 'error',
@@ -144,7 +143,7 @@ form.addEventListener('submit', (e) => {
     formData.append('member_no', memberNo); 
 
     fetch('/employee/member/myedit/' + memberNo, {
-        method: 'POST',
+        method: 'post',
         headers: {
             'X-CSRF-TOKEN': csrfToken 
         },
@@ -159,7 +158,6 @@ form.addEventListener('submit', (e) => {
                 text: data.res_msg,
                 confirmButtonText: '닫기'
             }).then(() => {
-                sessionStorage.removeItem('modalClosed'); // 모달 상태 리셋
                 location.href = "/employee/member/mypage/" + memberNo;
             });
         } else {
