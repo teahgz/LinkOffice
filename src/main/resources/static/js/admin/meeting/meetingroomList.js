@@ -489,55 +489,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-    });
-    
-    // 검색 
-    searchButton.addEventListener('click', function () {
-        searchMeetingRooms();
-    });
-
-    // 엔터 키 눌렀을 때도 검색 실행
-    searchInput.addEventListener('keyup', function (event) {
-        if (event.key === 'Enter') {
-            searchMeetingRooms();
-        }
-    });
-
-    function searchMeetingRooms() {
-        var searchText = searchInput.value;
-
-        $.ajax({
-            type: 'GET',
-            url: '/meetingroomList/search',   
-            data: {
-                search_text: searchText
-            },
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function (response) {
-                var tableBody = document.querySelector('#meetingList tbody'); 
-                tableBody.innerHTML = ''; 
-
-                if (response.length > 0) {
-                    response.forEach(function (meetingRoom) {
-                        var row = `<tr class="meeting-row" data-id="${meetingRoom.meeting_no}">
-                        	<td><input type="checkbox" class="meetingCheckbox" data-id="${meetingRoom.meeting_no}"></td>
-                            <td>${meetingRoom.meeting_name}</td>
-                            <td>${meetingRoom.meeting_max}</td>
-                            <td>${meetingRoom.meeting_available_start} ~ ${meetingRoom.meeting_available_end}</td>
-            				<td>${meetingRoom.meeting_comment}</td>
-                        </tr>`;
-                        tableBody.insertAdjacentHTML('beforeend', row);
-                    });
-                } else {
-                    var noResultsRow = '<tr><td colspan="5">검색 결과가 없습니다.</td></tr>';
-                    tableBody.insertAdjacentHTML('beforeend', noResultsRow);
-                }
-            },
-            error: function () {
-                Swal.fire('오류', '서버와의 통신 중 오류가 발생했습니다.', 'error');
-            }
-        });
-    }
+    }); 
 });

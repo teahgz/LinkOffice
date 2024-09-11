@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,17 +46,21 @@ public class MeetingController {
     }
  
     @GetMapping("/meetingroomList")
-    public String listMeetings(Model model) { 
-    	List<MeetingDto> meetings = meetingService.getAllMeetings();
-    	
-    	Long memberNo = memberService.getLoggedInMemberNo();  
+    public String listMeetings(Model model,
+            @RequestParam(value = "searchText", defaultValue = "") String searchText,
+            @PageableDefault(page = 0, size = 10, sort = "meetingName", direction = Sort.Direction.ASC) Pageable pageable) { 
+
+        Page<MeetingDto> meetings = meetingService.searchMeetingRooms(searchText, pageable);
+        
+        Long memberNo = memberService.getLoggedInMemberNo();  
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
 
         model.addAttribute("memberdto", memberDto);
         model.addAttribute("meetings", meetings);
+        model.addAttribute("searchText", searchText);
          
         return "/admin/meeting/meetingroomList";
-    }   
+    } 
  
     // 회의실 등록
     @PostMapping("/meetingroomList/add")
@@ -219,12 +227,5 @@ public class MeetingController {
         }
         
         return resultMap;
-    }
-    
-    // 검색  
-    @GetMapping("/meetingroomList/search")
-    @ResponseBody
-    public List<MeetingDto> searchMeetingRooms(@RequestParam("search_text") String searchText) {
-        return meetingService.searchMeetingRoomsByName(searchText);
-    }  
+    } 
 }

@@ -11,10 +11,12 @@
                     
                     <div class="button-container"> 
 					    <div class="left-buttons">
-					        <button id="deleteMeetingButton" type="button" class="modal_btn" disabled>삭제</button>
-					        <input type="text" id="searchMeetingRoom" placeholder="회의실 이름으로 검색하세요." />
-					        <button id="meeting_search_btn" type="button" class="modal_btn">검색</button>
-					    </div> 
+						    <button id="deleteMeetingButton" type="button" class="modal_btn" disabled>삭제</button>
+						    <form id="searchForm" method="get" action="/meetingroomList">
+						        <input type="text" id="searchMeetingRoom" name="searchText" placeholder="회의실 이름으로 검색하세요."/>
+						        <button id="meeting_search_btn" type="submit" class="modal_btn">검색</button>
+						    </form>
+						</div>
 					    <button id="addMeetingButton" type="button" class="modal_btn">회의실 등록</button>
 					</div>
 				    <div class="meeting_info_text">회의실을 선택하여 정보를 수정하세요.</div>  
@@ -41,6 +43,41 @@
                     <div id="pagination" class="pagination"></div>
                 </div>
             </div>
+            
+			<div class="pagination">
+			    <th:block th:if="${meetings.totalElements > 0}">
+			        <button th:if="${meetings.hasPrevious()}"
+			                th:onclick="|location.href='@{/meetingroomList(page=0, searchText=${searchText})}'|">&lt;&lt;
+			        </button>
+			        <button th:if="${meetings.hasPrevious()}"
+			                th:onclick="|location.href='@{/meetingroomList(page=${meetings.number - 1}, searchText=${searchText})}'|">&lt;
+			        </button>
+			        <th:block th:with="totalPages=${meetings.totalPages}, currentPage=${meetings.number}">
+			            <th:block th:with="
+			                startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)}, 
+			                endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
+			                <span th:if="${totalPages > 0}"
+			                      th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
+			                    <button th:classappend="${i == currentPage} ? 'active'"
+			                            th:onclick="|location.href='@{/meetingroomList(page=${i}, searchText=${searchText})}'|"
+			                            th:text="${i + 1}">
+			                    </button>
+			                </span>
+			            </th:block>
+			        </th:block>
+			        <button th:if="${meetings.hasNext()}"
+			                th:onclick="|location.href='@{/meetingroomList(page=${meetings.number + 1}, searchText=${searchText})}'|">&gt;
+			        </button>
+			        <button th:if="${meetings.number < meetings.totalPages - 1}"
+			                th:onclick="|location.href='@{/meetingroomList(page=${meetings.totalPages - 1}, searchText=${searchText})}'|">&gt;&gt;
+			        </button>
+			    </th:block>
+			    
+			    <th:block th:if="${meetings.totalElements == 0}">
+			        <button class="active">1</button>
+			    </th:block>
+			</div>
+
         </section>
 		
         <!-- 등록 모달 -->
