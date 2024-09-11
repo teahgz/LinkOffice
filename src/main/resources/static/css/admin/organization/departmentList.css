@@ -221,6 +221,28 @@ form input[type="text"], form select {
 
 #departmentName{
 	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#departmentName:focus{
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+#departmentHigh{
+	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#departmentHigh:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 .create_btn {

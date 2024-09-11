@@ -155,6 +155,28 @@ form input[type="text"], form select {
 
 #positionName{
 	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#positionName:focus{
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+#positionHigh{
+	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#positionHigh:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 input:focus {
