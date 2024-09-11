@@ -162,16 +162,23 @@ public class VacationFunctionController {
             dto.setVacation_type_no(vacationTypeNo);
             dto.setVacation_type_name(vacationTypeName);
             dto.setVacation_type_calculate(vacationTypeCalculate);
-            if(vacationService.addTypeVacation(dto)>0) {
-                resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "성공적으로 수정되었습니다.");
+            Map<String, Object> params = new HashMap<>();
+            params.put("num", dto.getVacation_type_no());
+            params.put("name",  dto.getVacation_type_name());
+            if (vacationService.checkTypeName(params) > 0) {
+                if (vacationService.addTypeVacation(dto) > 0) {
+                    resultMap.put("res_code", "200");
+                    resultMap.put("res_msg", "성공적으로 수정되었습니다.");
+                }
             }
+
 
 
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("res_code", "404");
             resultMap.put("res_msg", "처리 중 오류가 발생했습니다.");
+
         }
 
 
@@ -283,6 +290,8 @@ public class VacationFunctionController {
 
         return resultMap;
     }
+
+
 
 
 

@@ -312,87 +312,45 @@ document.addEventListener('DOMContentLoaded', function () {
             const vacationTypeName = form.querySelector('#editVacationTypeName').value;
             const vacationTypeCalculate = form.querySelector('#editVacationTypeCalculate').value;
 
-
-            const checkData = {
-                vacationTypeName: vacationTypeName
+            const dataToSend = {
+                vacationTypeNo: vacationTypeNo,
+                vacationTypeName: vacationTypeName,
+                vacationTypeCalculate: vacationTypeCalculate
             };
-            console.log(checkData);
 
-            fetch('/vacation/checkVacationTypeExists', {
+            fetch('/vacation/updateVacation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify(checkData)
+                body: JSON.stringify(dataToSend)
             })
-             .then(response => {
-                        if (!response.ok) {
-                            throw new Error('서버 응답 불가');
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 불가');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.res_code === '200') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공',
+                        text: data.res_msg,
+                        confirmButtonText: "닫기"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
                         }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.res_code === '200') {
-                            Swal.fire({
-                                icon: 'error',
-                                title: '실패',
-                                text: '이미 존재하는 휴가 종류입니다.',
-                                confirmButtonColor: '#B1C2DD',
-                                confirmButtonText: "확인"
-                            });
-                        } else {
-                            // 중복값이 없으면 수정 API 호출
-                            const dataToSend = {
-                                vacationTypeNo: vacationTypeNo,
-                                vacationTypeName: vacationTypeName,
-                                vacationTypeCalculate: vacationTypeCalculate
-                            };
-
-                            fetch('/vacation/updateVacation', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                body: JSON.stringify(dataToSend)
-                            })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('서버 응답 불가');
-                                }
-                                return response.json();
-                            })
-                    .then(data => {
-                        if (data.res_code === '200') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '성공',
-                                text: data.res_msg,
-                                confirmButtonText: "닫기"
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    location.reload();
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: '실패',
-                                text: data.res_msg,
-                                confirmButtonColor: '#B1C2DD',
-                                confirmButtonText: "확인"
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '오류 발생',
-                            text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
-                        });
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '실패',
+                        text: data.res_msg,
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     });
                 }
             })
@@ -408,6 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
 
 /*삭제버튼-상태값 변화*/
 document.addEventListener('DOMContentLoaded', function () {
