@@ -1,4 +1,17 @@
-td.details-control {
+		.list_inventory {
+    position: relative;
+    width: 80%;
+    max-width: 1300px;
+    margin: 50px auto;
+    padding: 40px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+		
+		
+		td.details-control {
             background: url('https://cdn.datatables.net/1.11.5/images/sort_desc.png') no-repeat center center;
             cursor: pointer;
         }

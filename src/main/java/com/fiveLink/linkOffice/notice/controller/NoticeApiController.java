@@ -35,14 +35,18 @@ public class NoticeApiController {
 	    resultMap.put("res_msg", "공지사항 등록 중 오류가 발생했습니다.");
 
 	    try {
+	        // '관리자' 단어 제거 후 trim 처리
+	        managerName = managerName.replace("관리자", "").trim();
+	        
+	        // 매니저 이름을 사용하여 매니저 번호 조회
 	        Long managerNo = noticeService.findMemberNoByManagerName(managerName);
-	        dto.setMember_no(managerNo);  
+	        dto.setMember_no(managerNo);
 
 	        // 파일 업로드 처리
 	        String savedFileName = fileService.upload(file);
 	        if (savedFileName != null) {
-	            dto.setNotice_ori_img(file.getOriginalFilename()); 
-	            dto.setNotice_new_img(savedFileName); 
+	            dto.setNotice_ori_img(file.getOriginalFilename());
+	            dto.setNotice_new_img(savedFileName);
 
 	            // 공지사항 등록 처리
 	            if (noticeService.createNotice(dto) != null) {
@@ -58,4 +62,5 @@ public class NoticeApiController {
 
 	    return resultMap;
 	}
+
 }

@@ -1,7 +1,32 @@
-h1 {
-	font-size: 2em;
+
+.create_notice {
+    position: relative;
+    width: 80%;
+    max-width: 1300px;
+    margin: 50px auto;
+    padding: 40px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
 }
 
+input[type="file"] {
+    color: black;
+    border: none;
+     margin-left: -10px;
+    padding: 5px 10px; 
+    cursor: pointer; 
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #B1C2DD;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px; 
+    cursor: pointer;
+}
 .header {
 	display: flex;
 	align-items: center;
@@ -49,20 +74,20 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
-    min-height: 300px;
+    min-height: 200px;
     background-color: white;
-    cursor: text; /* 커서가 텍스트 입력 모드로 변경 */
+    cursor: text; 
 }
 
 #editor-container {
-    height: 300px;
+    height: 200px;
     overflow-y: auto;
 }
 
 .ql-editor {
     overflow-y: auto;
-    max-height: 300px;
-    min-height: 300px; 
+    max-height: 200px;
+    min-height: 200px; 
     cursor: text; 
 }
 
@@ -73,25 +98,31 @@ h1 {
 
 
 .buttons {
-	display: flex;
-	justify-content: center;
-	margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
 }
 
 .buttons .confirm-btn, .buttons .cancel-btn {
-	padding: 10px 20px;
-	border: none;
-	background-color: #007bff;
-	color: white;
-	border-radius: 5px;
-	margin-right: 10px;
-	cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
 }
+
+.buttons .confirm-btn {
+    background-color: #B1C2DD; 
+    color: black;
+}
+
 
 .buttons .cancel-btn {
-	background-color: #6c757d;
+    background-color: #C0C0C0; 
+    color: black;
 }
 
+
 .buttons .confirm-btn:hover, .buttons .cancel-btn:hover {
-	opacity: 0.8;
+    opacity: 0.8;
 }
