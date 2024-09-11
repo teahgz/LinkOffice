@@ -4,6 +4,7 @@ let folderList = [];
 $(function () {
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
+    var deptNo = document.getElementById("dept_no").textContent;
 
     // 페이지당 리스트 10개, 페이징 요소들 넣을 영역 지정 
     const pageSize = 10; 
@@ -74,6 +75,7 @@ $(function () {
                     $('.document_no_folder').hide();
                     $('.document_select_folder').show();
                     $('.folder_buttons').show();
+                    $('.box_size').show();
                 } else {
 					// 폴더가 없으면 폴더 생성 버튼 띄우기 
                     $('#tree').hide();
@@ -133,6 +135,7 @@ $(function () {
                     paginatedFiles.forEach(file => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
+                        	<td><input type="checkbox"></td>
                             <td>${file.document_ori_file_name}</td>
                             <td>${formatDate(file.document_file_upload_date)}</td>
                             <td><input type="button" class="file_show_button" value="파일보기"></td>
@@ -148,6 +151,7 @@ $(function () {
                     for (let i = 0; i < emptyRows; i++) {
                         const emptyRow = document.createElement('tr');
                         emptyRow.innerHTML = `
+                        	<td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -255,6 +259,72 @@ $(function () {
             paginationDiv.appendChild(lastButton);
         }
     }
+    
+    // 폴더가 없을 때 폴더 생성 버튼 
+    $('#first_folder_add').on('click', function(){
+		event.preventDefault();
+		
+		$('.modal_div').show();
+	});
+		
+	$('#first_folder_add_button').on('click', function(){
+		
+		// 입력된 폴더 이름 
+		const folderName = $('#first_folder_name').val();
+		
+		if(folderName.trim() === ''){
+			$('#no_folder_name').show();
+		} else{
+			$('#no_folder_name').hide();
+			
+			 const csrfToken = $('input[name="_csrf"]').val();
+			
+			// ajax 
+			$.ajax({
+                type: 'POST',
+                url: '/personal/first/folder',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+			        folderName: folderName,
+			        memberNo: memberNo,
+			        deptNo: deptNo
+			    }),
+				headers: {
+            		'X-Requested-With': 'XMLHttpRequest',
+            		'X-CSRF-TOKEN': csrfToken
+        		},
+                success: function(response) {
+					if(response.res_code === '200'){
+						
+						Swal.fire({
+                    	icon: 'success',
+                    	text: response.res_msg,
+                    	confirmButtonText: '확인'
+                		});
+                		
+                        // 폴더 생성 성공 처리
+                        $('.modal_div').hide();
+                        // 폴더 리스트를 다시 가져오기 
+                        getJson();			
+                        				
+                        $('.document_no_folder').hide();
+                    	$('.document_select_folder').show();
+                    	$('.folder_buttons').show();
+                    	$('.box_size').show();
+					} else{
+						Swal.fire({
+                        	icon: 'error',
+                        	text: response.res_msg,
+                        	confirmButtonText: '확인'
+                		});
+					}
+                }
+            });				
+		}					
+		$('.first_folder_cancel_div').on('click', function(){
+			$('.modal_div').hide();
+		});
+	});
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {

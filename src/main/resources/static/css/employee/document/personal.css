@@ -10,7 +10,7 @@
 	border-radius: 20px;
     margin: 1vw;
     padding: 1vw;
-    background-color: white;
+    background-color: #fefefe;
     width: 16vw;
 	height: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -53,9 +53,9 @@
     text-align: center;
     font-size: 1.7vw;
 }
-#first_folder_add_button{
+#first_folder_add{
     border: none;
-    background-color: white;
+    background-color: #fefefe;
     width: 3vw;
     height: 3vw;
     display: flex;
@@ -150,7 +150,7 @@
 }
 .document_file_div{
 	border-radius: 20px;
-	background-color: white;
+	background-color: #fefefe;
 	width: 60vw;
 	height: 630px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -500,4 +500,86 @@
 .go_first_page_button:hover, .go_last_page_button:hover{
     color: white;
     background-color: #e9ecef;
+}
+/* 모달 css */
+.modal_div{
+	display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4); 
+}
+.first_folder_add_modal{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fefefe;
+    border: 1px solid #888;
+    z-index: 1000;
+    width: 300px;
+    height: 150px;
+    padding: 1vw;
+    border-radius: 5px;
+    align-items: center;
+}
+.first_folder_add_div{
+	text-align: center;
+	height: 20%;
+	margin-top: 5%;
+}
+.first_folder_button_div{
+	display: flex;
+	justify-content: right;
+	margin-top: 8%;
+}
+.first_folder_cancel_div{
+	display: flex;
+	justify-content: right;
+	height: 20%;
+	font-size: 30px;
+	cursor: pointer;
+	color: #888;
+}
+.first_folder_cancel_div:hover{
+	color: black;
+}
+#first_folder_name{
+	width: 95%;
+	height: 90%;
+	font-size: 15px;
+}
+#no_folder_name{
+	display: flex;
+	justify-content: left;
+	margin: 5px 0 0 8px;
+	font-size: 12px;
+	color: red;
+}
+#first_folder_add_button{
+	margin-right: 0.5vw;
+	margin-top: 0.4vh;
+    padding: 0.5vh 0.5vw;
+    background-color: #B1C2DD;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 15px;
+    width: 55px;
+    height: 35px;
+    text-align: center;
+}
+#first_folder_add_button:hover{
+    background-color: #9CAFC7;
+}
+#first_folder_add_button:active{
+    transform: scale(0.98);
+}
+.swal2-confirm {
+	background-color: #B1C2DD;
+	color: black;
 }

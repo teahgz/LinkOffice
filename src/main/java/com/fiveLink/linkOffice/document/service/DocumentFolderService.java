@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fiveLink.linkOffice.attendance.domain.Attendance;
 import com.fiveLink.linkOffice.document.domain.DocumentFolder;
 import com.fiveLink.linkOffice.document.domain.DocumentFolderDto;
 import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
@@ -37,6 +38,18 @@ public class DocumentFolderService {
 		}
 		return documentFolderDtoList;
 	}
+	// 개인 문서함 첫 폴더
+	public int personalFirstFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	// 부서 문서함 
 	public List<DocumentFolderDto> selectDepartmentFolderList(Long department_no) {
 		// 문서함 타입 = 1(부서)
