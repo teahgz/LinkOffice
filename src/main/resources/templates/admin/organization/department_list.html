@@ -5,15 +5,14 @@
 <th:block layout:fragment="content">
 <link th:href="@{/css/admin/organization/departmentList.css}" rel="stylesheet" type="text/css"> 
         <section>
-        	<!-- <h1>부서 관리</h1> -->
+        	<h1>부서 관리</h1>  
             <div class="container">
             	<div class="content-wrapper">
 	                <div class="list">
 	                    <div class="list-header">
-                            <h2>부서 목록</h2>
+                            <h3 class="department_comment">부서를 선택하여 상세 정보를 확인하세요.</h3>
                             <button id="openModal">부서 등록</button>
-                        </div>
-                        <div class="department_comment">부서를 선택하여 상세 정보를 확인하세요.</div>
+                        </div> 
 	                    <ul class="department_ul">
 	                        <th:block th:each="department : ${departments}">
 	                            <li class="department_li">

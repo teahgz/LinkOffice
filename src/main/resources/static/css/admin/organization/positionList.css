@@ -5,7 +5,7 @@ body {
     line-height: 1.6;
 }
 .container {
-    max-width: 1200px;
+    max-width: 1250px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -24,6 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+     margin-top : -15px;
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
@@ -33,7 +34,7 @@ body {
 }
 
 .position_comment {
-	margin-bottom: 30px;	
+	margin-bottom: 20px;	
 }
 
 h2 {
@@ -155,4 +156,16 @@ form input[type="text"], form select {
 #positionName{
 	width : 96%;
 }
+
+input:focus {
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+input { 
+    border: 1px solid #ddd;
+    border-radius: 6px; 
+    transition: border-color 0.3s;
+} 
+
  
