@@ -15,12 +15,21 @@
                 <div class="document_folder_tree">
                 	<!-- AJAX로 폴더 출력 -->
 	                <div id="tree" style="display: none;"></div>
-	                <div class="folder_buttons">
+	                <div class="folder_buttons" style="display: none;">
 	                	<input type="button" id="folder_delete_button" value="삭제">
 	                	<input type="button" id="folder_add_button" value="생성">
 	                </div>
 	                <div class="box_size">
-	                	<div></div>
+	                	<div class="current_size_percent">                		
+	                		<img src="/img/cloud.png" id="cloud">
+	                		<div id="print_size">저장용량(75% 사용 중)</div>
+	                	</div>
+	                	<div class="size_bar">
+		                	<div id="bar_background">
+		                		<div id="bar_foreground"></div>
+		                	</div>
+	                	</div>
+	                	<div id="current_size_text">10GB 중 7.5GB 사용</div>
 	                </div>
                 </div>
                 <hr>

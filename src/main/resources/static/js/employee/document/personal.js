@@ -73,6 +73,7 @@ $(function () {
 					// 폴더가 존재하면 폴더를 선택하세요 메시지 띄우기 
                     $('.document_no_folder').hide();
                     $('.document_select_folder').show();
+                    $('.folder_buttons').show();
                 } else {
 					// 폴더가 없으면 폴더 생성 버튼 띄우기 
                     $('#tree').hide();
