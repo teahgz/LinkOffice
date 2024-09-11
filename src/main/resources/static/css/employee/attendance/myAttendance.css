@@ -1,12 +1,5 @@
 @charset "UTF-8";
 
-#title h1{
-	font-size: 2rem;
-    width: auto;
-    align-self: flex-start;
-    margin-left: 60px;
-    color: #333;
-}
 .attendance_div{
     display: flex;
 	width: 96%;
