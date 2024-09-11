@@ -50,3 +50,37 @@ section {
     gap: 15px;
     min-height: 680px;
 }
+
+/* 정렬 select box 공통 디자인 */
+.all_sort_select_box {
+	width : 110px;
+	padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+input {
+    padding: 12px 18px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+} 
+
+/* 내부 페이지 제목 공통 디자인 */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    width: auto;
+    align-self: flex-start;
+    margin-left: 60px;
+    color: #333;
+}
+
