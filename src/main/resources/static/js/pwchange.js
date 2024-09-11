@@ -72,6 +72,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 		Swal.fire({
 			icon : 'error',
 			text : vali_text,
+			confirmButtonColor: '#C0C0C0',
 			confirmButtonText : "닫기"
 		});
 	} else{
@@ -91,6 +92,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
+				confirmButtonColor: '#C0C0C0',
 				confirmButtonText : "닫기"
 		}).then((result) => {
 			location.href = ("/login");
@@ -99,6 +101,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
+				confirmButtonColor: '#C0C0C0',
 				confirmButtonText : "닫기"
 			})
 			}
