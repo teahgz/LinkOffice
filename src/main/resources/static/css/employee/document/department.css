@@ -1,11 +1,5 @@
 @charset "UTF-8";
 
-#title h1{
-	font-size: 2rem;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 50px; 
-}
 .document_box_type{
 	display: flex;
     height: 95%;
