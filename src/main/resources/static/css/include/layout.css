@@ -66,11 +66,9 @@ input:focus {
     border-color: #B1C2DD;
 }
 
-input {
-    padding: 12px 18px;
+input { 
     border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
+    border-radius: 6px; 
     transition: border-color 0.3s;
 } 
 
