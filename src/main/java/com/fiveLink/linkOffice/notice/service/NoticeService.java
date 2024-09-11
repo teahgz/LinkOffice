@@ -25,7 +25,7 @@ public class NoticeService {
     }
 
     public Notice createNotice(NoticeDto dto) {
-        Long noticeWriter = dto.getMember_no(); // member_no 사용
+        Long noticeWriter = dto.getMember_no(); 
         Member member = memberRepository.findBymemberNo(noticeWriter);
         
         Notice notice = Notice.builder()

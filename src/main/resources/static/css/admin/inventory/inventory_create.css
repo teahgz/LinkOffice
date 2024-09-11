@@ -1,150 +1,165 @@
-@charset "UTF-8";
+.create_inventory {
+	position: relative;
+	width: 80%;
+	max-width: 1300px;
+	margin: 50px auto;
+	padding: 40px;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+	border-radius: 12px;
+}
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+#openModalBtn, #openRegisterModalBtn {
+	background-color: #B1C2DD;
+	color: black;
+	border: none;
+	border-radius: 4px;
+	padding: 5px 10px;
+	cursor: pointer;
+}
 
-        hr {
-            margin-top: 10px;
-            border: none;
-            border-top: 2px solid black;
-            margin-bottom: 20px;
-        }
+.form-container {
+	width: 50%;
+	margin: 0 auto;
+}
 
-        .form-container {
-            width: 50%;
-            margin: 0 auto;
-        }
+.form-group {
+	margin-bottom: 15px;
+}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+.form-group label {
+	display: inline-block;
+	font-weight: bold;
+	margin-bottom: 10px;
+	width: 150px;
+}
 
-        .form-group label {
-            display: inline-block;
-            font-weight: bold;
-            margin-bottom: 10px;
-            width: 150px; /* 라벨 고정 너비 */
-        }
+.form-group input[type="text"], .form-group select, .form-group input[type="date"] {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
 
-        .form-group input[type="text"],
-        .form-group select,
-        .form-group input[type="date"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+.form-group input[type="text"]:disabled {
+	background-color: #f3f3f3;
+}
 
-        .form-group input[type="text"]:disabled {
-            background-color: #f3f3f3; 
-        }
+.register-button {
+	text-align: right;
+	margin-top: 20px;
+}
 
-        .register-button {
-            text-align: right;
-            margin-top: 20px;
-        }
 
-        .register-button button {
-            background-color: #B1C2DD;
-            color: black;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+.register-button .confirm-btn {
+	background-color: #B1C2DD; 
+	color: black;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
 
-        .register-button button:hover {
-            background-color: #92A8C1;
-        }
+.register-button .cancel-btn {
+	background-color: #C0C0C0; 
+	color: black;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
 
-        /* 공통 모달 스타일 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+.register-button button:hover {
+	opacity: 0.8;
+}
 
-        /* 카테고리 선택 모달 스타일 */
-        .modal-select .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 30%;
-            text-align: center;
-            max-height: 400px;
-            overflow-y: auto;
-        }
 
-        /* 카테고리 등록 모달 스타일 */
-        .modal-register .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #aaa;
-            width: 40%;
-            text-align: left;
-            max-height: 500px;
-            overflow-y: auto;
-        }
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
 
-        /* 라디오 버튼과 텍스트를 같은 줄에 배치 */
-        .category-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
 
-        .category-item label {
-            margin-left: 10px; /* 라디오 버튼과 텍스트 사이 간격 */
-            margin-bottom: 10px;
-        }
+.modal-select .modal-content {
+	background-color: #fefefe;
+	margin: 15% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 30%;
+	text-align: center;
+	max-height: 400px;
+	overflow-y: auto;
+}
 
-        /* 확인 및 취소 버튼 스타일 */
-        .modal-buttons {
-            margin-top: 20px;
-        }
 
-        .modal-buttons button {
-            padding: 10px 20px;
-            margin: 5px;
-            cursor: pointer;
-        }
+.modal-register .modal-content {
+	background-color: #fefefe;
+	margin: 10% auto;
+	padding: 20px;
+	border: 1px solid #aaa;
+	width: 40%;
+	text-align: left;
+	max-height: 500px;
+	overflow-y: auto;
+}
 
-        .confirm-button, .confirm-register {
-            background-color: #B1C2DD;
-            color: black;
-            border: none;
-            border-radius: 4px;
-        }
 
-        .cancel-button, .cancel-register {
-            background-color: #C0C0C0;
-            color: black;
-            border: none;
-            border-radius: 4px;
-        }
+.category-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
 
-        .modal-buttons button:hover {
-            opacity: 0.9;
-        }
+.category-item label {
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
 
-        /* 모달 닫기 버튼 스타일 */
-        .close, .closeRegisterModal {
-            color: #C0C0C0;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
 
-        .close:hover, .close:focus, .closeRegisterModal:hover, .closeRegisterModal:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.modal-buttons {
+	margin-top: 20px;
+}
+
+.modal-buttons button {
+	padding: 10px 20px;
+	margin: 5px;
+	cursor: pointer;
+}
+
+.confirm-button, .confirm-register {
+	background-color: #B1C2DD;
+	color: black;
+	border: none;
+	border-radius: 4px;
+}
+
+.cancel-button, .cancel-register {
+	background-color: #C0C0C0;
+	color: black;
+	border: none;
+	border-radius: 4px;
+}
+
+.modal-buttons button:hover {
+	opacity: 0.9;
+}
+
+.close, .closeRegisterModal {
+	color: #C0C0C0;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus, .closeRegisterModal:hover,
+	.closeRegisterModal:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}

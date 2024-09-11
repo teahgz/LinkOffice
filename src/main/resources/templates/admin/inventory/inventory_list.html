@@ -12,8 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <section>
-    <div style="width: 80%; margin: 0 auto;">
-        <h1 style="border-bottom: 2px solid #000; padding-bottom: 5px;">비품 목록</h1>
+        <h1>비품 목록</h1>
+<div class="list_inventory">
         <br>
         <div id="departmentSelectContainer">
             <select id="departmentSelect" onchange="fetchInventoryByDepartment()">
@@ -204,7 +204,8 @@
                     "last": ">>",
                     "next": ">",
                     "previous": "<"
-                }
+                },
+                "search": "검색 : "
             },
             "drawCallback": function(settings) {
                 // 데이터가 없을 때 페이징 숨기기

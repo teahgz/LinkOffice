@@ -11,10 +11,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <section>
-    <div style="width: 80%; margin: 0 auto;">
     <h1>비품 등록</h1>
-    <hr>
-
+    <div class="create_inventory">
     <form id="inventoryForm">
     <!-- CSRF 토큰 추가 -->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
@@ -68,8 +66,9 @@
     </div>
 
     <div class="register-button">
-        <button type="submit">등록</button>
-    </div>
+    <button type="submit" class="confirm-btn">등록</button>
+    <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
+	</div>
 </form>
 
     <!-- 카테고리 선택 모달 -->
