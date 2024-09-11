@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '출근 확인',
                         text: data.res_msg,
                         confirmButtonText: '확인'
                     });
@@ -83,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: '오류',
                         text: data.res_msg,
                         confirmButtonText: '확인'
                     });
@@ -115,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.res_code === '200') {
                 Swal.fire({
                     icon: 'success',
-                    title: '퇴근 확인',
                     text: data.res_msg,
                     confirmButtonText: '확인'
                 });
@@ -123,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '오류',
                     text: data.res_msg,
                     confirmButtonText: '확인'
                 });

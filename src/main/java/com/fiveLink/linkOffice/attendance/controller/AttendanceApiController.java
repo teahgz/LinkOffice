@@ -31,7 +31,7 @@ public class AttendanceApiController {
 	public Map<String, String> checkIn(@RequestBody Map<String, Long> payload){
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
-        resultMap.put("res_msg", "출근 기록 중 오류가 발생했습니다.");
+        resultMap.put("res_msg", "경로 오류");
 
         Long memberNo = payload.get("memberNo");
         // 오늘 날짜와 시간 
