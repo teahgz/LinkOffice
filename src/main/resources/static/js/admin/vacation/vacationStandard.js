@@ -28,7 +28,7 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('서버가 응답하지 않음');
         }
         return response.json();
     })
@@ -37,9 +37,9 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
         if (data.res_code === '200') {
             Swal.fire({
                 icon: 'success',
-                title: '성공',
                 text: data.res_msg,
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: "확인"
             }).then((result) => {
                 if (result.isConfirmed) {
                     location.reload();
@@ -48,18 +48,18 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '실패',
                 text: data.res_msg,
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: "확인"
             });
         }
     })
     .catch(error => {
         Swal.fire({
             icon: 'error',
-            title: '오류 발생',
             text: '서버와의 통신 중 오류가 발생했습니다.',
-            confirmButtonText: "닫기"
+            confirmButtonColor: '#B1C2DD', 
+            confirmButtonText: "확인"
         });
     });
 });

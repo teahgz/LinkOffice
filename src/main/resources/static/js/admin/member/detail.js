@@ -25,7 +25,7 @@ function confirmEnd(){
 					icon : 'success',
 					text : data.res_msg,
 					confirmButtonColor: '#C0C0C0',
-					confirmButtonText : "닫기"
+					confirmButtonText : "확인"
 					}).then((result) =>{
 						location.href="/admin/member/detail/"+memberNo;
 					});
@@ -34,7 +34,7 @@ function confirmEnd(){
 					icon : 'error',
 					text : data.res_msg,
 					confirmButtonColor: '#C0C0C0',
-					confirmButtonText : "닫기"
+					confirmButtonText : "확인"
 				});
 			}
 			})
