@@ -164,10 +164,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', function(event) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         event.preventDefault(); 
 =======
         event.preventDefault();
 >>>>>>> a2e89b7ce05e94a9194f63972c06a7479358059e
+=======
+        event.preventDefault(); 
+>>>>>>> 0024284467d598720589d289e39832b863ef9c75
 
         const vacationType = document.getElementById('vacationType').value.trim();
         const vacationValue = document.getElementById('vacationValue').value.trim();
