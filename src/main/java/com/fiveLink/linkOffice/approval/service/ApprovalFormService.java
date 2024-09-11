@@ -56,6 +56,31 @@ public class ApprovalFormService {
     	return origin.toDto();
     }
     
-
+    // 관리자 전자결재 양식 등록
+    public ApprovalForm saveApprovalForm(ApprovalFormDto dto) {
+        ApprovalForm approvalForm = dto.toEntity();
+        System.out.println(approvalForm);
+        return approvalFormRepository.save(approvalForm);
+    }
+    
+    // 관리자 전자결재 양식 수정
+    public ApprovalForm editApprovalForm(ApprovalFormDto dto) {
+    	ApprovalFormDto temp = getApprovalFormOne(dto.getApproval_form_no());
+    	temp.setApproval_form_title(dto.getApproval_form_title());
+    	temp.setApproval_form_content(dto.getApproval_form_content());
+    	temp.setApproval_form_status(0L);
+    	
+    	ApprovalForm approvalform = temp.toEntity();
+    	ApprovalForm result = approvalFormRepository.save(approvalform);
+    	
+    	return result;
+    }
+    
+    // 관리자 전자결재 양식 삭제(update)
+    public ApprovalForm deleteApprovalForm(ApprovalFormDto dto) {
+    	ApprovalForm approvalform = dto.toEntity();
+    	ApprovalForm result = approvalFormRepository.save(approvalform);
+    	return result;
+    }
     
 }

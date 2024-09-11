@@ -74,6 +74,11 @@ public class PermissionController {
 
             permissionService.saveSelectedMembers(menuNo, memberNos);
 
+            for (String memberNoStr : memberNos) {
+                Long memberNo = Long.parseLong(memberNoStr);   
+                permissionService.updateMemberAdditionalStatus(memberNo);
+            }
+            
             resultMap.put("res_code", "200");
             resultMap.put("res_msg", "권한자 등록이 완료되었습니다.");
         } catch (Exception e) { 
@@ -231,7 +236,7 @@ public class PermissionController {
             permissionService.deleteSelectedMembers(memberNos, menuNo);
 
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "권한자가 삭제되었습니다");
+            resultMap.put("res_msg", "권한자가 삭제되었습니다.");
         } catch (IllegalArgumentException e) {
             resultMap.put("res_msg", e.getMessage());
         } catch (Exception e) {

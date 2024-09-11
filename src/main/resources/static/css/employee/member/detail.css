@@ -9,14 +9,6 @@
     align-items: center; 
 }
 
-.my_profile h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 100px;
-}
-
 .profile_card {
     background-color: #f8f9fa;
     border-radius: 12px; 

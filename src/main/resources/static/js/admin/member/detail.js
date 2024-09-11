@@ -24,6 +24,7 @@ function confirmEnd(){
 					Swal.fire({
 					icon : 'success',
 					text : data.res_msg,
+					confirmButtonColor: '#C0C0C0',
 					confirmButtonText : "닫기"
 					}).then((result) =>{
 						location.href="/admin/member/detail/"+memberNo;
@@ -32,6 +33,7 @@ function confirmEnd(){
 					Swal.fire({
 					icon : 'error',
 					text : data.res_msg,
+					confirmButtonColor: '#C0C0C0',
 					confirmButtonText : "닫기"
 				});
 			}

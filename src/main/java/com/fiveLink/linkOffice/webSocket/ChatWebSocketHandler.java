@@ -1,8 +1,10 @@
 package com.fiveLink.linkOffice.webSocket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fiveLink.linkOffice.chat.service.ChatMessageService;
-import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -12,6 +14,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.*;
+
 
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {

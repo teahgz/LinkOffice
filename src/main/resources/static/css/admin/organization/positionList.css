@@ -5,7 +5,7 @@ body {
     line-height: 1.6;
 }
 .container {
-    max-width: 1200px;
+    max-width: 1250px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -24,6 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+     margin-top : -15px;
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
@@ -33,7 +34,7 @@ body {
 }
 
 .position_comment {
-	margin-bottom: 30px;	
+	margin-bottom: 20px;	
 }
 
 h2 {
@@ -82,7 +83,7 @@ button:hover {
 }
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 11% auto;
     padding: 30px;
     border: 1px solid #888;
     width: 80%;
@@ -96,7 +97,8 @@ button:hover {
 
 .modal_btn {
     display: inline-block;
-    padding: 10px 20px;  
+    padding: 10px 20px;
+    margin-top : 10px;  
 } 
 .modal-content form {
     display: flex;
@@ -121,11 +123,12 @@ button:hover {
 form label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
 }
 form input[type="text"], form select {
     width: 100%;
     padding: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 60px;
     border: 1px solid #ddd;
     border-radius: 4px;
 } 
@@ -152,8 +155,39 @@ form input[type="text"], form select {
 
 #positionName{
 	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
 }
 
-form label {
-	font-weight: bold;
+#positionName:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
+
+#positionHigh{
+	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#positionHigh:focus{
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+input:focus {
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+input { 
+    border: 1px solid #ddd;
+    border-radius: 6px; 
+    transition: border-color 0.3s;
+} 
+
+ 

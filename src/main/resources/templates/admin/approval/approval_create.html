@@ -8,19 +8,22 @@
         <section>
             <h1>결재 양식 등록</h1>
             <div class="container">
-                <div class="main-container">
-                    <div class="editor-container editor-container_classic-editor">
-                    <div class="form-group">
-                        <label for="approval_name">양식 이름</label>
-                        <input type="text" id="approval_name" name="approval_name">
+                <form id="appCreateFrm">
+                    <div class="main_container">
+                        <div class="editor-container editor-container_classic-editor">
+                            <div class="form-group">
+                                <input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
+                                <strong>양식 이름</strong>
+                                <input type="text" id="approval_title" name="approval_title" required>
+                            </div>
+                            <div class="editor-container__editor" id="editor"></div>
+                            <div class="button_container">
+                                <button type="button" class="submit_button">등록</button>
+                                <button type="button" class="cancel_button" onclick="history.back()">취소</button>
+                            </div>
+                        </div>
                     </div>
-                        <div class="editor-container__editor" id="editor"></div>
-                      <div class="button-container">
-					    <button class="submit-button">등록</button>
-					    <button class="cancel-button">취소</button>
-					  </div>
-                    </div>
-                </div>
+                </form>
             </div>
         </section>
         <script type="importmap">

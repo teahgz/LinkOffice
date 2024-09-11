@@ -1,10 +1,12 @@
 package com.fiveLink.linkOffice.document.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,17 +43,29 @@ public class DocumentViewController {
 	@GetMapping("/employee/document/personal/{member_no}")
 	public String documentPersonalPage(Model model,
 			@PathVariable("member_no") Long memberNo
-			) {
-		List<DocumentFolderDto> folderList = documentFolderService.selectPersonalFolderList(memberNo);
-		
+			) {		
 		// memberDto 불러오기
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    
-		LOGGER.debug("Folder List: {}", folderList);
-		model.addAttribute("folderList", folderList);
 		model.addAttribute("memberdto", memberdto);
 		return "employee/document/personal";
 	}
+   // 개인 폴더 
+   @GetMapping("/personal/folder")
+   public ResponseEntity<List<DocumentFolderDto>> personalFolderList(
+		   @RequestParam("memberNo") Long memberNo) throws IOException {
+	   List<DocumentFolderDto> folderList = documentFolderService.selectPersonalFolderList(memberNo);
+       return ResponseEntity.ok(folderList);
+   }
+   
+   // 개인 파일 
+   @GetMapping("/personal/file")
+   public ResponseEntity<List<DocumentFileDto>> selectPersonalfileList(
+		   @RequestParam("memberNo") Long memberNo,
+		   @RequestParam("folderId") Long folderId) throws IOException {
+	   List<DocumentFileDto> fileList = documentFileService.selectPersonalfileList(memberNo , folderId);
+       return ResponseEntity.ok(fileList);
+   }
 	
 	// 부서 문서함 : 부서 번호를 받아옴 
 	@GetMapping("/employee/document/department/{department_no}")
@@ -91,10 +105,11 @@ public class DocumentViewController {
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    List<DocumentFileDto> fileList = documentFileService.documentBinList(memberNo);
 	    
-	    LOGGER.debug("File List: {}", fileList);
 	    model.addAttribute("memberdto", memberdto);
 	    model.addAttribute("fileList", fileList);
 	    return "employee/document/bin";
 		
 	}
+
+	
 }

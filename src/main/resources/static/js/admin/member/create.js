@@ -55,8 +55,8 @@ function previewImage(event) {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '파일 형식 오류',
                 text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
+                confirmButtonColor: '#C0C0C0',
                 confirmButtonText: '확인'
             });
 
