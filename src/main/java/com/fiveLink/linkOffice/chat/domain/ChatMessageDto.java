@@ -16,7 +16,7 @@ public class ChatMessageDto {
     private Long chat_room_no;
     private String chat_content;
     private LocalDateTime chat_message_create_date;
-
+    private String chat_sender_name;
 
     public ChatMessage toEntity(){
         return ChatMessage.builder()

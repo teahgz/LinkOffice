@@ -64,13 +64,6 @@ public class ChatMessageController {
     }
 
 
-/*
-
-    @GetMapping("/messages/{chatRoomNo}")
-    public List<ChatMessageDto> messageByChatRoom(@PathVariable Long chatMessageNo){
-        return chatMessageService.messageByChatRoom(chatMessageNo);
-    }
-*/
 
 
 }
