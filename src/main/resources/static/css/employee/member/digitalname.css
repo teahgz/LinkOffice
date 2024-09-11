@@ -1,13 +1,5 @@
 @charset "UTF-8";
 
-h1 {
-	font-size: 2rem;
-	margin-bottom: 20px;
-	width: auto;
-	align-self: flex-start;
-	margin-left: 100px;
-}
-
 #digital_name{
  	position: relative;
 	display: flex;

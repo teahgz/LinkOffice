@@ -12,15 +12,6 @@
     border-radius: 12px;
 }
 
-h1 {
-    font-size: 2rem;
-    margin-bottom: 30px;
-    width: auto;
-    align-self: flex-start;
-    margin-left: 100px;
-    color: #333;
-}
-
 .search_sort_container {
     display: flex;
     justify-content: space-between;

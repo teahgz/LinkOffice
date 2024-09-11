@@ -8,14 +8,6 @@
     box-sizing: border-box;
 }
 
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 100px;
-}
-
 .member_card {
     background-color: #f8f9fa;
     border-radius: 12px;
@@ -105,26 +97,7 @@ h1 {
     gap: 20px 30px;
 }
 
-.profile_detail_address {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    width: 100%;
-    margin-top: 20px;
-}
 
-.profile_detail_address li {
-    margin-left: 330px;
-}
-
-.profile_detail_address label {
-    min-width: 80px;
-    font-weight: bold;
-    flex-shrink: 0;
-}
 
 .mobile_number, .internal_number {
     display: flex;
@@ -135,9 +108,7 @@ h1 {
 .mobile_number input, .internal_number input {
     width: 60px; 
     text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
+
 }
 
 .mobile_number span, .internal_number span {
@@ -146,18 +117,30 @@ h1 {
 
 
 .profile_details input[type="text"], .profile_details input[type="date"], .profile_details input[type="tel"] {
-    border: 1px solid #ccc;
-    border-radius: 4px;
     padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+.profile_details input[type="text"]:focus, .profile_details input[type="date"]:focus, .profile_details input[type="tel"]:focus {
+   outline: none;
+   border-color: #B1C2DD;
 }
 
 select {
-    border: 1px solid #ccc;
-    border-radius: 4px;
     padding: 8px;
     max-width: 400px; 
     box-sizing: border-box;
     font-size: 1rem; 
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+select:focus {
+   outline: none;
+   border-color: #B1C2DD;
 }
 
 select option {

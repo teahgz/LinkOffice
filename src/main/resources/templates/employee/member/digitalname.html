@@ -6,8 +6,8 @@
 <th:block layout:fragment="content">
   <link th:href="@{/css/employee/member/digitalname.css}" rel="stylesheet" type="text/css">
   <section class="signature-registration">
-    <div id="digital_name">
     <h1>전자 결재 서명 등록/수정</h1>
+    <div id="digital_name">
     <form class="digital_form" id="digitalFrm" th:each="member : ${memberdto}">
       <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
       <input type="hidden" name="member_no" th:value="${member.member_no}" />
