@@ -175,57 +175,48 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		
         editor.ui.view.editable.element.style.height = '500px';
 
-            editor.setData(`<h1><span style="font-family:나눔고딕, NanumGothic, sans-serif;">
-            <strong>휴가 신청서</strong></span></h1><figure class="table" style="float:left;width:35.29%;">
-            <table class="ck-table-resized"><colgroup><col style="width:34.74%;">
-            <col style="width:65.26%;"></colgroup>
-            <tbody>
-            <tr>
-            <th>부서&nbsp;</th>
-            <td>&nbsp;</td>
-            </tr>
-            <tr>
-            <th>성명</th>
-            <td>&nbsp;</td>
-            </tr>
-            </tbody>
-            </table>
-            </figure>
-            <figure class="table" style="float:left;width:35.29%;"><table class="ck-table-resized">
+            editor.setData(`
+            <h1><span style="font-family:나눔고딕, NanumGothic, sans-serif;"><strong>휴가 신청서</strong> </span></h1>
+            <p>&nbsp;</p>
+            <figure class="table" style="float:left;width:35.29%;">
+            <table class="ck-table-resized">
             <colgroup><col style="width:34.74%;"><col style="width:65.26%;"></colgroup>
             <tbody>
-            <tr>
-            <th>직위</th>
-            <td style="text-align:right;">&nbsp;</td>
-            </tr>
-            <tr>
-            <th>휴가구분</th>
-            <td>&nbsp;</td>
-            </tr>
+            <tr><th>부서&nbsp;</th><td>&nbsp;</td></tr>
+            <tr><th>성명</th><td>&nbsp;</td></tr>
             </tbody>
             </table>
             </figure>
-            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
-            <figure class="table" style="width:70.62%;">
+            <figure class="table" style="float:left;width:35.29%;">
             <table class="ck-table-resized">
-            <colgroup><col style="width:17.35%;"><col style="width:82.65%;"></colgroup><tbody>
-            <tr><th>휴가 기간</th>
-            <td>&nbsp;</td>
-            </tr>
+            <colgroup><col style="width:34.74%;"><col style="width:65.26%;"></colgroup>
+            <tbody>
+            <tr><th>직위</th><td style="text-align:right;">&nbsp;</td></tr>
+            <tr><th>휴가구분</th><td>&nbsp;</td></tr>
             </tbody>
             </table>
             </figure>
+            <p>&nbsp;</p><p>&nbsp;</p>
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <figure class="table" style="width:70.62%;">
-            <table class="ck-table-resized"><colgroup><col style="width:17.35%;"><col style="width:82.65%;"></colgroup>
+            <figure class="table" style="float:left;width:70.62%;">
+            <table class="ck-table-resized">
+            <colgroup><col style="width:17.35%;"><col style="width:82.65%;"></colgroup>
             <tbody>
-            <tr><th>사유</th><td>&nbsp;</td></tr></tbody></table></figure>
-            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
-            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 상가 본인은 위와 같이 휴가 신청서를 제출 합니다.</p><p>&nbsp;</p><p>&nbsp;</p>
-            `);
+            <tr><th>휴가 기간</th><td>&nbsp;</td></tr>
+            </tbody>
+            </table>
+            </figure>
+            <figure class="table" style="float:left;width:70.62%;">
+            <table class="ck-table-resized">
+            <colgroup><col style="width:17.35%;"> <col style="width:82.65%;"></colgroup>
+            <tbody>
+            <tr><th>사유</th><td>&nbsp;</td></tr>
+            </tbody>
+            </table>
+            </figure>
+            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;상가 본인은 위와 같이 휴가 신청서를 제출 합니다.</p><p>&nbsp;</p><p>&nbsp;</p>`);
 
-        document.querySelector('.submit_button').addEventListener('click', (e) => {
+     /*   document.querySelector('.submit_button').addEventListener('click', (e) => {
             e.preventDefault();
             const editorData = editor.getData();
             const approvalTitle = document.querySelector('#approval_title').value;
@@ -286,7 +277,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                     }
                 });  
             }
-        });
+        });*/
     });
     
     

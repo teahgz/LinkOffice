@@ -19,16 +19,7 @@ public class ApprovalFormService {
     public ApprovalFormService(ApprovalFormRepository approvalFormRepository) {
         this.approvalFormRepository = approvalFormRepository;
     }
-    
-    private ApprovalFormDto convertToDto(ApprovalForm form) {
-    	return ApprovalFormDto.builder()
-    			.approval_form_no(form.getApprovalFormNo())
-    			.approval_form_title(form.getApprovalFormTitle())
-    			.approval_form_content(form.getApprovalFormContent())
-    			.approval_form_create_date(form.getApprovalFormCreateDate())
-    			.approval_form_status(form.getApprovalFormStatus())
-    			.build();
-    }
+
     // 관리자 전자결재 양식함 목록 조회 
     public Page<ApprovalFormDto> getAllApprovalForms(Pageable pageable, ApprovalFormDto searchdto) {
     	

@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.Position;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,19 +60,18 @@ public class Member {
 	@Column(name="member_mobile")
 	private String memberMobile;
 	
-	@Column(name="department_no")
+	@Column(name="department_no", insertable = false, updatable =false)
 	private Long departmentNo;
 	
-	@Column(name="position_no")
+	@Column(name="position_no", insertable = false, updatable =false)
 	private Long positionNo;
-	
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_no", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY )
+    @JoinColumn(name = "department_no")
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_no", insertable = false, updatable = false)
+    @JoinColumn(name = "position_no")
     private Position position;
 	
 	@Column(name="member_address")
@@ -124,4 +124,7 @@ public class Member {
 	//[김채영] 휴가 지급 날짜
 	@Column(name="member_vacation_date")
 	private String memberVacationDate;
+	
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<VacationApproval> vacationDocument;
 }
