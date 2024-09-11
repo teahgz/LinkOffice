@@ -319,6 +319,7 @@ public class MemberService {
     public List<MemberDto> selectUnderYearMember(int num) {
 
         return vacationMapper.selectUnderYearMember(num); 
-    }  
+    }
+
     
 } 

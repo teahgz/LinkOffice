@@ -1,8 +1,8 @@
+
 let currentChatRoomNo = null;
 
 function handleChatRoomClick(element) {
     currentChatRoomNo = element;
-    console.log('Selected Chat Room No:', element);
     loadChatMessages(element);
 }
 
@@ -25,7 +25,7 @@ function loadChatMessages(chatRoomNo) {
 
 function displayChatMessages(messages) {
     const chatContentDiv = document.getElementById("chatContent");
-    chatContentDiv.innerHTML = ''; // Clear previous messages
+    chatContentDiv.innerHTML = '';
 
     messages.forEach(function(message) {
         const messageElement = document.createElement("div");
@@ -53,10 +53,23 @@ socket.onclose = function(event) {
 socket.onerror = function(error) {
     console.error("WebSocket error:", error);
 };
+function formatDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
 
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 window.sendMessage = function() {
     const chat_sender_no = document.getElementById("userNo").value;
     const chat_content = document.getElementById("messageInput").value;
+    const chat_sender_name =  document.getElementById("userName").value;
+//    const now = new Date();
+//    const formattedTime = formatDateTime(now);
+//    console.log(formattedTime);
 
     if (currentChatRoomNo === null) {
         console.error("No chat room selected.");
@@ -66,24 +79,25 @@ window.sendMessage = function() {
     const message = {
         chat_sender_no: chat_sender_no,
         chat_room_no: currentChatRoomNo,
-        chat_content: chat_content
+        chat_content: chat_content,
+        chat_sender_name : chat_sender_name,
+        //chat_message_create_date: formattedTime
     };
-    console.log(message);
     socket.send(JSON.stringify(message));
     document.getElementById("messageInput").value = "";
 };
 
 socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
-    console.log("Received WebSocket message:", message);
-
     const chatContentDiv = document.getElementById("chatContent");
 
     const messageElement = document.createElement("div");
     messageElement.classList.add("messageItem");
+    const formattedDate = formatDateTime(new Date(message.chat_message_create_date));
+
     messageElement.innerHTML = `
-        <p><strong>${message.chat_sender_no}:</strong> ${message.chat_content}</p>
-        <span>${new Date(message.chat_message_create_date).toLocaleString()}</span>
+        <p><strong>${message.chat_sender_name}:</strong> ${message.chat_content}</p>
+        <span>${formattedDate}</span>
     `;
     chatContentDiv.appendChild(messageElement);
 
