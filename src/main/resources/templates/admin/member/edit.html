@@ -13,7 +13,7 @@
                 <input type="hidden" id="member_no" th:value="${member.member_no}" />
                     <div class="profile_header">
                         <div class="profile_header_left">
-                        	<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" class="profile_img" id="profileImg">
+                        	<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}" alt="사원 사진" class="profile_img" id="profileImg">
                             <label for="profile_img" class="upload_button"><span>이미지 등록</span></label>
                             <p class="file_info">이미지는 PNG 또는 JPG만 등록 가능합니다.</p>
                             <input type="file" id="profile_img" name="profile_img" style="display: none;" onchange="previewImage(event)">
