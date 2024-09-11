@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+ 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,11 @@ public class MeetingService {
 	public MeetingService (MeetingRepository meetingRepository) {
 		this.meetingRepository = meetingRepository;  
 	}
+	
+	public org.springframework.data.domain.Page<MeetingDto> searchMeetingRooms(String searchText, Pageable pageable) {
+	    return meetingRepository.findByMeetingNameContainingIgnoreCaseAndMeetingStatus(searchText, 0L, pageable)
+	            .map(MeetingDto::toDto);
+	} 
 	
 	public List<MeetingDto> getAllMeetings() {
 	    List<Meeting> meetings = meetingRepository.findByMeetingStatusOrderByMeetingNameAsc(0L);
