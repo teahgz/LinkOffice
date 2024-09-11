@@ -1,8 +1,10 @@
 @charset "UTF-8";
 
-#title{
-	font-size: 1.5vw;
-	font-weight: bold;
+#title h1{
+	font-size: 2rem;
+    width: auto; 
+    align-self: flex-start; 
+    margin-left: 50px; 
 }
 .attendance_div{
     display: flex;
@@ -22,7 +24,6 @@
 	background-color: #B1C2DD;
 	border: none;
 	border-radius: 5px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .today_button:hover{
 	background-color: #a8b2cb;
@@ -180,7 +181,7 @@
 /* 오늘 날짜를 강조 */
 .today_date {
     background-color: lightgray;
-    padding: 0.5vh 0.6vw 0.4vh 0.6vw;
+    padding: 0.5vh 0.5vw 0.4vh 0.5vw;
 	border-radius: 5px;
 }
 /* 달력 안에 근태 bar */
@@ -277,11 +278,15 @@
 	border-top: solid 2px gray;
 }
 #start_date, #end_date{
-	border: solid 1px gray;
+	border: 1px solid #ddd;
+    border-radius: 4px;
 	margin-right: 1vw;
 	height: 3.1vh;
-	border-radius: 2px;
 	font-size: 1vw;
+}
+#start_date:focus, #end_date:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
 #attendance_state{
 	margin-right: 1.5vw;
@@ -289,13 +294,24 @@
 	height: 3.3vh;
 	border-radius: 2px;
 	font-size: 1vw;
+	border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#attendance_state:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
 #sort_select{
 	margin-left: 10px;
 	width: 6vw;
 	height: 3.3vh;
-	border-radius: 2px;
 	font-size: 1vw;
+	border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#sort_select:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
 #wave{
 	height: 3.3vh;

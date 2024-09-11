@@ -353,7 +353,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	        paginationDiv.appendChild(pageButton);
 	        return;
 	    }
-	
+		
+		// 페이지 버튼 범위 계산
+    	let startPage = Math.max(0, currentPage - 1); 
+    	let endPage = Math.min(totalPages - 1, currentPage + 1); 
+    
+    	// 페이지가 3페이지가 안 될 경우
+	    if (endPage - startPage < 2) {
+	        if (currentPage < totalPages - 2) {
+	            endPage = Math.min(totalPages - 1, endPage + (2 - (endPage - startPage)));
+	        }
+	        if (startPage > 0) {
+	            startPage = Math.max(0, startPage - (2 - (endPage - startPage)));
+	        }
+	    }
 	    // 처음 페이지 버튼 (<<)
 	    if (currentPage > 0) {
 	        const firstButton = document.createElement('span');
@@ -373,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    }
 	
 	    // 페이지 번호 버튼
-	    for (let page = 0; page < totalPages; page++) {
+	    for (let page = startPage; page <= endPage; page++) {
 	        const pageButton = document.createElement('span');
 	        pageButton.className = `pagination_button ${page === currentPage ? 'active' : ''}`;
 	        pageButton.textContent = page + 1;

@@ -105,7 +105,6 @@ public class DocumentViewController {
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    List<DocumentFileDto> fileList = documentFileService.documentBinList(memberNo);
 	    
-	    LOGGER.debug("File List: {}", fileList);
 	    model.addAttribute("memberdto", memberdto);
 	    model.addAttribute("fileList", fileList);
 	    return "employee/document/bin";

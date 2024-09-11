@@ -15,33 +15,30 @@ import com.fiveLink.linkOffice.meeting.repository.MeetingRepository;
 @Service
 public class MeetingService {
 
-	private final MeetingRepository meetingRepository; 
+	private final MeetingRepository meetingRepository;  
 	
 	@Autowired
 	public MeetingService (MeetingRepository meetingRepository) {
-		this.meetingRepository = meetingRepository; 
+		this.meetingRepository = meetingRepository;  
 	}
 	
 	public List<MeetingDto> getAllMeetings() {
-	    List<Meeting> meetings = meetingRepository.findAll();
+	    List<Meeting> meetings = meetingRepository.findByMeetingStatus(0L);
 	    List<MeetingDto> meetingDtos = new ArrayList();
 
 	    for (Meeting meeting : meetings) {
-	        MeetingDto meetingDto = MeetingDto.fromEntity(meeting);
+	        MeetingDto meetingDto = MeetingDto.toDto(meeting);
 	        meetingDtos.add(meetingDto);
 	    } 
 	    return meetingDtos;
 	} 
 	
-	 public MeetingDto getMeetingById(Long id) {
-        Optional<Meeting> meetingOptional = meetingRepository.findById(id);
-        if (meetingOptional.isPresent()) {
-            Meeting meeting = meetingOptional.get();
-            return MeetingDto.fromEntity(meeting);
-        } else {
-            return null;  
-        }
+	public MeetingDto getMeetingById(Long meetingId) {
+        return meetingRepository.findById(meetingId)
+                .map(MeetingDto::toDto)
+                .orElse(null);
     }
+
 	 
 	// 등록
 	public boolean isMeetingNameExists(String meetingName) {
@@ -55,6 +52,4 @@ public class MeetingService {
 	    return meetingRepository.save(meeting);
 	}
 	  
-
-
 }

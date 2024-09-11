@@ -82,7 +82,7 @@ button:hover {
 }
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 11% auto;
     padding: 30px;
     border: 1px solid #888;
     width: 80%;
@@ -96,7 +96,8 @@ button:hover {
 
 .modal_btn {
     display: inline-block;
-    padding: 10px 20px;  
+    padding: 10px 20px;
+    margin-top : 10px;  
 } 
 .modal-content form {
     display: flex;
@@ -121,11 +122,12 @@ button:hover {
 form label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
 }
 form input[type="text"], form select {
     width: 100%;
     padding: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 60px;
     border: 1px solid #ddd;
     border-radius: 4px;
 } 
@@ -153,7 +155,4 @@ form input[type="text"], form select {
 #positionName{
 	width : 96%;
 }
-
-form label {
-	font-weight: bold;
-}
+ 

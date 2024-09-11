@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fiveLink.linkOffice.document.controller.DocumentViewController;
 import com.fiveLink.linkOffice.document.domain.DocumentFile;
 import com.fiveLink.linkOffice.document.domain.DocumentFileDto;
 import com.fiveLink.linkOffice.document.repository.DocumentFileRepository;
@@ -37,7 +36,6 @@ public class DocumentFileService {
 			documentFileDtoList.add(fileDto);
 		}		
 		
-		LOGGER.debug("documentFileList: {}", documentFileList);
 		return documentFileDtoList;
 	}
 	public List<DocumentFileDto> documentBinList(Long member_no){
@@ -51,8 +49,6 @@ public class DocumentFileService {
 			DocumentFileDto fileDto = new DocumentFileDto().toDto(d);
 			documentFileDtoList.add(fileDto);
 		}		
-		
-		LOGGER.debug("documentFileList: {}", documentFileList);
 		return documentFileDtoList;
 	}
 }

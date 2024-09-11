@@ -4,6 +4,14 @@ body {
     color: #333;
     line-height: 1.6;
 }
+h1 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    width: auto;
+    align-self: flex-start;
+    margin-left: 80px;
+    color: #333;
+}
 
 .container {
     max-width: 1200px;
@@ -116,7 +124,7 @@ button:hover {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 10% auto;
     padding: 30px;
     border: 1px solid #888;
     width: 80%;
@@ -223,11 +231,13 @@ form input[type="text"], form select {
 	width : 96%;
 }
 
+.create_btn {
+	margin-top : 50px;
+}
 form label {
 	font-weight: bold;
 }
 
-.selected {
-    color: red;
-    font-weight: bold;
+#editDepartmentName {
+	width : 96%;
 }
