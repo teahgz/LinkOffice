@@ -5,12 +5,12 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/member/detail.css}" rel="stylesheet" type="text/css">
     <section th:each="member : ${memberDtoList}">
+       <h1>사원 정보</h1>
         <div class="my_profile">
-            <h1>사원 정보</h1>
             <div class="profile_card">
                 <div class="profile_header">
                     <div class="profile_img">
-					<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" id="currentSignature">
+					<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}" alt="사원 사진" id="currentSignature">
                     </div>
                     <ul class="profile_details" >
                         <li>
@@ -72,7 +72,7 @@
                 	<div th:if="${member.member_status == 0}" id="edit_div">
 					   <a th:href="@{/admin/member/edit/{no}(no=${member.member_no})}" id="edit_button">수정</a> 
                 	</div>
-					<button type="button" id="list_button" onclick="history.back()">목록</button>
+					<button type="button" id="list_button" onclick="location.href='/admin/member/list'">목록</button>
 			    </div>
             </div>
         </div>

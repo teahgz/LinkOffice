@@ -102,18 +102,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.res_code == '200') {
                 Swal.fire({
                     icon: 'success',
-                    title: '서명 등록',
                     text: data.res_msg,
-                    confirmButtonText: '닫기'
+                    confirmButtonColor: '#B1C2DD', 
+                    confirmButtonText: '확인'
                 }).then(() => {
                     location.href = "/employee/member/digitalname/" + memberNo;
                 });
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '서명 등록',
                     text: data.res_msg,
-                    confirmButtonText: '닫기'
+                    confirmButtonColor: '#B1C2DD', 
+                    confirmButtonText: '확인'
                 });
             }
         });

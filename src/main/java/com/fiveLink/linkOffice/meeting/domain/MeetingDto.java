@@ -43,7 +43,7 @@ public class MeetingDto {
             .build();
     }
 
-    public static MeetingDto fromEntity(Meeting meeting) {
+    public static MeetingDto toDto(Meeting meeting) {
         return MeetingDto.builder()
             .meeting_no(meeting.getMeetingNo())
             .meeting_name(meeting.getMeetingName())

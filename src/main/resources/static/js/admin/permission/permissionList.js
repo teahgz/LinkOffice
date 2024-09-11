@@ -354,7 +354,12 @@ $('#confirmButton').click(function() {
         }),
         success: function(response) {
             if (response.res_code === "200") {
-                Swal.fire('권한자 등록', response.res_msg, 'success').then((result) => {
+                Swal.fire({ 
+			        text: response.res_msg,
+			        icon: 'success', 
+			        confirmButtonColor: '#B1C2DD', 
+			        confirmButtonText: '확인', 
+			    }).then((result) => {
                     if (result.isConfirmed) {
                         $('#organizationChartModal').modal('hide');
                         currentPage = 1; // 첫 페이지로 리셋
@@ -384,8 +389,7 @@ $('#deleteButton').click(function() {
     const selectedMemberNos = $('.member-checkbox:checked').map(function() {
         return $(this).data('memberNo');
     }).get();
-    Swal.fire({
-        title: '삭제 확인',
+    Swal.fire({ 
         text: '선택한 권한자를 삭제하시겠습니까?',
         icon: 'warning',
         showCancelButton: true,
@@ -412,16 +416,21 @@ $('#deleteButton').click(function() {
                 }),
                 success: function(response) {
                     if (response.res_code === "200") {
-                        Swal.fire('권한자 삭제', response.res_msg, 'success').then(() => {
+						Swal.fire({ 
+					        text: response.res_msg,
+					        icon: 'success', 
+					        confirmButtonColor: '#B1C2DD', 
+					        confirmButtonText: '확인', 
+					    }).then(() => {
                             currentPage = 1;  
                             fetchPermissionMembers(document.querySelector(`.permission_Lists a[data-id="${menuNo}"]`));
                         });
                     } else {
-                        Swal.fire('권한자 삭제', response.res_msg, 'error');
+                        Swal.fire('', response.res_msg, 'error');
                     }
                 },
                 error: function () {
-                    Swal.fire("서버 오류", "권한자 삭제 중 오류가 발생했습니다.", "error");
+                    Swal.fire("", "권한자 삭제 중 오류가 발생했습니다.", "error");
                 }
             });
         }

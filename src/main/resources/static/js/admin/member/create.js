@@ -55,8 +55,8 @@ function previewImage(event) {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '파일 형식 오류',
                 text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
+                confirmButtonColor: '#B1C2DD',
                 confirmButtonText: '확인'
             });
 
@@ -75,28 +75,28 @@ createFrm.addEventListener('submit',(e)=>{
 	let vali_check = false;
 	let vali_text ="";
 	
-	if(createFrm.profile_image.value == ""){
+	if(createFrm.profile_image.value.trim() == ""){
 		vali_text += '이미지를 등록해주세요.';
 		createFrm.profile_image.focus();
 	} else if(createFrm.name.value == ""){
 		vali_text += '사원명을 입력해주세요.';
 		createFrm.name.focus();
-	} else if(createFrm.national_number_front.value == ""){
+	} else if(createFrm.national_number_front.value.trim() == ""){
 		vali_text += '주민번호 앞자리를 입력해주세요.';
 		national_number_front.focus();
-	 } else if(createFrm.national_number_back.value == ""){
+	 } else if(createFrm.national_number_back.value.trim() == ""){
 		vali_text += '주민번호 뒷자리를 입력해주세요';
 		national_number_back.focus();
-	 } else if(createFrm.hire_date.value == ""){
+	 } else if(createFrm.hire_date.value.trim() == ""){
 		vali_text += '입사일을 지정해주세요.';
 		hire_date.focus();
-	 } else if(createFrm.mobile2.value == ""){
+	 } else if(createFrm.mobile2.value.trim() == ""){
 		vali_text += '전화번호를 입력해주세요.';
 		mobile2.focus();
-	 } else if(createFrm.mobile3.value ==""){
+	 } else if(createFrm.mobile3.value.trim() ==""){
 		vali_text += '전화번호를 입력해주세요.';
 		mobile3.focus();
-	 } else if(createFrm.internal.value == ""){
+	 } else if(createFrm.internal.value.trim() == ""){
 		vali_text += '내선번호를 입력해주세요.';
 		internal.focus();
 	 } else {
@@ -109,7 +109,8 @@ createFrm.addEventListener('submit',(e)=>{
 		Swal.fire({
 			icon : 'error',
 			text : vali_text,
-			confirmButtonText : "닫기"
+			confirmButtonColor: '#B1C2DD',
+			confirmButtonText : "확인"
 		});
 	 } else{
 		const formData = new FormData(createFrm);
@@ -126,7 +127,8 @@ createFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD',
+				confirmButtonText : "확인"
 		}).then((result)=>{
 			location.href = "/admin/member/list";
 		});
@@ -134,13 +136,15 @@ createFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'warning',
 				text : data.res_msg,
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD',
+				confirmButtonText : "확인"
 			});	
 			}else {
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD',
+				confirmButtonText : "확인"
 			});
 			}
 		}

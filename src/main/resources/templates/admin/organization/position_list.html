@@ -7,14 +7,14 @@
 <meta name="_csrf_header" content="${_csrf.headerName}"> 
     <link th:href="@{/css/admin/organization/positionList.css}" rel="stylesheet" type="text/css">   
     <section>
+    	<h1>직위 관리</h1>  
         <div class="container">
             <div class="content-wrapper">
                 <div class="list">
                     <div class="list-header"> 
-                        <h2>직위 목록</h2>
+                        <h3 class="position_comment">직위를 선택하여 상세 정보를 확인하세요.</h3>
                         <button id="openModal">직위 등록</button>
-                    </div>
-                    <div class="position_comment">직위를 선택하여 상세 정보를 확인하세요.</div>
+                    </div> 
                     <ul class="position_ul">
                         <th:block th:each="position : ${positions}">
                             <li class="position_li">

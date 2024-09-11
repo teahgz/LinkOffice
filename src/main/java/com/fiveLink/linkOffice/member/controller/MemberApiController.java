@@ -39,7 +39,7 @@ public class MemberApiController {
 	public Map<String, String> digitalnameUpdate( @PathVariable("member_no") Long memberNo,@RequestParam("signatureData") String signatureData) {
 	    Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
-	    response.put("res_msg", "파일 등록 중 오류가 발생하였습니다.");
+	    response.put("res_msg", "서명 등록 중 오류가 발생하였습니다.");
 	    
 	    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
 	     
@@ -51,16 +51,16 @@ public class MemberApiController {
 	                memberdto.setMember_new_digital_img(newDigitalName);
 	                
                     if(memberFileService.delete(memberdto.getMember_no()) > 0) {
-                    	response.put("res_msg", "기존 파일 삭제 완료되었습니다.");
+                    	response.put("res_msg", "기존 서명이 삭제 완료되었습니다.");
                     }else {
-                    	response.put("res_msg", "기존 파일 삭제 중 오류가 발생되었습니다.");
+                    	response.put("res_msg", "기존 서명 삭제 중 오류가 발생되었습니다.");
                     }
 
 	            }
 	            
 	            if (memberService.updateMemberDigital(memberdto) != null) {
                     response.put("res_code", "200");
-                    response.put("res_msg", "파일 업로드가 완료되었습니다.");
+                    response.put("res_msg", "서명이 등록되었습니다.");
                  
                 }
 	        }
@@ -76,7 +76,8 @@ public class MemberApiController {
 	@PostMapping("/myedit/pwVerify/{member_no}")
 	public Map<String, String> pwVerify(@PathVariable("member_no") Long memberNo, @RequestBody String pwVerify) {
 	    Map<String, String> response = new HashMap<>();
-	    response.put("res_code", "401"); // 기본 응답 코드를 실패로 설정
+	    response.put("res_code", "404"); 
+	    response.put("res_msg", "비밀번호 확인 중 오류가 발생하였습니다."); 
 	    
 	    // 회원 정보 조회
 	    MemberDto memberDto = memberService.selectMemberOne(memberNo);
@@ -84,7 +85,8 @@ public class MemberApiController {
 	    if (memberDto != null) {
 	        // 비밀번호 비교
 	        if (passwordEncoder.matches(pwVerify, memberDto.getMember_pw())) {
-	            response.put("res_code", "200"); // 성공 시 응답 코드
+	            response.put("res_code", "200"); 
+	            response.put("res_msg", "비밀번호가 일치합니다."); 
 	        }
 	    }
 	    return response;
@@ -100,7 +102,7 @@ public class MemberApiController {
             @RequestParam(name = "newPassword") String newPassword){
 		 Map<String, String> response = new HashMap<>();
 		    response.put("res_code", "404");
-		    response.put("res_msg", "파일 등록 중 오류가 발생하였습니다.");
+		    response.put("res_msg", "정보 수정 중 오류가 발생하였습니다.");
 		    
 		    MemberDto memberdto = memberService.selectMemberOne(memberNo); 
 		     
@@ -134,7 +136,7 @@ public class MemberApiController {
 		    
 		    if(memberService.updateMemberProfile(memberdto) != null) {
 		    	response.put("res_code", "200");
-		    	response.put("res_msg", "정보 수정 성공하였습니다.");
+		    	response.put("res_msg", "정보 수정이 완료되었습니다.");
 		    }
 		    return response;
 	}
@@ -250,7 +252,7 @@ public class MemberApiController {
 		    
 		    if(memberService.pwchange(dto) != null) {
 				response.put("res_code", "200");
-			    response.put("res_msg", "비밀번호 변경 성공하였습니다.");
+			    response.put("res_msg", "비밀번호가 변경되었습니다.");
 			}
 		    return response;
 	}
@@ -290,7 +292,7 @@ public class MemberApiController {
             @RequestParam("position") String position){
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
-	    response.put("res_msg", "퇴사 처리 중 오류가 발생하였습니다.");
+	    response.put("res_msg", "정보 수정 중 오류가 발생하였습니다.");
 	    
 	    MemberDto memberdto = memberService.selectMemberOne(memberNo);
 	    
@@ -332,7 +334,7 @@ public class MemberApiController {
 	    
 	    if(memberService.memberEdit(memberdto) != null) {
 	    	response.put("res_code", "200");
-	    	response.put("res_msg", "정보 수정 성공하였습니다.");
+	    	response.put("res_msg", "정보 수정을 성공하였습니다.");
 
 	    }
 	    

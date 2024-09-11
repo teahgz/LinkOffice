@@ -7,6 +7,30 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
 
     let formData = {};
 
+    if (!designatedCheckbox.checked && !joinedCheckbox.checked) {
+        Swal.fire({
+            icon: 'warning',
+            text: '지정일 또는 입사일 기준을 선택해 주세요.',
+            confirmButtonText: "확인",
+            customClass: {
+                confirmButton: 'custom-confirm-button'
+            }
+        });
+        return;
+    }
+
+    if (designatedCheckbox.checked && !designatedDateInput.value) {
+        Swal.fire({
+            icon: 'warning',
+            text: '지정일 날짜를 입력해 주세요.',
+            confirmButtonText: "확인",
+            customClass: {
+                        confirmButton: 'custom-confirm-button'
+                    }
+        });
+        return;
+    }
+
     if (designatedCheckbox.checked) {
         formData = {
             type: 'designated',
@@ -28,18 +52,18 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('서버가 응답하지 않음');
         }
         return response.json();
     })
     .then(data => {
-        console.log(data); // 응답 데이터 확인
+        console.log(data);
         if (data.res_code === '200') {
             Swal.fire({
                 icon: 'success',
-                title: '성공',
                 text: data.res_msg,
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: "확인"
             }).then((result) => {
                 if (result.isConfirmed) {
                     location.reload();
@@ -48,18 +72,18 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '실패',
                 text: data.res_msg,
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: "확인"
             });
         }
     })
     .catch(error => {
         Swal.fire({
             icon: 'error',
-            title: '오류 발생',
             text: '서버와의 통신 중 오류가 발생했습니다.',
-            confirmButtonText: "닫기"
+            confirmButtonColor: '#B1C2DD', 
+            confirmButtonText: "확인"
         });
     });
 });
@@ -90,6 +114,4 @@ document.getElementById('joined').addEventListener('change', function() {
 
 window.onload = function() {
     document.getElementById('designatedDate').disabled = true;
-
 };
-

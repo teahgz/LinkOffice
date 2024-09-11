@@ -74,14 +74,13 @@ public class MemberViewController {
 	@GetMapping("/admin/member/create")
 	public String create(Model model) {
 		// 로그인한 사원의 정보
-	      Long memberNo = memberService.getLoggedInMemberNo();
+	      Long member_no = memberService.getLoggedInMemberNo();
 	      // 번호
-	      List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	      List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 	      // 부서명 조회 
 	      List<DepartmentDto> departments = departmentService.findSubDepartment();
 	      // 직위명 조회 
 	      List<PositionDto> positions = positionService.getAllPositionsForSelect();
-	        System.out.println(departments);
 	      model.addAttribute("memberdto", memberdto);
 	      model.addAttribute("departments", departments);
 	      model.addAttribute("positions", positions);
@@ -106,8 +105,8 @@ public class MemberViewController {
 	    Model model, 
 	    MemberDto searchdto) {
 	    
-	    Long memberNo = memberService.getLoggedInMemberNo();
-	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	    Long member_no = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 
 	    // 정렬 설정
 	    Sort sortOption = getSortOption(sort);
@@ -188,6 +187,7 @@ public class MemberViewController {
 	public String detail(@PathVariable("member_no") Long memberNo, Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
 		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
 	    
 		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -208,27 +208,31 @@ public class MemberViewController {
 	
 	// [전주영] 관리자 사원 수정
 	@GetMapping("/admin/member/edit/{member_no}")
-	public String edit(@PathVariable("member_no") Long memberNo,Model model) {
-		Long member_no = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
-		
-	    List<DepartmentDto> departments = departmentService.getAllDepartments();
-	    List<PositionDto> positions = positionService.getAllPositionsForSelect();
-		
-		model.addAttribute("memberdto", memberdto);
-	    model.addAttribute("memberDtoList", memberDtoList);
-	    model.addAttribute("departments", departments);
-	    model.addAttribute("positions", positions);
-	    
+	public String edit(@PathVariable("member_no") Long memberNo, Model model) {
+	    try {
+	        Long member_no = memberService.getLoggedInMemberNo();
+	        List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+	        List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+
+	        List<DepartmentDto> departments = departmentService.getAllDepartments();
+	        List<PositionDto> positions = positionService.getAllPositionsForSelect();
+
+	        model.addAttribute("memberdto", memberdto);
+	        model.addAttribute("memberDtoList", memberDtoList);
+	        model.addAttribute("departments", departments);
+	        model.addAttribute("positions", positions);
+
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    }
+
 	    return "admin/member/edit";
 	}
-	
 	// [전주영] 사용자 주소록
 	@GetMapping("/employee/member/list")
 	public String memberList(Model model, MemberDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
-		Long memberNo = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 	    
 	    Sort sortOption = getSortOption(sort);
 	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);

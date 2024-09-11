@@ -16,8 +16,8 @@ function previewImage(event) {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '파일 형식 오류',
                 text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
+                confirmButtonColor: '#B1C2DD',
                 confirmButtonText: '확인'
             });
 
@@ -35,9 +35,6 @@ editFrm.addEventListener('submit',(e)=>{
 	const memberNo = document.getElementById("member_no").value;	
 	
 	const formData = new FormData(editFrm);
-	for (let [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-}
 
 	fetch('/admin/member/edit/'+memberNo,{
 		method:'put',
@@ -52,7 +49,8 @@ editFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD',
+				confirmButtonText : "확인"
 		}).then((result)=>{
 			location.href = "/admin/member/list";
 		});
@@ -60,13 +58,15 @@ editFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'warning',
 				text : data.res_msg,
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD',
+				confirmButtonText : "확인"
 			});	
 			}else {
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD',
+				confirmButtonText : "확인"
 			});
 			}
 		}

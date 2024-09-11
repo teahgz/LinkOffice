@@ -1,3 +1,5 @@
+// editor
+
 import {
     ClassicEditor,
     AccessibilityHelp,
@@ -114,7 +116,7 @@ const editorConfig = {
     }
 };
 
-
+// 수정 폼
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
@@ -124,12 +126,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             const approvalTitle = document.querySelector('#approval_title').value;
             const editorData = editor.getData();
             const csrfToken = document.querySelector('#csrf_token').value;
-
-            console.log('양식 번호', formNo);
-            console.log('양식 이름', approvalTitle);
-            console.log('에디터내용', editorData);
-            console.log('토큰', csrfToken);
-
 
                 const formData = new FormData();
                 formData.append('form_no', formNo);
@@ -151,7 +147,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'success',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         }).then((result) => {
                             location.href = "/admin/approval/detail/"+formNo;
                         });
@@ -159,7 +156,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'error',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     }
                 });  

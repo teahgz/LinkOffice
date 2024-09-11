@@ -18,6 +18,7 @@
     <select id="selectVacationTypeList" resultType="com.fiveLink.linkOffice.vacation.domain.VacationTypeDto">
         SELECT *
         FROM fl_vacation_type
+        ORDER BY vacation_type_name
     </select>
     <select id="countCheckOneYear" resultType="int">
         SELECT count(*) FROM fl_vacation_under
@@ -52,8 +53,7 @@
         SELECT vacation_standard_status FROM fl_vacation_standard
     </select>
     <select id="checkType" resultType="int">
-        SELECT count(*) FROM fl_vacation_type WHERE vacation_type_name = #{name}
+        SELECT count(*) FROM fl_vacation_type WHERE vacation_type_name = #{name} AND vacation_type_status = 0
     </select>
-
 
 </mapper>

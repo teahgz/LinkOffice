@@ -65,6 +65,23 @@
 #pwVerifyFrm input[type="password"] {
     width: 130px;
     padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+#pwVerifyFrm input[type="password"] {
+    width: 130px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#pwVerifyFrm input[type="password"]:focus {
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 .button-container {
@@ -87,14 +104,6 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-}
-
-.my_profile h1 {
-	font-size: 2rem;
-	margin-bottom: 20px;
-	width: auto;
-	align-self: flex-start;
-	margin-left: 100px;
 }
 
 .profile_card {
@@ -216,9 +225,15 @@
 }
 
 .input_address {
-	border: 1px solid #ccc;
-	border-radius: 4px;
 	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+.input_address:focus {
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 .input_pw_container {
@@ -231,10 +246,16 @@
 .input_pw {
     width: 43%;
     padding-right: 40px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
     padding: 8px;
     box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+.input_pw:focus {
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 .toggle_icon {

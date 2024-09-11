@@ -6,8 +6,10 @@ import com.fiveLink.linkOffice.chat.repository.ChatMessageRepository;
 import com.fiveLink.linkOffice.mapper.ChatMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatMessageService {
@@ -24,10 +26,8 @@ public class ChatMessageService {
         ChatMessage chat = chatMessageDto.toEntity();
         chatMessageRepository.save(chat);
     }
-    public List<ChatMessageDto> getChatMessages(Long roomNo, Long memberNo){
-        System.out.println(roomNo);
-        return chatMapper.getChatMessages(roomNo, memberNo);
+    public List<Map<String, Object>> getChatMessages(Long roomNo) {
+        return chatMapper.getChatMessages(roomNo);
     }
-
 
 }

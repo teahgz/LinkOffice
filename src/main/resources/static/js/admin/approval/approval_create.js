@@ -1,3 +1,5 @@
+// editor
+
 import {
     ClassicEditor,
     AccessibilityHelp,
@@ -115,27 +117,24 @@ const editorConfig = {
 };
 
 
+// 등록 폼
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
 
-        document.querySelector('.submit-button').addEventListener('click', (e) => {
+        document.querySelector('.submit_button').addEventListener('click', (e) => {
             e.preventDefault();
             const editorData = editor.getData();
             const approvalTitle = document.querySelector('#approval_title').value;
             const csrfToken = document.querySelector('#csrf_token').value;
 
-            console.log('에디터내용', editorData);
-            console.log('양식 이름', approvalTitle);
-            console.log('토큰', csrfToken);
-
             let vali_check = false;
             let vali_text = "";
 
-            if (approvalTitle === "") {  
+            if (approvalTitle.trim() === "") {  
                 vali_text += '양식 이름을 입력해주세요.';
                 document.querySelector('#approval_title').focus();
-            } else if (editorData === "") {
+            } else if (editorData.trim() === "") {
                 vali_text += '양식 입력해주세요.';
                 editor.ui.view.editable.element.focus();  
             } else {
@@ -146,7 +145,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 Swal.fire({
                     icon: 'error',
                     text: vali_text,
-                    confirmButtonText: "닫기"
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: "확인"
                 });
             } else {
                 const formData = new FormData();
@@ -168,7 +168,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'success',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         }).then((result) => {
                             location.href = "/admin/approval/form";
                         });
@@ -176,10 +177,12 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'error',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     }
                 });  
             }
         });
     });
+    
