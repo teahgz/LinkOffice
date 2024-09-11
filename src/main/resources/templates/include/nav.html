@@ -27,9 +27,9 @@
 				<li>
 					<a href="#">휴가</a>
 					<div class="dropdown">
-						<ul>
-							<li><a href="#">휴가 신청하기</a></li>
-							<li><a href="#">휴가 현황</a></li>
+						<ul th:each = "member : ${memberdto}">
+							<li><a th:href="@{/employee/vacationapproval/create/{no}(no=${member.member_no})}">휴가 신청하기</a></li>
+							<li><a th:href="@{/employee/vacationapproval/list/{no}(no=${member.member_no})}">휴가 신청함</a></li>
 						</ul>
 					</div>
 				</li>
