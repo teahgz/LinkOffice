@@ -119,19 +119,11 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
 
-<<<<<<< Updated upstream
         document.querySelector('.submit_button').addEventListener('click', (e) => {
-=======
-        document.querySelector('.submit-button').addEventListener('click', (e) => {
->>>>>>> Stashed changes
             e.preventDefault();
             const editorData = editor.getData();
             const approvalTitle = document.querySelector('#approval_title').value;
             const csrfToken = document.querySelector('#csrf_token').value;
-
-            console.log('에디터내용', editorData);
-            console.log('양식 이름', approvalTitle);
-            console.log('토큰', csrfToken);
 
             let vali_check = false;
             let vali_text = "";
@@ -150,6 +142,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 Swal.fire({
                     icon: 'error',
                     text: vali_text,
+                    confirmButtonColor: '#C0C0C0',
                     confirmButtonText: "닫기"
                 });
             } else {
@@ -172,6 +165,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'success',
                             text: data.res_msg,
+                            confirmButtonColor: '#C0C0C0',
                             confirmButtonText: "닫기"
                         }).then((result) => {
                             location.href = "/admin/approval/form";
@@ -180,6 +174,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'error',
                             text: data.res_msg,
+                            confirmButtonColor: '#C0C0C0',
                             confirmButtonText: "닫기"
                         });
                     }
@@ -187,3 +182,4 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             }
         });
     });
+    
