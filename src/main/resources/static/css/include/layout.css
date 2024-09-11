@@ -69,7 +69,6 @@ input:focus {
 input {
     border: 1px solid #ddd;
     border-radius: 6px;
-    font-size: 16px;
     transition: border-color 0.3s;
 } 
 
