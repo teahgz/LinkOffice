@@ -3,6 +3,7 @@ package com.fiveLink.linkOffice.meeting.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class MeetingService {
 	}
 	
 	public List<MeetingDto> getAllMeetings() {
-	    List<Meeting> meetings = meetingRepository.findByMeetingStatus(0L);
+	    List<Meeting> meetings = meetingRepository.findByMeetingStatusOrderByMeetingNameAsc(0L);
 	    List<MeetingDto> meetingDtos = new ArrayList();
 
 	    for (Meeting meeting : meetings) {
@@ -44,12 +45,39 @@ public class MeetingService {
 	public boolean isMeetingNameExists(String meetingName) {
 		 return meetingRepository.existsByMeetingNameAndMeetingStatus(meetingName, 0L);
 	}
- 
-	 
+  
 	@Transactional
 	public Meeting saveMeeting(MeetingDto meetingDto) {
 	    Meeting meeting = meetingDto.toEntity();
 	    return meetingRepository.save(meeting);
 	}
-	  
+	
+	// 수정 
+	public boolean isMeetingNameExistsEdit(String meetingName, Long meetingId) {
+		 return meetingRepository.existsByMeetingNameAndMeetingStatusAndMeetingNoNot(meetingName, 0L, meetingId);
+	}
+	 
+	// 삭제
+	public boolean deleteMeetings(List<Long> meetingNos) {
+        try {
+            for (Long meetingNo : meetingNos) {
+                meetingRepository.findById(meetingNo).ifPresent(meeting -> {
+                    meeting.setMeetingStatus(1L);  
+                    meetingRepository.save(meeting); 
+                });
+            }
+            return true; 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; 
+        }
+    }
+	
+	// 검색
+	public List<MeetingDto> searchMeetingRoomsByName(String searchText) {
+        List<Meeting> meetings = meetingRepository.findByMeetingNameContainingIgnoreCaseAndMeetingStatusOrderByMeetingNameAsc(searchText, 0L);
+        return meetings.stream()
+                       .map(MeetingDto::toDto)
+                       .collect(Collectors.toList());
+    }
 }

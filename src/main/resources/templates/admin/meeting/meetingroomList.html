@@ -4,36 +4,42 @@
      layout:decorate="~{include/layout}"> 
     <th:block layout:fragment="content">
         <link th:href="@{/css/admin/meeting/meetingroomList.css}" rel="stylesheet" type="text/css">
-        <section>
-            <div>
-                <h1>회의실 목록</h1>
-                <div class="button-wrapper">
-                    <button type="button" id="addMeetingButton">회의실 등록</button>
+         <section>
+            <h1 class="page_title">회의실 관리</h1>
+            <div class="container">
+                <div class="member-section" id="meetingRoomSection"> 
+                    
+                    <div class="button-container"> 
+					    <div class="left-buttons">
+					        <button id="deleteMeetingButton" type="button" class="modal_btn" disabled>삭제</button>
+					        <input type="text" id="searchMeetingRoom" placeholder="회의실 이름으로 검색하세요." />
+					        <button id="meeting_search_btn" type="button" class="modal_btn">검색</button>
+					    </div> 
+					    <button id="addMeetingButton" type="button" class="modal_btn">회의실 등록</button>
+					</div>
+				    <div class="meeting_info_text">회의실을 선택하여 정보를 수정하세요.</div>  
+                    <table id="meetingList" class="meetingRoom_table">
+                        <thead>
+                            <tr>
+                            	<th></th>
+                                <th>회의실 이름</th>
+                                <th>정원</th>
+                                <th>이용 가능 시간</th> 
+                                <th>설명</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="meeting : ${meetings}" class="meeting-row" th:data-id="${meeting.meeting_no}">
+                            	<td><input type="checkbox" class="meetingCheckbox" th:data-id="${meeting.meeting_no}"/></td>
+                                <td th:text="${meeting.meeting_name}"></td>
+                                <td th:text="${meeting.meeting_max}"></td>
+                                <td th:text="${meeting.meeting_available_start} + ' ~ ' + ${meeting.meeting_available_end}"></td> 
+                                <td th:text="${meeting.meeting_comment}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="pagination" class="pagination"></div>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>회의실 이름</th>
-                            <th>정원</th>
-                            <th>이용 가능 시간</th>
-                            <th>이용 마감 시간</th>
-<!--                             <th>이미지</th>
-                            <th>새 이미지</th> -->
-                            <th>설명</th> 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="meeting : ${meetings}" class="meeting-row" th:data-id="${meeting.meeting_no}">
-                            <td th:text="${meeting.meeting_name}"> </td>
-                            <td th:text="${meeting.meeting_max}"> </td>
-                            <td th:text="${meeting.meeting_available_start}"> </td>
-                            <td th:text="${meeting.meeting_available_end}"> </td>
-<!--                             <td th:text="${meeting.meeting_ori_image}"> </td>
-                            <td th:text="${meeting.meeting_new_image}"> </td> -->
-                            <td th:text="${meeting.meeting_comment}"> </td> 
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </section>
 		
@@ -85,7 +91,7 @@
 
                     <div class="form-group">
                         <label></label>
-                        <button type="submit">저장</button>
+                        <button type="submit" class="modal_in_btn">저장</button>
                     </div>
                 </form>
             </div>
@@ -132,12 +138,11 @@
 
 					<div class="form-group">
                         <label></label>
-                        <button type="submit" class="edit_btn">수정</button>
+                        <button type="submit" class="edit_btn modal_in_btn">수정</button> 
                     </div> 
 		        </form>
 		    </div>
-		</div>
-
+		</div> 
 		
         <script th:src="@{/js/admin/meeting/meetingroomList.js}"></script>
     </th:block>
