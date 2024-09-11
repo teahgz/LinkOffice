@@ -1,3 +1,5 @@
+// 삭제 폼
+
 const form = document.getElementById("appDeleteFrm");
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ form.addEventListener('submit', (e) => {
                     Swal.fire({
                         icon: 'success',
                         text: data.res_msg,
-                        confirmButtonColor: '#C0C0C0',
+                        confirmButtonColor: '#B1C2DD',
                         confirmButtonText: "확인"
                     }).then((result) => {
                         location.href = "/admin/approval/form";
@@ -38,7 +40,7 @@ form.addEventListener('submit', (e) => {
                     Swal.fire({
                         icon: 'error',
                         text: data.res_msg,
-                        confirmButtonColor: '#C0C0C0',
+                        confirmButtonColor: '#B1C2DD',
                         confirmButtonText: "확인"
                     });
                 }

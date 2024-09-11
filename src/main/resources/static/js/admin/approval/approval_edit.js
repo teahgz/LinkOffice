@@ -1,3 +1,5 @@
+// editor
+
 import {
     ClassicEditor,
     AccessibilityHelp,
@@ -114,7 +116,7 @@ const editorConfig = {
     }
 };
 
-
+// 수정 폼
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
