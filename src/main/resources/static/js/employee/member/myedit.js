@@ -35,6 +35,13 @@ pwform.addEventListener('submit', (e) => {
 	})
 });
 
+function goMypage(){
+	const memberNo = document.getElementById('member_no').value;
+	
+	location.href = `/employee/member/mypage/${memberNo}`;  
+}
+
+
 // 주소 API
 function sample4_execDaumPostcode() {
     new daum.Postcode({
