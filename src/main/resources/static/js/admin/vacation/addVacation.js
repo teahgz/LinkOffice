@@ -431,67 +431,75 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('oneUnderForm').addEventListener('submit', function(event) {
         event.preventDefault(); // 기본 폼 제출을 막음
 
-        Swal.fire({
-            title: '정말 등록하시겠습니까?',
-            text: "이 작업은 취소할 수 없습니다.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#B1C2DD',
-            cancelButtonColor: '#EEB3B3',
-            confirmButtonText: '네, 등록합니다',
-            cancelButtonText: '취소'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // 사용자가 확인 버튼을 눌렀을 때 진행
-                const isChecked = document.getElementById('lessThanOneYear').checked;
+        const isChecked = document.getElementById('lessThanOneYear').checked;
 
-                fetch('/vacation/checkOneYear', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        isChecked: isChecked
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data); // 응답 데이터 확인
-                    if (data.res_code === '200') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '성공',
-                            text: data.res_msg,
-                            confirmButtonText: "닫기"
+        // 체크박스가 체크되지 않았을 경우 확인 메시지 표시
+        if (!isChecked) {
+             Swal.fire({
+                            text: '1년 미만 월차 지급 여부를 선택하지 않으셨습니다.',
+                            icon: 'warning',
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: '확인',
+                            showCancelButton: false // 취소 버튼 제거
                         }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '실패',
-                            text: data.res_msg,
-                            confirmButtonText: "닫기"
-                        });
-                    }
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '오류 발생',
-                        text: '서버와의 통신 중 오류가 발생했습니다.',
-                        confirmButtonText: "닫기"
+                if (result.isConfirmed) {
+                   then(() => {
+                        location.reload();
                     });
+                }
+            });
+        } else {
+            proceedWithSubmission();
+        }
+    });
+
+    function proceedWithSubmission() {
+        const isChecked = document.getElementById('lessThanOneYear').checked;
+
+        fetch('/vacation/checkOneYear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                isChecked: isChecked
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('서버 응답 불가');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.res_code === '200') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '실패',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
                 });
             }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '서버와의 통신 중 오류가 발생했습니다.',
+                confirmButtonText: "닫기"
+            });
         });
-    });
+    }
 });
