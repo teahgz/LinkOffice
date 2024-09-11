@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         Swal.fire({
+            title: '확인',
             text: '입력되지 않은 연차의 개수는 0으로 지정됩니다. 계속하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
@@ -68,8 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.res_code === '200') {
                             Swal.fire({
                                 icon: 'success',
-                            	confirmButtonColor: '#B1C2DD',
-                                confirmButtonText: "확인"
+                                title: '성공',
+                                text: data.res_msg,
+                                confirmButtonText: "닫기"
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     location.reload();
@@ -78,18 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             Swal.fire({
                                 icon: 'error',
+                                title: '실패',
                                 text: data.res_msg,
-								confirmButtonColor: '#B1C2DD',
-                                confirmButtonText: "확인"
+                                confirmButtonText: "닫기"
                             });
                         }
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
+                            title: '오류 발생',
                             text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
+                            confirmButtonText: "닫기"
                         });
                     });
                 } else {
@@ -125,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.res_code === '200') {
                             Swal.fire({
                                 icon: 'success',
+                                title: '성공',
                                 text: data.res_msg,
                                 confirmButtonColor: '#B1C2DD',
                                 confirmButtonText: "확인"
@@ -136,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             Swal.fire({
                                 icon: 'error',
+                                title: '실패',
                                 text: data.res_msg,
                                 confirmButtonColor: '#B1C2DD',
                                 confirmButtonText: "확인"
@@ -145,9 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
+                            title: '오류 발생',
                             text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
+                            confirmButtonText: "닫기"
                         });
                     });
                 }
@@ -163,15 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     form.addEventListener('submit', function(event) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        event.preventDefault(); 
-=======
         event.preventDefault();
->>>>>>> a2e89b7ce05e94a9194f63972c06a7479358059e
-=======
-        event.preventDefault(); 
->>>>>>> 0024284467d598720589d289e39832b863ef9c75
 
         const vacationType = document.getElementById('vacationType').value.trim();
         const vacationValue = document.getElementById('vacationValue').value.trim();
@@ -179,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!vacationType || !vacationValue) {
             Swal.fire({
                 icon: 'warning',
+                title: '입력 오류',
                 text: '모든 필드를 입력해주세요.',
                 confirmButtonColor: '#B1C2DD',
                 confirmButtonText: "확인"
@@ -204,9 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.exists) {
                 Swal.fire({
                     icon: 'warning',
+                    title: '중복된 휴가 종류',
                     text: '이미 존재하는 휴가 종류입니다. 다른 이름을 입력해주세요.',
-                    confirmButtonColor: '#B1C2DD',
-                    confirmButtonText: "확인"
+                     confirmButtonColor: '#B1C2DD',
+                     confirmButtonText: "확인"
                 });
             } else {
                 console.log(vacationType);
@@ -234,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.res_code === '200') {
                         Swal.fire({
                             icon: 'success',
+                            title: '성공',
                             text: '휴가 종류가 성공적으로 추가되었습니다.',
                             confirmButtonColor: '#B1C2DD',
                             confirmButtonText: "확인"
@@ -243,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         Swal.fire({
                             icon: 'error',
+                            title: '실패',
                             text: data.res_msg,
                             confirmButtonColor: '#B1C2DD',
                             confirmButtonText: "확인"
@@ -252,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(error => {
                     Swal.fire({
                         icon: 'error',
+                        title: '오류 발생',
                         text: '서버와의 통신 중 오류가 발생했습니다.',
                         confirmButtonColor: '#B1C2DD',
                         confirmButtonText: "확인"
@@ -262,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             Swal.fire({
                 icon: 'error',
+                title: '오류 발생',
                 text: '서버와의 통신 중 오류가 발생했습니다.',
                 confirmButtonColor: '#B1C2DD',
                 confirmButtonText: "확인"
@@ -317,14 +319,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 vacationTypeName: vacationTypeName,
                 vacationTypeCalculate: vacationTypeCalculate
             };
-            // Fetch API를 사용하여 데이터를 전송
+
             fetch('/vacation/updateVacation', {
-                method: 'POST', // 또는 PUT, 백엔드에서 처리할 방식에 맞게 설정
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify(data) // 데이터를 JSON으로 변환하여 전송
+                body: JSON.stringify(data)
             })
             .then(response => {
                 if (!response.ok) {
@@ -336,9 +338,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
+                        title: '성공',
                         text: data.res_msg,
-                        confirmButtonColor: '#B1C2DD',
-                        confirmButtonText: "확인"
+                        confirmButtonText: "닫기"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             location.reload();
@@ -347,15 +349,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
+                        title: '실패',
                         text: data.res_msg,
                         confirmButtonColor: '#B1C2DD',
                         confirmButtonText: "확인"
+
                     });
                 }
             })
             .catch(error => {
                 Swal.fire({
                     icon: 'error',
+                    title: '오류 발생',
                     text: '서버와의 통신 중 오류가 발생했습니다.',
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
@@ -401,9 +406,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
+                        title: '성공',
                         text: data.res_msg,
-                        confirmButtonColor: '#B1C2DD',
-                        confirmButtonText: "확인"
+                        confirmButtonText: "닫기"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             row.remove(); // 성공 시 행 제거
@@ -412,18 +417,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
+                        title: '실패',
                         text: data.res_msg,
-                        confirmButtonColor: '#B1C2DD',
-                        confirmButtonText: "확인"
+                        confirmButtonText: "닫기"
                     });
                 }
             })
             .catch(() => {
                 Swal.fire({
                     icon: 'error',
+                    title: '오류 발생',
                     text: '서버와의 통신 중 오류가 발생했습니다.',
-                    confirmButtonColor: '#B1C2DD',
-                    confirmButtonText: "확인"
+                    confirmButtonText: "닫기"
                 });
             });
         });
@@ -437,67 +442,64 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('oneUnderForm').addEventListener('submit', function(event) {
         event.preventDefault(); // 기본 폼 제출을 막음
 
-        Swal.fire({
-            title: '정말 등록하시겠습니까?',
-            text: "이 작업은 취소할 수 없습니다.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#B1C2DD',
-            cancelButtonColor: '#EEB3B3',
-            confirmButtonText: '네, 등록합니다',
-            cancelButtonText: '취소'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // 사용자가 확인 버튼을 눌렀을 때 진행
-                const isChecked = document.getElementById('lessThanOneYear').checked;
+        const isChecked = document.getElementById('lessThanOneYear').checked;
 
-                fetch('/vacation/checkOneYear', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        isChecked: isChecked
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+        if (!isChecked) {
+            Swal.fire({
+                text: '1년 미만 월차 지급 여부를 선택하지 않으셨습니다.',
+                icon: 'warning',
+                confirmButtonColor: '#B1C2DD',
+                confirmButtonText: '확인'
+            });
+            return; // 폼 제출 중단
+        }
+
+        // 체크박스가 체크되었을 경우에만 서버로 요청 전송
+        fetch('/vacation/checkOneYear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                isChecked: isChecked
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data); // 응답 데이터 확인
+            if (data.res_code === '200') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '성공',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data); // 응답 데이터 확인
-                    if (data.res_code === '200') {
-                        Swal.fire({
-                            icon: 'success',
-                            text: data.res_msg,
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            text: data.res_msg,
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
-                        });
-                    }
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        text: '서버와의 통신 중 오류가 발생했습니다.',
-                        confirmButtonColor: '#B1C2DD',
-                        confirmButtonText: "확인"
-                    });
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '실패',
+                    text: data.res_msg,
+                    confirmButtonText: "닫기"
                 });
             }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '서버와의 통신 중 오류가 발생했습니다.',
+                confirmButtonText: "닫기"
+            });
         });
     });
 });

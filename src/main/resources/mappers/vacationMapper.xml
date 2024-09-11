@@ -18,6 +18,7 @@
     <select id="selectVacationTypeList" resultType="com.fiveLink.linkOffice.vacation.domain.VacationTypeDto">
         SELECT *
         FROM fl_vacation_type
+        ORDER BY vacation_type_name
     </select>
     <select id="countCheckOneYear" resultType="int">
         SELECT count(*) FROM fl_vacation_under
