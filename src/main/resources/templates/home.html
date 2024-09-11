@@ -12,7 +12,7 @@
 					<span class="main_box_title"> 내 정보 <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img" /> </span>
 				</a>
 				<div class="employee-profile">
-				<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.jpg'}" alt="사원 사진" class="user_photo">
+				<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}" alt="사원 사진" class="user_photo">
 					<div class="employee-details">
 						<span class="employee-name" th:text="${member.member_name}"></span>
 						<span class="employee-position" th:text="${member.department_name}"></span> 

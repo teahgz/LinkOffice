@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 .form_page {
     display: flex;
     flex-direction: column;
@@ -5,15 +7,6 @@
     padding: 20px;
     font-family: Arial, sans-serif;
 }
-
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    width: auto;
-    align-self: flex-start;
-    margin-left: 100px;
-}
-
 
 .approval_form {
     background-color: #f8f9fa;
@@ -111,6 +104,22 @@ h1 {
     opacity: 0.8;
 }
 
+.table_container table {
+    width: 100%;
+    border-collapse: collapse; 
+    margin: 20px 0;
+}
+
+.table_container th, .table_container td {
+    border: 1px solid #ddd; 
+    padding: 8px; 
+}
+
+.table_container th {
+    background-color: #f2f2f2; 
+    text-align: left; 
+}
+
 .table_container input,
 .table_container textarea,
 .table_container select {
@@ -123,4 +132,3 @@ h1 {
 .table_container select:disabled {
     color: #333; 
 }
-

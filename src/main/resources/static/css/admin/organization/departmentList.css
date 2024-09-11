@@ -3,10 +3,9 @@ body {
     background-color: #f5f5f5;
     color: #333;
     line-height: 1.6;
-}
-
+} 
 .container {
-    max-width: 1200px;
+    max-width: 1250px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -28,6 +27,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center; 
+    margin-top : -15px;
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
@@ -39,7 +39,7 @@ body {
 }
 
 .department_comment {
-	margin-bottom: 30px;	
+	margin-bottom: 20px;	
 }
 
 button {
@@ -116,7 +116,7 @@ button:hover {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 10% auto;
     padding: 30px;
     border: 1px solid #888;
     width: 80%;
@@ -202,7 +202,7 @@ form input[type="text"], form select {
 .list_pardep {
 	font-size : 20px; 
 	margin-bottom: 50px;
-	font-weight: bold;
+	font-weight: bold;  
 }
 
 .info_btn {
@@ -221,13 +221,37 @@ form input[type="text"], form select {
 
 #departmentName{
 	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
 }
 
+#departmentName:focus{
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+#departmentHigh{
+	width : 96%;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#departmentHigh:focus{
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+.create_btn {
+	margin-top : 50px;
+}
 form label {
 	font-weight: bold;
 }
 
-.selected {
-    color: red;
-    font-weight: bold;
+#editDepartmentName {
+	width : 96%;
 }

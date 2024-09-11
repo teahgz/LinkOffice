@@ -94,7 +94,7 @@ public class DepartmentController {
     public Map<String, String> updateDepartment(@RequestBody Map<String, Object> payload) {
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("res_code", "404");
-        resultMap.put("res_msg", "부서 업데이트 중 오류가 발생했습니다.");
+        resultMap.put("res_msg", "부서 수정 중 오류가 발생했습니다.");
 
         try {
             Long departmentId = Long.valueOf(payload.get("departmentId").toString());
@@ -103,7 +103,7 @@ public class DepartmentController {
 
             departmentService.updateDepartment(departmentId, departmentName, departmentHigh);
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "부서가 성공적으로 업데이트되었습니다.");
+            resultMap.put("res_msg", "부서가 성공적으로 수정되었습니다.");
         } catch (Exception e) {
             resultMap.put("res_msg", e.getMessage());
         }

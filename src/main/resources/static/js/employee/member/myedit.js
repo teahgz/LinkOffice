@@ -22,14 +22,14 @@ pwform.addEventListener('submit', (e) => {
 	.then(data=>{
 		if(data.res_code == '200'){
 			document.getElementById('myModal').style.display = 'none';
-        	sessionStorage.setItem('modalClosed', 'true');
 		}else {
 	        Swal.fire({
 	            icon: 'error',
-	            title: '비밀번호가 일치하지 않습니다!',
-	            confirmButtonText: '닫기'
+	            text: '비밀번호가 일치하지 않습니다!',
+	            confirmButtonColor: '#B1C2DD', 
+	            confirmButtonText: '확인'
 	        }).then(() => {
-	            document.getElementById('pw_verify').value = ""; // 비밀번호 입력 필드 초기화
+	            document.getElementById('pw_verify').value = ""; 
 	        });
     }
 	})
@@ -98,8 +98,8 @@ function previewImage(event) {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '파일 형식 오류',
                 text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
+                confirmButtonColor: '#B1C2DD',
                 confirmButtonText: '확인'
             });
 
@@ -144,7 +144,7 @@ form.addEventListener('submit', (e) => {
     formData.append('member_no', memberNo); 
 
     fetch('/employee/member/myedit/' + memberNo, {
-        method: 'POST',
+        method: 'post',
         headers: {
             'X-CSRF-TOKEN': csrfToken 
         },
@@ -155,23 +155,19 @@ form.addEventListener('submit', (e) => {
         if (data.res_code == '200') {
             Swal.fire({
                 icon: 'success',
-                title: '수정 성공',
                 text: data.res_msg,
-                confirmButtonText: '닫기'
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: '확인'
             }).then(() => {
-                sessionStorage.removeItem('modalClosed'); // 모달 상태 리셋
                 location.href = "/employee/member/mypage/" + memberNo;
             });
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '수정 실패',
                 text: data.res_msg,
-                confirmButtonText: '닫기'
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: '확인'
             });
         }
     })
-    .catch(error => {
-        console.error('오류 발생:', error);
-    });
 });

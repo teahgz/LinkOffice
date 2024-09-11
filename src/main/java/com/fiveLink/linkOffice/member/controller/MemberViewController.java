@@ -208,22 +208,26 @@ public class MemberViewController {
 	
 	// [전주영] 관리자 사원 수정
 	@GetMapping("/admin/member/edit/{member_no}")
-	public String edit(@PathVariable("member_no") Long memberNo,Model model) {
-		Long member_no = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
-		
-	    List<DepartmentDto> departments = departmentService.getAllDepartments();
-	    List<PositionDto> positions = positionService.getAllPositionsForSelect();
-		
-		model.addAttribute("memberdto", memberdto);
-	    model.addAttribute("memberDtoList", memberDtoList);
-	    model.addAttribute("departments", departments);
-	    model.addAttribute("positions", positions);
-	    
+	public String edit(@PathVariable("member_no") Long memberNo, Model model) {
+	    try {
+	        Long loggedInMemberNo = memberService.getLoggedInMemberNo();
+	        List<MemberDto> memberdto = memberService.getMembersByNo(loggedInMemberNo);
+	        List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+
+	        List<DepartmentDto> departments = departmentService.getAllDepartments();
+	        List<PositionDto> positions = positionService.getAllPositionsForSelect();
+
+	        model.addAttribute("memberdto", memberdto);
+	        model.addAttribute("memberDtoList", memberDtoList);
+	        model.addAttribute("departments", departments);
+	        model.addAttribute("positions", positions);
+
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    }
+
 	    return "admin/member/edit";
 	}
-	
 	// [전주영] 사용자 주소록
 	@GetMapping("/employee/member/list")
 	public String memberList(Model model, MemberDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {

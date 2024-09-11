@@ -1,0 +1,78 @@
+h1 {
+            font-size: 2em;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .header .important-text {
+            color: red;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .header input[type="text"] {
+            padding: 5px;
+            font-size: 1em;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .important-box {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .important-box label {
+            margin-right: 5px;
+        }
+
+        .info {
+            margin-bottom: 10px;
+        }
+
+        .info label {
+            margin-right: 10px;
+        }
+
+        #editor {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            min-height: 150px;
+            background-color: white;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .buttons .confirm-btn, .buttons .cancel-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .buttons .cancel-btn {
+            background-color: #6c757d;
+        }
+
+        .buttons .confirm-btn:hover, .buttons .cancel-btn:hover {
+            opacity: 0.8;
+        }

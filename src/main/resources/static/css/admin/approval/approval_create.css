@@ -1,13 +1,6 @@
 @charset "UTF-8";
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 100px;
-}
 
-.main-container{
+.main_container{
 	font-size:14px;
 }
 
@@ -31,11 +24,17 @@ h1 {
     gap: 20px;
 }
 
-#approval_name{
+#approval_title{
     width: 150px; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
     padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+#approval_title:focus{
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 .ck.ck-editor {
@@ -47,7 +46,7 @@ h1 {
     max-height: 500px;
 }
 
-.button-container {
+.button_container {
     display: flex;
     justify-content: flex-end;
     width: 100%;
@@ -55,7 +54,7 @@ h1 {
     gap: 20px; 
 }
 
-.submit-button {
+.submit_button {
     padding: 8px 15px;
     background-color: #B3C7EE; 
     border: none;
@@ -66,7 +65,7 @@ h1 {
     color: #000000;
 }
 
-.cancel-button {
+.cancel_button {
     padding: 8px 15px;
     background-color: #C0C0C0;
     border: none;

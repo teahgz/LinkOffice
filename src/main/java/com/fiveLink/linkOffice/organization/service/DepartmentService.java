@@ -38,11 +38,18 @@ public class DepartmentService {
         return buildHierarchy(mapToDto(departments));
     }
 
+    public List<DepartmentDto> getSubDepartmentByName(Long departmentNo) { 
+        List<Department> subDepartments = departmentRepository.findSubDepartmentsByDepartmentName(departmentNo);
+        return subDepartments.stream()
+                             .map(this::mapToDto)  
+                             .collect(Collectors.toList());
+    }
+    
     // 특정 부서의 정보 반환
     public Optional<DepartmentDto> getDepartmentById(Long id) {
         return departmentRepository.findById(id).map(department -> {
             DepartmentDto dto = mapToDto(department);
-            dto.setSubDepartments(getSubDepartments(department.getDepartmentNo()));
+            dto.setSubDepartments(getSubDepartmentByName(department.getDepartmentNo()));
             return dto;
         });
     }
@@ -148,11 +155,11 @@ public class DepartmentService {
     // 상위 부서명
     private String getHighDepartmentName(Long highDepartmentId) {
         if (highDepartmentId == null || highDepartmentId == 0) {
-            return "미지정";
+            return "-";
         }
         return departmentRepository.findById(highDepartmentId)
             .map(Department::getDepartmentName)
-            .orElse("미지정");
+            .orElse("-");
     }
 
     // 부서 수정
@@ -162,7 +169,7 @@ public class DepartmentService {
                 .orElseThrow(() -> new RuntimeException("부서를 찾을 수 없습니다."));
 
         // 중복 부서명 체크
-        boolean isDuplicate = departmentRepository.existsByDepartmentNameAndDepartmentStatus(departmentName, 0L);
+        boolean isDuplicate = departmentRepository.existsByDepartmentNameAndDepartmentStatusAndDepartmentNoNot(departmentName, 0L, departmentId);
         if (isDuplicate) {
             throw new CustomDuplicateDepartmentException("중복된 부서명이 존재합니다.");
         }

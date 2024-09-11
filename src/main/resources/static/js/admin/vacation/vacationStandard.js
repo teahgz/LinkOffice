@@ -7,7 +7,6 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
 
     let formData = {};
 
-    // 체크박스가 둘 다 선택되지 않은 경우 경고 메시지 띄우기
     if (!designatedCheckbox.checked && !joinedCheckbox.checked) {
         Swal.fire({
             icon: 'warning',
@@ -17,10 +16,9 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
                 confirmButton: 'custom-confirm-button'
             }
         });
-        return; // 폼 제출 중단
+        return;
     }
 
-    // 지정일이 선택되었으나 날짜가 입력되지 않은 경우 경고 메시지 띄우기
     if (designatedCheckbox.checked && !designatedDateInput.value) {
         Swal.fire({
             icon: 'warning',
@@ -30,10 +28,9 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
                         confirmButton: 'custom-confirm-button'
                     }
         });
-        return; // 폼 제출 중단
+        return;
     }
 
-    // 체크박스에 따라 formData 구성
     if (designatedCheckbox.checked) {
         formData = {
             type: 'designated',
@@ -55,21 +52,18 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('서버가 응답하지 않음');
         }
         return response.json();
     })
     .then(data => {
-        console.log(data); // 응답 데이터 확인
+        console.log(data);
         if (data.res_code === '200') {
             Swal.fire({
                 icon: 'success',
-                title: '성공',
                 text: data.res_msg,
-                confirmButtonText: "확인",
-                customClass: {
-                    confirmButton: 'custom-confirm-button'
-                }
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: "확인"
             }).then((result) => {
                 if (result.isConfirmed) {
                     location.reload();
@@ -78,18 +72,18 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '실패',
                 text: data.res_msg,
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD', 
+                confirmButtonText: "확인"
             });
         }
     })
     .catch(error => {
         Swal.fire({
             icon: 'error',
-            title: '오류 발생',
             text: '서버와의 통신 중 오류가 발생했습니다.',
-            confirmButtonText: "닫기"
+            confirmButtonColor: '#B1C2DD', 
+            confirmButtonText: "확인"
         });
     });
 });
