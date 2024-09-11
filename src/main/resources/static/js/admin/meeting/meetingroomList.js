@@ -9,16 +9,15 @@ document.addEventListener('DOMContentLoaded', function () {
     
     const startInput = document.getElementById('meetingAvailableStart');
     const endInput = document.getElementById('meetingAvailableEnd');
+    const edit_startInput = document.getElementById('modal-meeting-available-start');
+    const edit_endInput = document.getElementById('modal-meeting-available-end');
     const imageInput = document.getElementById('meetingImage');
     const imagePreview = document.getElementById('imagePreview');
     
     var editForm = document.getElementById('editForm');
     var modalImagePreview = document.getElementById('modal-image-preview');
     var edit_modal_image = document.getElementById('edit_modal_image');
-    var initialImageSrc = '';
-    
-    var searchButton = document.getElementById('meeting_search_btn');
-    var searchInput = document.getElementById('searchMeetingRoom');
+    var initialImageSrc = ''; 
     
     function roundToNearest30Minutes(timeStr) {
         const [hours, minutes] = timeStr.split(':').map(Number);
@@ -38,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     startInput.addEventListener('change', handleTimeChange);
     endInput.addEventListener('change', handleTimeChange);
+   	edit_startInput.addEventListener('change', handleTimeChange);
+    edit_endInput.addEventListener('change', handleTimeChange);
    
     function previewImage(event) {
         const file = event.target.files[0];
