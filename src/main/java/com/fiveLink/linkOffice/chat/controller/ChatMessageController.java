@@ -7,12 +7,14 @@ import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ChatMessageController {
@@ -50,23 +52,18 @@ public class ChatMessageController {
 
     }
 
-    @GetMapping("/api/chat/messages/{chat_room_no}/{member_no}")
+    @GetMapping("/api/chat/messages/{chat_room_no}")
     @ResponseBody
-    public List<ChatMessageDto> chatMessages(@PathVariable("chat_room_no") Long chatRoomNo, @PathVariable("member_no") Long memberNo){
+    public List<Map<String, Object>> chatMessages(@PathVariable("chat_room_no") Long chatRoomNo){
         try{
-            return chatMessageService.getChatMessages(chatRoomNo, memberNo);
+            return chatMessageService.getChatMessages(chatRoomNo);
         }catch (Exception e){
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
- /*   @PostMapping("/send")
-    public ChatMessageDto sendMessage(@RequestBody ChatMessageDto dto){
-        System.out.println(dto);
-        return chatMessageService.sendMessage(dto);
 
-    }*/
 /*
 
     @GetMapping("/messages/{chatRoomNo}")

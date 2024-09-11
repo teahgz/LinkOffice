@@ -5,8 +5,8 @@
 <th:block layout:fragment="content">
     <link th:href="@{/css/admin/vacation/vacationStandard.css}" rel="stylesheet" type="text/css">
     <section>
-        <div class="vacationStandard_content">
-            <div class ="vacationStandard_title"> <h2>휴가 기준</h2> </div>
+    	<h1>휴가 기준</h1>
+        <div class="vacationStandard_content"> 
             <div class="vacationStandardForms">
                 <div class="standard_click" th:each="list : ${vacationStandard}">
                     <div class="standard_ele1">
@@ -43,7 +43,7 @@
                                 <h3>휴가 기준 설정</h3>
                             </div>
                             <div>
-                                <p style="color: red; font-size: 12px;">* 그룹 기준 휴가 갯수 초기화</p>
+                                <p style="color: red; font-size: 12px;">* 그룹 기준 휴가 개수 초기화</p>
                             </div>
                         </div>
 

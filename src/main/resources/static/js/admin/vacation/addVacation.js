@@ -163,7 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     form.addEventListener('submit', function(event) {
+<<<<<<< HEAD
         event.preventDefault(); 
+=======
+        event.preventDefault();
+>>>>>>> a2e89b7ce05e94a9194f63972c06a7479358059e
 
         const vacationType = document.getElementById('vacationType').value.trim();
         const vacationValue = document.getElementById('vacationValue').value.trim();
