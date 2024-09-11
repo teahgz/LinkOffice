@@ -126,9 +126,15 @@
 
 
 .profile_details input[type="text"], .profile_details input[type="date"], .profile_details input[type="tel"] {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
+	padding: 8px;
+	border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+.profile_details input[type="text"]:focus, .profile_details input[type="date"]:focus, .profile_details input[type="tel"]:focus {
+    outline: none;
+    border-color: #B1C2DD;
 }
 
 select {
