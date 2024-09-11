@@ -7,6 +7,30 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
 
     let formData = {};
 
+    if (!designatedCheckbox.checked && !joinedCheckbox.checked) {
+        Swal.fire({
+            icon: 'warning',
+            text: '지정일 또는 입사일 기준을 선택해 주세요.',
+            confirmButtonText: "확인",
+            customClass: {
+                confirmButton: 'custom-confirm-button'
+            }
+        });
+        return;
+    }
+
+    if (designatedCheckbox.checked && !designatedDateInput.value) {
+        Swal.fire({
+            icon: 'warning',
+            text: '지정일 날짜를 입력해 주세요.',
+            confirmButtonText: "확인",
+            customClass: {
+                        confirmButton: 'custom-confirm-button'
+                    }
+        });
+        return;
+    }
+
     if (designatedCheckbox.checked) {
         formData = {
             type: 'designated',
@@ -33,7 +57,7 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
         return response.json();
     })
     .then(data => {
-        console.log(data); // 응답 데이터 확인
+        console.log(data);
         if (data.res_code === '200') {
             Swal.fire({
                 icon: 'success',
@@ -90,6 +114,4 @@ document.getElementById('joined').addEventListener('change', function() {
 
 window.onload = function() {
     document.getElementById('designatedDate').disabled = true;
-
 };
-

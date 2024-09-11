@@ -1,11 +1,5 @@
 @charset "UTF-8";
 
-#title h1{
-	font-size: 2rem;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 50px; 
-}
 .attendance_div{
     display: flex;
 	width: 96%;
@@ -235,7 +229,7 @@
 }
 .search{
 	display: flex;
-	margin-top: 2.2vh;
+	margin-top: 1.5vh;
 	margin-left: 1.5vw;
 }
 .attendance_list{
@@ -281,7 +275,7 @@
 	border: 1px solid #ddd;
     border-radius: 4px;
 	margin-right: 1vw;
-	height: 3.1vh;
+	height: 3.5vh;
 	font-size: 1vw;
 }
 #start_date:focus, #end_date:focus{
@@ -290,12 +284,17 @@
 }
 #attendance_state{
 	margin-right: 1.5vw;
+	padding-left: 0.5vw;
 	width: 6vw;
-	height: 3.3vh;
+	height: 3.8vh;
 	border-radius: 2px;
 	font-size: 1vw;
 	border: 1px solid #ddd;
     border-radius: 4px;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 4.2vw center;
 }
 #attendance_state:focus{
     outline: none;
@@ -303,11 +302,16 @@
 }
 #sort_select{
 	margin-left: 10px;
+	padding-left: 0.5vw;
 	width: 6vw;
-	height: 3.3vh;
+	height: 3.8vh;
 	font-size: 1vw;
 	border: 1px solid #ddd;
     border-radius: 4px;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 4vw center;
 }
 #sort_select:focus{
     outline: none;

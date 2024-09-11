@@ -39,6 +39,12 @@
      cursor: pointer;
      background-color: #B1C2DD;
  }
+
+ .custom-confirm-button {
+      background-color: #B1C2DD;
+      color: black;
+  }
+
  
 input[type=checkbox] { 
 	transform : scale(1.2); 
