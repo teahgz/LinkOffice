@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         Swal.fire({
-            title: '확인',
             text: '입력되지 않은 연차의 개수는 0으로 지정됩니다. 계속하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
@@ -69,9 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.res_code === '200') {
                             Swal.fire({
                                 icon: 'success',
-                                title: '성공',
-                                text: data.res_msg,
-                                confirmButtonText: "닫기"
+                            	confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: "확인"
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     location.reload();
@@ -80,18 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: '실패',
                                 text: data.res_msg,
-                                confirmButtonText: "닫기"
+								confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: "확인"
                             });
                         }
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: '오류 발생',
                             text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     });
                 } else {
@@ -127,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.res_code === '200') {
                             Swal.fire({
                                 icon: 'success',
-                                title: '성공',
                                 text: data.res_msg,
-                                confirmButtonText: "닫기"
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: "확인"
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     location.reload();
@@ -138,18 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: '실패',
                                 text: data.res_msg,
-                                confirmButtonText: "닫기"
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: "확인"
                             });
                         }
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: '오류 발생',
                             text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     });
                 }
@@ -165,23 +163,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault(); 
 
         const vacationType = document.getElementById('vacationType').value.trim();
         const vacationValue = document.getElementById('vacationValue').value.trim();
 
-        // Check if vacationType and vacationValue fields are filled
         if (!vacationType || !vacationValue) {
             Swal.fire({
                 icon: 'warning',
-                title: '입력 오류',
                 text: '모든 필드를 입력해주세요.',
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD',
+                confirmButtonText: "확인"
             });
             return;
         }
 
-        // Check with the server if vacation type already exists
         fetch('/vacation/checkVacationTypeExists', {
             method: 'POST',
             headers: {
@@ -198,17 +194,15 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             if (data.exists) {
-                // If vacation type already exists, show warning
                 Swal.fire({
                     icon: 'warning',
-                    title: '중복된 휴가 종류',
                     text: '이미 존재하는 휴가 종류입니다. 다른 이름을 입력해주세요.',
-                    confirmButtonText: "닫기"
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: "확인"
                 });
             } else {
                 console.log(vacationType);
                  console.log(vacationValue);
-                // If vacation type does not exist, proceed to submit the form
                 const requestData = {
                     vacationType: vacationType,
                     vacationValue: vacationValue
@@ -232,27 +226,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.res_code === '200') {
                         Swal.fire({
                             icon: 'success',
-                            title: '성공',
                             text: '휴가 종류가 성공적으로 추가되었습니다.',
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         }).then(() => {
                             location.reload();
                         });
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: '실패',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     }
                 })
                 .catch(error => {
                     Swal.fire({
                         icon: 'error',
-                        title: '오류 발생',
                         text: '서버와의 통신 중 오류가 발생했습니다.',
-                        confirmButtonText: "닫기"
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     });
                 });
             }
@@ -260,9 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             Swal.fire({
                 icon: 'error',
-                title: '오류 발생',
                 text: '서버와의 통신 중 오류가 발생했습니다.',
-                confirmButtonText: "닫기"
+                confirmButtonColor: '#B1C2DD',
+                confirmButtonText: "확인"
             });
         });
     });
@@ -334,9 +328,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '성공',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             location.reload();
@@ -345,18 +339,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: '실패',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     });
                 }
             })
             .catch(error => {
                 Swal.fire({
                     icon: 'error',
-                    title: '오류 발생',
                     text: '서버와의 통신 중 오류가 발생했습니다.',
-                    confirmButtonText: "닫기"
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: "확인"
                 });
             });
 
@@ -399,9 +393,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '성공',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             row.remove(); // 성공 시 행 제거
@@ -410,18 +404,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: '실패',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     });
                 }
             })
             .catch(() => {
                 Swal.fire({
                     icon: 'error',
-                    title: '오류 발생',
                     text: '서버와의 통신 중 오류가 발생했습니다.',
-                    confirmButtonText: "닫기"
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: "확인"
                 });
             });
         });
@@ -470,9 +464,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.res_code === '200') {
                         Swal.fire({
                             icon: 'success',
-                            title: '성공',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 location.reload();
@@ -481,18 +475,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: '실패',
                             text: data.res_msg,
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     }
                 })
                 .catch(error => {
                     Swal.fire({
                         icon: 'error',
-                        title: '오류 발생',
                         text: '서버와의 통신 중 오류가 발생했습니다.',
-                        confirmButtonText: "닫기"
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: "확인"
                     });
                 });
             }

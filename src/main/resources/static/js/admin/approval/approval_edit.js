@@ -145,8 +145,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'success',
                             text: data.res_msg,
-                            confirmButtonColor: '#C0C0C0',
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         }).then((result) => {
                             location.href = "/admin/approval/detail/"+formNo;
                         });
@@ -154,8 +154,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         Swal.fire({
                             icon: 'error',
                             text: data.res_msg,
-                            confirmButtonColor: '#C0C0C0',
-                            confirmButtonText: "닫기"
+                            confirmButtonColor: '#B1C2DD',
+                            confirmButtonText: "확인"
                         });
                     }
                 });  

@@ -47,16 +47,19 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 	let vali_check = false;
 	let vali_text = "";
 	
-	if(pwChangeFrm.user_id.value == ""){
+	if(pwChangeFrm.user_id.value.trim() == ""){
 		vali_text += '아이디(사번)을 입력하세요.';
 		pwChangeFrm.user_id.focus();
-	} else if(pwChangeFrm.national_number_front == ""){
+	} else if(pwChangeFrm.national_number_front.value.trim() == ""){
 		vali_text += '주민번호를 입력하세요.';
-		form.national_number_front.focus();
-	} else if(pwChangeFrm.national_number_back == ""){
+		pwChangeFrm.national_number_front.focus();
+	} else if(pwChangeFrm.national_number_mid.value.trim() == ""){
+		vali_text += '주민번호를 입력하세요.';
+		pwChangeFrm.national_number_mid.focus();
+	} else if(pwChangeFrm.national_number_back.value.trim() == ""){
 		vali_text += '주민번호를 입력하세요.';
 		pwChangeFrm.national_number_back.focus();
-	} else if(pwChangeFrm.new_password == ""){
+	} else if(pwChangeFrm.new_password.value.trim() == ""){
 		vali_text += '새로운 비밀번호를 입력하세요.';
 		pwChangeFrm.new_password.focus();
 	} else {
@@ -72,8 +75,8 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 		Swal.fire({
 			icon : 'error',
 			text : vali_text,
-			confirmButtonColor: '#C0C0C0',
-			confirmButtonText : "닫기"
+			confirmButtonColor: '#B1C2DD', 
+			confirmButtonText : "확인"
 		});
 	} else{
 		const formData = new FormData(pwChangeFrm);
@@ -92,8 +95,8 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
-				confirmButtonColor: '#C0C0C0',
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD', 
+				confirmButtonText : "확인"
 		}).then((result) => {
 			location.href = ("/login");
 		});
@@ -101,8 +104,8 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
-				confirmButtonColor: '#C0C0C0',
-				confirmButtonText : "닫기"
+				confirmButtonColor: '#B1C2DD', 
+				confirmButtonText : "확인"
 			})
 			}
 		})
