@@ -182,3 +182,4 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             }
         });
     });
+    

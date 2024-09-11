@@ -107,7 +107,7 @@ $(function () {
                 const sortOption = $('#sort_select').val();
                 const fileList = data;
 
-                // 정렬 로직
+                // 정렬
                 if (sortOption === 'latest') {
                     fileList.sort((a, b) => new Date(b.document_file_upload_date) - new Date(a.document_file_upload_date));
                 } else if (sortOption === 'oldest') {
@@ -172,7 +172,7 @@ $(function () {
         });
     }
 
-    // 페이징 버튼 업데이트 
+	// 페이징 버튼 업데이트 
     function updatePagination() {
         paginationDiv.innerHTML = '';
 
@@ -192,7 +192,7 @@ $(function () {
             firstButton.textContent = '<<';
             firstButton.onclick = () => {
                 currentPage = 0;
-                loadFiles($('#tree').jstree('get_selected')[0]); // Get selected folder ID
+                loadFiles($('#tree').jstree('get_selected')[0]); 
             };
             paginationDiv.appendChild(firstButton);
         }
@@ -204,19 +204,28 @@ $(function () {
             prevButton.textContent = '<';
             prevButton.onclick = () => {
                 currentPage--;
-                loadFiles($('#tree').jstree('get_selected')[0]); // Get selected folder ID
+                loadFiles($('#tree').jstree('get_selected')[0]); 
             };
             paginationDiv.appendChild(prevButton);
         }
 
-        // 페이지 번호 버튼
-        for (let page = 0; page < totalPages; page++) {
+        // 페이지 번호 버튼 (최대 3개 표시)
+        let startPage = Math.max(0, currentPage - 1);
+        let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+        if (currentPage < 1) {
+            endPage = Math.min(totalPages - 1, endPage + 1);
+        } else if (currentPage > totalPages - 2) {
+            startPage = Math.max(0, startPage - 1);
+        }
+
+        for (let page = startPage; page <= endPage; page++) {
             const pageButton = document.createElement('span');
             pageButton.className = `pagination_button ${page === currentPage ? 'active' : ''}`;
             pageButton.textContent = page + 1;
             pageButton.onclick = () => {
                 currentPage = page;
-                loadFiles($('#tree').jstree('get_selected')[0]); // Get selected folder ID
+                loadFiles($('#tree').jstree('get_selected')[0]);
             };
             paginationDiv.appendChild(pageButton);
         }
@@ -228,7 +237,7 @@ $(function () {
             nextButton.textContent = '>';
             nextButton.onclick = () => {
                 currentPage++;
-                loadFiles($('#tree').jstree('get_selected')[0]); // Get selected folder ID
+                loadFiles($('#tree').jstree('get_selected')[0]); 
             };
             paginationDiv.appendChild(nextButton);
         }
@@ -240,11 +249,12 @@ $(function () {
             lastButton.textContent = '>>';
             lastButton.onclick = () => {
                 currentPage = totalPages - 1;
-                loadFiles($('#tree').jstree('get_selected')[0]); // Get selected folder ID
+                loadFiles($('#tree').jstree('get_selected')[0]); 
             };
             paginationDiv.appendChild(lastButton);
         }
     }
+
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
         getJson();
