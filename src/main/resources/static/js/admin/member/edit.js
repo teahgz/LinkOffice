@@ -35,9 +35,6 @@ editFrm.addEventListener('submit',(e)=>{
 	const memberNo = document.getElementById("member_no").value;	
 	
 	const formData = new FormData(editFrm);
-	for (let [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-}
 
 	fetch('/admin/member/edit/'+memberNo,{
 		method:'put',
