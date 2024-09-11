@@ -165,12 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
 
         const vacationType = document.getElementById('vacationType').value.trim();
         const vacationValue = document.getElementById('vacationValue').value.trim();
 
-        // Check if vacationType and vacationValue fields are filled
         if (!vacationType || !vacationValue) {
             Swal.fire({
                 icon: 'warning',
@@ -181,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Check with the server if vacation type already exists
         fetch('/vacation/checkVacationTypeExists', {
             method: 'POST',
             headers: {
@@ -198,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             if (data.exists) {
-                // If vacation type already exists, show warning
                 Swal.fire({
                     icon: 'warning',
                     title: '중복된 휴가 종류',
@@ -208,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.log(vacationType);
                  console.log(vacationValue);
-                // If vacation type does not exist, proceed to submit the form
                 const requestData = {
                     vacationType: vacationType,
                     vacationValue: vacationValue
