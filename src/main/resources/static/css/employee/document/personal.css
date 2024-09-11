@@ -1,17 +1,10 @@
 @charset "UTF-8";
 
-.title_div{
-	display: flex;
-	align-items: center;
-}
-#title{
-	font-size: 1.5vw;
-	font-weight: bold;
-}
-#folder_root{
-	font-size: 1.1vw;
-	margin-left: 1vw;
-	margin-top: 0.5vh;
+#title h1{
+	font-size: 2rem;
+    width: auto; 
+    align-self: flex-start; 
+    margin-left: 50px; 
 }
 .document_folder_list{
 	display: flex;
@@ -24,7 +17,7 @@
     margin: 1vw;
     padding: 1vw;
     background-color: white;
-    width: 25vw;
+    width: 16vw;
 	height: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-size: 1.1vw;
@@ -33,6 +26,7 @@
 #tree{
 	font-size: 1vw;
 	display: block;
+	height: 75%;
 }
 .jstree-closed > .jstree-icon::before{
     content: '';  
@@ -65,7 +59,7 @@
     text-align: center;
     font-size: 1.7vw;
 }
-#add_folder_button{
+#first_folder_add_button{
     border: none;
     background-color: white;
     width: 3vw;
@@ -76,10 +70,58 @@
     font-size: 3vw;
     cursor: pointer;
 }
+.folder_buttons{
+	height: 10%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.box_size{
+	height: 15%;
+}
+#folder_delete_button{
+	margin-left: 1vw;
+    padding: 0.6vh 0.7vw;
+    background-color: #EEB3B3;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 1vw;
+    width: 3.8vw;
+    height: 3.7vh;
+    text-align: center;
+}
+#folder_delete_button:hover{
+    background-color: #efc7c7;
+}
+#folder_delete_button:active{
+    transform: scale(0.98);
+}
+#folder_add_button{
+	margin-right: 1vw;
+    padding: 0.6vh 0.7vw;
+    background-color: #B1C2DD;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 1vw;
+    width: 3.8vw;
+    height: 3.7vh;
+    text-align: center;
+}
+#folder_add_button:hover{
+    background-color: #c3d1ee;
+}
+
+#folder_add_button:active{
+    transform: scale(0.98);
+}
 .document_file_div{
 	border-radius: 20px;
 	background-color: white;
-	width: 52vw;
+	width: 60vw;
 	height: 630px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	overflow-y: auto;

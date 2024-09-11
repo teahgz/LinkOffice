@@ -8,20 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
         <section>
         	<div id="mem_no" style="display: none;" th:text="${member.member_no}"></div>
-        	<div class="title_div">        	
-	        	<div id="title">개인 문서함</div>    
-	        	<div id="folder_root"></div>      
+        	<div id="title">        	
+	        	<h1>개인 문서함</h1>     
         	</div>
-            <hr>
             <div class="document_folder_list">
                 <div class="document_folder_tree">
                 	<!-- AJAX로 폴더 출력 -->
 	                <div id="tree" style="display: none;"></div>
+	                <div class="folder_buttons">
+	                	<input type="button" id="folder_delete_button" value="삭제">
+	                	<input type="button" id="folder_add_button" value="생성">
+	                </div>
+	                <div class="box_size">
+	                	<div></div>
+	                </div>
                 </div>
                 <hr>
                 <div class="document_file_div">
 	                <div class="document_no_folder" style="display: none;">
-	                    <button id="add_folder_button">+</button>
+	                    <button id="first_folder_add_button">+</button>
 	                    <p id="document_no_folder_msg">폴더 생성</p>
 	                </div>
                 	<div class="document_select_folder" style="display: none;">

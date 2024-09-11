@@ -119,7 +119,11 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
 
+<<<<<<< Updated upstream
         document.querySelector('.submit_button').addEventListener('click', (e) => {
+=======
+        document.querySelector('.submit-button').addEventListener('click', (e) => {
+>>>>>>> Stashed changes
             e.preventDefault();
             const editorData = editor.getData();
             const approvalTitle = document.querySelector('#approval_title').value;

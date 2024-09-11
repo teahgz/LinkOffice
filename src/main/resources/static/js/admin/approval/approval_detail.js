@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 const form = document.getElementById("appDeleteFrm");
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -44,5 +45,10 @@ form.addEventListener('submit', (e) => {
                 }
             });
         }
+=======
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.table_container input, .table_container textarea, .table_container select').forEach(element => {
+        element.disabled = true;
+>>>>>>> Stashed changes
     });
 });
