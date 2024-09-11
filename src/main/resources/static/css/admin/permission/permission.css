@@ -14,7 +14,7 @@
     flex-direction: row;  
     justify-content: space-between;  
     gap: 20px;  
-    padding : 40px 60px;
+    padding : 20px 60px;
 }
 
 .permission_list_box {

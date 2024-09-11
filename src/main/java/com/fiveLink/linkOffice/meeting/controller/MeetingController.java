@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -148,7 +149,13 @@ public class MeetingController {
                 resultMap.put("res_msg", "회의실을 찾을 수 없습니다.");
                 return resultMap;
             }
-
+            
+            if (meetingService.isMeetingNameExistsEdit(meetingName, meetingId)) { 
+                resultMap.put("res_code", "400");
+                resultMap.put("res_msg", "동일한 회의실명이 존재합니다.");
+                return resultMap;
+            }
+            
             String newImageName = existingMeeting.getMeeting_new_image();
             if (meetingImage != null && !meetingImage.isEmpty()) {
                 newImageName = meetingFileService.upload(meetingImage);
@@ -188,5 +195,36 @@ public class MeetingController {
         }
         return resultMap;
     }
-     
+    
+    // 삭제
+    @PostMapping("/meetingroomList/delete")
+    @ResponseBody
+    public Map<String, Object> deleteMeetings(@RequestBody List<Long> meetingIds) {
+        Map<String, Object> resultMap = new HashMap<>();
+ 
+        try {
+            boolean deleted = meetingService.deleteMeetings(meetingIds);
+
+            if (deleted) {
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "회의실이 성공적으로 삭제되었습니다.");
+            } else {
+                resultMap.put("res_code", "404");
+                resultMap.put("res_msg", "회의실 삭제 중 오류가 발생했습니다.");
+            }
+        } catch (Exception e) {
+            resultMap.put("res_code", "500");
+            resultMap.put("res_msg", "서버 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+        
+        return resultMap;
+    }
+    
+    // 검색  
+    @GetMapping("/meetingroomList/search")
+    @ResponseBody
+    public List<MeetingDto> searchMeetingRooms(@RequestParam("search_text") String searchText) {
+        return meetingService.searchMeetingRoomsByName(searchText);
+    }  
 }
