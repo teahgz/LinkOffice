@@ -37,20 +37,21 @@ public class Notice {
 	@Column(name="notice_title")
 	private String noticeTitle;
 	
-	@Column(name="notice_text")
-	private String noticeText;
+	@Column(name="notice_content")
+	private String noticeContent;
 	
 	@ManyToOne
     @JoinColumn(name = "member_no")
     private Member member;
 	
 	@Column(name="notice_create_date")
-	@CreationTimestamp
-	private LocalDateTime noticeCreateDate;
+	private String noticeCreateDate;
 	
 	@Column(name="notice_update_date")
-	@CreationTimestamp
-	private LocalDateTime noticeUpdateDate;
+	private String noticeUpdateDate;
+	
+	@Column(name="notice_importance")
+	private Integer noticeImportance;
 	
 	@Column(name="notice_ori_img")
 	private String noticeOriImg;

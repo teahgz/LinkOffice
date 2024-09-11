@@ -72,7 +72,7 @@ public class InventoryViewController {
         return inventoryService.selectInventoryByCategoryAndDepartment(inventoryCategoryNo, departmentNo);
     }
 
-    // 비품 등록 페이지 (멤버 정보 포함)
+    // 비품 등록 페이지 
     @GetMapping("/inventory/create/{member_no}")
     public String inventoryCreate(@PathVariable("member_no") Long memberNo, Model model) {
         // 멤버 정보 조회
@@ -87,7 +87,7 @@ public class InventoryViewController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberNumber = authentication.getName();
         String memberName = inventoryService.findMemberNameByNumber(memberNumber);
-        model.addAttribute("manager", memberName);  // 관리자 이름 전달
+        model.addAttribute("manager", memberName);  
 
         return "admin/inventory/inventory_create";
     }
