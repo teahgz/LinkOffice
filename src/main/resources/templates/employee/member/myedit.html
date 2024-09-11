@@ -25,8 +25,8 @@
 		</div>
 	</div>
 	<section>
+      <h1>정보 수정</h1>
         <div class="my_profile">
-            <h1>정보 수정</h1>
             <form id="myeditUpdateFrm" enctype="multipart/form-data">
                 <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />
                 <input type="hidden" id="member_no" th:value="${member.member_no}" />
