@@ -56,4 +56,7 @@
         SELECT count(*) FROM fl_vacation_type WHERE vacation_type_name = #{name} AND vacation_type_status = 0
     </select>
 
+    <select id="checkTypeName" parameterType="map" resultType="int">
+        SELECT count(*) FROM fl_vacation_type WHERE vacation_type_name = #{name} AND vacation_type_no = #{num}
+    </select>
 </mapper>

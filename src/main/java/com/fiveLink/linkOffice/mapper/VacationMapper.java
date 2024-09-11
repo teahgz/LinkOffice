@@ -6,6 +6,7 @@ import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface VacationMapper {
@@ -26,7 +27,12 @@ public interface VacationMapper {
     List<MemberDto> selectUnderYearMember(int num);
 
     int contVacationYear(int year);
+
     String selectVacationDesignated(int num);
- int selectVacationStandardStatus();
+
+    int selectVacationStandardStatus();
+
     int checkType(String name);
+
+    int checkTypeName( Map<String, Object> map);
 }

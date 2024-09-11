@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VacationService {
@@ -187,6 +188,11 @@ public class VacationService {
 
     public int checkType(String name){
         return vacationMapper.checkType(name);
+    }
+
+    //휴가 종류 수정 시 체크
+    public int checkTypeName(Map<String, Object> map) {
+        return vacationMapper.checkTypeName(map);
     }
 
 }
