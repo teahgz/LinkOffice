@@ -28,8 +28,8 @@ form.addEventListener('submit', (e) => {
                 if (data.res_code == '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '성공',
                         text: data.res_msg,
+                        confirmButtonColor: '#C0C0C0',
                         confirmButtonText: "닫기"
                     }).then((result) => {
                         location.href = "/admin/approval/form";
@@ -37,8 +37,8 @@ form.addEventListener('submit', (e) => {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: '실패',
                         text: data.res_msg,
+                        confirmButtonColor: '#C0C0C0',
                         confirmButtonText: "닫기"
                     });
                 }

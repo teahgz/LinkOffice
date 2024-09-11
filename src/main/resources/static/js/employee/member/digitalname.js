@@ -102,8 +102,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.res_code == '200') {
                 Swal.fire({
                     icon: 'success',
-                    title: '서명 등록',
                     text: data.res_msg,
+                    confirmButtonColor: '#C0C0C0',
                     confirmButtonText: '닫기'
                 }).then(() => {
                     location.href = "/employee/member/digitalname/" + memberNo;
@@ -111,8 +111,8 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '서명 등록',
                     text: data.res_msg,
+                    confirmButtonColor: '#C0C0C0',
                     confirmButtonText: '닫기'
                 });
             }

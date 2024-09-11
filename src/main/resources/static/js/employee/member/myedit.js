@@ -26,6 +26,7 @@ pwform.addEventListener('submit', (e) => {
 	        Swal.fire({
 	            icon: 'error',
 	            title: '비밀번호가 일치하지 않습니다!',
+	            confirmButtonColor: '#C0C0C0',
 	            confirmButtonText: '닫기'
 	        }).then(() => {
 	            document.getElementById('pw_verify').value = ""; 
@@ -97,8 +98,8 @@ function previewImage(event) {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '파일 형식 오류',
                 text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
+                confirmButtonColor: '#B1C2DD',
                 confirmButtonText: '확인'
             });
 
@@ -154,8 +155,8 @@ form.addEventListener('submit', (e) => {
         if (data.res_code == '200') {
             Swal.fire({
                 icon: 'success',
-                title: '수정 성공',
                 text: data.res_msg,
+                confirmButtonColor: '#C0C0C0',
                 confirmButtonText: '닫기'
             }).then(() => {
                 location.href = "/employee/member/mypage/" + memberNo;
@@ -163,8 +164,8 @@ form.addEventListener('submit', (e) => {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: '수정 실패',
                 text: data.res_msg,
+                confirmButtonColor: '#C0C0C0',
                 confirmButtonText: '닫기'
             });
         }
