@@ -52,11 +52,11 @@ public class ApprovalForm {
 	
 	public ApprovalFormDto toDto() {
 		return ApprovalFormDto.builder()
-				.approval_form_no(this.getApprovalFormNo())
-				.approval_form_title(this.getApprovalFormTitle())
-				.approval_form_content(this.getApprovalFormContent())
-				.approval_form_create_date(this.getApprovalFormCreateDate())
-				.approval_form_status(this.getApprovalFormStatus())
+				.approval_form_no(approvalFormNo)
+				.approval_form_title(approvalFormTitle)
+				.approval_form_content(approvalFormContent)
+				.approval_form_create_date(approvalFormCreateDate)
+				.approval_form_status(approvalFormStatus)
 				.build();
 	}
 }

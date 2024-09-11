@@ -216,7 +216,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             </figure>
             <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;상가 본인은 위와 같이 휴가 신청서를 제출 합니다.</p><p>&nbsp;</p><p>&nbsp;</p>`);
 
-        document.querySelector('.submit_button').addEventListener('click', (e) => {
+     /*   document.querySelector('.submit_button').addEventListener('click', (e) => {
             e.preventDefault();
             const editorData = editor.getData();
             const approvalTitle = document.querySelector('#approval_title').value;
@@ -277,7 +277,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                     }
                 });  
             }
-        });
+        });*/
     });
     
     
