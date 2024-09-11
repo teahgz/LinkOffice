@@ -20,8 +20,8 @@
 			<li th:each = "member : ${memberdto}">
 				<a th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">근태 조회</a>
 				</li>
-				<li>
-					<a href="#">공지사항</a>
+				<li th:each = "member : ${memberdto}">
+					<a th:href="@{/admin/notice/create/{no}(no=${member.member_no})}">공지사항</a>
 
 				</li>
 				<li>

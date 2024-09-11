@@ -188,6 +188,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
       @Modifying
       @Query("UPDATE Member m SET m.memberAdditional = :status WHERE m.memberNo = :memberNo")
       void updateMemberAdditionalStatus(@Param("memberNo") Long memberNo, @Param("status") long status);
-        
+      
+      // [김민재] 사원 이름 조회 
+      Member findBymemberNo(Long noticeWriter);
+      // [김민재] 사원 번호 조회
+      Member findByMemberName(String memberName);  
 }
 
