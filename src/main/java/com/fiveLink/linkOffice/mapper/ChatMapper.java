@@ -6,11 +6,12 @@ import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ChatMapper {
     //채팅방 목록 가져오기
     List<ChatMemberDto> selectChatList(Long memberNo);
     //채팅 내용 가져오기
-    List<ChatMessageDto> getChatMessages(Long roomNo, Long memberNo);
+    List<Map<String, Object>> getChatMessages(Long roomNo);
 }

@@ -19,17 +19,26 @@
                 </div>
                 <div class="chatList" id="chatList" th:each="chat:${chatList}">
                     <!-- 채팅 목록 항목 -->
-                    <div class="chatItem" th:onclick="'loadChatMessages('+ ${chat.chat_room_no} + ', ' + ${member.member_no} + ')'">
+                    <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${chat.chat_room_no} + ')'">
                         <h3><p th:text="${chat.chat_member_room_name}"></p></h3>
-                        <input type="hidden" th:value="${chat.chat_room_no}" />
+                        <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
                     </div>
                 </div>
             </div>
-            <div class="chatContent" id="chatContent">
-                <div>
-                    <!-- 여기에 채팅 메시지가 표시될 것입니다. -->
+            <div class="chatElement">
+                <div class="chatContent" id="chatContent">
+                    <div>
+                        <!-- 여기에 채팅 메시지가 표시될 것입니다. -->
+                    </div>
+
+                </div>
+                <div class="chatInput">
+                    <input type="hidden" id="userNo" th:value="${member.member_no}">
+                    <input type="text" id="messageInput" placeholder="Type a message...">
+                    <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
+
         </div>
     </section>
 
