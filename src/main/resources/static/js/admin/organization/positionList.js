@@ -69,11 +69,21 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                         success: function (response) {
                             if (response.res_code === "200") {
-                                Swal.fire('삭제 완료', response.res_msg, 'success').then(() => {
+                                Swal.fire({ 
+								    text: response.res_msg,
+								    icon: 'success', 
+								    confirmButtonColor: '#B1C2DD', 
+								    confirmButtonText: '확인', 
+								}).then(() => {
                                     location.href = "/position"; 
                                 });
                             } else {
-                                Swal.fire('삭제 실패', response.res_msg, 'error');
+                                Swal.fire({ 
+								    text: response.res_msg,
+								    icon: 'error', 
+								    confirmButtonColor: '#B1C2DD', 
+								    confirmButtonText: '확인', 
+								});
                             }
                         },
                         error: function () {
@@ -122,11 +132,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 success: function (response) {
                     if (response.res_code === "200") {
-                        Swal.fire('등록 성공', response.res_msg, 'success').then(() => {
+                        Swal.fire({ 
+						    	text: response.res_msg,
+							    icon: 'success', 
+							    confirmButtonColor: '#B1C2DD', 
+							    confirmButtonText: '확인', 
+							}).then(() => {
                             location.reload();
                         });
                     } else {
-                        Swal.fire('등록 실패', response.res_msg, 'error');
+                        Swal.fire({ 
+						    text: response.res_msg,
+						    icon: 'error', 
+						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonText: '확인', 
+						});
                     }
                 },
                 error: function () {
