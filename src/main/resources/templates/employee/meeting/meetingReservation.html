@@ -8,29 +8,37 @@
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
         <script th:src="@{https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@5.11.5/main.global.min.js"></script>
         <section>
+        <h1>회의실 예약</h1>
         <div class=container>
         	<div class=container-section>
 	        	<div class="top_area">
 		         	<div class="full_calendar_area" id="calendar"></div>
 				    <div id="room-info">
-				        <h2>회의실 정보</h2>
-				        <table id="room-info-table">
-				            <thead>
-				                <tr>
-				                    <th>회의실명</th>
-				                    <th>수용 인원</th>
-				                    <th>이용 시간</th>
-				                </tr>
-				            </thead>
-				            <tbody>
-				                <!-- 회의실 정보 -->
-				            </tbody>
-				        </table>
+				    	<div class="room-info-two">
+					        <h2>회의실 정보</h2>
+					        <div class="room_info_explain">회의실을 선택하여 상세 정보를 확인하세요.</div>
+					    </div>
+					    <div class="room-info-table-div">
+					        <table id="room-info-table">
+					            <thead>
+					                <tr>
+					                    <th>회의실명</th>
+					                    <th>수용 인원</th>
+					                    <th>이용 시간</th>
+					                </tr>
+					            </thead>
+					            <tbody>
+					                <!-- 회의실 정보 -->
+					            </tbody>
+					        </table>
+					   </div>
 				    </div>
 				</div>
+		        
+		        <h2 class="reservation-table-title">예약 현황</h2>
 			    <div id="reservation-table">
-			        <h2>예약 현황</h2>
 			        <table>
 			            <thead>
 			                <tr>
@@ -42,25 +50,6 @@
 			                <!-- 예약 현황 -->
 			            </tbody>
 			        </table>
-			    </div>
-			    <div id="reservationModal" class="modal">
-			        <div class="modal-content">
-			            <span class="close">&times;</span>
-			            <h2>회의실 예약</h2>
-			            <form id="reservationForm">
-			                <label for="room">회의실:</label>
-			                <select id="room" name="room" required></select><br><br>
-			                <label for="date">날짜:</label>
-			                <input type="date" id="date" name="date" required readonly><br><br>
-			                <label for="startTime">시작 시간:</label>
-			                <select id="startTime" name="startTime" required></select><br><br>
-			                <label for="endTime">종료 시간:</label>
-			                <select id="endTime" name="endTime" required></select><br><br>
-			                <label for="purpose">목적:</label>
-			                <input type="text" id="purpose" name="purpose" required><br><br>
-			                <button type="submit">예약</button>
-			            </form>
-			        </div>
 			    </div> 
 			    </div>
 			</div>
@@ -97,6 +86,45 @@
 		    </div>
 		</div> 
 
+		<!-- 예약 모달 -->
+		<div id="reservationModal" class="modal">
+	        <div class="modal-content">
+	            <span class="close">&times;</span>
+	            <h2>회의실 예약</h2>
+	            <form id="reservationForm">
+            		<div class="reservation_row">
+	                    <label for="reservation_room">회의실</label>
+	                	<select id="reservation_room" name="reservation_room">
+	                		<option value="">회의실 선택</option>
+	                	</select>
+	                </div>
+	               	<div class="reservation_row">
+	                    <label for="reservation_date">예약일</label>
+	                	<input type="date" id="reservation_date" name="reservation_date"> 
+	                </div> 
+	                <div class="reservation_row"> 
+	                	<select id="reservation_start_time" name="reservation_start_time"> 
+	                		<option value="">시작 시간</option>
+	                	</select>
+	                	<select id="reservation_end_time" name="reservation_end_time"> 
+	                		<option value="">종료 시간</option>
+	                	</select>
+	                </div> 
+	                <div class="reservation_row">
+	                    <label for="reservation_name">예약자</label>
+	                	<span class="reservation_name"></span>
+	                </div> 
+	                <div class="reservation_row">
+	                    <label for="reservation_purpose">목록</label>
+	                	<textarea id="reservation_purpose" name="reservation_purpose"></textarea>
+	                </div> 
+	                <div class="reservation_row">
+	                    <label>참여자</label>
+	                	<button type="button" id="reservation_participate" name="reservation_participate"></textarea>
+	                </div> 
+	            </form>
+	        </div>
+	    </div> 
         <script th:src="@{/js/employee/meeting/meetingReservation.js}"></script>
     </th:block>
 </html>

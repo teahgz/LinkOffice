@@ -76,7 +76,7 @@ input {
 /* 내부 페이지 제목 공통 디자인 */
 h1 {
     font-size: 2rem;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     width: auto;
     align-self: flex-start;
     margin-left: 60px;
