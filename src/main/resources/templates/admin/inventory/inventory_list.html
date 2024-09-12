@@ -139,10 +139,10 @@
         }
     }
 
-    // 화살표 클릭 시 세부 비품 표시
+ // 화살표 클릭 시 세부 비품 표시
     function format(inventory_category_no, row) {
         var departmentNo = document.getElementById("departmentSelect").value;
-        var detailsHtml = '<table class="child-table"><thead><tr><th>번호</th><th>비품명</th><th>가격</th><th>개수</th><th>위치</th><th>구입일자</th></tr></thead><tbody>';
+        var detailsHtml = '<table class="child-table"><thead><tr><th>번호</th><th>비품명</th><th>가격</th><th>개수</th><th>위치</th><th>구입일자</th><th>관리자</th></tr></thead><tbody>';
 
         fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, function(data) {
             if (Array.isArray(data) && data.length > 0) {
@@ -155,11 +155,12 @@
                             <td>${item.inventory_quantity}</td>
                             <td>${item.inventory_location}</td>
                             <td>${item.inventory_purchase_date}</td>
+                            <td>${item.member_name + ' 관리자'}</td>
                         </tr>
                     `;
                 });
             } else {
-                detailsHtml += '<tr><td colspan="6">세부 정보가 없습니다.</td></tr>';
+                detailsHtml += '<tr><td colspan="7">세부 정보가 없습니다.</td></tr>';
             }
             detailsHtml += '</tbody></table>';
             row.child(detailsHtml).show();
@@ -216,18 +217,14 @@
                 } else {
                     $('.dataTables_paginate').show(); 
                 }
-
-                // 페이지 정보를 얻어서 첫 페이지, 마지막 페이지 처리
                 var pageInfo = api.page.info();
                 
-                // 첫 페이지에서는 'previous'와 'first' 숨기기
+                
                 if (pageInfo.page === 0) {
                     $('.paginate_button.previous, .paginate_button.first').hide();
                 } else {
                     $('.paginate_button.previous, .paginate_button.first').show();
                 }
-
-                // 마지막 페이지에서는 'next'와 'last' 숨기기
                 if (pageInfo.page === pageInfo.pages - 1) {
                     $('.paginate_button.next, .paginate_button.last').hide();
                 } else {
@@ -236,7 +233,7 @@
             }
         });
 
-        // 페이지 길이 옵션 제거
+       
         $('.dataTables_length').remove();
 
         // 화살표 클릭 시 세부 비품 표시
@@ -298,7 +295,7 @@
             inventory_purchase_date: $('#itemPurchaseDate').val()
         };
 
-        // SweetAlert confirm 대체
+        
         Swal.fire({
             title: '정말 수정하시겠습니까?',
             icon: 'warning',
@@ -317,16 +314,25 @@
                     },
                     success: function(response) {
                         if(response.res_code === "200") {
-                            Swal.fire('성공', response.res_msg, 'success').then(() => {
+                        	Swal.fire({
+                        	    icon: 'success',
+                        	    text: response.res_msg 
+                        	}).then(() => {
                                 $('#inventoryModal').hide();
                                 fetchInventoryByDepartment(); 
                             });
                         } else {
-                            Swal.fire('실패', "수정 실패: " + response.res_msg, 'error');
+                        	Swal.fire({
+                        	    icon: 'error',
+                        	    text: response.res_msg 
+                        	});
                         }
                     },
                     error: function() {
-                        Swal.fire('오류', '수정 중 오류가 발생했습니다.', 'error');
+                    	Swal.fire({
+                    	    icon: 'error',
+                    	    text: '수정 중 오류가 발생했습니다.' 
+                    	});
                     }
                 });
             }
@@ -359,13 +365,19 @@
                     return response.json(); 
                 })
                 .then(() => {
-                    Swal.fire('성공', '삭제되었습니다.', 'success').then(() => {
+                	Swal.fire({
+                	    icon: 'success',
+                	    text: '삭제되었습니다.' 
+                	}).then(() => {
                         $('#inventoryModal').hide();
                         fetchInventoryByDepartment(); 
                     });
                 })
                 .catch(() => {
-                    Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
+                	Swal.fire({
+                	    icon: 'error',
+                	    text: '삭제 중 오류가 발생했습니다.' 
+                	})
                 });
             }
         });

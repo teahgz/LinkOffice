@@ -116,8 +116,6 @@ public class InventoryViewController {
         resultMap.put("res_code", "404");
         resultMap.put("res_msg", "비품 처리 중 오류가 발생했습니다.");
 
-        // '관리자'라는 단어 제거
-        memberName = memberName.replace("관리자", "").trim();
 
         // DTO 생성 및 값 설정
         InventoryDto dto = InventoryDto.builder()

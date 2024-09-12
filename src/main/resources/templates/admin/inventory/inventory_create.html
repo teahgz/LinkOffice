@@ -55,16 +55,15 @@
         <input type="text" id="inventoryPrice" name="inventoryPrice">
     </div>
 
-    <div class="form-group">
-        <label for="inventoryManager">관리자 :</label>
-        <input type="text" th:value="${manager} + ' 관리자'" id="inventoryManager" name="inventoryManager" readonly>
-    </div>
 
     <div class="form-group">
         <label for="inventoryQuantity">수량 :</label>
         <input type="text" id="inventoryQuantity" name="inventoryQuantity">
     </div>
 
+    <div class="form-group">
+        <input type="hidden" th:value="${manager}" id="inventoryManager" name="inventoryManager" readonly>
+    </div>
     <div class="register-button">
     <button type="submit" class="confirm-btn">등록</button>
     <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
@@ -109,7 +108,6 @@
 </section>
 
 <script>
-
 document.getElementById("inventoryForm").addEventListener("submit", function(event) {
     event.preventDefault();  
 
@@ -122,186 +120,195 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     var category = document.getElementById("category").value.trim();
     var department = document.getElementById("department").value;
 
-    if (department === "") {
-        Swal.fire('알림', '부서를 선택해주세요.', 'info');
+    if (!department) {
+        Swal.fire(null, '부서를 선택해주세요.', 'info');
         return;
     }
     
-    if (inventoryPurchaseDate === "" ) {
-        Swal.fire('알림', '날짜를 선택해주세요.', 'info');
+    if (!inventoryPurchaseDate) {
+        Swal.fire(null, '날짜를 선택해주세요.', 'info');
         return;
     }
 	
-    if (category === "") {
-        Swal.fire('알림', '카테고리를 선택해주세요.', 'info');
+    if (!category) {
+        Swal.fire(null, '카테고리를 선택해주세요.', 'info');
         return;
     }
     
-    if (inventoryName === "") {
-        Swal.fire('알림', '비품명을 입력해주세요.', 'info');
+    if (!inventoryName) {
+        Swal.fire(null, '비품명을 입력해주세요.', 'info');
         return;
     }
 
-    if (inventoryLocation === "") {
-        Swal.fire('알림', '보관 위치를 입력해주세요.', 'info');
+    if (!inventoryLocation) {
+        Swal.fire(null, '보관 위치를 입력해주세요.', 'info');
         return;
     }
 
-    if (inventoryPrice === "" ) {
-        Swal.fire('알림', '가격을 올바르게 입력해주세요.', 'info');
+    if (!inventoryPrice) {
+        Swal.fire(null, '가격을 올바르게 입력해주세요.', 'info');
         return;
     }
 
-    if (inventoryQuantity === "" ) {
-        Swal.fire('알림', '수량을 올바르게 입력해주세요.', 'info');
+    if (!inventoryQuantity) {
+        Swal.fire(null, '수량을 올바르게 입력해주세요.', 'info');
         return;
     }
-    var formData = new FormData(this);  // 폼 데이터를 수집
+    var formData = new FormData(this);  
 
- 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/submit-inventory", true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
             if (data.res_code === "200") {
-                Swal.fire('성공', data.res_msg, 'success').then(function() {
+            	Swal.fire({
+            	    icon: 'success',
+            	    text: data.res_msg, 
+            	}).then(function() {
                 	var memberNo = document.getElementById('memberNo').value;
                     window.location.href = '/inventory/list/' + memberNo;
                 });
             } else {
-                Swal.fire('실패', data.res_msg, 'error');
+            	Swal.fire({
+            	    icon: 'error',
+            	    text: data.res_msg, 
+            	})
             }
         }
     };
     xhr.send(formData);
 });
 
-    // 카테고리 선택 모달
-    var modal = document.getElementById("myModal");
-    var btn = document.getElementById("openModalBtn");
-    var span = document.getElementsByClassName("close")[0];
-    var confirmBtn = document.getElementById("confirmBtn");
-    var cancelBtn = document.getElementById("cancelBtn");
+// 카테고리 선택 모달
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("openModalBtn");
+var span = document.getElementsByClassName("close")[0];
+var confirmBtn = document.getElementById("confirmBtn");
+var cancelBtn = document.getElementById("cancelBtn");
 
-    btn.onclick = function() {
-        modal.style.display = "block";
+btn.onclick = function() {
+    modal.style.display = "block";
 
-        // 카테고리 데이터를 불러와서 모달에 추가
+    // 카테고리 데이터를 불러와서 모달에 추가
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/inventory/categories', true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var categories = JSON.parse(xhr.responseText);
+            var categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '';
+
+            categories.forEach(function(category) {
+                var listItem = document.createElement('div');
+                listItem.className = 'category-item';
+                listItem.innerHTML = `
+                    <input type="radio" id="category_${category}" name="category" value="${category}" class="category-item">
+                    <label for="category_${category}">${category}</label>
+                `;
+                categoryList.appendChild(listItem);
+            });
+        }
+    };
+    xhr.send();
+};
+
+span.onclick = function() {
+    modal.style.display = "none";
+};
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+
+confirmBtn.onclick = function() {
+    var selectedCategory = document.querySelector('input[name="category"]:checked');
+    if (selectedCategory) {
+        document.getElementById("category").value = selectedCategory.value;
+        modal.style.display = "none";
+    } else {
+        Swal.fire(null, '카테고리를 선택해주세요.', 'info');
+    }
+};
+
+// 카테고리 선택 취소 버튼 클릭 시 모달 닫기
+cancelBtn.onclick = function() {
+    modal.style.display = "none";
+};
+
+// 카테고리 등록 모달
+var registerModal = document.getElementById("registerModal");
+var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
+var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];
+var registerCategoryBtn = document.getElementById("registerCategoryBtn");
+var cancelRegisterBtn = document.getElementById("cancelRegisterBtn"); 
+
+// 카테고리 등록 모달 열기
+openRegisterModalBtn.onclick = function() {
+    registerModal.style.display = "block";
+};
+
+// 등록 모달 닫기
+closeRegisterModal.onclick = function() {
+    document.getElementById("newCategory").value = "";  
+    registerModal.style.display = "none";
+};
+
+// 모달 외부 클릭 시 닫기
+window.onclick = function(event) {
+    if (event.target == registerModal) {
+        document.getElementById("newCategory").value = "";  
+        registerModal.style.display = "none";
+    }
+};
+
+// 카테고리 등록 버튼 클릭 시
+registerCategoryBtn.onclick = function() {
+    registerCategory();  
+};
+
+// 카테고리 등록 모달 취소 버튼 클릭 시 모달 닫기 및 입력 필드 초기화
+cancelRegisterBtn.onclick = function() {
+    document.getElementById("newCategory").value = "";  
+    registerModal.style.display = "none";
+};
+
+// 카테고리 등록 함수
+function registerCategory() {
+    var newCategory = document.getElementById("newCategory").value;
+    var csrfToken = document.getElementById('csrfToken').value;
+
+    if (newCategory) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/inventory/categories', true);
+        xhr.open('POST', '/inventory/register-category', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
         xhr.onload = function() {
             if (xhr.status === 200) {
-                var categories = JSON.parse(xhr.responseText);
-                var categoryList = document.getElementById('categoryList');
-                categoryList.innerHTML = '';
-
-                for (var i = 0; i < categories.length; i++) {
-                    var listItem = document.createElement('div');
-                    listItem.className = 'category-item';
-                    listItem.innerHTML = `
-                        <input type="radio" id="category_${categories[i]}" name="category" value="${categories[i]}" class="category-item">
-                        <label for="category_${categories[i]}">${categories[i]}</label>
-                    `;
-                    categoryList.appendChild(listItem);
+                var data = JSON.parse(xhr.responseText);
+                if (data.res_code === "200") {
+                	Swal.fire({
+                	    icon: 'success',
+                	    text: data.res_msg, 
+                	}).then(function() {
+                        document.getElementById("newCategory").value = "";  
+                        registerModal.style.display = "none";
+                    });
+                } else {
+                	Swal.fire({
+                	    icon: 'error',
+                	    text: data.res_msg, 
+                	});
                 }
-            }
+            } 
         };
-        xhr.send();
-    };
-
-    span.onclick = function() {
-        modal.style.display = "none";
-    };
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
-
-    confirmBtn.onclick = function() {
-        var selectedCategory = document.querySelector('input[name="category"]:checked');
-        if (selectedCategory) {
-            document.getElementById("category").value = selectedCategory.value;
-            modal.style.display = "none";
-        } else {
-            Swal.fire('알림', '카테고리를 선택해주세요.', 'info');
-        }
-    };
-
-    // 카테고리 선택 취소 버튼 클릭 시 모달 닫기
-    cancelBtn.onclick = function() {
-        modal.style.display = "none";
-    };
-
-
- // 카테고리 등록 모달
-    var registerModal = document.getElementById("registerModal");
-    var openRegisterModalBtn = document.getElementById("openRegisterModalBtn");
-    var closeRegisterModal = document.getElementsByClassName("closeRegisterModal")[0];
-    var registerCategoryBtn = document.getElementById("registerCategoryBtn");
-    var cancelRegisterBtn = document.getElementById("cancelRegisterBtn"); 
-
-    // 카테고리 등록 모달 열기
-    openRegisterModalBtn.onclick = function() {
-        registerModal.style.display = "block";
-    };
-
-    // 등록 모달 닫기
-    closeRegisterModal.onclick = function() {
-        document.getElementById("newCategory").value = "";  
-        registerModal.style.display = "none";
-    };
-
-    // 모달 외부 클릭 시 닫기
-    window.onclick = function(event) {
-        if (event.target == registerModal) {
-            document.getElementById("newCategory").value = "";  
-            registerModal.style.display = "none";
-        }
-    };
-
-    // 카테고리 등록 버튼 클릭 시
-    registerCategoryBtn.onclick = function() {
-        registerCategory();  
-    };
-
-    // 카테고리 등록 모달 취소 버튼 클릭 시 모달 닫기 및 입력 필드 초기화
-    cancelRegisterBtn.onclick = function() {
-        document.getElementById("newCategory").value = "";  
-        registerModal.style.display = "none";
-    };
-
-    // 카테고리 등록 함수
-    function registerCategory() {
-        var newCategory = document.getElementById("newCategory").value;
-        var csrfToken = document.getElementById('csrfToken').value;
-
-        if (newCategory) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/inventory/register-category', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    if (data.res_code === "200") {
-                        Swal.fire('성공', data.res_msg, 'success').then(function() {
-                            document.getElementById("newCategory").value = "";  
-                            registerModal.style.display = "none";
-                        });
-                    } else {
-                        Swal.fire('실패', data.res_msg, 'error');
-                    }
-                } 
-            };
-            xhr.send(JSON.stringify({ inventory_category_name: newCategory }));
-        } else {
-            Swal.fire('알림', '카테고리 이름을 입력하세요.', 'info');
-        }
+        xhr.send(JSON.stringify({ inventory_category_name: newCategory }));
+    } else {
+        Swal.fire(null, '카테고리 이름을 입력하세요.', 'info');
     }
-
+}
 </script>
 </th:block>
 </html>
