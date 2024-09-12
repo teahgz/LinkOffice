@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.mapper.VacationMapper;
+import com.fiveLink.linkOffice.meeting.domain.Meeting;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
@@ -316,10 +317,15 @@ public class MemberService {
     }
 
     //[김채영] 1년 미만 재직자 정보
-    public List<MemberDto> selectUnderYearMember(int num) {
-
+    public List<MemberDto> selectUnderYearMember(int num) { 
         return vacationMapper.selectUnderYearMember(num); 
     }
 
+    // [서혜원] 회의실 예약자
+    public String getMemberNameById(Long memberNo) {
+        return memberRepository.findById(memberNo)
+                .map(Member::getMemberName)
+                .orElse("사원");
+    }
     
 } 
