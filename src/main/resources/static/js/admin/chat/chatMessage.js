@@ -27,13 +27,32 @@ function displayChatMessages(messages) {
     const chatContentDiv = document.getElementById("chatContent");
     chatContentDiv.innerHTML = '';
 
+    // memberNo를 숫자로 변환
+    const memberNo = parseInt(document.getElementById("memberNo").value, 10);
+    console.log("사용자 번호: " + memberNo);
+
     messages.forEach(function(message) {
         const messageElement = document.createElement("div");
-        messageElement.classList.add("messageItem");
-        messageElement.innerHTML = `
-            <p><strong>${message.senderName}:</strong> ${message.chatContent}</p>
-            <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
-        `;
+        console.log(message.senderNo);
+
+        // senderNo와 memberNo 비교 (숫자형 비교)
+        if (message.senderNo === memberNo) {
+            messageElement.classList.add("my-message");
+            messageElement.classList.add("messageItem");
+            messageElement.innerHTML = `
+                <p>${message.chatContent}</p>
+                <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
+            `;
+        } else {
+            messageElement.classList.add("other-message");
+            messageElement.innerHTML = `
+                <p><strong>${message.senderName}:</strong> ${message.chatContent}</p>
+                <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
+            `;
+        }
+
+
+
         chatContentDiv.appendChild(messageElement);
     });
 
@@ -95,13 +114,13 @@ socket.onmessage = (event) => {
     const chatContentDiv = document.getElementById("chatContent");
 
     const messageElement = document.createElement("div");
-    messageElement.classList.add("messageItem");
     const now = new Date();
     const formattedTime = formatDateTime(now);
+    messageElement.classList.add("my-message"); // 자신의 메시지
 
-
+    messageElement.classList.add("messageItem");
     messageElement.innerHTML = `
-        <p><strong>${message.chat_sender_name}:</strong> ${message.chat_content}</p>
+        <p>${message.chat_content}</p>
         <span>${formattedTime}</span>
     `;
     chatContentDiv.appendChild(messageElement);
