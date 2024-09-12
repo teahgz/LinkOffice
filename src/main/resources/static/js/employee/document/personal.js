@@ -22,7 +22,7 @@ $(function () {
     }
 
     // 폴더 리스트 받아오기
-    function getJson() {
+    function getFolders() {
         $.ajax({
             type: 'GET',
             url: '/personal/folder',
@@ -31,7 +31,6 @@ $(function () {
             success: function(data) {
 				// 폴더리스트 초기화 
                 folderList = []; 
-				console.log(data);
                 $.each(data, function(idx, item) {
                     folderList.push({
 						// 폴더 번호, 부모폴더가 있는지, 폴더 이름을 배열에 담음 
@@ -76,6 +75,8 @@ $(function () {
                     $('.document_select_folder').show();
                     $('.folder_buttons').show();
                     $('.box_size').show();
+                    
+                    
                 } else {
 					// 폴더가 없으면 폴더 생성 버튼 띄우기 
                     $('#tree').hide();
@@ -84,6 +85,35 @@ $(function () {
             }
         });
     }
+    
+    // 모든 파일 사이즈 가져오기 
+    function getAllFileSize(){
+		$.ajax({
+            type: 'GET',
+            url: '/personal/fileSize',
+            data: { memberNo: memberNo },
+            dataType: 'json',
+            success: function(data) {
+				const totalSize = 10;
+				const currentSize = $('#current_size_text');
+				const currentPercent = $('#print_size');	
+				const sizeBar = $('#bar_foreground');
+				if(data != null){
+					currentSize.text('');	
+					currentSize.text('10GB 중 ' + data + 'GB 사용');	
+					currentPercent.text('');
+					currentPercent.text('저장용량(' + (data/totalSize)*100 + '% 사용 중)');		
+					sizeBar.css('width', (data/totalSize)*100+'%');							
+				} else{
+					currentSize.text('');	
+					currentSize.text('10GB 중 0GB 사용');	
+					currentPercent.text('');
+					currentPercent.text('저장용량(0% 사용 중)');	
+					sizeBar.css('width', '0%');									
+				}
+			}
+		});
+	}
 
     // 선택된 폴더의 이름을 출력 
     function updateFolderName(folderId) {
@@ -273,10 +303,12 @@ $(function () {
 		const folderName = $('#first_folder_name').val();
 		
 		if(folderName.trim() === ''){
-			$('#no_folder_name').show();
-		} else{
-			$('#no_folder_name').hide();
-			
+			Swal.fire({
+        		text: '폴더영을 입력해주세요 .',
+        		icon: 'warning',
+        		confirmButtonText: '확인'
+    		});
+		} else{			
 			 const csrfToken = $('input[name="_csrf"]').val();
 			
 			// ajax 
@@ -305,7 +337,7 @@ $(function () {
                         // 폴더 생성 성공 처리
                         $('.modal_div').hide();
                         // 폴더 리스트를 다시 가져오기 
-                        getJson();			
+                        getFolders();			
                         				
                         $('.document_no_folder').hide();
                     	$('.document_select_folder').show();
@@ -328,7 +360,8 @@ $(function () {
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
-        getJson();
+        getFolders();
+    	getAllFileSize();
         
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {

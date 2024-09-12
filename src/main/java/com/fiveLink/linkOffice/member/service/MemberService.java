@@ -326,6 +326,6 @@ public class MemberService {
         return memberRepository.findById(memberNo)
                 .map(Member::getMemberName)
                 .orElse("사원");
-    }
+    } 
     
 } 

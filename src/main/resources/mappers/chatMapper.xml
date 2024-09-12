@@ -23,4 +23,8 @@
         ORDER BY cm.chat_message_create_date ASC;
     </select>
 
+    <select id="countRoomNo" resultType="int">
+        SELECT count(*) FROM fl_chat_room
+    </select>
+
 </mapper>

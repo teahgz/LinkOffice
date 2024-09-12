@@ -112,4 +112,23 @@ public class NoticeService {
         List<Object[]> results = noticeRepository.findNoticesWithMemberName(noticeNo);
         return convertToDtoList(results);
     }
+    
+    public NoticeDto selectNoticeOne(Long notice_no) {
+        Notice notice = noticeRepository.findBynoticeNo(notice_no);
+        
+        NoticeDto dto = NoticeDto.builder()
+                .notice_no(notice.getNoticeNo())
+                .notice_title(notice.getNoticeTitle())
+                .notice_content(notice.getNoticeContent())
+                .notice_create_date(notice.getNoticeCreateDate())
+                .notice_update_date(notice.getNoticeUpdateDate())
+                .notice_new_img(notice.getNoticeNewImg())
+                .notice_ori_img(notice.getNoticeOriImg())
+                .notice_importance(notice.getNoticeImportance())
+                .member_no(notice.getMember().getMemberNo())
+                .member_name(notice.getMember().getMemberName())
+                .build();
+        return dto;
+    }
+    
 }

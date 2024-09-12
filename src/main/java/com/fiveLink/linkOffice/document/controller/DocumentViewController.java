@@ -65,6 +65,14 @@ public class DocumentViewController {
 	   List<DocumentFileDto> fileList = documentFileService.selectPersonalfileList(memberNo , folderId);
        return ResponseEntity.ok(fileList);
    }
+   
+   // 개인 문서함 파일 사이즈 
+   @GetMapping("/personal/fileSize")
+   public ResponseEntity<Double> getAllFileSize(
+		   @RequestParam("memberNo") Long memberNo) throws IOException{
+	   double allFileSize = documentFileService.getAllFileSize(memberNo);
+	   return ResponseEntity.ok(allFileSize);
+   }
 	
 	// 부서 문서함 : 부서 번호를 받아옴 
 	@GetMapping("/employee/document/department/{department_no}")

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<meta charset="UTF-8">
+<th:block layout:fragment="content">
+    <link th:href="@{/css/admin/notice/notice_detail.css}" rel="stylesheet" type="text/css">
+    <section>
+        <h1>공지사항 상세 보기</h1>
+        <div class="detail_notice">
+        <div class="notice-header">
+            
+            <h3 class="notice-title">
+                제목 : <span th:text="${dto.notice_title}"></span>
+            </h3>
+
+            
+            <p class="author">
+                작성자 : <span th:text="${dto.member_name}"></span>
+            </p>
+            <br>
+            <p class="date">
+                작성일 : <span th:text="${dto.notice_create_date}"></span>
+            </p>
+
+            
+            <p class="modidate" th:if="${dto.notice_update_date != null}">
+                수정일 : <span th:text="${dto.notice_update_date}"></span>
+            </p>
+        </div>
+
+        
+        <div class="notice-content">
+            <div class="notice-image" th:if="${dto.notice_new_img != null}">
+                <img th:src="@{'/linkOfficeImg/' + ${dto.notice_new_img}}">
+            </div>
+
+            <div th:if="${dto.notice_ori_img != null}">
+                <a th:text="${dto.notice_ori_img}"
+                    th:href="@{/download/{no}(no=${dto.notice_no})}"
+                    style="text-decoration: underline;">첨부파일</a>
+            </div>
+            <div class="notice-text">
+                <div th:utext="${dto.notice_content}"></div>
+            </div>
+        </div>
+        <div class="notice-buttons">
+            <button class="btn btn-edit">수정</button>
+            <button class="btn btn-delete">삭제</button>
+            <button class="btn btn-back" onclick="window.history.back();">목록</button>
+        </div>
+        </div>
+    </section>
+</th:block>
+</html>

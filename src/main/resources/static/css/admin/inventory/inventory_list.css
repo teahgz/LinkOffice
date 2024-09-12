@@ -162,3 +162,26 @@
             padding: 5px;
             margin-right: 10px; 
         }
+        
+        /* 기본 링크 스타일 제거 */
+a {
+    color: black; /* 링크를 검은색으로 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+/* 방문한 링크도 검은색 유지 */
+a:visited {
+    color: black;
+}
+
+/* 클릭 시에도 스타일이 변하지 않도록 */
+a:active {
+    color: black;
+    text-decoration: none;
+}
+
+/* 링크에 마우스를 올렸을 때 */
+a:hover {
+    color: black;
+    text-decoration: none;
+}
