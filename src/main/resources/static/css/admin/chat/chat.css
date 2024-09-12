@@ -75,18 +75,6 @@
     max-width: 70%;
 }
 
-.myMessage {
-    background-color: #d1f7d6;
-    align-self: flex-end;
-    text-align: right;
-}
-
-.otherMessage {
-    background-color: #f1f1f1;
-    align-self: flex-start;
-    text-align: left;
-}
-
 .messageItem span {
     display: block;
     font-size: 0.8em;

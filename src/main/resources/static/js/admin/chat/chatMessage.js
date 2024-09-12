@@ -35,7 +35,6 @@ function displayChatMessages(messages) {
         const messageElement = document.createElement("div");
         console.log(message.senderNo);
 
-        // senderNo와 memberNo 비교 (숫자형 비교)
         if (message.senderNo === memberNo) {
             messageElement.classList.add("my-message");
             messageElement.classList.add("messageItem");
@@ -116,14 +115,29 @@ socket.onmessage = (event) => {
     const messageElement = document.createElement("div");
     const now = new Date();
     const formattedTime = formatDateTime(now);
-    messageElement.classList.add("my-message"); // 자신의 메시지
 
-    messageElement.classList.add("messageItem");
-    messageElement.innerHTML = `
-        <p>${message.chat_content}</p>
-        <span>${formattedTime}</span>
-    `;
+    const memberNo = parseInt(document.getElementById("memberNo").value, 10);
+    const memberNoCheck = parseInt(message.chat_sender_no, 10);
+
+    console.log("실시간 사용자 번호 확인: " + memberNo);
+    console.log("메시지 송신자 번호: " + message.chat_sender_no);
+
+    console.log(memberNo === memberNoCheck);
+
+    if (memberNoCheck === memberNo) {
+        messageElement.classList.add("my-message", "messageItem");
+        messageElement.innerHTML = `
+            <p>${message.chat_content}</p>
+            <span>${formattedTime}</span>
+        `;
+    } else {
+        messageElement.classList.add("other-message", "messageItem");
+        messageElement.innerHTML = `
+            <p><strong>${message.chat_sender_name}:</strong> ${message.chat_content}</p>
+            <span>${formattedTime}</span>
+        `;
+    }
+
     chatContentDiv.appendChild(messageElement);
-
-    chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
+    chatContentDiv.scrollTop = chatContentDiv.scrollHeight; // 스크롤을 아래로 자동 이동
 };
