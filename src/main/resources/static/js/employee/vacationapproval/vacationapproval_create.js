@@ -1,19 +1,3 @@
-    
-// vacationapproval_create.js
-
-// 전역 함수로 정의하여 HTML에서 접근할 수 있게 합니다.
-export function redirectList() {
-    const memberNo = document.getElementById('member_no').value;
-    console.log(memberNo); // 디버깅용
-    location.href = `/employee/vacationapproval/list/${memberNo}`; // 리디렉션
-}
-
-// DOM이 로드된 후에 이벤트 리스너를 설정합니다.
-document.addEventListener('DOMContentLoaded', () => {
-    // 버튼이 클릭될 때 redirectList 함수 호출
-    document.querySelector('.cancel_button').addEventListener('click', redirectList);
-});
-
 
 // editor
 
