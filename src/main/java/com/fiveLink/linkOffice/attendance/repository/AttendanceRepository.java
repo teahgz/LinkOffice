@@ -12,10 +12,10 @@ import com.fiveLink.linkOffice.attendance.domain.Attendance;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 
-	List<Attendance> findByMemberNoAndWorkDateBetween(Long memberNo, LocalDate startDate, LocalDate endDate);
+	List<Attendance> findByMemberMemberNoAndWorkDateBetween(Long memberNo, LocalDate startDate, LocalDate endDate);
 	
-	List<Attendance> findByMemberNo(Long memberNo);
+	List<Attendance> findByMemberMemberNo(Long memberNo);
 	
-	Attendance findByMemberNoAndWorkDate(Long memberNo, LocalDate today);
+	Attendance findByMemberMemberNoAndWorkDate(Long memberNo, LocalDate today);
 
 }

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fiveLink.linkOffice.attendance.domain.Attendance;
 import com.fiveLink.linkOffice.document.domain.DocumentFolder;
 import com.fiveLink.linkOffice.document.domain.DocumentFolderDto;
 import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
@@ -29,11 +28,11 @@ public class DocumentFolderService {
 		// 폴더 상태 = 0
 		Long document_folder_status = 0L;
 		// repository에 memberNo, documentBoxType, folderStatus를 넘겨줌 
-		List<DocumentFolder> documentFolderList = documentFolderRepository.findByMemberNoAndDocumentBoxTypeAndDocumentFolderStatus(
+		List<DocumentFolder> documentFolderList = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderStatus(
 				member_no, document_box_type, document_folder_status);
 		List<DocumentFolderDto> documentFolderDtoList = new ArrayList<DocumentFolderDto>();
 		for(DocumentFolder d : documentFolderList) {
-			DocumentFolderDto folderDto = new DocumentFolderDto().toDto(d);
+			DocumentFolderDto folderDto = d.toDto();
 			documentFolderDtoList.add(folderDto);
 		}
 		return documentFolderDtoList;
@@ -58,11 +57,11 @@ public class DocumentFolderService {
 		Long document_folder_status = 0L;
 		// repository에 departmentNo, documentBoxType, folderStatus를 넘겨줌
 		List<DocumentFolder> documentFolderList 
-			= documentFolderRepository.findByDepartmentNoAndDocumentBoxTypeAndDocumentFolderStatus(
+			= documentFolderRepository.findByDepartmentDepartmentNoAndDocumentBoxTypeAndDocumentFolderStatus(
 					department_no, document_box_type, document_folder_status);
 		List<DocumentFolderDto> documentFolderDtoList = new ArrayList<DocumentFolderDto>();
 		for(DocumentFolder d : documentFolderList) {
-			DocumentFolderDto folderDto = new DocumentFolderDto().toDto(d);
+			DocumentFolderDto folderDto = d.toDto();
 			documentFolderDtoList.add(folderDto);
 		}
 		return documentFolderDtoList;
@@ -76,7 +75,7 @@ public class DocumentFolderService {
 			= documentFolderRepository.findByDocumentBoxTypeAndDocumentFolderStatus(document_box_type, document_folder_status);
 		List<DocumentFolderDto> documentFolderDtoList = new ArrayList<DocumentFolderDto>();
 		for(DocumentFolder d : documentFolderList) {
-			DocumentFolderDto folderDto = new DocumentFolderDto().toDto(d);
+			DocumentFolderDto folderDto = d.toDto();
 			documentFolderDtoList.add(folderDto);
 		}
 		return documentFolderDtoList;

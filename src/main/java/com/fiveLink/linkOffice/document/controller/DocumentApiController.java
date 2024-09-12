@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fiveLink.linkOffice.document.domain.DocumentFolder;
 import com.fiveLink.linkOffice.document.service.DocumentFileService;
 import com.fiveLink.linkOffice.document.service.DocumentFolderService;
+import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.organization.domain.Department;
+import com.fiveLink.linkOffice.organization.repository.DepartmentRepository;
 
 @Controller
 public class DocumentApiController {
@@ -22,6 +26,8 @@ public class DocumentApiController {
 	private final DocumentFolderService documentFolderService;
 	private final MemberService memberService;
 	private final DocumentFileService documentFileService;
+	private MemberRepository memberRepository;
+	private DepartmentRepository departmentRepository;
 	
 	private static final Logger LOGGER
 		= LoggerFactory.getLogger(DocumentApiController.class);
@@ -29,10 +35,14 @@ public class DocumentApiController {
 	@Autowired
 	public DocumentApiController(DocumentFolderService documentFolderService,
 			MemberService memberService,
-			DocumentFileService documentFileService) {
+			DocumentFileService documentFileService,
+			MemberRepository memberRepository, 
+			DepartmentRepository departmentRepository) {
 		this.documentFolderService = documentFolderService;
 		this.memberService = memberService;
 		this.documentFileService = documentFileService;
+		this.memberRepository = memberRepository;
+		this.departmentRepository = departmentRepository;
 	}
 	
    // 개인 첫 폴더 
@@ -52,13 +62,16 @@ public class DocumentApiController {
       Long folderLevel = 1L;
       Long docBoxType = 0L;
       Long folderStatus = 0L;
+      
+      Member member = memberRepository.findByMemberNo(memberNo);
+      Department department = departmentRepository.findByDepartmentNo(deptNo);
 
       DocumentFolder documentFolder = DocumentFolder.builder()
             .documentFolderName(folderName)
             .documentFolderLevel(folderLevel)
-            .departmentNo(deptNo)
+            .department(department)
             .documentBoxType(docBoxType)
-            .memberNo(memberNo)
+            .member(member)
             .documentFolderStatus(folderStatus)
             .build();
 

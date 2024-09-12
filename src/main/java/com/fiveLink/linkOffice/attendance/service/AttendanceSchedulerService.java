@@ -48,12 +48,12 @@ public class AttendanceSchedulerService {
         for (Member member : members) {
             
             // DB에 attendance 데이터 존재 여부 확인
-            Attendance attendance = attendanceRepository.findByMemberNoAndWorkDate(member.getMemberNo(), yesterday);
+            Attendance attendance = attendanceRepository.findByMemberMemberNoAndWorkDate(member.getMemberNo(), yesterday);
             
             // 출근 기록이 없으면 새로 추가
             if (attendance == null) {
                 Attendance newAttendance = Attendance.builder()
-                        .memberNo(member.getMemberNo())
+                        .member(member)
                         .workDate(yesterday)
                         .checkInTime(null)
                         .checkOutTime(null)

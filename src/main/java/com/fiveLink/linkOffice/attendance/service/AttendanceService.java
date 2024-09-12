@@ -37,12 +37,12 @@ public class AttendanceService {
 	
 	// 근태 조회 리스트 
 	public List<AttendanceDto> selectAttendanceList(Long memberNo){
-		List<Attendance> attendanceList = attendanceRepository.findByMemberNo(memberNo);
+		List<Attendance> attendanceList = attendanceRepository.findByMemberMemberNo(memberNo);
 		
 		List<AttendanceDto> attendanceDtoList = new ArrayList<AttendanceDto>();
 		
 		for(Attendance a : attendanceList) {
-			AttendanceDto attendanceDto = new AttendanceDto().toDto(a);
+			AttendanceDto attendanceDto = a.toDto();
 			attendanceDtoList.add(attendanceDto);
 		}
 		return attendanceDtoList;
@@ -50,12 +50,12 @@ public class AttendanceService {
 
 	// 날짜 선택 근태 조회 리스트
 	public List<AttendanceDto> findAttendanceList(Long memberNo, LocalDate startDate, LocalDate endDate) {
-	    List<Attendance> attendanceList = attendanceRepository.findByMemberNoAndWorkDateBetween(memberNo, startDate, endDate);
+	    List<Attendance> attendanceList = attendanceRepository.findByMemberMemberNoAndWorkDateBetween(memberNo, startDate, endDate);
 	   
 	    List<AttendanceDto> attendanceDtoList = new ArrayList<AttendanceDto>();
 		
 		for(Attendance a : attendanceList) {
-			AttendanceDto attendanceDto = new AttendanceDto().toDto(a);
+			AttendanceDto attendanceDto = a.toDto();
 			attendanceDtoList.add(attendanceDto);
 		}
 	    return attendanceDtoList;
@@ -63,15 +63,9 @@ public class AttendanceService {
 
 	// 출근 여부 조회
 	public AttendanceDto findByMemberNoAndWorkDate(Long memberNo, LocalDate today) {
-		Attendance attendance = attendanceRepository.findByMemberNoAndWorkDate(memberNo, today);
+		Attendance attendance = attendanceRepository.findByMemberMemberNoAndWorkDate(memberNo, today);
 		if(attendance != null) {
-			return new AttendanceDto(	
-				attendance.getAttendanceNo(),
-				attendance.getMemberNo(),
-				attendance.getWorkDate(),
-				attendance.getCheckInTime(),
-				attendance.getCheckOutTime()
-			);
+			return attendance.toDto();
 		} else {
 			return null;			
 		}

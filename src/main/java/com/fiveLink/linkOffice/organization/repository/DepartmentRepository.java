@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.organization.repository;
 
+import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +34,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     @Query("SELECT d FROM Department d WHERE d.departmentHigh = :departmentNo ORDER BY d.departmentName ASC")
     List<Department> findSubDepartmentsByDepartmentName(@Param("departmentNo") Long departmentNo);
+    
+    // [박혜선] 폴더 생성 (부서번호 조회)
+    Department findByDepartmentNo(Long departmentNo);
 }

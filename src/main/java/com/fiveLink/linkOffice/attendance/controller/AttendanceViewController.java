@@ -17,17 +17,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fiveLink.linkOffice.attendance.domain.Attendance;
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 
 @Controller
 public class AttendanceViewController {
 
-   private final AttendanceService attendanceService;
-   
+   private final AttendanceService attendanceService;  
    private final MemberService memberService;
    
    private static final Logger LOGGER
@@ -48,6 +47,7 @@ public class AttendanceViewController {
 	   LocalDate lastDate = today.withDayOfMonth(today.lengthOfMonth());
        List<AttendanceDto> attendanceList = attendanceService.selectAttendanceList(memberNo);
        List<AttendanceDto> thisMonthAttendanceList = attendanceService.findAttendanceList(memberNo, startDate, lastDate);
+//       List<VacationApprovalDto> vacationList = attendanceService.findMemberVacation(memberNo);
        
        long countAttendance = thisMonthAttendanceList.size();
        // 결근 

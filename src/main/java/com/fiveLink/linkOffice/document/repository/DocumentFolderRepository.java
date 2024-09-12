@@ -12,10 +12,10 @@ import com.fiveLink.linkOffice.document.domain.DocumentFolder;
 @Repository
 public interface DocumentFolderRepository extends JpaRepository<DocumentFolder, Long>{
 	
-	List<DocumentFolder> findByMemberNoAndDocumentBoxTypeAndDocumentFolderStatus(
-            Long memberNo, Long documentBoxType, Long documentFolderStatus);
+	List<DocumentFolder> findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderStatus(
+	        Long memberNo, Long documentBoxType, Long documentFolderStatus);
 	
-	List<DocumentFolder> findByDepartmentNoAndDocumentBoxTypeAndDocumentFolderStatus(
+	List<DocumentFolder> findByDepartmentDepartmentNoAndDocumentBoxTypeAndDocumentFolderStatus(
 			Long departmentNo, Long documentBoxType, Long documentFolderStatus);
 	
 	List<DocumentFolder> findByDocumentBoxTypeAndDocumentFolderStatus(Long documentBoxType, Long documentFolderStatus);

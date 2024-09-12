@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fiveLink.linkOffice.attendance.domain.Attendance;
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
+import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
+import com.fiveLink.linkOffice.member.service.MemberService;
 
 @Controller
 public class AttendanceApiController {
@@ -25,6 +28,13 @@ public class AttendanceApiController {
 
 	@Autowired
 	private AttendanceService attendanceService;
+	private MemberRepository memberRepository;
+	
+   @Autowired
+   public AttendanceApiController(AttendanceService attendanceService, MemberRepository memberRepository) {
+      this.attendanceService = attendanceService;
+      this.memberRepository = memberRepository; 
+   }
 	
 	@PostMapping("/attendance/checkIn")
 	@ResponseBody
@@ -38,9 +48,11 @@ public class AttendanceApiController {
         LocalDate today = LocalDate.now();
         LocalTime time = LocalTime.now();
         
+        Member member = memberRepository.findByMemberNo(memberNo);
+        
         // Attendance Entity로 build 
         Attendance attendance = Attendance.builder()
-        		.memberNo(memberNo)
+        		.member(member)
         		.workDate(today)
         		.checkInTime(time)
         		.build();
@@ -71,9 +83,12 @@ public class AttendanceApiController {
         
         // 조회 성공하면 
         if(attendanceDto != null) {
+        	
+        	Member member = memberRepository.findByMemberNo(memberNo);
+        	
     		Attendance attendance = Attendance.builder()
     			.attendanceNo(attendanceDto.getAttendance_no())
-    			.memberNo(attendanceDto.getMember_no())
+    			.member(member)
     			.workDate(attendanceDto.getWork_date())
     			.checkInTime(attendanceDto.getCheck_in_time())
     			.checkOutTime(time)

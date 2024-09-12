@@ -3,10 +3,10 @@ package com.fiveLink.linkOffice.document.domain;
 import java.time.LocalDateTime;
 
 import com.fiveLink.linkOffice.member.domain.Member;
+import com.fiveLink.linkOffice.organization.domain.Department;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,24 +38,23 @@ public class DocumentFolder {
     @Column(name = "document_folder_name")
     private String documentFolderName;
 
-    @Column(name = "document_folder_parent_no")
-    private Long documentFolderParentNo;
+    @ManyToOne
+    @JoinColumn(name = "document_folder_parent_no")
+    private DocumentFolder documentFolder;
 
     @Column(name = "document_folder_level")
     private Long documentFolderLevel;
     
-    @Column(name = "department_no")
-    private Long departmentNo;
+    @ManyToOne
+    @JoinColumn(name = "department_no")
+    private Department department;
 
     @Column(name = "document_box_type")
     private Long documentBoxType;
     
-//    @ManyToOne
-//    @JoinColumn(name = "member_no")
-//    private Member member;
-    
-    @Column(name = "member_no")
-    private Long memberNo;
+    @ManyToOne
+    @JoinColumn(name = "member_no")
+    private Member member;
 
     @Column(name = "document_folder_create_date")
     private LocalDateTime documentFolderCreateDate;
@@ -65,4 +64,19 @@ public class DocumentFolder {
 
     @Column(name = "document_folder_status")
     private Long documentFolderStatus;
+    
+    public DocumentFolderDto toDto() {
+        return DocumentFolderDto.builder()
+                .document_folder_no(documentFolderNo)
+                .document_folder_name(documentFolderName)
+                .document_folder_parent_no(documentFolder != null ? documentFolder.getDocumentFolderNo() : null)
+                .document_folder_level(documentFolderLevel)
+                .department_no(department.getDepartmentNo())
+                .document_box_type(documentBoxType)
+                .member_no(member.getMemberNo())
+                .document_folder_create_date(documentFolderCreateDate)
+                .document_folder_update_date(documentFolderUpdateDate)
+                .document_folder_status(documentFolderStatus)
+                .build();
+    }
 }
