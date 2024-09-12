@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.meeting.domain.Meeting;
 import com.fiveLink.linkOffice.meeting.domain.MeetingDto;
-import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.meeting.service.MeetingFileService;
 import com.fiveLink.linkOffice.meeting.service.MeetingService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;

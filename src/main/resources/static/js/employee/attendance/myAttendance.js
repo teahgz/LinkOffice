@@ -5,6 +5,23 @@ document.addEventListener("DOMContentLoaded", function() {
     // 모든 attendanceList의 work_date의 값을 가져옴
     var attendanceList = document.querySelectorAll(".hidden_table .hidden_date");
     
+    // 휴가 문서의 시작날짜와 끝나는 날짜 받아와서 배열 저장 
+    var vacationDates = [];
+    document.querySelectorAll(".hidden_table .vacation_start, .hidden_table .vacation_end").forEach(function(cell, index, array) {
+        // 짝수 인덱스는 시작 날짜, 홀수 인덱스는 종료 날짜
+        if (index % 2 === 0) {
+            var startDate = cell.textContent.trim();
+	        var endDate = array[index + 1] ? array[index + 1].textContent.trim() : null;
+
+	        if (startDate != null && endDate != null) {
+	            vacationDates.push({
+	                start: startDate,
+	                end: endDate
+	            });
+	        }
+	    }
+	});
+    
     // 날짜와 근태를 배열에 추가합니다.
     attendanceList.forEach(function(cell) {
         var workDate = cell.textContent.trim();
@@ -16,7 +33,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // 출근 시간 존재 여부 및 출근 지각 결근 판단
         // 출근 시간 없음 = 결근 
         if (checkInTime === '') {
-            status = 'bar_absent'; 
+			// 휴가 날짜 범위에 workDate가 포함되는지 확인
+            var isVacation = vacationDates.some(function(vacation) {
+                return workDate >= vacation.start && workDate <= vacation.end;
+            });
+            status = isVacation ? 'bar_vacation' : 'bar_absent'; 
         } else {
             // 출근 시간이 존재하면 시간과 분으로 나눔 
             var checkInHour = parseInt(checkInTime.split(':')[0]);
@@ -254,7 +275,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let totalPages = 1; 
     // 현재 페이지
     let currentPage = 0; 
-	
+    // 휴가 리스트 저장할 배열
+    let vacationList = [];
+    
+    // 휴가 리스트 가져오기 
+    function getVacationList(memberNo) {
+        return fetch(`/employee/attendance/vacationList?member_no=${memberNo}`)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                vacationList = data;
+                return data;
+            })
+    }
+    
 	// 출석 리스트 가져오기 
     function loadAttendanceList(page = 0) {
         currentPage = page; 
@@ -282,15 +317,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 const timeParts = checkInTime.split(':');
                 checkInHour = parseInt(timeParts[0], 10);
             }
-			
-			// checkInTime의 시간으로 근태 파악 
+            
+           // workDate를 Date로 변환
+            const workDate = new Date(attendance.work_date);
+
+            // 휴가인지 아닌지 확인 
+            const isVacation = vacationList.some(vacation => {
+                const startDate = new Date(vacation.vacation_approval_start_date);
+                const endDate = new Date(vacation.vacation_approval_end_date);
+                return !checkInTime && workDate >= startDate && workDate <= endDate;
+            });
+
+			// 근태 판단해서 select option에 반영 
+	        let status;
+	        if (checkInTime) {
+	            status = parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근';
+	        } else {
+	            status = isVacation ? '휴가' : '결근';
+	        }
+	        
+			// 근태 선택 조회 
             switch (attendanceState) {
                 case '출근':
                     return checkInTime && checkInHour < 9;
                 case '지각':
                     return checkInTime && checkInHour >= 9;
                 case '결근':
-                    return !checkInTime;
+                    return !checkInTime && !isVacation;
+                case '휴가':
+					return isVacation;
                 case '전체':
                 default:
                     return true;
@@ -313,15 +368,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = document.createElement('tr');
             const checkInTime = attendance.check_in_time || '';
             const checkOutTime = attendance.check_out_time || '';
-            const status = checkInTime
-                ? (parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근')
-                : '결근';
+            const workDate = new Date(attendance.work_date);
+                
+            // 휴가 상태 
+	        const isVacation = vacationList.some(vacation => {
+	            const startDate = new Date(vacation.vacation_approval_start_date);
+	            const endDate = new Date(vacation.vacation_approval_end_date);
+	            return !checkInTime && new Date(attendance.work_date) >= startDate && new Date(attendance.work_date) <= endDate;
+	        });
+
+	        const attendanceStatus = checkInTime
+            ? (parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근')
+            : (isVacation ? '휴가' : '결근');
 
             row.innerHTML = `
                 <td>${attendance.work_date}</td>
                 <td>${checkInTime}</td>
                 <td>${checkOutTime}</td>
-                <td>${status}</td>
+                <td>${attendanceStatus}</td>
             `;
             attendanceTable.appendChild(row);
         });
@@ -413,19 +477,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	    }
 	}
 
-	// 시작 날짜를 선택하면 동작하는 함수 
-    startDateInput.addEventListener('change', () => {
-        startDateLimit();
-        loadAttendanceList();
-    });
-    // 끝나는 날짜를 선택하면 동작하는 함수 
-    endDateInput.addEventListener('change', () => {
-        startDateLimit();
-        loadAttendanceList();
-    });
-    // 근태와 정렬을 선택하면 동작하는 함수 
-    attendanceStateSelect.addEventListener('change', () => loadAttendanceList());
-    sortSelect.addEventListener('change', () => loadAttendanceList());
-	// 출석 리스트 가져오기 
-    loadAttendanceList(); 
+	// 날짜 변경 이벤트  
+    startDateInput.addEventListener('change', startDateLimit);
+    endDateInput.addEventListener('change', startDateLimit);
+
+    // 날짜, 정렬이 변경될 때 이벤트  
+    startDateInput.addEventListener('change', () => loadAttendanceList(currentPage));
+    endDateInput.addEventListener('change', () => loadAttendanceList(currentPage));
+    attendanceStateSelect.addEventListener('change', () => loadAttendanceList(currentPage));
+    sortSelect.addEventListener('change', () => loadAttendanceList(currentPage));
+	
+    // 휴가 리스트와 출석 리스트를 불러오기 
+    getVacationList(memberNo).then(() => loadAttendanceList(currentPage));
 });
