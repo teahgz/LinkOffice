@@ -84,11 +84,6 @@ public class VacationService {
         return vacationMapper.selectVacationTypeList();
     }
 
-    public VacationTypeDto getVacationTypeByNo(Long vacationTypeNo) {
-        return vacationTypeRepository.findByVacationTypeNo(vacationTypeNo)
-                .orElseThrow(() -> new RuntimeException("휴가 타입을 찾을 수 없습니다."));
-    }
-
     //1년미만
     public int checkOneYear(VacationOneUnderDto dto) {
         int result = -1;
@@ -134,7 +129,6 @@ public class VacationService {
 
     //1년미만 재직자 한달에 한번 휴가 지급
     public void incrementVacation(Long memberNo, int num){
-        try {
             Member member = memberRepository.findById(memberNo)
                     .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다"));
             // 휴가 일수 증가
@@ -146,14 +140,11 @@ public class VacationService {
             // 변경 사항 저장
             memberRepository.save(member);
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     //1년이상 재직자 입사일 기준 경과 시, 휴가 지급
     public void resetVacation(Long memberNo, int num){
-        try {
+
             Member member = memberRepository.findById(memberNo)
                     .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다"));
 
@@ -166,9 +157,6 @@ public class VacationService {
             // 변경 사항 저장
             memberRepository.save(member);
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
     // 1년이상 재직자 입사일 기준 지급
     public int contVacationYear(int years){
