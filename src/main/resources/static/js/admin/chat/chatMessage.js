@@ -27,13 +27,10 @@ function displayChatMessages(messages) {
     const chatContentDiv = document.getElementById("chatContent");
     chatContentDiv.innerHTML = '';
 
-    // memberNo를 숫자로 변환
     const memberNo = parseInt(document.getElementById("memberNo").value, 10);
-    console.log("사용자 번호: " + memberNo);
 
     messages.forEach(function(message) {
         const messageElement = document.createElement("div");
-        console.log(message.senderNo);
 
         if (message.senderNo === memberNo) {
             messageElement.classList.add("my-message");
@@ -119,11 +116,6 @@ socket.onmessage = (event) => {
     const memberNo = parseInt(document.getElementById("memberNo").value, 10);
     const memberNoCheck = parseInt(message.chat_sender_no, 10);
 
-    console.log("실시간 사용자 번호 확인: " + memberNo);
-    console.log("메시지 송신자 번호: " + message.chat_sender_no);
-
-    console.log(memberNo === memberNoCheck);
-
     if (memberNoCheck === memberNo) {
         messageElement.classList.add("my-message", "messageItem");
         messageElement.innerHTML = `
@@ -139,5 +131,5 @@ socket.onmessage = (event) => {
     }
 
     chatContentDiv.appendChild(messageElement);
-    chatContentDiv.scrollTop = chatContentDiv.scrollHeight; // 스크롤을 아래로 자동 이동
+    chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
 };
