@@ -19,7 +19,6 @@
 }
 
 .chatContent {
-    width: 40%;
     border-radius: 10px;
     background-color: white;
     display: flex;
@@ -92,4 +91,22 @@
     display: block;
     font-size: 0.8em;
     color: #666;
+}
+.my-message {
+    text-align: right;
+    background-color: #B1C2DD;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 10px;
+    max-width: 50%;
+    margin-left: auto;
+}
+
+.other-message {
+    text-align: left;
+    background-color: #e3e3e3;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 10px;
+    max-width: 50%;
 }
