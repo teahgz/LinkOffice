@@ -37,9 +37,10 @@ public class VacationApprovalViewController {
     }
     
  // 사용자 휴가 결재 등록 페이지
- 	@GetMapping("/employee/vacationapproval/create/{member_no}")
- 	public String employeeVacationApprovalCreate(Model model, @PathVariable("member_no") Long memberNo) {
- 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+ 	@GetMapping("/employee/vacationapproval/create")
+ 	public String employeeVacationApprovalCreate(Model model) {
+ 		Long member_no = memberService.getLoggedInMemberNo();
+ 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
  		List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
  		
  		model.addAttribute("memberdto", memberdto);
