@@ -38,13 +38,14 @@ public class HomeController {
 	}
 
 	@GetMapping("/login")
-	public String loginPage(HttpServletRequest request, Model model) {
-		String errorMessage = (String) request.getSession().getAttribute("error");
-		if (errorMessage != null) {
-			model.addAttribute("error", true);
-			model.addAttribute("exception", errorMessage);
-			request.getSession().removeAttribute("error");
-		} 
+	public String loginPage(HttpSession session, Model model) {
+	    String errorMsg = (String) session.getAttribute("error");
+	    
+	    if (errorMsg != null) {
+            model.addAttribute("error", errorMsg);
+            // 에러 메시지를 세션에서 제거
+            session.removeAttribute("error");
+        }
 		return "login";
 	}
 
