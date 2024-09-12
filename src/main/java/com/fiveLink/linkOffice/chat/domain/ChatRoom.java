@@ -29,10 +29,10 @@ public class ChatRoom {
 
     @Column(name="chat_room_create_date")
     @CreationTimestamp
-    private LocalDate chatRoomCreateDate;
+    private LocalDateTime chatRoomCreateDate;
 
     @Column(name="chat_room_update_date")
     @UpdateTimestamp
-    private LocalDate chatRoomUpdateDate;
+    private LocalDateTime chatRoomUpdateDate;
 
 }
