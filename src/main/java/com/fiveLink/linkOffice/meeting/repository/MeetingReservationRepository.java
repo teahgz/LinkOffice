@@ -11,11 +11,14 @@ import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
 
 @Repository
 public interface MeetingReservationRepository extends JpaRepository<MeetingReservation, Long> {
-	@Query("SELECT mr FROM MeetingReservation mr " +
-	           "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
-	           "JOIN Member mem ON mr.memberNo = mem.memberNo " +
-	           "WHERE mr.meetingReservationDate = :date " +
-	           "AND mr.meetingReservationStatus = :status " +
-	           "ORDER BY mr.meetingReservationStartTime ASC")
-    List<MeetingReservation> findReservations(@Param("date") String date, @Param("status") Long status);
-}
+	@Query("SELECT mr, mem, pos.positionName, dept.departmentName " +
+		       "FROM MeetingReservation mr " +
+		       "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
+		       "JOIN Member mem ON mr.memberNo = mem.memberNo " +
+		       "JOIN Position pos ON mem.positionNo = pos.positionNo " +    
+		       "JOIN Department dept ON mem.departmentNo = dept.departmentNo " +  
+		       "WHERE mr.meetingReservationDate = :date " +
+		       "AND mr.meetingReservationStatus = :status " +
+		       "ORDER BY mr.meetingReservationStartTime ASC")
+    List<Object[]> findReservations(@Param("date") String date, @Param("status") Long status);
+} 

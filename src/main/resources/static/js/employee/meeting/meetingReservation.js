@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+	let selectedDate = null;
+	
 	// 예약 현황 시간대
     let meetings = [];
     const timeSlots = [];
@@ -12,11 +14,24 @@ document.addEventListener("DOMContentLoaded", function () {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        locale: 'ko',
-        
+        locale: 'ko', 
+        buttonText: {
+            today: '오늘' 
+        },
         dateClick: function (info) {
-            var selectedDate = info.dateStr;
+            selectedDate = info.dateStr;  
             fetchReservations(selectedDate);
+            
+            document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
+                cell.style.backgroundColor = ''; 
+            });
+            const selectedCell = document.querySelector(`[data-date="${selectedDate}"]`);
+            
+            if (selectedCell) {
+                selectedCell.style.backgroundColor = '#a6bef7';
+            }
+            
+            calendar.render();
         },
         // '일' 삭제
         dayCellContent: function (info) {
@@ -91,7 +106,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	    const tbody = table.find('tbody').empty();
 	
 	    meetings.forEach(meeting => { 
-	        const row = $('<tr>').append(`<td>${meeting.meeting_name}</td>`);
+	        const row = $('<tr>').append(`
+			    <td onclick="fetchMeetingDetails(${meeting.meeting_no})" data-id="${meeting.meeting_no}">
+			        ${meeting.meeting_name}
+			    </td>
+			`);
+
 	        
 	        let skipCells = 0;  
 	        timeSlots.forEach((time, index) => {
@@ -121,8 +141,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	                    const reservationCell = $('<td>')
 	                        .attr('colspan', colspan) 
 	                        .addClass('reserved') 
-	                        .text(`${reservation.member_name} (${reservation.meeting_reservation_start_time} ~ ${reservation.meeting_reservation_end_time})`)
-	                        .attr('title', `${reservation.member_name} (${reservation.meeting_reservation_start_time} ~ ${reservation.meeting_reservation_end_time})`); 
+	                        .text(`${reservation.member_name} ${reservation.position_name} (${reservation.meeting_reservation_start_time} ~ ${reservation.meeting_reservation_end_time})`)
+	                        .attr('title', `${reservation.member_name} ${reservation.position_name} (${reservation.meeting_reservation_start_time} ~ ${reservation.meeting_reservation_end_time})`); 
 	
 	                    row.append(reservationCell);
 	                    skipCells = colspan - 1;  
