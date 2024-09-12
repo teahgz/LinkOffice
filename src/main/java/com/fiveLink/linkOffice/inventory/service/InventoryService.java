@@ -43,10 +43,10 @@ public class InventoryService {
                     .inventory_quantity(inventory.getInventoryQuantity())
                     .inventory_location(inventory.getInventoryLocation())
                     .inventory_purchase_date(inventory.getInventoryPurchaseDate())
+                    .member_name(inventory.getMember().getMemberName())  
                     .build();
             inventoryDtos.add(dto);
         }
-
         return inventoryDtos;
     }
 
@@ -100,11 +100,11 @@ public class InventoryService {
 
         if (existingInventory != null) {
             existingInventory.setInventoryQuantity(dto.getInventory_quantity());
-            inventoryRepository.save(existingInventory);  // 업데이트
+            inventoryRepository.save(existingInventory); 
             return true;
         } else {
             Inventory newInventory = dto.toEntity();
-            inventoryRepository.save(newInventory);  // 새로 생성
+            inventoryRepository.save(newInventory); 
             return false;
         }
     }
@@ -142,7 +142,7 @@ public class InventoryService {
 
         if (optionalInventory.isPresent()) {
             Inventory inventory = optionalInventory.get();
-            // 수정할 값 설정
+            
             inventory.setInventoryName(dto.getInventory_name());
             inventory.setInventoryPrice(dto.getInventory_price());
             inventory.setInventoryQuantity(dto.getInventory_quantity());
