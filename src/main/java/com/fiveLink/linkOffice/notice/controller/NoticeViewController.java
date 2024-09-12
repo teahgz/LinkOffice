@@ -52,39 +52,34 @@ public class NoticeViewController {
     }
     
     private Sort getSortOption(String sort) {
-		if ("latest".equals(sort)) {
-			return Sort.by(Sort.Order.desc("noticeCreateDate")); 
-		} else if ("oldest".equals(sort)) {
-			return Sort.by(Sort.Order.asc("noticeCreateDate")); 
-		}
-		return Sort.by(Sort.Order.desc("noticeCreateDate")); 
-	}
-    
+        if ("latest".equals(sort)) {
+            return Sort.by(Sort.Order.desc("noticeCreateDate"));
+        } else if ("oldest".equals(sort)) {
+            return Sort.by(Sort.Order.asc("noticeCreateDate"));
+        }
+        return Sort.by(Sort.Order.desc("noticeCreateDate"));
+    }
+
     @GetMapping("/admin/notice/list")
-	public String noticeList(
-	    @PageableDefault(size = 10, sort = "noticeCreateDate", direction = Sort.Direction.DESC) Pageable pageable,
-	    @RequestParam(value = "sort", defaultValue = "latest") String sort,
-	    @RequestParam(value = "noticeNo", required = false) Long noticeNo,
-	    Model model, 
-	    NoticeDto searchdto) {
-	    
-	    
-    	List<NoticeDto> noticedto = noticeService.getNoticeByNo(noticeNo);
+    public String noticeList(
+        @PageableDefault(size = 10, sort = "noticeCreateDate", direction = Sort.Direction.DESC) Pageable pageable,
+        @RequestParam(value = "sort", defaultValue = "latest") String sort,
+        Model model,
+        NoticeDto searchDto) {
 
-	    // 정렬 설정
-	    Sort sortOption = getSortOption(sort);
-	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+        Pageable sortedPageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            getSortOption(sort)
+        );
 
-	    // 페이징 + 정렬
-	    Page<NoticeDto> noticePage = noticeService.getAllNoticePage(sortedPageable, searchdto);
-	    
-	    model.addAttribute("noticedto", noticedto);
-	    // 페이징 안에 content
-	    model.addAttribute("noticeList", noticePage.getContent());
-	    model.addAttribute("page", noticePage); 
-	    model.addAttribute("searchDto", searchdto);
-	    model.addAttribute("currentSort", sort); 
-	    
-	    return "admin/notice/notice_list";
-	}
+        Page<NoticeDto> noticePage = noticeService.getAllNoticePage(sortedPageable, sort, searchDto);
+
+        model.addAttribute("noticeList", noticePage.getContent());
+        model.addAttribute("page", noticePage);
+        model.addAttribute("searchDto", searchDto);
+        model.addAttribute("currentSort", sort);
+
+        return "admin/notice/notice_list";
+    }
 }

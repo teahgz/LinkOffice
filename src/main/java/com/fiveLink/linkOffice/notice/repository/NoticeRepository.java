@@ -12,51 +12,65 @@ import com.fiveLink.linkOffice.notice.domain.Notice;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
-	Notice findBynoticeNo(Long notice_no);
+    Notice findBynoticeNo(Long notice_no);
 
-	@Query("SELECT m.memberName FROM Member m WHERE m.memberNumber = :memberNumber")
-	String findMemberNameByMemberNumber(@Param("memberNumber") String memberNumber);
+    @Query("SELECT m.memberName FROM Member m WHERE m.memberNumber = :memberNumber")
+    String findMemberNameByMemberNumber(@Param("memberNumber") String memberNumber);
 
-	// 제목 또는 내용으로 검색 
-	@Query("SELECT n, m.memberName " +
-	       "FROM Notice n " +
-	       "JOIN n.member m " + 
-	       "WHERE n.noticeTitle LIKE %:searchText% " +
-	       "OR n.noticeContent LIKE %:searchText%")
-	Page<Object[]> findNoticesByTitleOrContentContainingWithMember(@Param("searchText") String searchText, Pageable pageable);
+    // 제목 또는 내용으로 검색 
+    @Query("SELECT n, m.memberName " +
+           "FROM Notice n " +
+           "JOIN n.member m " + 
+           "WHERE n.noticeTitle LIKE %:searchText% " +
+           "OR n.noticeContent LIKE %:searchText% " +
+           "ORDER BY CASE WHEN n.noticeImportance = 1 THEN 0 ELSE 1 END, " +
+           "CASE WHEN :sort = 'latest' THEN n.noticeCreateDate END DESC, " +
+           "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
+    Page<Object[]> findNoticesByTitleOrContentContainingWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-	// 제목으로 검색 
-	@Query("SELECT n, m.memberName " +
-	       "FROM Notice n " +
-	       "JOIN n.member m " + 
-	       "WHERE n.noticeTitle LIKE %:searchText%")
-	Page<Object[]> findNoticesByTitleWithMember(@Param("searchText") String searchText, Pageable pageable);
+    // 제목으로 검색
+    @Query("SELECT n, m.memberName " +
+           "FROM Notice n " +
+           "JOIN n.member m " + 
+           "WHERE n.noticeTitle LIKE %:searchText% " +
+           "ORDER BY CASE WHEN n.noticeImportance = 1 THEN 0 ELSE 1 END, " +
+           "CASE WHEN :sort = 'latest' THEN n.noticeCreateDate END DESC, " +
+           "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
+    Page<Object[]> findNoticesByTitleWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-	// 내용으로 검색 
-	@Query("SELECT n, m.memberName " +
-	       "FROM Notice n " +
-	       "JOIN n.member m " + 
-	       "WHERE n.noticeContent LIKE %:searchText%")
-	Page<Object[]> findNoticesByContentWithMember(@Param("searchText") String searchText, Pageable pageable);
+    // 내용으로 검색
+    @Query("SELECT n, m.memberName " +
+           "FROM Notice n " +
+           "JOIN n.member m " + 
+           "WHERE n.noticeContent LIKE %:searchText% " +
+           "ORDER BY CASE WHEN n.noticeImportance = 1 THEN 0 ELSE 1 END, " +
+           "CASE WHEN :sort = 'latest' THEN n.noticeCreateDate END DESC, " +
+           "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
+    Page<Object[]> findNoticesByContentWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-	// 작성자로 검색
-	@Query("SELECT n, m.memberName " +
-	       "FROM Notice n " +
-	       "JOIN n.member m " + 
-	       "WHERE m.memberName LIKE %:searchText%")
-	Page<Object[]> findNoticesByMember(@Param("searchText") String searchText, Pageable pageable);
+    // 작성자로 검색
+    @Query("SELECT n, m.memberName " +
+           "FROM Notice n " +
+           "JOIN n.member m " + 
+           "WHERE m.memberName LIKE %:searchText% " +
+           "ORDER BY CASE WHEN n.noticeImportance = 1 THEN 0 ELSE 1 END, " +
+           "CASE WHEN :sort = 'latest' THEN n.noticeCreateDate END DESC, " +
+           "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
+    Page<Object[]> findNoticesByMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-	// 모든 공지사항 조회 
-	@Query("SELECT n, m.memberName " +
-	       "FROM Notice n " +
-	       "JOIN n.member m")
-	Page<Object[]> findNoticesAllWithMember(Pageable pageable);
+    // 모든 공지사항 조회
+    @Query("SELECT n, m.memberName " +
+           "FROM Notice n " +
+           "JOIN n.member m " +
+           "ORDER BY CASE WHEN n.noticeImportance = 1 THEN 0 ELSE 1 END, " +
+           "CASE WHEN :sort = 'latest' THEN n.noticeCreateDate END DESC, " +
+           "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
+    Page<Object[]> findNoticesAllWithMember(@Param("sort") String sort, Pageable pageable);
 
-	// 특정 공지사항 조회
-	@Query("SELECT n, m.memberName " +
-	       "FROM Notice n " +
-	       "JOIN n.member m " +
-	       "WHERE n.noticeNo = :noticeNo")
-	List<Object[]> findNoticesWithMemberName(@Param("noticeNo") Long noticeNo);
-
+    // 특정 공지사항 조회
+    @Query("SELECT n, m.memberName " +
+           "FROM Notice n " +
+           "JOIN n.member m " +
+           "WHERE n.noticeNo = :noticeNo")
+    List<Object[]> findNoticesWithMemberName(@Param("noticeNo") Long noticeNo);
 }

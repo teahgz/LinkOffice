@@ -1,7 +1,5 @@
 package com.fiveLink.linkOffice.notice.service;
 
-
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.member.domain.Member;
-import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.notice.controller.NoticeApiController;
 import com.fiveLink.linkOffice.notice.domain.Notice;
@@ -23,7 +20,7 @@ import com.fiveLink.linkOffice.notice.repository.NoticeRepository;
 
 @Service
 public class NoticeService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NoticeApiController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoticeApiController.class);
     private final NoticeRepository noticeRepository;
     private final MemberRepository memberRepository;
 
@@ -60,36 +57,38 @@ public class NoticeService {
         return noticeRepository.findMemberNameByMemberNumber(memberNumber);
     }
     
-    public Page<NoticeDto> getAllNoticePage(Pageable pageable, NoticeDto searchDto){
-    	Page<Object[]> results = null;
-    	
-    	String searchText = searchDto.getSearch_text();
-    	if (searchText != null && !searchText.isEmpty()) {
-    	    int searchType = searchDto.getSearch_type();
-    	    switch (searchType) {
-    	    	// 전체 검색
-    	        case 1:
-    	        	results = noticeRepository.findNoticesByTitleOrContentContainingWithMember(searchText, pageable);
-    	            break;
-    	        // 제목
-    	        case 2:
-    	            results = noticeRepository.findNoticesByTitleWithMember(searchText, pageable);
-    	            break;
-    	        // 내용 검색
-    	        case 3:
-    	            results = noticeRepository.findNoticesByContentWithMember(searchText, pageable);
-    	            break;
-    	         // 작성자 검색
-    	        case 4:
-    	            results = noticeRepository.findNoticesByMember(searchText, pageable);
-    	            break;
-    	    	}
-    	    }else {
-        	    results = noticeRepository.findNoticesAllWithMember(pageable);
-        	}
-    	List<NoticeDto> noticeDtoList = convertToDtoList(results.getContent());
+    public Page<NoticeDto> getAllNoticePage(Pageable pageable, String sort, NoticeDto searchDto) {
+        Page<Object[]> results = null;
+        
+        String searchText = searchDto.getSearch_text();
+        if (searchText != null && !searchText.isEmpty()) {
+            int searchType = searchDto.getSearch_type();
+            switch (searchType) {
+                // 제목 또는 내용 검색
+                case 1:
+                    results = noticeRepository.findNoticesByTitleOrContentContainingWithMember(searchText, sort, pageable);
+                    break;
+                // 제목 검색
+                case 2:
+                    results = noticeRepository.findNoticesByTitleWithMember(searchText, sort, pageable);
+                    break;
+                // 내용 검색
+                case 3:
+                    results = noticeRepository.findNoticesByContentWithMember(searchText, sort, pageable);
+                    break;
+                // 작성자 검색
+                case 4:
+                    results = noticeRepository.findNoticesByMember(searchText, sort, pageable);
+                    break;
+            }
+        } else {
+            // 검색어가 없을 때 모든 공지사항 조회
+            results = noticeRepository.findNoticesAllWithMember(sort, pageable);
+        }
+
+        List<NoticeDto> noticeDtoList = convertToDtoList(results.getContent());
         return new PageImpl<>(noticeDtoList, pageable, results.getTotalElements());
-    	}
+    }
     
     private List<NoticeDto> convertToDtoList(List<Object[]> results) {
         return results.stream().map(result -> {
@@ -108,10 +107,9 @@ public class NoticeService {
                     .build();
         }).collect(Collectors.toList());
     }
-    
+
     public List<NoticeDto> getNoticeByNo(Long noticeNo) {
         List<Object[]> results = noticeRepository.findNoticesWithMemberName(noticeNo);
         return convertToDtoList(results);
     }
-    
 }
