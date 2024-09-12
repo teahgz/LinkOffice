@@ -42,7 +42,7 @@ public class NoticeViewController {
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
         model.addAttribute("memberDto", memberDto);
 
-        // 로그인한 사용자 정보 가져오기
+        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String noticeNumber = authentication.getName();
         String noticeName = noticeService.findNoticeNameByNumber(noticeNumber);
@@ -66,7 +66,11 @@ public class NoticeViewController {
         @RequestParam(value = "sort", defaultValue = "latest") String sort,
         Model model,
         NoticeDto searchDto) {
-
+    	
+    	Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		model.addAttribute("memberdto", memberdto);
+		
         Pageable sortedPageable = PageRequest.of(
             pageable.getPageNumber(),
             pageable.getPageSize(),
@@ -81,5 +85,13 @@ public class NoticeViewController {
         model.addAttribute("currentSort", sort);
 
         return "admin/notice/notice_list";
+    }
+    
+    @GetMapping("/admin/notice/list/{notice_no}")
+    public String selectNoticeOne(Model model,
+    		@PathVariable("notice_no")Long notice_no) {
+    	NoticeDto dto = noticeService.selectNoticeOne(notice_no);
+    	model.addAttribute("dto",dto);
+    	return "admin/notice/notice_detail";
     }
 }
