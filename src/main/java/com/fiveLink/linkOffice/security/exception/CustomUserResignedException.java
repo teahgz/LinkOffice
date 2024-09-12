@@ -1,4 +1,4 @@
-package com.fiveLink.linkOffice.security;
+package com.fiveLink.linkOffice.security.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

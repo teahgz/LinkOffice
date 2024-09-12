@@ -15,7 +15,7 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.repository.PermissionCodeRepository;
-import com.fiveLink.linkOffice.security.CustomUserResignedException;
+import com.fiveLink.linkOffice.security.exception.CustomUserResignedException;
 import com.fiveLink.linkOffice.security.vo.SecurityUser;
 
 @Service
