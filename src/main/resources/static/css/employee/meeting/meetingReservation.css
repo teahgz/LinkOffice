@@ -4,7 +4,7 @@
     flex-direction: row;  
     justify-content: space-between;  
     gap: 20px;  
-    padding: 30px 60px; 
+    padding: 40px 60px; 
     width: 1250px;
 }
 .container-section {
@@ -13,7 +13,7 @@
     box-sizing: border-box;
     background-color: #ffffff;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    border-radius: 12px; 
 }
 
 .top_area {
@@ -25,6 +25,7 @@
 }
 #calendar {
     width: 500px;
+    height:420px;
     margin-bottom: 20px;
     margin-right : 360px;
     display : line-block;
@@ -52,28 +53,37 @@
 #room-info th, #room-info td {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    text-align: left; 
 }
 #room-info th {
-    background-color: #f2f2f2;
+    background-color: #f2f2f2; 
 }
-
+#room-info td {
+    cursor: pointer; 
+}
+#room-info tr:hover {
+    background-color: #f2f2f2; 
+}
 #reservation-table table {
     border-collapse: collapse;
     width: 100%;
-    display:table; table-layout:fixed;
+    display:table; 
+    table-layout:fixed; 
 }
 #reservation-table th, #reservation-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #8c8c8c;
     padding: 8px;
     text-align: left;
     display:table-cell;
-    width:60px;
+    width:50px;
+    text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+    font-size : 15px;
 }
 #reservation-table th {
     background-color: #f2f2f2;
     display:table-cell;
-    width:60px;
+    width:60px;  
+    text-align: center;
 } 
 #reservation-table td:first-child,
 #reservation-table th:first-child {
@@ -81,12 +91,14 @@
     left: 0;
     background-color: #fff;
     z-index: 5;
-    width : 80px;
+    width : 80px; 
+    text-align: center;
 }
+  
 
 
 
-
+ 
  
 .modal {
     display: none;
@@ -243,12 +255,13 @@ td.reserved {
 
 /* 사용 가능한 시간 */
 td.available {
-    background-color: #ccffcc; 
+    background-color: #ffffff; 
 }
 
 /* 불가능한 시간 */
 .unavailable {
-    background-color: #cdcdcd;
+    background-color: #d2d2d2;
+    
     cursor: not-allowed;
 }
 

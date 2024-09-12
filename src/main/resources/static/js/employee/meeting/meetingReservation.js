@@ -73,47 +73,73 @@ document.addEventListener("DOMContentLoaded", function () {
             url: '/date/reservations',
             type: 'GET',
             data: { date: date },
-            success: function(reservations) { 
+            success: function(reservations) {  
                 updateReservationTable(reservations, date);
             } 
         });
     }
-
-    // 예약 테이블 업데이트
-    function updateReservationTable(reservations, date) {
-        const table = $('#reservation-table table');
-        table.find('thead tr').html('<th>회의실명</th>');
-        timeSlots.forEach(time => {
-            table.find('thead tr').append(`<th>${time}</th>`);
-        });
-
-        const tbody = table.find('tbody').empty();
-        meetings.forEach(meeting => {
-            const row = $('<tr>').append(`<td>${meeting.meeting_name}</td>`);
-            timeSlots.forEach(time => {
-                const cell = $('<td>').addClass('available');
-                if (time < meeting.meeting_available_start || time >= meeting.meeting_available_end) {
-                    cell.removeClass('available').addClass('unavailable');
-                } else {
-                    const reservation = reservations.find(r => 
-                        r.meeting_no === meeting.meeting_no &&
-                        time >= r.meeting_reservation_start_time &&
-                        time < r.meeting_reservation_end_time
-                    );
-                    if (reservation) {
+	
+	// 예약 현황 테이블
+	function updateReservationTable(reservations, date) {
+	    const table = $('#reservation-table table');
+	    table.find('thead tr').html('<th>회의실명</th>');
+	     
+	    timeSlots.forEach(time => {
+	        table.find('thead tr').append(`<th>${time}</th>`);
+	    });
+	
+	    const tbody = table.find('tbody').empty();
+	
+	    meetings.forEach(meeting => { 
+	        const row = $('<tr>').append(`<td>${meeting.meeting_name}</td>`);
+	        
+	        let skipCells = 0;  
+	        timeSlots.forEach((time, index) => {
+	            if (skipCells > 0) { 
+	                skipCells--;
+	                return;
+	            }
+	
+	            const cell = $('<td>').addClass('available');
+	
+	            if (time < meeting.meeting_available_start || time >= meeting.meeting_available_end) {
+	                cell.removeClass('available').addClass('unavailable');
+	                row.append(cell);
+	            } else {
+	                const reservation = reservations.find(r => 
+	                    r.meeting_no === meeting.meeting_no &&
+	                    time >= r.meeting_reservation_start_time &&
+	                    time < r.meeting_reservation_end_time
+	                );
+	
+	                if (reservation) { 
 						console.log(reservation);
-                        cell.removeClass('available').addClass('reserved').text(reservation.member_name);
-                    } else {
-                        cell.on('click', function() {
-                            showReservationModal(meeting, date, time);
-                        });
-                    }
-                }
-                row.append(cell);
-            });
-            tbody.append(row);
-        });
-    }
+	                    const startTimeIndex = timeSlots.indexOf(reservation.meeting_reservation_start_time);
+	                    const endTimeIndex = timeSlots.indexOf(reservation.meeting_reservation_end_time);
+	                    const colspan = endTimeIndex - startTimeIndex + 1; 
+	                    
+	                    const reservationCell = $('<td>')
+	                        .attr('colspan', colspan) 
+	                        .addClass('reserved') 
+	                        .text(`${reservation.member_name} (${reservation.meeting_reservation_start_time} ~ ${reservation.meeting_reservation_end_time})`)
+	                        .attr('title', `${reservation.member_name} (${reservation.meeting_reservation_start_time} ~ ${reservation.meeting_reservation_end_time})`); 
+	
+	                    row.append(reservationCell);
+	                    skipCells = colspan - 1;  
+	                } else { 
+	                    cell.on('click', function() {
+	                        showReservationModal(meeting, date, time);
+	                    });
+	                    row.append(cell);
+	                }
+	            }
+	        });
+	
+	        tbody.append(row);
+	    });
+	}
+
+
 
     // 예약 모달 표시
     function showReservationModal(meeting, date, startTime) {
