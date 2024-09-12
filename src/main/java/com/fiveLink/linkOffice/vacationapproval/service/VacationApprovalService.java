@@ -3,6 +3,7 @@ package com.fiveLink.linkOffice.vacationapproval.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,9 @@ import com.fiveLink.linkOffice.vacation.domain.VacationType;
 import com.fiveLink.linkOffice.vacation.repository.VacationTypeRepository;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFile;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
+import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalFileRepository;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
 
 @Service
@@ -22,11 +26,14 @@ public class VacationApprovalService {
 	private final VacationApprovalRepository vacationApprovalRepository;
 	private final MemberRepository memberRepository;
 	private final VacationTypeRepository vacationTypeRepository;
+	private final VacationApprovalFileRepository vacationApprovalFileRepository;
 	
-	public VacationApprovalService(VacationApprovalRepository vacationApprovalRepository,MemberRepository memberRepository,VacationTypeRepository vacationTypeRepository) {
+	@Autowired
+	public VacationApprovalService(VacationApprovalRepository vacationApprovalRepository,MemberRepository memberRepository,VacationTypeRepository vacationTypeRepository, VacationApprovalFileRepository vacationApprovalFileRepository) {
         this.vacationApprovalRepository = vacationApprovalRepository;
         this.memberRepository = memberRepository;
         this.vacationTypeRepository = vacationTypeRepository;
+        this.vacationApprovalFileRepository = vacationApprovalFileRepository;
     }
 	
 	// 사용자 휴가신청함 목록 조회
@@ -75,11 +82,18 @@ public class VacationApprovalService {
 	
 	// 사용자 휴가 신청
 	
-	public VacationApproval createVacationApproval(VacationApprovalDto dto) {
-		Member member = memberRepository.findByMemberNo(dto.getMember_no());
-		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(dto.getVacation_type_no());
-		VacationApproval vapp = dto.toEntity(member, vacationType);
+	public VacationApproval createVacationApproval(VacationApprovalDto vappdto, VacationApprovalFileDto vaFiledto) {
 		
+		Member member = memberRepository.findByMemberNo(vappdto.getMember_no());
+		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(vappdto.getVacation_type_no());
+		
+		VacationApproval vapp = vappdto.toEntity(member, vacationType);
+		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
+		
+		 if (vaFiledto != null) {
+		        VacationApprovalFile vaFile = vaFiledto.toEntity(savedVapp);
+		        vacationApprovalFileRepository.save(vaFile); 
+		    }
 		return vacationApprovalRepository.save(vapp);
 		
 	}
