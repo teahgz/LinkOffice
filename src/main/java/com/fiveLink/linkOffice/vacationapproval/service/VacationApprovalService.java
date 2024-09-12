@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.vacationapproval.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -75,10 +76,22 @@ public class VacationApprovalService {
 	// 사용자 휴가신청함 상세 조회 
 	
 	public VacationApprovalDto selectVacationApprovalOne(Long vacationApprovalNo) {
-		VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
-		VacationApprovalDto dto = origin.toDto();
-		return dto;
+	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
+	    
+	    VacationApprovalDto dto = origin.toDto();
+
+	    List<VacationApprovalFile> files = vacationApprovalFileRepository.findByVacationApproval(origin);
+	    
+	    // VacationApprovalFile 엔티티를 VacationApprovalFileDto 변환
+	    List<VacationApprovalFileDto> fileDtos = files.stream()
+	        .map(VacationApprovalFile::toDto)
+	        .collect(Collectors.toList());
+	    
+	    // 5. 휴가결재 dto 에 파일 넣어주기
+	    dto.setFiles(fileDtos);
+	    return dto;
 	}
+
 	
 	// 사용자 휴가 신청
 	

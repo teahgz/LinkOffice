@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 .container {
     display: flex;
     justify-content: center;
@@ -23,7 +25,7 @@
     gap: 10px;
 }
 
-.text_field .field{
+.text_field .field {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -69,6 +71,10 @@
     opacity: 0.8;
 }
 
+.vacationapproval_content {
+    margin: 20px 0;
+}
+
 .table_container table {
     width: 100%;
     border-collapse: collapse; 
@@ -97,4 +103,42 @@
 .table_container textarea:disabled,
 .table_container select:disabled {
     color: #333; 
+}
+
+.file_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.file_item strong {
+    font-size: 16px;
+    margin-right: 10px; 
+}
+
+.file_item .file_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file_item a {
+    background-color: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.file_item a:hover {
+    background-color: #d6d6d6;
+}
+
+.file_item p {
+    margin: 0;
+    font-size: 12px;
+    color: #6c757d;
 }

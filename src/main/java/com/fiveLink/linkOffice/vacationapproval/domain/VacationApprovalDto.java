@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.vacationapproval.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.vacation.domain.VacationType;
@@ -39,6 +40,8 @@ public class VacationApprovalDto {
 	private int search_type = 1;
 	private String search_text;
 	private String format_vacation_approval_create_date;
+	
+	private List<VacationApprovalFileDto> files;
 	
 	public VacationApproval toEntity(Member member, VacationType vacationType) {
 		return VacationApproval.builder()
