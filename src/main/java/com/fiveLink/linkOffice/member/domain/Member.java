@@ -125,6 +125,7 @@ public class Member {
 	@Column(name="member_vacation_date")
 	private String memberVacationDate;
 	
+	// [전주영] 휴가결재 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<VacationApproval> vacationDocument;
 }
