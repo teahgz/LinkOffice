@@ -45,8 +45,7 @@ public class DocumentViewController {
 			@PathVariable("member_no") Long memberNo
 			) {		
 		// memberDto 불러오기
-	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    
+	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
 		model.addAttribute("memberdto", memberdto);
 		return "employee/document/personal";
 	}
@@ -55,7 +54,7 @@ public class DocumentViewController {
    public ResponseEntity<List<DocumentFolderDto>> personalFolderList(
 		   @RequestParam("memberNo") Long memberNo) throws IOException {
 	   List<DocumentFolderDto> folderList = documentFolderService.selectPersonalFolderList(memberNo);
-       return ResponseEntity.ok(folderList);
+	   return ResponseEntity.ok(folderList);
    }
    
    // 개인 파일 

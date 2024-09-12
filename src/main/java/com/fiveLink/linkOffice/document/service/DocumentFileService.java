@@ -29,10 +29,10 @@ public class DocumentFileService {
 		// 파일 상태 = 0
 		Long fileStatus = 0L;
 		List<DocumentFile> documentFileList =
-				documentFileRepository.findByMemberNoAndDocumentFolderNoAndDocumentFileStatus(memberNo, folderId, fileStatus);
+				documentFileRepository.findByMemberMemberNoAndDocumentFolderDocumentFolderNoAndDocumentFileStatus(memberNo, folderId, fileStatus);
 		List<DocumentFileDto> documentFileDtoList = new ArrayList<DocumentFileDto>();
 		for(DocumentFile d : documentFileList) {
-			DocumentFileDto fileDto = new DocumentFileDto().toDto(d);
+			DocumentFileDto fileDto = d.toDto();
 			documentFileDtoList.add(fileDto);
 		}		
 		
@@ -43,10 +43,10 @@ public class DocumentFileService {
 		Long document_file_status = 1L;
 		// repository에 memberNo, file_Status를 넘겨줌 
 		List<DocumentFile> documentFileList = 
-				documentFileRepository.findByMemberNoAndDocumentFileStatus(member_no, document_file_status);
+				documentFileRepository.findByMemberMemberNoAndDocumentFileStatus(member_no, document_file_status);
 		List<DocumentFileDto> documentFileDtoList = new ArrayList<DocumentFileDto>();
 		for(DocumentFile d : documentFileList) {
-			DocumentFileDto fileDto = new DocumentFileDto().toDto(d);
+			DocumentFileDto fileDto = d.toDto();
 			documentFileDtoList.add(fileDto);
 		}		
 		return documentFileDtoList;
