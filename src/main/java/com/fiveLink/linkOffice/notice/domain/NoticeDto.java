@@ -21,11 +21,15 @@ public class NoticeDto {
 	private String notice_title;
 	private String notice_content;
 	private Long member_no;
+	private String member_name;
 	private String notice_create_date;
 	private String notice_update_date;
 	private Integer notice_importance;
 	private String notice_ori_img;
 	private String notice_new_img;
+	
+	private int search_type = 1;
+	private String search_text;
 	
 	public Notice toEntity() {
 		 return Notice.builder()
