@@ -44,6 +44,31 @@ input:focus, select:focus {
     max-height: 500px;
 }
 
+.approve_container {
+    position: absolute; 
+    top: 0; 
+    right: 0;
+    display: flex; 
+    align-items: flex-start; 
+    gap: 10px; 
+}
+
+.approve_button {
+    padding: 8px 15px;
+    background-color: #B3C7EE;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    color: #000000;
+}
+
+.approve_button:hover {
+    opacity: 0.8;
+}
+
+
 .button_container {
     display: flex;
     justify-content: flex-end;
@@ -75,6 +100,7 @@ input:focus, select:focus {
     display: flex;
     flex-direction: column;
     gap: 10px; 
+    position:relative;
 }
 
 .form-group  div {
