@@ -9,13 +9,20 @@
 
 .main_container {
     background-color: #f8f9fa;
-    border-radius: 12px; 
-    max-width: 800px; 
+    border-radius: 12px;
+    max-width: 800px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.details_section,
+.content_section {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
@@ -23,6 +30,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
 }
 
 .text_field .field {
@@ -36,23 +44,19 @@
     color: #333;
 }
 
-.text_field .date {
-    margin-top: 10px; 
-}
-
 .button_container {
     display: flex;
     justify-content: flex-end;
-    gap: 20px; 
+    gap: 20px;
 }
 
 .edit_button {
     padding: 8px 15px;
-    background-color: #B3C7EE; 
+    background-color: #B3C7EE;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    text-decoration: none; 
+    text-decoration: none;
     font-size: 14px;
     color: #000000;
 }
@@ -77,32 +81,32 @@
 
 .table_container table {
     width: 100%;
-    border-collapse: collapse; 
+    border-collapse: collapse;
     margin: 20px 0;
 }
 
 .table_container th, 
 .table_container td {
-    border: 1px solid #ddd; 
-    padding: 8px; 
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 
 .table_container th {
-    background-color: #f2f2f2; 
-    text-align: left; 
+    background-color: #f2f2f2;
+    text-align: left;
 }
 
 .table_container input,
 .table_container textarea,
 .table_container select {
     border: none;
-    cursor: not-allowed; 
+    cursor: not-allowed;
 }
 
 .table_container input:disabled,
 .table_container textarea:disabled,
 .table_container select:disabled {
-    color: #333; 
+    color: #333;
 }
 
 .file_item {
@@ -114,7 +118,7 @@
 
 .file_item strong {
     font-size: 16px;
-    margin-right: 10px; 
+    margin-right: 10px;
 }
 
 .file_item .file_info {
@@ -141,4 +145,10 @@
     margin: 0;
     font-size: 12px;
     color: #6c757d;
+}
+
+.section_separator {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
 }

@@ -3,6 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+   		<link th:href="@{/css/admin/organization/organizationChart.css}" rel="stylesheet" type="text/css">
         <link th:href="@{/css/employee/vacationapproval/vacationapproval_create.css}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <section th:each="member : ${memberdto}">
@@ -14,30 +16,34 @@
                             <div class="form-group">
                                 <input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
                                 <input type="hidden" id="member_no" th:value="${member.member_no}" name="member_no" />
-                                <div>
+                                <div class="field">
                                     <strong>제목</strong>
                                     <input type="text" id="vacationapproval_title" name="vacationapproval_title">
                                 </div>
-                                <div>
+                                <div class="field">
                                     <strong>종류</strong>
                                     <select name="vacationtype">
                                         <option th:each="vacationType : ${vacationTypeList}" th:value="${vacationType.vacation_type_no}" th:text="${vacationType.vacation_type_name}"></option>
                                     </select>
                                 </div>
-                                <div>
+                                <div class="field">
                                     <strong>기간</strong>
                                     <input type="date" id="vacationapproval_start_date" name="vacationapproval_start_date">
                                     <span> ~ </span>
                                     <input type="date" id="vacationapproval_end_date" name="vacationapproval_end_date">
                                 </div>
-                                <div>
+                                <div class="field">
                                     <strong>일수</strong>
                                     <input type="text" id="vacationapproval_date_count" name="vacationapproval_date_count">
                                 </div>
+                              	<div class="approve_container">
+                                	<button type="button" id="openChart" class="btn btn-primary approve_button">결재선 지정</button>
+                            	</div>
+                            		
                             </div>
                             <div class="editor-container__editor" id="editor"></div>
                             <div>
-                            	<input type="file" id="vacationapproval_file" name="vacationapproval_file">
+                                <input type="file" id="vacationapproval_file" name="vacationapproval_file">
                             </div>
                             <div class="button_container">
                                 <button type="submit" class="submit_button">신청</button>
@@ -47,6 +53,32 @@
                     </div>
                 </form>
             </div>
+            		<div class="modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
+		    <div class="modal-dialog" role="document">
+		        <div class="modal-content"> 
+		            <form>
+		                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		                <div class="modal-header">
+		                    <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div> 
+		                    <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
+		                </div>
+		                <div class="modal-body"> 
+		                    <!-- 선택된 사원 출력 -->
+		                    <div id="selected-members"></div>
+		                    
+		                    <!-- 검색  -->
+		                    <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
+		                    
+		                    <div id="organization-chart"></div> 
+		                    
+		                    <button id="confirmButton" type="submit" class="modal_btn">확인</button>
+		                </div> 
+		            </form>
+		        </div>
+		    </div>
+		</div>
+
+        <script th:src="@{/js/admin/organization/organizationChart.js}"></script>
         </section>
         <script type="importmap">
         {
