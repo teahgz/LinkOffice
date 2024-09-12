@@ -32,14 +32,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        System.out.println("checkcheck: "+ payload);
         ObjectMapper objectMapper = new ObjectMapper();
         ChatMessageDto chatMessageDto = objectMapper.readValue(payload, ChatMessageDto.class);
 
         // 메시지 저장
         chatMessageService.saveChatMessage(chatMessageDto);
 
-        // 메시지 처리 로직 (예: 특정 사용자에게 메시지 전송)
         for (WebSocketSession s : sessions.values()) {
             if (s.isOpen()) {
                 s.sendMessage(new TextMessage(payload));
@@ -49,7 +47,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        System.out.println("connection : "+ session.getId());
         sessions.put(session.getId(), session);
     }
 

@@ -55,24 +55,28 @@ socket.onerror = function(error) {
 };
 function formatDateTime(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    let hours = date.getHours();
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    const seconds = ('0' + date.getSeconds()).slice(-2);
+
+    const ampm = hours >= 12 ? '오후' : '오전';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    return `${year}-${month}-${day}. ${ampm} ${hours}:${minutes}:${seconds} `;
 }
+
 window.sendMessage = function() {
     const chat_sender_no = document.getElementById("userNo").value;
     const chat_content = document.getElementById("messageInput").value;
     const chat_sender_name =  document.getElementById("userName").value;
-//    const now = new Date();
-//    const formattedTime = formatDateTime(now);
-//    console.log(formattedTime);
+
 
     if (currentChatRoomNo === null) {
-        console.error("No chat room selected.");
+        console.error("방이 선택되지 않음");
         return;
     }
 
@@ -81,7 +85,6 @@ window.sendMessage = function() {
         chat_room_no: currentChatRoomNo,
         chat_content: chat_content,
         chat_sender_name : chat_sender_name,
-        //chat_message_create_date: formattedTime
     };
     socket.send(JSON.stringify(message));
     document.getElementById("messageInput").value = "";
@@ -93,11 +96,13 @@ socket.onmessage = (event) => {
 
     const messageElement = document.createElement("div");
     messageElement.classList.add("messageItem");
-    const formattedDate = formatDateTime(new Date(message.chat_message_create_date));
+    const now = new Date();
+    const formattedTime = formatDateTime(now);
+
 
     messageElement.innerHTML = `
         <p><strong>${message.chat_sender_name}:</strong> ${message.chat_content}</p>
-        <span>${formattedDate}</span>
+        <span>${formattedTime}</span>
     `;
     chatContentDiv.appendChild(messageElement);
 
