@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
+import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.Position;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
@@ -110,6 +111,7 @@ public class Member {
 	@Column(name="member_additional", insertable = false, updatable = true)
 	private Long memberAdditional;
 	
+	// [김민재] 비품관리 관리자 확인
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<Inventory> inventory;
 
@@ -127,4 +129,8 @@ public class Member {
 	
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<VacationApproval> vacationDocument;
+	
+	// [김민재] 공지사항 관리자 확인
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<Notice> notice;
 }

@@ -10,124 +10,114 @@
     <section>
         <div id="member_no" style="display: none;" th:text="${member.member_no}"></div>
         <h1>공지사항 작성</h1>
-    <div class="create_notice">
-        <form id="noticeAddFrm" method="POST" th:action="@{/notice/create}" enctype="multipart/form-data">
-            <!-- CSRF 토큰 -->
-            <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
-            <!-- 제목 -->
-            <div class="header">
-                <label id="titleLabel">제목 :</label>
-                <input type="text" id="title" name="notice_title" required>
-                <div class="important-box">
-                    <label>중요</label>
-                    <input type="checkbox" id="important" name="notice_important_checkbox">
-                    <!-- 체크 안 했을 때 기본값으로 0을 넘기기 위해 숨겨진 input 추가 -->
-                    <input type="hidden" id="notice_important" name="notice_importance" value="0">
+        <div class="create_notice">
+            <form id="noticeAddFrm" method="POST" th:action="@{/notice/create}" enctype="multipart/form-data">
+                <!-- CSRF 토큰 -->
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
+                <!-- 제목 -->
+                <div class="header">
+                    <label id="titleLabel">제목 :</label>
+                    <span id="importantLabel" style="color: red; display: none;">&lt;중요&gt;</span>
+                    <input type="text" id="title" name="notice_title" required>
+                    <div class="important-box">
+                        <label>중요</label>
+                        <input type="checkbox" id="important" name="notice_important_checkbox">
+                        <!-- 체크 안 했을 때 기본값으로 0을 넘기기 위해 숨겨진 input 추가 -->
+                        <input type="hidden" id="notice_important" name="notice_importance" value="0">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <input type="hidden" th:value="${manager}" id="manager" name="manager" readonly>
-            </div>
-            <div class="info">
-                <label>작성일자 :</label>
-                <input type="date" id="date" name="notice_create_date" required>
-            </div>
-            <input type="file" name="file">
-            <div id="editor"></div>
-            <input type="hidden" id="noticeContent" name="notice_content">
-            <div class="buttons">
-                <button type="submit" class="confirm-btn">등록</button>
-                <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
-            </div>
-        </form>
-    </div>
-</section>
+                <div class="form-group">
+                    <input type="hidden" th:value="${manager}" id="manager" name="manager" readonly>
+                </div>
+                <div class="info">
+                    <label>작성일자 :</label>
+                    <input type="date" id="date" name="notice_create_date" required>
+                </div>
+                <input type="file" name="file">
+                <div id="editor"></div>
+                <input type="hidden" id="noticeContent" name="notice_content">
+                <div class="buttons">
+                    <button type="submit" class="confirm-btn">등록</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
+                </div>
+            </form>
+        </div>
+    </section>
 
-<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
-<script>
-// 오늘 날짜로 설정
-window.onload = function() {
-    var today = new Date();
-    var yyyy = today.getFullYear();
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var dd = String(today.getDate()).padStart(2, '0');
-    var todayFormatted = yyyy + '-' + mm + '-' + dd;
-    document.getElementById('date').value = todayFormatted;
-};
+    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+    <script>
+    // 오늘 날짜로 설정
+    window.onload = function() {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var todayFormatted = yyyy + '-' + mm + '-' + dd;
+        document.getElementById('date').value = todayFormatted;
+    };
 
-// Quill 에디터 설정
-var quill = new Quill('#editor', {
-    theme: 'snow',
-    modules: {
-        toolbar: [
-            [{ 'header': [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'color': [] }, { 'background': [] }],
-            ['clean']
-        ]
-    }
-});
-
-// 중요 체크박스 상태에 따른 값 변경
-var checkbox = document.getElementById('important');
-var hiddenImportantInput = document.getElementById('notice_important');
-var titleInput = document.getElementById('title');
-
-checkbox.addEventListener('change', function() {
-    if (checkbox.checked) {
-        hiddenImportantInput.value = "1";  
-        titleInput.value = "<중요>" + titleInput.value; 
-    } else {
-        hiddenImportantInput.value = "0";  
-        titleInput.value = titleInput.value.replace("<중요>", ""); 
-    }
-});
-
-// 폼 전송 시 Quill 에디터 내용 추가 및 데이터 전송
-const form = document.getElementById("noticeAddFrm");
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-   
-    var content = quill.root.innerHTML;
-
-    
-    document.getElementById('noticeContent').value = content;
-
-    
-    const payload = new FormData(form);
-
-    
-    const csrfToken = document.getElementById('csrfToken').value;
-    payload.append('_csrf', csrfToken);
-
-    
-    for (let pair of payload.entries()) {
-        console.log(pair[0] + ': ' + pair[1]); 
-    }
-
-    fetch(form.action, {
-        method: 'POST',
-        body: payload
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.res_code === '200') {
-        	Swal.fire({
-        	    icon: 'success',
-        	    text: data.res_msg
-        	}).then(() => {
-                location.href = "/notice";
-            });
-        } else {
-        	Swal.fire({
-        	    icon: 'error',
-        	    text: data.res_msg
-        	});
+    // Quill 에디터 설정
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean']
+            ]
         }
     });
-});
-</script>
+
+    // 중요 체크박스 상태에 따른 값 및 중요 표시 변경
+    var checkbox = document.getElementById('important');
+    var hiddenImportantInput = document.getElementById('notice_important');
+    var importantLabel = document.getElementById('importantLabel'); 
+
+    checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+            hiddenImportantInput.value = "1";
+            importantLabel.style.display = "inline"; 
+        } else {
+            hiddenImportantInput.value = "0";
+            importantLabel.style.display = "none"; 
+        }
+    });
+
+    // 폼 전송 시 Quill 에디터 내용 추가 및 데이터 전송
+    const form = document.getElementById("noticeAddFrm");
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        var content = quill.root.innerHTML;
+        document.getElementById('noticeContent').value = content;
+
+        const payload = new FormData(form);
+        const csrfToken = document.getElementById('csrfToken').value;
+        payload.append('_csrf', csrfToken);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: payload
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.res_code === '200') {
+                Swal.fire({
+                    icon: 'success',
+                    text: data.res_msg
+                }).then(() => {
+                    location.href = "/notice";
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: data.res_msg
+                });
+            }
+        });
+    });
+    </script>
 </th:block>
 </html>
