@@ -86,4 +86,11 @@ public class MeetingService {
                        .map(MeetingDto::toDto)
                        .collect(Collectors.toList());
     }
+	
+	// 회의실 이름 
+    public String getMeetingNameById(Long meetingNo) {
+        return meetingRepository.findById(meetingNo)
+                .map(Meeting::getMeetingName)
+                .orElse("회의실");
+    }
 }

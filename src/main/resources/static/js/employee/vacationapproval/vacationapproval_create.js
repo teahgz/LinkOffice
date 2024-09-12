@@ -1,3 +1,4 @@
+
 // editor
 
 import {
@@ -279,5 +280,3 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             }
         });*/
     });
-    
-    

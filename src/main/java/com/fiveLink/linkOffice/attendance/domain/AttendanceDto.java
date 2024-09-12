@@ -27,23 +27,14 @@ public class AttendanceDto {
 	private LocalTime check_in_time;
 	private LocalTime check_out_time;
 	
-	public Attendance toEntity(Attendance attendance) {
+	public Attendance toEntity(Attendance attendance, Member member) {
         return Attendance.builder()
                 .attendanceNo(attendance_no)
-                .memberNo(member_no)
+                .member(member)
                 .workDate(work_date)
                 .checkInTime(check_in_time)
                 .checkOutTime(check_out_time)
                 .build();
     }
 	
-	public static AttendanceDto toDto(Attendance attendance) {
-        return AttendanceDto.builder()
-                .attendance_no(attendance.getAttendanceNo())
-                .member_no(attendance.getMemberNo())
-                .work_date(attendance.getWorkDate())
-                .check_in_time(attendance.getCheckInTime())
-                .check_out_time(attendance.getCheckOutTime())
-                .build();
-    }
 }

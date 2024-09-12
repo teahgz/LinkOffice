@@ -34,6 +34,8 @@ public class VacationApprovalDto {
 	private LocalDateTime vacation_approval_update_date;
 	
 	private String member_name;
+	private String vacation_type_name;
+	
 	private int search_type = 1;
 	private String search_text;
 	private String format_vacation_approval_create_date;

@@ -31,9 +31,11 @@
                 <button type="submit">로그인</button>
                 <a th:href="@{/pwchange}" class="button_link">비밀번호 변경</a>
             </div>
-            <div th:if="${error}" class="error_message">
-                <p th:text="'로그인 실패: ' + ${exception}"></p>
-            </div>
+ <div th:if="${error}" class="error_message">
+        <p th:text="'로그인 실패: ' + ${error}"></p>
+    </div>
+
+
         </form>
     </div>
     <script th:src="@{/js/login.js}"></script>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/employee/vacationapproval/vacationapproval_detail.css}" rel="stylesheet" type="text/css">
+        <section th:each="vapp : ${vacationapprovaldto}">
+            <h1>휴가 신청 조회</h1>
+            <div class="container">
+                <div class="main_container">
+                    <div class="text_field">
+                        <div class="field">
+                            <strong>제목</strong>
+                            <div id="vacationapproval_title" th:text="${vapp.vacation_approval_title}"></div>
+                        </div>
+                        <div class="field">
+                            <strong>종류</strong>
+                            <div id="vacationapproval_type_name" th:text="${vapp.vacation_type_name}"></div>
+                        </div>
+                        <div class="field">
+                            <strong>기간</strong>
+                            <div id="vacationapproval_start_date" th:text="${vapp.vacation_approval_start_date}"></div>
+                            <span> ~ </span>
+                            <div id="vacationapproval_end_date" th:text="${vapp.vacation_approval_end_date}"></div>
+                        </div>
+                        <div class="field">
+                            <strong>일수</strong>
+                            <div id="vacationapproval_total_days" th:text="${vapp.vacation_approval_total_days}"></div>
+                        </div>
+                    </div>
+                    <div class="vacationapproval_content">
+                        <div class="table_container" th:utext="${vapp.vacation_approval_content}"></div>
+                    </div>
+                    <div class="button_container">
+                        <button type="button" class="edit_button">수정</button>
+                        <button type="button" class="cancel_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script th:src="@{/js/employee/vacationapproval/vacationapproval_detail.js}"></script>
+    </th:block>
+</html>

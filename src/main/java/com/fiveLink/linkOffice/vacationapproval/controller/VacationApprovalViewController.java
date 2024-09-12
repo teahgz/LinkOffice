@@ -58,15 +58,15 @@ public class VacationApprovalViewController {
 	}
  	
  	//  사용자 휴가 결재함 페이지
- 	@GetMapping("/employee/vacationapproval/list/{member_no}")
- 	public String employeevacationapprovalList(Model model, @PathVariable("member_no") Long memberNo, VacationApprovalDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
- 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+ 	@GetMapping("/employee/vacationapproval/list")
+ 	public String employeevacationapprovalList(Model model, VacationApprovalDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+ 		Long member_no = memberService.getLoggedInMemberNo();
+ 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
  		
  		Sort sortOption = getSortOption(sort);
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
  		
- 		Page<VacationApprovalDto> vacationapprovalList = vacationApprovalService.getVacationApprovalByNo(memberNo,searchdto,sortedPageable);
- 		System.out.println("controller단"+vacationapprovalList.getContent());
+ 		Page<VacationApprovalDto> vacationapprovalList = vacationApprovalService.getVacationApprovalByNo(member_no,searchdto,sortedPageable);
  		
  		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
  		vacationapprovalList.forEach(vapp -> {
@@ -83,6 +83,20 @@ public class VacationApprovalViewController {
 		model.addAttribute("currentSort", sort);
  		
  		return "employee/vacationapproval/vacationapproval_list";
+ 	}
+ 	
+ 	// 사용자 휴가 결재 상세 페이지
+ 	@GetMapping("/employee/vacationapproval/detail/{vacation_approval_no}")
+ 	public String employeevacationapprovalDetail(Model model, @PathVariable("vacation_approval_no") Long vacationApprovalNo) {
  		
+ 		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+ 		System.out.println(vacationapprovaldto);
+ 		
+ 		List<MemberDto> memberdto = memberService.getMembersByNo(vacationapprovaldto.getMember_no());
+ 		
+ 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+ 		model.addAttribute("memberdto", memberdto);
+ 		
+ 		return "employee/vacationapproval/vacationapproval_detail";
  	}
 }

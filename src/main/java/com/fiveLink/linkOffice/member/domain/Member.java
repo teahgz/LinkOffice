@@ -61,18 +61,18 @@ public class Member {
 	@Column(name="member_mobile")
 	private String memberMobile;
 	
-	@Column(name="department_no", insertable = false, updatable =false)
+	@Column(name="department_no")
 	private Long departmentNo;
 	
-	@Column(name="position_no", insertable = false, updatable =false)
+	@Column(name="position_no")
 	private Long positionNo;
 
     @ManyToOne(fetch = FetchType.LAZY )
-    @JoinColumn(name = "department_no")
+    @JoinColumn(name = "department_no", insertable = false, updatable =false)
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_no")
+    @JoinColumn(name = "position_no", insertable = false, updatable =false)
     private Position position;
 	
 	@Column(name="member_address")
@@ -127,6 +127,7 @@ public class Member {
 	@Column(name="member_vacation_date")
 	private String memberVacationDate;
 	
+	// [전주영] 휴가결재 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<VacationApproval> vacationDocument;
 	

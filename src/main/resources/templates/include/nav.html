@@ -28,12 +28,12 @@
 					<div class="dropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/vacationapproval/create/{no}(no=${member.member_no})}">휴가 신청하기</a></li>
-							<li><a th:href="@{/employee/vacationapproval/list/{no}(no=${member.member_no})}">휴가 신청함</a></li>
+							<li><a th:href="@{/employee/vacationapproval/list}">휴가 신청함</a></li>
 						</ul>
 					</div>
 				</li>
 				<li>
-					<a href="#">일정</a>
+					<a>일정</a>
 				</li>
 
 
@@ -41,7 +41,7 @@
 					<a href="#">회의실</a>
 					<div class="dropdown">
 						<ul>
-							<li><a href="#">회의실 예약</a></li>
+							<li><a th:href="@{/employee/meeting/reservation}">회의실 예약</a></li>
 							<li><a href="#">예약 내역</a></li>
 						</ul>
 					</div>

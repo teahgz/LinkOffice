@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/employee/meeting/meetingReservation.css}" rel="stylesheet" type="text/css">
+         <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' /> 
+	    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
+	    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+        <script th:src="@{https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js}"></script>
+        <section>
+        <div class=container>
+        	<div class=container-section>
+	        	<div class="top_area">
+		         	<div class="full_calendar_area" id="calendar"></div>
+				    <div id="room-info">
+				        <h2>회의실 정보</h2>
+				        <table id="room-info-table">
+				            <thead>
+				                <tr>
+				                    <th>회의실명</th>
+				                    <th>수용 인원</th>
+				                    <th>이용 시간</th>
+				                </tr>
+				            </thead>
+				            <tbody>
+				                <!-- 회의실 정보 -->
+				            </tbody>
+				        </table>
+				    </div>
+				</div>
+			    <div id="reservation-table">
+			        <h2>예약 현황</h2>
+			        <table>
+			            <thead>
+			                <tr>
+			                    <th>회의실명</th>
+			                    <!-- 예약 시간대 -->
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <!-- 예약 현황 -->
+			            </tbody>
+			        </table>
+			    </div>
+			    <div id="reservationModal" class="modal">
+			        <div class="modal-content">
+			            <span class="close">&times;</span>
+			            <h2>회의실 예약</h2>
+			            <form id="reservationForm">
+			                <label for="room">회의실:</label>
+			                <select id="room" name="room" required></select><br><br>
+			                <label for="date">날짜:</label>
+			                <input type="date" id="date" name="date" required readonly><br><br>
+			                <label for="startTime">시작 시간:</label>
+			                <select id="startTime" name="startTime" required></select><br><br>
+			                <label for="endTime">종료 시간:</label>
+			                <select id="endTime" name="endTime" required></select><br><br>
+			                <label for="purpose">목적:</label>
+			                <input type="text" id="purpose" name="purpose" required><br><br>
+			                <button type="submit">예약</button>
+			            </form>
+			        </div>
+			    </div> 
+			    </div>
+			</div>
+        </section>
+        
+        <!-- 정보 상세 모달 -->
+        <div id="info_meetingroom_modal" class="modal">
+		    <div class="modal-content">
+		    	<span class="close" id="info_close_btn">&times;</span>
+		        <div class="info_modal_title">회의실 정보</div>
+		        <div class="modal-body"> 
+		            <div class="modal-image">
+		                <img src="" alt="회의실 이미지" class="room-image" id="roomImage">
+		            </div>
+		            <div class="modal-info">
+		                <div class="info-row">
+		                    <div class="info-label">회의실명</div>
+		                    <div class="info-value" id="roomName"></div>
+		                </div>
+		                <div class="info-row">
+		                    <div class="info-label">이용 가능 시간</div>
+		                    <div class="info-value" id="roomTime"></div>
+		                </div>
+		                <div class="info-row">
+		                    <div class="info-label">수용 인원</div>
+		                    <div class="info-value" id="roomCapacity"></div>
+		                </div>
+		                <div class="info-row">
+		                    <div class="info-label">설명</div>
+		                    <div class="info-value" id="roomDescription"></div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div> 
+
+        <script th:src="@{/js/employee/meeting/meetingReservation.js}"></script>
+    </th:block>
+</html>

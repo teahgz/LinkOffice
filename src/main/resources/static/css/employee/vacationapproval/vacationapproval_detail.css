@@ -1,0 +1,101 @@
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.main_container {
+    background-color: #f8f9fa;
+    border-radius: 12px; 
+    max-width: 800px; 
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px;
+}
+
+.text_field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.text_field .field{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.text_field strong {
+    font-size: 16px;
+    color: #333;
+}
+
+
+.text_field .date {
+    margin-top: 10px; /* Space above the last div */
+}
+
+.button_container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px; 
+}
+
+.edit_button {
+    padding: 8px 15px;
+    background-color: #B3C7EE; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; 
+    font-size: 14px;
+    color: #000000;
+}
+
+.cancel_button {
+    padding: 8px 15px;
+    background-color: #C0C0C0;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.edit_button:hover,
+.cancel_button:hover {
+    opacity: 0.8;
+}
+
+.table_container table {
+    width: 100%;
+    border-collapse: collapse; 
+    margin: 20px 0;
+}
+
+.table_container th, 
+.table_container td {
+    border: 1px solid #ddd; 
+    padding: 8px; 
+}
+
+.table_container th {
+    background-color: #f2f2f2; 
+    text-align: left; 
+}
+
+.table_container input,
+.table_container textarea,
+.table_container select {
+    border: none;
+    cursor: not-allowed; 
+}
+
+.table_container input:disabled,
+.table_container textarea:disabled,
+.table_container select:disabled {
+    color: #333; 
+}
