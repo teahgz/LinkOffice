@@ -91,7 +91,6 @@ public class VacationApprovalViewController {
  	public String employeevacationapprovalDetail(Model model, @PathVariable("vacation_approval_no") Long vacationApprovalNo) {
  		
  		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
- 		System.out.println(vacationapprovaldto);
  		
  		List<MemberDto> memberdto = memberService.getMembersByNo(vacationapprovaldto.getMember_no());
  		
