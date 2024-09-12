@@ -33,7 +33,7 @@ public class VacationApprovalService {
         	switch(searchType) {
         	// 전체 검색
         		case 1 :
-        			forms = vacationApprovalRepository.findByMemberMemberNoAndVacationApprovalTitleContaining(memberNo,searchText, pageable);;
+        			forms = vacationApprovalRepository.findByMemberMemberNoAndVacationApprovalTitleAndApprovalStatus(memberNo,searchText, pageable);;
         			break;
         	// 제목 검색
         		case 2 :
@@ -41,7 +41,7 @@ public class VacationApprovalService {
         			break;
         	// 상태 검색
         		case 3 :
-        			forms = vacationApprovalRepository.findByMemberMemberNoAndVacationApprovalTitleContaining(memberNo,searchText, pageable);;
+        			forms = vacationApprovalRepository.findByMemberNoAndApprovalStatus(memberNo,searchText, pageable);;
         			break;
         	}
         } else {
@@ -56,4 +56,12 @@ public class VacationApprovalService {
         
         return new PageImpl<>(approvalApprovalDtoList, pageable, forms.getTotalElements());
     }
+	
+	// 사용자 휴가신청함 상세 조회 
+	
+	public VacationApprovalDto selectVacationApprovalOne(Long vacationApprovalNo) {
+		VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
+		VacationApprovalDto dto = origin.toDto();
+		return dto;
+	}
 }

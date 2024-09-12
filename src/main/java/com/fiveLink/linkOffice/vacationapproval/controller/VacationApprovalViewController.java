@@ -66,7 +66,6 @@ public class VacationApprovalViewController {
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
  		
  		Page<VacationApprovalDto> vacationapprovalList = vacationApprovalService.getVacationApprovalByNo(memberNo,searchdto,sortedPageable);
- 		System.out.println("controller단"+vacationapprovalList.getContent());
  		
  		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
  		vacationapprovalList.forEach(vapp -> {
@@ -83,6 +82,20 @@ public class VacationApprovalViewController {
 		model.addAttribute("currentSort", sort);
  		
  		return "employee/vacationapproval/vacationapproval_list";
+ 	}
+ 	
+ 	// 사용자 휴가 결재 상세 페이지
+ 	@GetMapping("/employee/vacationapproval/detail/{vacation_approval_no}")
+ 	public String employeevacationapprovalDetail(Model model, @PathVariable("vacation_approval_no") Long vacationApprovalNo) {
  		
+ 		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+ 		System.out.println(vacationapprovaldto);
+ 		
+ 		List<MemberDto> memberdto = memberService.getMembersByNo(vacationapprovaldto.getMember_no());
+ 		
+ 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+ 		model.addAttribute("memberdto", memberdto);
+ 		
+ 		return "employee/vacationapproval/vacationapproval_detail";
  	}
 }
