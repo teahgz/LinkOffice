@@ -43,7 +43,6 @@ $(function () {
 
                 // 폴더 리스트가 존재할 때
                 if (folderList.length > 0) {
-					console.log('폴더');
                     $('#tree').show();
                     $('#tree').jstree({
                         'core': {
