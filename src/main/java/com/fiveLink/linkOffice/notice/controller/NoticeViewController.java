@@ -90,8 +90,15 @@ public class NoticeViewController {
     @GetMapping("/admin/notice/list/{notice_no}")
     public String selectNoticeOne(Model model,
     		@PathVariable("notice_no")Long notice_no) {
+    	
+    	Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		model.addAttribute("memberdto", memberdto);
+    	
     	NoticeDto dto = noticeService.selectNoticeOne(notice_no);
     	model.addAttribute("dto",dto);
+    	
+    	
     	return "admin/notice/notice_detail";
     }
 }
