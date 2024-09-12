@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.res_code === '200') {
                             Swal.fire({
                                 icon: 'success',
-                                title: '성공',
                                 text: data.res_msg,
                                 confirmButtonText: "닫기"
                             }).then((result) => {
@@ -80,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: '실패',
                                 text: data.res_msg,
                                 confirmButtonText: "닫기"
                             });
@@ -127,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (data.res_code === '200') {
                             Swal.fire({
                                 icon: 'success',
-                                title: '성공',
                                 text: data.res_msg,
                                 confirmButtonColor: '#B1C2DD',
                                 confirmButtonText: "확인"
@@ -139,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: '실패',
                                 text: data.res_msg,
                                 confirmButtonColor: '#B1C2DD',
                                 confirmButtonText: "확인"
@@ -232,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.res_code === '200') {
                         Swal.fire({
                             icon: 'success',
-                            title: '성공',
                             text: '휴가 종류가 성공적으로 추가되었습니다.',
                             confirmButtonColor: '#B1C2DD',
                             confirmButtonText: "확인"
@@ -242,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: '실패',
                             text: data.res_msg,
                             confirmButtonColor: '#B1C2DD',
                             confirmButtonText: "확인"
@@ -252,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(error => {
                     Swal.fire({
                         icon: 'error',
-                        title: '오류 발생',
                         text: '서버와의 통신 중 오류가 발생했습니다.',
                         confirmButtonColor: '#B1C2DD',
                         confirmButtonText: "확인"
@@ -263,7 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             Swal.fire({
                 icon: 'error',
-                title: '오류 발생',
                 text: '서버와의 통신 중 오류가 발생했습니다.',
                 confirmButtonColor: '#B1C2DD',
                 confirmButtonText: "확인"
@@ -336,7 +328,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '성공',
                         text: data.res_msg,
                         confirmButtonText: "닫기"
                     }).then((result) => {
@@ -347,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: '실패',
                         text: data.res_msg,
                         confirmButtonColor: '#B1C2DD',
                         confirmButtonText: "확인"
