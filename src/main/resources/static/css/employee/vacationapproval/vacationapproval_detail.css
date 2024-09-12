@@ -34,9 +34,8 @@
     color: #333;
 }
 
-
 .text_field .date {
-    margin-top: 10px; /* Space above the last div */
+    margin-top: 10px; 
 }
 
 .button_container {

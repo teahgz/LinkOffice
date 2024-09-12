@@ -217,24 +217,49 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             </figure>
             <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;상가 본인은 위와 같이 휴가 신청서를 제출 합니다.</p><p>&nbsp;</p><p>&nbsp;</p>`);
 
-     /*   document.querySelector('.submit_button').addEventListener('click', (e) => {
+        document.querySelector('.submit_button').addEventListener('click', (e) => {
             e.preventDefault();
-            const editorData = editor.getData();
-            const approvalTitle = document.querySelector('#approval_title').value;
-            const csrfToken = document.querySelector('#csrf_token').value;
+           
+		 	const editorData = editor.getData();
+		    const vacationapprovalTitle = document.querySelector('#vacationapproval_title').value;
+		    const vacationtype = document.querySelector('select[name="vacationtype"]').value;
+		    const csrfToken = document.querySelector('#csrf_token').value;
+		    const memberNo = document.querySelector('#member_no').value;
+		    const startDate = document.querySelector('#vacationapproval_start_date').value;
+		    const endDate = document.querySelector('#vacationapproval_end_date').value;
+		    const dateCount = document.querySelector('#vacationapproval_date_count').value;
+		
+		
+			console.log(editorData);
+			console.log(vacationapprovalTitle);
+			console.log(vacationtype);
+			console.log(memberNo);
+			console.log(startDate);
+			console.log(endDate);
+			console.log(dateCount);
+		    let vali_check = false;
+		    let vali_text = "";
+		
+		    if (vacationapprovalTitle.trim() === "") {
+		        vali_text += '휴가 제목을 입력해주세요.';
+		        document.querySelector('#vacationapproval_title').focus();
+		    } else if (vacationtype === "") {
+		        vali_text += '휴가 종류를 선택해주세요.';
+		        document.querySelector('select[name="vacationtype"]').focus();
+		    } else if (startDate === "") {
+		        vali_text += '휴가 기간을 선택해주세요.';
+				document.querySelector('#vacationapproval_end_date').focus();
+		    } else if (endDate === "") {
+		        vali_text += '휴가 기간을 선택해주세요.';
+				document.querySelector('#vacationapproval_start_date').focus();
+		    }else if (dateCount === "") {
+		        vali_text += '휴가 일수를 입력해주세요.';
+		        document.querySelector('#vacationapproval_date_count').focus();
+		    } else {
+		        vali_check = true;
+		    }
 
-            let vali_check = false;
-            let vali_text = "";
 
-            if (approvalTitle.trim() === "") {  
-                vali_text += '양식 이름을 입력해주세요.';
-                document.querySelector('#approval_title').focus();
-            } else if (editorData.trim() === "") {
-                vali_text += '양식 입력해주세요.';
-                editor.ui.view.editable.element.focus();  
-            } else {
-                vali_check = true;
-            }
 
             if (vali_check == false) {
                 Swal.fire({
@@ -244,15 +269,21 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                     confirmButtonText: "확인"
                 });
             } else {
-                const formData = new FormData();
-                formData.append('approval_title', approvalTitle);
-                formData.append('editor_content', editorData);
-                formData.append('csrf', csrfToken);
+                 const requestData = {
+			            vacation_approval_title: vacationapprovalTitle,
+			            vacation_type_no: vacationtype,
+			            vacation_approval_start_date: startDate,
+			            vacation_approval_end_date: endDate,
+			            vacation_approval_total_days: dateCount,
+			            vacation_approval_content: editorData,
+			            member_no: memberNo
+			        };
 
-                fetch('/admin/approval/create', {
+                fetch('/employee/vacationapproval/create', {
                     method: 'post',
-                    body: formData,
+                    body: JSON.stringify(requestData),
                     headers: {
+						'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': csrfToken
                     }
@@ -266,7 +297,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                             confirmButtonColor: '#B1C2DD',
                             confirmButtonText: "확인"
                         }).then((result) => {
-                            location.href = "/admin/approval/form";
+                            console.log("성공");
                         });
                     } else {
                         Swal.fire({
@@ -278,5 +309,5 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                     }
                 });  
             }
-        });*/
+        });
     });

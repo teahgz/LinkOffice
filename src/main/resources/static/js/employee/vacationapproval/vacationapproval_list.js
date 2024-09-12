@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function(){
-	const memberRows = document.querySelectorAll('.vacationapproval_row');
+	const vacationapprovalRows = document.querySelectorAll('.vacationapproval_row');
 	
-	memberRows.forEach(row => {
+	vacationapprovalRows.forEach(row => {
 		row.addEventListener('click',function(){
-			const memberNo = this.getAttribute('data_vacationapproval_no');
+			const vacationapprovalNo = this.getAttribute('data_vacationapproval_no');
 			
-			window.location.href = '/employee/vacationapproval/detail/'+memberNo;
+			window.location.href = '/employee/vacationapproval/detail/'+vacationapprovalNo;
 		});
 	});
 });
