@@ -1,5 +1,7 @@
 package com.fiveLink.linkOffice.vacationapproval.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +43,7 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
 	 
 	 // 사원 휴가 신청 상세 조회 
 	 VacationApproval findByVacationApprovalNo(Long VacatioApprovalNo);
+	 
+	// [박혜선] 사원 휴가 신청 조회(근태 조회)
+	 List<VacationApproval> findByMemberMemberNo(Long memberNo);
 }

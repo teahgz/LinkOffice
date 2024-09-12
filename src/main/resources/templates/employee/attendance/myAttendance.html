@@ -12,6 +12,10 @@
                 <td class="hidden_date" th:text="${attendance.work_date}"></td>
                 <td th:text="${attendance.check_in_time != null ? attendance.check_in_time : ''}"></td>
             </tr>
+			<tr th:if="${vacationListDto != null && vacationListDto.size() > 0}" th:each="vacationApproval : ${vacationListDto}">
+			    <td class="vacation_start" th:text="${vacationApproval.vacation_approval_start_date}"></td>
+			    <td class="vacation_end" th:text="${vacationApproval.vacation_approval_end_date}"></td>
+			</tr>
         </table>
             <h1>근태 조회</h1>
             <div class="attendance_div">
