@@ -100,4 +100,5 @@ public class VacationApprovalViewController {
  		
  		return "employee/vacationapproval/vacationapproval_detail";
  	}
+ 	
 }
