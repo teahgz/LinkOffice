@@ -14,4 +14,6 @@ public interface ChatMapper {
     List<ChatMemberDto> selectChatList(Long memberNo);
     //채팅 내용 가져오기
     List<Map<String, Object>> getChatMessages(Long roomNo);
+    //채팅방 갯수 번호
+    int countRoomNo();
 }

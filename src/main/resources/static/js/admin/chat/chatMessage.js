@@ -133,3 +133,5 @@ socket.onmessage = (event) => {
     chatContentDiv.appendChild(messageElement);
     chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
 };
+
+

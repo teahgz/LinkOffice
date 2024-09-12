@@ -3,6 +3,7 @@ package com.fiveLink.linkOffice.chat.domain;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +15,8 @@ public class ChatRoomDto {
     private Long chat_room_no;
     private String chat_room_name;
     private int chat_room_type;
-    private LocalDate chat_room_create_date;
-    private LocalDate chat_room_update_date;
+    private LocalDateTime chat_room_create_date;
+    private LocalDateTime chat_room_update_date;
 
     public ChatRoom toEntity() {
         return ChatRoom.builder()
