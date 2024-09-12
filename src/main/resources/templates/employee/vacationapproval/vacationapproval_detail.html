@@ -8,7 +8,6 @@
             <h1>휴가 신청 조회</h1>
             <div class="container">
                 <div class="main_container">
-				<input type="hidden" id="member_no" th:value="${vapp.member_no}" />
                     <div class="text_field">
                         <div class="field">
                             <strong>제목</strong>
@@ -34,7 +33,7 @@
                     </div>
                     <div class="button_container">
                         <button type="button" class="edit_button">수정</button>
-                        <button type="button" class="cancel_button" onclick="redirectList()">목록</button>
+                        <button type="button" class="cancel_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
                     </div>
                 </div>
             </div>
