@@ -115,17 +115,26 @@ public class NoticeApiController {
 	
 	@ResponseBody
 	@DeleteMapping("/notice/{notice_no}")
-	public Map<String,String> deleteBoard(@PathVariable("notice_no")Long notice_no){
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("res_code", "404");
-		map.put("res_msg","게시글 삭제 중 오류가 발생했습니다.");
-		if(fileService.delete(notice_no)>0){
-			map.put("res_msg", "기존 파일이 정상적으로 삭제 되었습니다.");
-			if(noticeService.deleteNotice(notice_no)>0) {
-				map.put("res_code", "200");
-				map.put("res_msg","정상적으로 게시글이 삭제되었습니다.");
-			}
-		}
-		return map;
+	public Map<String, String> deleteBoard(@PathVariable("notice_no") Long notice_no) {
+	    Map<String, String> map = new HashMap<>();
+	    map.put("res_code", "404");
+	    map.put("res_msg", "게시글 삭제 중 오류가 발생했습니다.");
+
+	    // 파일 삭제 시도
+	    if (fileService.delete(notice_no) > 0) {
+	        map.put("res_msg", "기존 파일이 정상적으로 삭제되었습니다.");
+	        // 파일 삭제가 성공했을 때만 게시글 삭제 시도
+	        if (noticeService.deleteNotice(notice_no) > 0) {
+	            map.put("res_code", "200");
+	            map.put("res_msg", "정상적으로 공지사항이 삭제되었습니다.");
+	        } else {
+	            map.put("res_msg", "게시글 삭제 실패");
+	        }
+	    } else {
+	        map.put("res_msg", "파일 삭제 실패");
+	    }
+
+	    return map;
 	}
+
 }
