@@ -2,12 +2,8 @@ package com.fiveLink.linkOffice.chat.service;
 
 import com.fiveLink.linkOffice.chat.domain.ChatMember;
 import com.fiveLink.linkOffice.chat.domain.ChatMemberDto;
-import com.fiveLink.linkOffice.chat.domain.ChatMessage;
-import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
 import com.fiveLink.linkOffice.chat.repository.ChatMemberRepository;
-import com.fiveLink.linkOffice.chat.repository.ChatMessageRepository;
 import com.fiveLink.linkOffice.mapper.ChatMapper;
-import com.fiveLink.linkOffice.vacation.domain.VacationStandard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
