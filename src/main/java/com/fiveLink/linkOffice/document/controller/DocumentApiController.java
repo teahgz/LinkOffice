@@ -1,6 +1,8 @@
 package com.fiveLink.linkOffice.document.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.document.domain.DocumentFolder;
+import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
 import com.fiveLink.linkOffice.document.service.DocumentFileService;
 import com.fiveLink.linkOffice.document.service.DocumentFolderService;
 import com.fiveLink.linkOffice.member.domain.Member;
@@ -28,6 +31,7 @@ public class DocumentApiController {
 	private final DocumentFileService documentFileService;
 	private MemberRepository memberRepository;
 	private DepartmentRepository departmentRepository;
+	private DocumentFolderRepository documentFolderRepository;
 	
 	private static final Logger LOGGER
 		= LoggerFactory.getLogger(DocumentApiController.class);
@@ -37,12 +41,14 @@ public class DocumentApiController {
 			MemberService memberService,
 			DocumentFileService documentFileService,
 			MemberRepository memberRepository, 
-			DepartmentRepository departmentRepository) {
+			DepartmentRepository departmentRepository,
+			DocumentFolderRepository documentFolderRepository) {
 		this.documentFolderService = documentFolderService;
 		this.memberService = memberService;
 		this.documentFileService = documentFileService;
 		this.memberRepository = memberRepository;
 		this.departmentRepository = departmentRepository;
+		this.documentFolderRepository = documentFolderRepository;
 	}
 	
    // 개인 첫 폴더 
@@ -164,4 +170,37 @@ public class DocumentApiController {
       } 
       return resultMap;
    }
+   // 폴더 이름 변경
+   @PostMapping("/change/folder/name")
+   @ResponseBody
+   public Map<String, String> changedFolderName(@RequestBody Map<String, Object> payload){
+		  Map<String, String> resultMap = new HashMap<>();
+		  resultMap.put("res_code", "404");
+		  resultMap.put("res_msg", "경로 오류");
+		
+		  String newFolderName = (String) payload.get("folderName");
+		  String folderNoStr = (String) payload.get("folderNo");
+	    
+		  Long folderNo = Long.valueOf(folderNoStr);
+		  
+		  DocumentFolder oridocumentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+
+	      DocumentFolder newDocumentFolder = DocumentFolder.builder()
+	    		.documentFolderNo(oridocumentfolder.getDocumentFolderNo())
+	            .documentFolderName(newFolderName)
+	            .documentFolderParentNo(oridocumentfolder.getDocumentFolderParentNo())
+	            .documentFolderLevel(oridocumentfolder.getDocumentFolderLevel())
+	            .department(oridocumentfolder.getDepartment())
+	            .documentBoxType(oridocumentfolder.getDocumentBoxType())
+	            .member(oridocumentfolder.getMember())
+	            .documentFolderCreateDate(oridocumentfolder.getDocumentFolderCreateDate())
+	            .documentFolderUpdateDate(LocalDateTime.now())
+	            .documentFolderStatus(oridocumentfolder.getDocumentFolderStatus())
+	            .build();
+	      if(documentFolderService.changeFolderName(newDocumentFolder) > 0) {
+          	resultMap.put("res_code", "200");
+          	resultMap.put("res_msg", "폴더명이 변경되었습니다.");  
+	      }
+	      return resultMap;
+	   }
 }
