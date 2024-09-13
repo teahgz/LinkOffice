@@ -180,34 +180,36 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-
-function updateApproversDisplay() {
-    const approversDisplay = $('#approvers-display');
+    const approversDisplay = $('#approversDisplay');
     approversDisplay.empty();
-    const referencesDisplay = $('#references-display');
+    const referencesDisplay = $('#referencesDisplay');
     referencesDisplay.empty();
-    const reviewersDisplay = $('#reviewers-display');
+    const reviewersDisplay = $('#reviewersDisplay');
     reviewersDisplay.empty();
+function updateApproversDisplay() {
 
     if (approvers.length > 0 || references.length > 0 || reviewers.length > 0) {
-        const approverList = $('<ul></ul>');
-        const referenceList = $('<ul></ul>');
-        const reviewerList = $('<ul></ul>');
+        const approverList = $('<div></div>');
+        const referenceList = $('<div></div>');
+        const reviewerList = $('<div></div>');
 
         approvers.forEach(function (memberNumber, index) {
             const memberName = approverNames[index];
-            const listItem = $('<li></li>').text(`${memberName} (번호: ${memberNumber})`);
+            const listItem = $('<p></p>').text(`${memberName}`);
             approverList.append(listItem);
+             $('<input type="hidden">').attr('name', 'approverNumbers').val(memberNumber).appendTo(approversDisplay);
         });
         references.forEach(function (memberNumber, index) {
             const memberName = referenceNames[index];
-            const listItem = $('<li></li>').text(`${memberName} (번호: ${memberNumber})`);
+            const listItem = $('<p></p>').text(`${memberName}`);
             referenceList.append(listItem);
+             $('<input type="hidden">').attr('name', 'referenceNumbers').val(memberNumber).appendTo(referencesDisplay);
         });
         reviewers.forEach(function (memberNumber, index) {
             const memberName = reviewerNames[index];
-            const listItem = $('<li></li>').text(`${memberName} (번호: ${memberNumber})`);
+            const listItem = $('<p></p>').text(`${memberName}`);
             reviewerList.append(listItem);
+              $('<input type="hidden">').attr('name', 'reviewerNumbers').val(memberNumber).appendTo(reviewersDisplay);
         });
         
         approversDisplay.append(approverList);
@@ -220,6 +222,9 @@ function updateApproversDisplay() {
 $('#confirmButton').click(function (event) {
     event.preventDefault();
     updateApproversDisplay(); 
+     approversDisplay.show();
+     referencesDisplay.show();
+     reviewersDisplay.show();
     $('#organizationChartModal').modal('hide');
     localStorage.removeItem('selectedMembers');
     $('.permission_pick_list').empty();
