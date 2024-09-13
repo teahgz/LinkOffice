@@ -92,9 +92,9 @@
 	            <span class="close" id="reservation_close">&times;</span>
 	            <h2>회의실 예약</h2>
 	            <form id="reservationForm">
-	            	<input type="hidden" id="memberNo" th:name="${memberdto.member_no}" th:value="${memberdto.member_no}"/>
-	            	<input type="hidden" id="memberName" th:name="${memberdto.member_name}" th:value="${memberdto.member_name}"/>
-	            	<input type="hidden" id="memberPosition" th:name="${memberdto.position_name}" th:value="${memberdto.position_name}"/> 
+	            	<input type="hidden" id="memberNo" th:name="member_no" th:value="${memberdto.member_no}"/>
+	            	<input type="hidden" id="memberName" th:name="member_name" th:value="${memberdto.member_name}"/>
+	            	<input type="hidden" id="memberPosition" th:name="member_position_no" th:value="${memberdto.position_name}"/> 
 	            	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             		<div class="reservation_row">
 	                    <label for="reservation_room">회의실</label>

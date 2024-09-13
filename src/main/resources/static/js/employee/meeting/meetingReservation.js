@@ -3,6 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	// 조직도
     let selectedMembers = [];  // 선택된 사원을 저장할 배열
     
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    const today = `${year}-${month}-${day}`;
+	document.getElementById('pick_date_text').innerText = formatDate(today);
+	
 	const memberNoInput = document.getElementById("memberNo"); 
     const memberNoValue = memberNoInput.value;
     const memberNameInput = document.getElementById("memberName"); 
@@ -54,6 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
         buttonText: {
             today: '오늘' 
         },
+        validRange: {
+	      start: today 
+	    },	
         dateClick: function (info) {
             selectedDate = info.dateStr;  
             fetchReservations(selectedDate);
@@ -85,13 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		},
     });
     calendar.render();
-
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    const today = `${year}-${month}-${day}`;
-	document.getElementById('pick_date_text').innerText = formatDate(today);
 	
     // 회의실 전체 정보
     $.ajax({
@@ -267,6 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 	
 	// 날짜 선택
+	document.getElementById("reservation_date").setAttribute('min', today);
 	$('#reservation_date').on('change', function() {
         const roomId = $('#reservation_room').val();
         const date = $(this).val();
@@ -547,9 +551,11 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         
         var formData = new FormData(this);
+        
+        console.log(formData);
          
         $.ajax({
-            url: '/api/reservation/save',
+            url: '/reservation/save',
             type: 'POST',
             data: formData,
             processData: false,
@@ -557,12 +563,28 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
-            success: function() {
-                console.log('예약이 성공적으로 저장되었습니다.'); 
+            success: function(response) {
+                if (response.res_code === "200") {
+                    Swal.fire({ 
+					    	text: response.res_msg,
+						    icon: 'success', 
+						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonText: '확인', 
+						}).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({ 
+					    text: response.res_msg,
+					    icon: 'error', 
+					    confirmButtonColor: '#B1C2DD', 
+					    confirmButtonText: '확인', 
+					});
+                }
                 $('#reservationModal').modal('hide');
             },
-            error: function(xhr, status, error) {
-                console.log('예약 저장 중 오류 발생'); 
+            error: function () {
+                Swal.fire('서버 오류', "서버 요청 중 오류가 발생했습니다.", 'error');
             }
         });
     });

@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.meeting.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
+import com.fiveLink.linkOffice.meeting.service.MeetingParticipantService;
 import com.fiveLink.linkOffice.meeting.service.MeetingReservationService;
 import com.fiveLink.linkOffice.meeting.service.MeetingService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
@@ -33,13 +36,16 @@ public class MeetingReservationController {
     private final MemberService memberService;
     private final MeetingReservationService meetingReservationService;
     private final DepartmentService departmentService;
-
+    private final MeetingParticipantService meetingParticipantService;
+    
     @Autowired
-    public MeetingReservationController(MeetingService meetingService, MemberService memberService, MeetingReservationService meetingReservationService, DepartmentService departmentService) {
+    public MeetingReservationController(MeetingService meetingService, MemberService memberService, MeetingReservationService meetingReservationService, 
+    									DepartmentService departmentService, MeetingParticipantService meetingParticipantService) {
         this.meetingService = meetingService; 
         this.memberService = memberService;
         this.meetingReservationService = meetingReservationService;
         this.departmentService = departmentService;
+        this.meetingParticipantService = meetingParticipantService;
     }
 
     // 사용자 예약 페이지
@@ -80,7 +86,7 @@ public class MeetingReservationController {
     // 조직도
     @GetMapping("/meeting/chart")
     @ResponseBody
-    public List<Map<String, Object>> getOrganizationChart() {
+	public List<Map<String, Object>> getOrganizationChart() {
 		List<DepartmentDto> departments = departmentService.getAllDepartments();
 		List<MemberDto> members = memberService.getAllMembersChartOut();
 		return buildTree(departments, members);
@@ -200,31 +206,48 @@ public class MeetingReservationController {
 		return response;
 	}
 	
-	
-	@PostMapping("/api/reservation/save")
+	// 예약 등록
+	@PostMapping("/reservation/save")
 	@ResponseBody
-	public void saveReservation(
-	    @RequestParam("reservation_room") Long reservationRoom,
-	    @RequestParam("reservation_date") String reservationDate,
-	    @RequestParam("reservation_start_time") String reservationStartTime,
-	    @RequestParam("reservation_end_time") String reservationEndTime, 
-	    @RequestParam("reservation_purpose") String reservationPurpose,
-	    @RequestParam("selectedMembers") String selectedMembers,
-	    HttpServletResponse response) {
+	public Map<String, String> saveReservation( 
+			@RequestParam("member_no") Long memberNo,
+			@RequestParam("reservation_room") Long reservationRoom,
+	        @RequestParam("reservation_date") String reservationDate,
+	        @RequestParam("reservation_start_time") String reservationStartTime,
+	        @RequestParam("reservation_end_time") String reservationEndTime, 
+	        @RequestParam("reservation_purpose") String reservationPurpose,
+	        @RequestParam("selectedMembers") String selectedMembers) {
 
-	    try { 
+			Map<String, String> resultMap = new HashMap<>();
+			resultMap.put("res_code", "404");
+	        resultMap.put("res_msg", "회의실 예약 중 오류가 발생했습니다.");
+	        
+	        try {   
+	            MeetingReservationDto meetingReservationDto = MeetingReservationDto.builder()
+	                .meeting_no(reservationRoom)
+	                .member_no(memberNo)
+	                .meeting_reservation_date(reservationDate)
+	                .meeting_reservation_start_time(reservationStartTime)
+	                .meeting_reservation_end_time(reservationEndTime)
+	                .meeting_reservation_purpose(reservationPurpose)
+	                .meeting_reservation_status(0L)  
+	                .build();
  
-	        System.out.println("reservationRoom: " + reservationRoom);
-	        System.out.println("reservationDate: " + reservationDate);
-	        System.out.println("reservationStartTime: " + reservationStartTime);
-	        System.out.println("reservationEndTime: " + reservationEndTime); 
-	        System.out.println("reservationPurpose: " + reservationPurpose);
-	        System.out.println("selectedMembers: " + selectedMembers);
-
-	        response.setStatus(HttpServletResponse.SC_OK);
-	    } catch (Exception e) {
-	        System.err.println("예약 저장 중 오류 발생: " + e.getMessage()); 
-	    }
-	}
-
+	            List<String> memberList = Arrays.asList(selectedMembers.split(","));
+	            List<MeetingParticipantDto> participants = memberList.stream()
+	                .map(membersNo -> MeetingParticipantDto.builder()
+	                    .member_no(Long.parseLong(membersNo.trim()))
+	                    .meeting_participant_status(0L)  
+	                    .build())
+	                .toList();
+ 
+	            meetingParticipantService.saveReservationAndParticipants(meetingReservationDto, participants);
+	            resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "예약 등록이 완료되었습니다."); 
+	        } catch (Exception e) {
+	        	resultMap.put("res_code", "404");
+	            resultMap.put("res_msg", "회의실 예약 중 오류가 발생했습니다.");
+	        }
+	        return resultMap; 
+		} 
 }
