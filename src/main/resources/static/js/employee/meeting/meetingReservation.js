@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 	let currentReservations = [];
-	
+	// 조직도
+    let selectedMembers = [];  // 선택된 사원을 저장할 배열
+    
 	const memberNoInput = document.getElementById("memberNo"); 
     const memberNoValue = memberNoInput.value;
     const memberNameInput = document.getElementById("memberName"); 
@@ -14,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const pick_date = document.getElementById("reservation_date");	  
     const pick_username = document.getElementById("reservation_name");
     const pick_start_time = document.getElementById('reservation_start_time');  
+    var csrfToken = document.querySelector('input[name="_csrf"]').value;
     
     function showReservationModal(meeting, date, startTime) {
 		console.log(startTime);
@@ -388,13 +391,179 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 	    
-	function resetReservationModal() {
-	    reservation_form[0].reset();  
-	    $('#reservationModal').modal('hide');  
+	function resetReservationModal() { 
+	    reservation_form[0].reset();
+	     
+	    $('#reservationModal').modal('hide');
+	 
+	    $('#organization-chart').jstree("uncheck_all");
+	 
+	    const reservationArea = $('.reservation_participate');
+	    reservationArea.find('.selected-participants').remove(); 
+	     
+	    selectedMembers = [];
+	    localStorage.removeItem('selectedMembers');  
+	    $('#selectedMembers').val('');
+	}
+ 
+	// 조직도 열기
+    $('#openOrganizationChartButton').on('click', function() {
+        openOrganizationChartModal();
+    });
+	
+	function openOrganizationChartModal() {
+	    selectedMembers = [];  
+	 
+	    const displayElement = document.getElementById('selected-members');
+	    if (displayElement) {
+	        displayElement.innerHTML = '';
+	    }
+	
+	    $('#organizationChartModal').modal('show');
+	
+	    loadOrganizationChart();
 	}
 
-    $("#reservationForm").submit(function (e) {
-        e.preventDefault(); 
-        modal.style.display = "none";
+    // 조직도 로딩
+    function loadOrganizationChart() {
+        $.ajax({
+            url: '/meeting/chart',
+            method: 'GET',
+            success: function(data) {
+                console.log('조직도 데이터:', data);
+                $('#organization-chart').jstree({ 
+                    'core': {
+                        'data': data,
+                        'themes': { 
+                            'icons': true,
+                            'dots': false,
+                            
+                        }
+                    },
+                    'plugins': ['checkbox', 'types', 'search'],
+                    'types': {
+                        'default': {
+                            'icon': 'fa fa-users'
+                        },
+                        'department': {
+                            'icon': 'fa fa-users'
+                        }, 
+                        'member': {
+			            	'icon': 'fa fa-user'  
+			        	}
+                    }
+                }).on('ready.jstree', function (e, data) {
+                    restoreSelection(data.instance);
+                });
+
+                // 체크박스 변경 시 선택된 사원 업데이트
+                $('#organization-chart').on('changed.jstree', function (e, data) {
+                    updateSelectedMembers(data.selected, data.instance);
+                });
+                
+                // 검색  
+                $('#organization_search').on('keyup', function() { 
+                    const searchString = $(this).val();
+
+                    $('#organization-chart').jstree(true).search(searchString); 
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('조직도 로딩 오류:', error);
+            }
+        });
+    }
+
+    // 선택된 사원 업데이트
+    function updateSelectedMembers(selectedIds, instance) {
+        const selectedMembersContainer = $('#selected-members');
+        const permissionPickList = $('.permission_pick_list');
+        selectedMembersContainer.empty();
+        permissionPickList.empty();
+
+        const selectedNodes = instance.get_selected(true);
+        let selectedMembers = [];
+
+        selectedNodes.forEach(function(node) {
+            if (node.original.type === 'member') {
+                const memberId = node.id;
+                const memberNumber = memberId.replace('member_', ''); // 사원 번호
+                const memberElement = $('<div class="selected-member"></div>');
+                const memberName = $('<span></span>').text(node.text);
+                const removeButton = $('<button class="remove-member">&times;</button>');
+
+                memberElement.append(memberName).append(removeButton);
+                selectedMembersContainer.append(memberElement);
+
+                selectedMembers.push(memberNumber);
+
+                removeButton.click(function() {
+                    instance.uncheck_node(node);
+                    memberElement.remove();
+                    const index = selectedMembers.indexOf(memberNumber);
+                    if (index !== -1) {
+                        selectedMembers.splice(index, 1);
+                    }
+
+                    localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+
+                    permissionPickList.find(`.permission-item[data-name="${node.text}"]`).remove();
+                });
+
+                const permissionItem = $(`<div class="permission-item" data-name="${node.text}"></div>`);
+                permissionItem.text(node.text);
+                permissionPickList.append(permissionItem);
+            }
+        });
+
+        // form 사원 번호 추가
+        $('#selectedMembers').val(selectedMembers.join(','));
+
+        localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+    }
+    
+    
+    // 조직도 확인 -> 예약 모달 사원 출력 
+	$('#participate_confirmButton').click(function()  {
+	    const reservationArea = $('.reservation_participate');  
+	    const selectedMembersContainer = $('#selected-members');  
+	    const selectedMembersList = selectedMembersContainer.find('.selected-member');
+	    
+	    reservationArea.find('.selected-participants').remove();  
+	    
+	    selectedMembersList.each(function() {
+	        const memberName = $(this).find('span').text();
+	        const participantItem = $('<span class="selected-participants"></span>');
+	        participantItem.text(memberName);
+	        reservationArea.append(participantItem);
+	    });
+	    
+	    $('#organizationChartModal').modal('hide');
+	 });
+	 
+	 
+	// 예약 등록 
+    $("#reservationForm").submit(function(e) {
+        e.preventDefault();
+        
+        var formData = new FormData(this);
+         
+        $.ajax({
+            url: '/api/reservation/save',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function() {
+                console.log('예약이 성공적으로 저장되었습니다.'); 
+                $('#reservationModal').modal('hide');
+            },
+            error: function(xhr, status, error) {
+                console.log('예약 저장 중 오류 발생'); 
+            }
+        });
     });
 });
