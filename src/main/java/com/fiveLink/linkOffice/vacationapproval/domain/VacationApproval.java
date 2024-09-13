@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -74,6 +75,10 @@ public class VacationApproval {
 	@Column(name="vacation_approval_update_date")
 	@UpdateTimestamp
 	private LocalDateTime vacationApprovalUpdateDate;
+	
+	
+    @OneToOne(mappedBy = "vacationApproval")
+    private VacationApprovalFile vacationApprovalFile;
 	
 	public VacationApprovalDto toDto() {
 		return VacationApprovalDto.builder()

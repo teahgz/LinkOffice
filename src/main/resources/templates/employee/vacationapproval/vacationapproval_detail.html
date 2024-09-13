@@ -4,33 +4,61 @@
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/vacationapproval/vacationapproval_detail.css}" rel="stylesheet" type="text/css">
-        <section th:each="vapp : ${vacationapprovaldto}">
+        <section>
             <h1>휴가 신청 조회</h1>
             <div class="container">
                 <div class="main_container">
-                    <div class="text_field">
-                        <div class="field">
-                            <strong>제목</strong>
-                            <div id="vacationapproval_title" th:text="${vapp.vacation_approval_title}"></div>
+                    <div class="details_section">
+                        <div class="text_field">
+                            <div class="field">
+                                <strong>제목</strong>
+                                <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
+                            </div>
+                            <div class="field">
+                                <strong>종류</strong>
+                                <div id="vacationapproval_type_name" th:text="${vacationapprovaldto.vacation_type_name}"></div>
+                            </div>
+                            <div class="field">
+                                <strong>기간</strong>
+                                <div id="vacationapproval_start_date" th:text="${vacationapprovaldto.vacation_approval_start_date}"></div>
+                                <span> ~ </span>
+                                <div id="vacationapproval_end_date" th:text="${vacationapprovaldto.vacation_approval_end_date}"></div>
+                                <div>(</div>
+                                <div id="vacationapproval_total_days" th:text="${vacationapprovaldto.vacation_approval_total_days}"></div>
+                                <div>일)</div>
+                            </div>
                         </div>
-                        <div class="field">
-                            <strong>종류</strong>
-                            <div id="vacationapproval_type_name" th:text="${vapp.vacation_type_name}"></div>
+                        <hr class="section_separator"> 
+                    </div>
+
+                    <div class="content_section">
+                        <div class="vacationapproval_content">
+                            <div class="table_container" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>
                         </div>
+                        <hr class="section_separator"> 
                         <div class="field">
-                            <strong>기간</strong>
-                            <div id="vacationapproval_start_date" th:text="${vapp.vacation_approval_start_date}"></div>
-                            <span> ~ </span>
-                            <div id="vacationapproval_end_date" th:text="${vapp.vacation_approval_end_date}"></div>
-                        </div>
-                        <div class="field">
-                            <strong>일수</strong>
-                            <div id="vacationapproval_total_days" th:text="${vapp.vacation_approval_total_days}"></div>
+                            <div th:if="${vacationapprovaldto != null and !#lists.isEmpty(vacationapprovaldto.files)}">
+                                <div th:each="file : ${vacationapprovaldto.files}" class="file_item">
+                                    <strong> 등록 파일 </strong>
+                                    <div th:if="${file.vacation_approval_file_ori_name != null and !file.vacation_approval_file_ori_name.isEmpty() and 
+                                                  (file.vacation_approval_file_ori_name.endsWith('.pdf') or 
+                                                   file.vacation_approval_file_ori_name.endsWith('.xls') or 
+                                                   file.vacation_approval_file_ori_name.endsWith('.xlsx') or
+                                                   file.vacation_approval_file_ori_name.endsWith('.png') or 
+                                                   file.vacation_approval_file_ori_name.endsWith('.jpg') or 
+                                                   file.vacation_approval_file_ori_name.endsWith('.jpeg'))}" class="file_info">
+                                        <a th:href="@{'/linkOfficeImg/approval/vacation/' + ${file.vacation_approval_file_new_name}}" 
+                                           th:text="${file.vacation_approval_file_ori_name}"></a>
+                                        <p th:text="${'파일 크기: ' + file.vacation_approval_file_size + ' bytes'}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${vacationapprovaldto == null or #lists.isEmpty(vacationapprovaldto.files)}">
+                                <p>등록된 파일이 없습니다.</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="vacationapproval_content">
-                        <div class="table_container" th:utext="${vapp.vacation_approval_content}"></div>
-                    </div>
+
                     <div class="button_container">
                         <button type="button" class="edit_button">수정</button>
                         <button type="button" class="cancel_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>

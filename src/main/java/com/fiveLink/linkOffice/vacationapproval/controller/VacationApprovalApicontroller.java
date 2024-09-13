@@ -4,41 +4,75 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
+import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalFileService;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
-@RestController
-@RequestMapping("/employee/vacationapproval")
+@Controller
 public class VacationApprovalApicontroller {
 
 	
 	private final VacationApprovalService vacationApprovalService;
+	private final VacationApprovalFileService vacationApprovalFileService;
 	
 	@Autowired
-	public VacationApprovalApicontroller (VacationApprovalService vacationApprovalService) {
+	public VacationApprovalApicontroller (VacationApprovalService vacationApprovalService, VacationApprovalFileService vacationApprovalFileService) {
 		this.vacationApprovalService = vacationApprovalService;
+		this.vacationApprovalFileService = vacationApprovalFileService;
 	}
 	
-	@ResponseBody
-	@PostMapping("/create")
-	public Map<String,String> createVacationApproval(@RequestBody VacationApprovalDto dto){
-		Map<String,String> response = new HashMap<String,String>();
-		response.put("res_code", "404");
-		response.put("res_msg", "휴가 신청 중 오류가 발생했습니다.");
-		
-		dto.setVacation_approval_status(0L);
-		
-		if(vacationApprovalService.createVacationApproval(dto) != null) {
-			response.put("res_code", "200");
-			response.put("res_msg", "휴가 신청이 완료되었습니다.");
-		}
-		
-		return response;
+	    @ResponseBody
+	    @PostMapping("/employee/vacationapproval/create")
+	    public Map<String, String> createVacationApproval(
+	            @RequestParam("vacationFile") MultipartFile file,
+	            @RequestParam("vacationapprovalTitle") String vacationapprovalTitle,
+	            @RequestParam("vacationtype") Long vacationtype,
+	            @RequestParam("memberNo") Long memberNo,
+	            @RequestParam("startDate") String startDate,
+	            @RequestParam("endDate") String endDate,
+	            @RequestParam("dateCount") String dateCount,
+	            @RequestParam("vacationapprovalContent") String vacationapprovalContent) {
+
+	        Map<String, String> response = new HashMap<>();
+	        response.put("res_code", "404");
+	        response.put("res_msg", "휴가 신청 중 오류가 발생했습니다.");
+
+	        VacationApprovalDto vappdto = new VacationApprovalDto();
+	        vappdto.setVacation_approval_title(vacationapprovalTitle);
+	        vappdto.setVacation_type_no(vacationtype);
+	        vappdto.setMember_no(memberNo);
+	        vappdto.setVacation_approval_start_date(startDate);
+	        vappdto.setVacation_approval_end_date(endDate);
+	        vappdto.setVacation_approval_total_days(dateCount);
+	        vappdto.setVacation_approval_content(vacationapprovalContent);
+	        vappdto.setVacation_approval_status(0L);
+	        
+	        VacationApprovalFileDto vaFiledto = new VacationApprovalFileDto();
+	        
+	        String saveVacationFileName = vacationApprovalFileService.uploadVacation(file);
+	        
+	        if(saveVacationFileName != null) {
+	        	vaFiledto.setVacation_approval_file_ori_name(file.getOriginalFilename());
+	        	vaFiledto.setVacation_approval_file_new_name(saveVacationFileName);
+	        	vaFiledto.setVacation_approval_file_size(file.getSize());
+	        	
+	        	if (vacationApprovalService.createVacationApproval(vappdto,vaFiledto) != null) {
+	        		response.put("res_code", "200");
+	        		response.put("res_msg", "휴가 신청이 완료되었습니다.");
+	        	}
+	        	
+	        }else {
+	        	response.put("res_msg", "휴가 파일 업로드를 실패했습니다.");
+	        }
+
+
+	        return response;
+	    }
 	}
-}

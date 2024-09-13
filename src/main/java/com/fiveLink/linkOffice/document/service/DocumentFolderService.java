@@ -66,8 +66,21 @@ public class DocumentFolderService {
 		}
 		return documentFolderDtoList;
 	}
+	// 부서 문서함 첫 폴더
+	public int departmentFirstFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	// 사내 문서함 
-	public List<DocumentFolderDto> selectCompanyFolderList(Long document_box_type){
+	public List<DocumentFolderDto> selectCompanyFolderList(){
+		// 문서함 타입
+		Long document_box_type = 2L;
 		// 폴더 상태 = 0
 		Long document_folder_status = 0L;
 		// repository에 documentBoxType과 folderStatus를 넘겨줌 

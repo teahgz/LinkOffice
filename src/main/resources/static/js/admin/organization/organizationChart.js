@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 확인 버튼 
     $('#confirmButton').click(function() {
         console.log("선택한 사원 정보:", selectedMembers);
-        alert("선택한 사원: " + selectedMembers.join(", "));
+        alert("선택한 사원: " + zselectedMembers.join(", "));
     
         var csrfToken = document.querySelector('input[name="_csrf"]').value; 
     

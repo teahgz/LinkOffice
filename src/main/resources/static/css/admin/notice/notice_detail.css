@@ -1,0 +1,123 @@
+
+.detail_notice {
+    position: relative;
+    width: 80%;
+    max-width: 1300px;
+    margin: 50px auto;
+    padding: 40px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.notice-header h3 {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #333;
+}
+
+.notice-header .importance {
+	color: red;
+	font-weight: bold;
+}
+
+.notice-header .author, .notice-header .date, .notice-header .modidate {
+	font-size: 18px;
+	color: #666;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+
+.notice-content {
+	margin-top: 20px;
+	border: 1px solid #e0e0e0;
+	padding: 20px;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+}
+
+
+.notice-image img {
+	width: 100%;
+	max-height: 300px;
+	object-fit: cover;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+/* 버튼 스타일 */
+.notice-buttons {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+
+.notice-buttons .btn {
+	padding: 10px 20px;
+	margin-right: 10px;
+	border: none;
+	border-radius: 5px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.notice-buttons .btn-edit {
+	background-color: #a7c4f7;
+	color: white;
+}
+
+.notice-buttons .btn-delete {
+	background-color: #f78a8a;
+	color: white;
+}
+
+.notice-buttons .btn-back {
+	background-color: #d1d1d1;
+	color: black;
+}
+
+/* 버튼 호버 효과 */
+.notice-buttons .btn:hover {
+	opacity: 0.9;
+}
+
+/* 이미지 크기 제한 설정 */
+.notice-image img {
+	width: 100%;
+	max-width: 600px;
+	max-height: 300px;
+	object-fit: contain;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+.file-download-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ccc; /* 보더 추가 */
+    border-radius: 5px; /* 보더를 둥글게 */
+    background-color: #f9f9f9;
+}
+
+.file-name {
+    text-decoration: underline;
+    color: #007bff;
+    margin-right: 10px; /* 파일명과 아이콘 사이 간격 조정 */
+}
+
+.download-icon {
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.download-icon i {
+    cursor: pointer;
+    color: #007bff;
+}
+.notice-image {
+    margin-top: 30px;
+}

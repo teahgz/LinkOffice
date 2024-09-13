@@ -25,6 +25,9 @@ public class MeetingReservationDto {
     
     private String meeting_name; 
     private String member_name;
+    private String position_name; 
+    private String department_name;
+    
 
     public MeetingReservation toEntity() {
         return MeetingReservation.builder()
@@ -54,7 +57,7 @@ public class MeetingReservationDto {
                 .meeting_reservation_update_date(meetingReservation.getMeetingReservationUpdateDate())
                 .meeting_reservation_status(meetingReservation.getMeetingReservationStatus())
                 .meeting_name(meetingName) 
-                .member_name(memberName) 
+                .member_name(memberName)  
                 .build();
     }
 }

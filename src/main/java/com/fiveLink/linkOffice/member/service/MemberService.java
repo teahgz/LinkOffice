@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -281,7 +282,7 @@ public class MemberService {
 	}
 
 
-    // [서혜원] 조직도
+    // [서혜원] 본인 포함 전체 사원 조직도
     public List<MemberDto> getAllMembersChart() {
         List<Member> members = memberRepository.findAllByMemberStatusOrderByPosition_PositionLevelAsc(0L);
         return members.stream()
@@ -326,6 +327,23 @@ public class MemberService {
         return memberRepository.findById(memberNo)
                 .map(Member::getMemberName)
                 .orElse("사원");
+    } 
+    
+    // [서혜원] 본인 제외 사원 조직도
+    public List<MemberDto> getAllMembersChartOut() {
+        // 현재 로그인한 사용자의 ID를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInMemberNumber = authentication.getName();  
+
+        System.out.println(authentication); 
+        List<Member> members = memberRepository.findAllByMemberStatusAndMemberNumberNotOrderByPosition_PositionLevelAsc(0L, loggedInMemberNumber);
+
+        return members.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
+
+
+    
     
 } 

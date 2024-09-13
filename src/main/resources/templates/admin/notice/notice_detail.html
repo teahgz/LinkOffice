@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{include/layout}">
+<meta charset="UTF-8">
+<th:block layout:fragment="content">
+	<link th:href="@{/css/admin/notice/notice_detail.css}" rel="stylesheet"
+		type="text/css">
+	<!-- 부트스트랩 아이콘을 사용하기 위한 링크 추가 -->
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+
+	<section>
+		<h1>공지사항 상세 보기</h1>
+		<div class="detail_notice">
+			<div class="notice-header">
+				<h3 class="notice-title">
+					제목 : <span th:text="${dto.notice_title}"></span>
+				</h3>
+				<p class="author" style="margin-bottom: -10px;">
+					작성자 : <span th:text="${dto.member_name}+' 관리자'"></span>
+				</p>
+				<br>
+				<p class="date">
+					작성일 : <span th:text="${dto.notice_create_date}"></span>
+				</p>
+				<p class="modidate" th:if="${dto.notice_update_date != null}">
+					수정일 : <span th:text="${dto.notice_update_date}"></span>
+				</p>
+			</div>
+			<div class="notice-content">
+
+				<div class="file-download-section"
+					th:if="${dto.notice_ori_img != null}">
+
+					<a th:text="${dto.notice_ori_img}"
+						th:href="@{/download/{no}(no=${dto.notice_no})}" class="file-name">첨부파일</a>
+
+
+					<a th:href="@{/download/{no}(no=${dto.notice_no})}"
+						class="download-icon"> <i class="bi bi-download"
+						style="font-size: 20px;"></i>
+					</a>
+				</div>
+
+
+				<div class="notice-image" th:if="${dto.notice_new_img != null}">
+					<img th:src="@{'/linkOfficeImg/' + ${dto.notice_new_img}}"
+						alt="Notice Image">
+				</div>
+
+				<div class="notice-text">
+					<div th:utext="${dto.notice_content}"></div>
+				</div>
+			</div>
+
+			<div class="notice-buttons">
+				<a th:href="@{/admin/notice/update/{no}(no=${dto.notice_no})}" class="btn btn-edit">수정</a>
+				<button class="btn btn-delete">삭제</button>
+				<button class="btn btn-back" onclick="window.history.back();">목록</button>
+			</div>
+		</div>
+	</section>
+</th:block>
+</html>

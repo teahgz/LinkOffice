@@ -99,7 +99,6 @@
     overflow: hidden;
 }
 #bar_foreground {
-	width: 75%;
     height: 100%;
     background-color: #4E597E;
     transition: width 0.3s ease;
@@ -123,7 +122,7 @@
     text-align: center;
 }
 #folder_delete_button:hover{
-    background-color: #efc7c7;
+    background-color: #e0b2b2;
 }
 #folder_delete_button:active{
     transform: scale(0.98);
@@ -142,7 +141,7 @@
     text-align: center;
 }
 #folder_add_button:hover{
-    background-color: #c3d1ee;
+    background-color: #abb7d0;
 }
 
 #folder_add_button:active{
@@ -154,7 +153,6 @@
 	width: 60vw;
 	height: 630px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	overflow-y: auto;
 	margin: 1vw;
 }
 .document_no_file{
@@ -260,7 +258,6 @@
 #folder_name{
 	margin-right: 1vw;
 	font-size: 1.2vw;
-	width: 6vw;
 }
 #change_name_button{
 	margin-right: 0.5vw;
@@ -276,7 +273,7 @@
     text-align: center;
 }
 #change_name_button:hover{
-    background-color: #c9d7ff;
+    background-color: #afbee4;
 }
 #change_name_button:active{
     transform: scale(0.98);
@@ -305,7 +302,7 @@
     text-align: center;
 }
 #select_delete:hover{
-    background-color: #efc7c7;
+    background-color: #e0b2b2;
 }
 #select_delete:active{
     transform: scale(0.98);
@@ -325,7 +322,7 @@
     text-align: center;
 }
 #select_down:hover{
-    background-color: #c3d1ee;
+   background-color: #acb9d3;  
 }
 #select_down:active{
     transform: scale(0.98);
@@ -352,7 +349,7 @@
     text-align: center;
 }
 #upload_button:hover{
-    background-color: #c3d1ee;
+    background-color: #adbad4;;
 }
 
 #upload_button:active{
@@ -422,7 +419,7 @@
     text-align: center;
 }
 .file_show_button:hover{
-    background-color: #c3d1ee;
+    background-color: #adbad4;
 }
 
 .file_show_button:active{
@@ -441,7 +438,7 @@
     text-align: center;
 }
 .file_down_button:hover{
-    background-color: #c3d1ee;
+    background-color: #adbad4;
 }
 
 .file_down_button:active{
@@ -460,7 +457,7 @@
     text-align: center;
 }
 .delete_button:hover{
-    background-color: #efc7c7;
+    background-color: #e0b2b2; 
 }
 
 .delete_button:active{
@@ -551,13 +548,6 @@
 	width: 95%;
 	height: 90%;
 	font-size: 15px;
-}
-#no_folder_name{
-	display: flex;
-	justify-content: left;
-	margin: 5px 0 0 8px;
-	font-size: 12px;
-	color: red;
 }
 #first_folder_add_button{
 	margin-right: 0.5vw;
