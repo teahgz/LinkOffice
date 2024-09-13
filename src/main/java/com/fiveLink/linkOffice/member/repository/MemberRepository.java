@@ -41,7 +41,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // [서혜원] 부서 등록 
      List<Member> findByDepartmentNoAndMemberStatus(Long departmentNo, Long memberStatus);
 
-    // [서혜원] 조직도
+    // [서혜원] 본인 포함 전체 사원 조직도
     @Query("SELECT m FROM Member m WHERE m.positionNo = :positionNo")
     List<Member> findByPositionNo(Long positionNo); 
     
@@ -193,5 +193,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
       Member findBymemberNo(Long noticeWriter);
       // [김민재] 사원 번호 조회
       Member findByMemberName(String memberName);  
+      
+      // [서혜원] 본인 제외 사원 조직도
+      List<Member> findAllByMemberStatusAndMemberNumberNotOrderByPosition_PositionLevelAsc(Long status, String memberNumber);
+
+
 }
 

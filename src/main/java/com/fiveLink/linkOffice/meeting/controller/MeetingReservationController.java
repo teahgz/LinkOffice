@@ -3,6 +3,8 @@ package com.fiveLink.linkOffice.meeting.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingDto;
-import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto; 
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.meeting.service.MeetingReservationService;
 import com.fiveLink.linkOffice.meeting.service.MeetingService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
@@ -37,8 +39,8 @@ public class MeetingReservationController {
         Long memberNo = memberService.getLoggedInMemberNo();  
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
         List<MeetingDto> meetings = meetingService.getAllMeetings();
-
-        model.addAttribute("memberdto", memberDto);
+ 
+        model.addAttribute("memberdto", memberDto.get(0));  
         model.addAttribute("meetings", meetings);
         return "/employee/meeting/meetingReservation";
     }
@@ -62,7 +64,5 @@ public class MeetingReservationController {
     @ResponseBody
     public MeetingDto getMeetingById(@PathVariable("meetingNo") Long meetingId) {
         return meetingService.getMeetingById(meetingId);
-    } 
-
-
+    }  
 }

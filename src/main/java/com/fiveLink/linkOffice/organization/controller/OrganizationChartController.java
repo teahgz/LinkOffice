@@ -33,14 +33,26 @@ public class OrganizationChartController {
 	public String showOrganizationChartPage() {
 		return "admin/organization/organizationChart";
 	}
-
+	
+	
+	// 1. 본인 포함 전체 사원 조직도
+//	@GetMapping("/organizationChart/chart")
+//	@ResponseBody
+//	public List<Map<String, Object>> getOrganizationChart() {
+//		List<DepartmentDto> departments = departmentService.getAllDepartments();
+//		List<MemberDto> members = memberService.getAllMembersChart();
+//		return buildTree(departments, members);
+//	}
+	
+	// 2. 본인 제외 사원 조직도
 	@GetMapping("/organizationChart/chart")
 	@ResponseBody
 	public List<Map<String, Object>> getOrganizationChart() {
 		List<DepartmentDto> departments = departmentService.getAllDepartments();
-		List<MemberDto> members = memberService.getAllMembersChart();
+		List<MemberDto> members = memberService.getAllMembersChartOut();
 		return buildTree(departments, members);
 	}
+	 
 
 	// 선택된 사원 데이터 처리
 	@PostMapping("/saveSelectedMembers")
