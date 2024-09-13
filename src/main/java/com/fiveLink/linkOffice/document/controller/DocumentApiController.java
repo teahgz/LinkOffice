@@ -124,4 +124,44 @@ public class DocumentApiController {
       } 
       return resultMap;
    }	
+   
+   // 사내 첫 폴더 
+   @PostMapping("/company/first/folder")
+   @ResponseBody
+   public Map<String, String> companyFirstFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, String> resultMap = new HashMap<>();
+	  resultMap.put("res_code", "404");
+	  resultMap.put("res_msg", "경로 오류");
+	
+	  String folderName = (String) payload.get("folderName");
+	  String memberNoStr = (String) payload.get("memberNo");
+	  String deptNoStr = (String) payload.get("deptNo");
+    
+	  Long memberNo = Long.valueOf(memberNoStr);
+	  Long deptNo = Long.valueOf(deptNoStr);
+      Long folderLevel = 1L;
+      Long docBoxType = 2L;
+      Long folderStatus = 0L;
+      
+      Member member = memberRepository.findByMemberNo(memberNo);
+      Department department = departmentRepository.findByDepartmentNo(deptNo);
+
+      DocumentFolder documentFolder = DocumentFolder.builder()
+            .documentFolderName(folderName)
+            .documentFolderLevel(folderLevel)
+            .department(department)
+            .documentBoxType(docBoxType)
+            .member(member)
+            .documentFolderStatus(folderStatus)
+            .build();
+
+      int result = documentFolderService.departmentFirstFolder(documentFolder);
+      System.out.println("Service result: " + result);
+
+      if (result > 0) {
+    	  resultMap.put("res_code", "200");
+    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+      } 
+      return resultMap;
+   }
 }

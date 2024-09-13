@@ -94,19 +94,19 @@ $(function () {
             data: { deptNo: deptNo },
             dataType: 'json',
             success: function(data) {
-				const totalSize = 10;
+				const totalSize = 50;
 				const currentSize = $('#current_size_text');
 				const currentPercent = $('#print_size');	
 				const sizeBar = $('#bar_foreground');
 				if(data != null){
 					currentSize.text('');	
-					currentSize.text('10GB 중 ' + data + 'GB 사용');	
+					currentSize.text('50GB 중 ' + data + 'GB 사용');	
 					currentPercent.text('');
 					currentPercent.text('저장용량(' + (data/totalSize)*100 + '% 사용 중)');		
 					sizeBar.css('width', (data/totalSize)*100+'%');							
 				} else{
 					currentSize.text('');	
-					currentSize.text('10GB 중 0GB 사용');	
+					currentSize.text('50GB 중 0GB 사용');	
 					currentPercent.text('');
 					currentPercent.text('저장용량(0% 사용 중)');	
 					sizeBar.css('width', '0%');									

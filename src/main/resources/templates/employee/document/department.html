@@ -67,8 +67,11 @@
 	                			</div>       
 	                		</div>
 	                		<div class="search_name">
-	                			<div id="file_name">파일명</div>  
-	                			<input type="text" id="file_name_input" placeholder="파일명을 입력하세요."> 
+	                			<select id="name_select">
+	                				<option value="file_name">파일명</option>
+	                				<option value="member_name">작성자명</option>
+	                			</select>  
+	                			<input type="text" id="name_input" placeholder="검색어를 입력하세요."> 
 	                			<input type="button" id="search_button" value="검색">
 	                		</div>  		
 	                	</div>
@@ -123,6 +126,5 @@
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     	<script src="/js/employee/document/department.js"></script>
-    </th:block>
     </th:block>
 </html>

@@ -153,7 +153,6 @@
 	width: 60vw;
 	height: 630px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	overflow-y: auto;
 	margin: 1vw;
 }
 .document_no_file{
@@ -215,10 +214,22 @@
 	display: flex;
     justify-content: center; 
 }
-#file_name{
-	margin-top: 1.7vh;
+#name_select{
+	width: 5.3vw;
+	height: 4vh;
+	margin-top: 0.5vh;
+	padding: 0.5vh 0.5vw;
+	border-radius: 2px;
+	font-size: 0.8vw;
+	border: 1px solid #ddd;
+    border-radius: 4px;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 3.7vw center;
+    transition: border-color 0.3s;
 }
-#file_name_input{
+#name_input{
 	margin: 0.6vh 0 0 1vw; 
 	width: 12vw;
 	height: 2.7vh;
@@ -227,7 +238,7 @@
 	border: 1px solid #ddd;
     border-radius: 4px;
 }
-#file_name_input:focus{
+#name_input:focus{
     outline: none;
     border-color: #B1C2DD;
 }
@@ -372,7 +383,7 @@
     background-position: left 3.5vw center;
     transition: border-color 0.3s;
 }
-#sort_select:focus{
+#sort_select:focus, #name_select:focus{
     outline: none;
     border-color: #B1C2DD;
 }
