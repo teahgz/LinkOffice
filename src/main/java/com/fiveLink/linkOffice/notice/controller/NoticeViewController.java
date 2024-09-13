@@ -101,4 +101,15 @@ public class NoticeViewController {
     	
     	return "admin/notice/notice_detail";
     }
+    
+    @GetMapping("/admin/notice/update/{notice_no}")
+    public String updateNoticePage(Model model,
+    		@PathVariable("notice_no")Long notice_no) {
+    	
+    	NoticeDto dto = noticeService.selectNoticeOne(notice_no);
+    	model.addAttribute("dto",dto);
+    	
+    	
+    	return "admin/notice/notice_update";
+    }
 }

@@ -73,4 +73,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "JOIN n.member m " +
            "WHERE n.noticeNo = :noticeNo")
     List<Object[]> findNoticesWithMemberName(@Param("noticeNo") Long noticeNo);
+    
+    @Query("SELECT COUNT(n) FROM Notice n WHERE n.noticeImportance = 1")
+    int countImportantNotices();
 }
