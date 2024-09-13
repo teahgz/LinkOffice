@@ -36,7 +36,7 @@ public class DocumentFolderDto {
         return DocumentFolder.builder()
                 .documentFolderNo(document_folder_no)
                 .documentFolderName(document_folder_name)
-                .documentFolder(documentFolder)
+                .documentFolderParentNo(document_folder_parent_no)
                 .documentFolderLevel(document_folder_level)
                 .department(department)
                 .documentBoxType(document_box_type)

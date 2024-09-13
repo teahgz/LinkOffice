@@ -2,6 +2,8 @@
 let folderList = [];
 
 $(function () {
+	// 전역 변수로 selectedFolderNo 정의
+	let selectedFolderNo = null;
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     var deptNo = document.getElementById("dept_no").textContent;
@@ -59,24 +61,34 @@ $(function () {
                             }
                         },
                         'plugins': ['wholerow', 'types']
+                    }).on('ready.jstree', function () {
+                        const savedFolderNo = sessionStorage.getItem('selectedFolderNo');
+                        if (savedFolderNo) {
+                            $('#tree').jstree('select_node', savedFolderNo);
+                            openFolderToNode(savedFolderNo);
+                            updateFolderName(savedFolderNo);
+                            loadFiles(savedFolderNo);
+                        } else {
+                            $('.document_no_folder').show();
+                            $('.document_select_folder').hide();
+                        }
+                        $('.document_no_folder').hide();
+                        $('.document_select_folder').show();
+                        $('.folder_buttons').show();
+                        $('.box_size').show();
                     });
 
                     $('#tree').on('changed.jstree', function (e, data) {
 						// 현재페이지를 1페이지로 리셋 
                         currentPage = 0; 
-                        const selectedFolderId = data.node.id;
+                        selectedFolderNo = data.node.id;
                         // 폴더 이름 출력을 위한 함수 
-                        updateFolderName(selectedFolderId); 
+                        updateFolderName(selectedFolderNo); 
                         // 폴더 안에 든 파일을 불러올 함수 
-                        loadFiles(selectedFolderId);
+                        loadFiles(selectedFolderNo);                       
+                        // 선택된 폴더 번호를 저장
+                        sessionStorage.setItem('selectedFolderNo', selectedFolderNo);
                     });
-					// 폴더가 존재하면 폴더를 선택하세요 메시지 띄우기 
-                    $('.document_no_folder').hide();
-                    $('.document_select_folder').show();
-                    $('.folder_buttons').show();
-                    $('.box_size').show();
-                    
-                    
                 } else {
 					// 폴더가 없으면 폴더 생성 버튼 띄우기 
                     $('#tree').hide();
@@ -86,6 +98,17 @@ $(function () {
         });
     }
     
+    // 선택된 폴더까지 열린 상태로 있게 하기 
+    function openFolderToNode(savedFolderNo) {
+        var node = $('#tree').jstree(true).get_node(savedFolderNo);
+        
+        // 부모 폴더가 존재할 때까지 반복
+        while (node && node.parent !== '#') {
+            $('#tree').jstree('open_node', node);
+            node = $('#tree').jstree(true).get_node(node.parent);
+        }
+    }
+
     // 모든 파일 사이즈 가져오기 
     function getAllFileSize(){
 		$.ajax({
@@ -116,9 +139,9 @@ $(function () {
 	}
 
     // 선택된 폴더의 이름을 출력 
-    function updateFolderName(folderId) {
+    function updateFolderName(folderNo) {
         // folderList에서 폴더 이름을 찾아서 div에 추가 
-        const folderName = folderList.find(f => f.id == folderId);
+        const folderName = folderList.find(f => f.id == folderNo);
         if (folderName) {
             const folderNameDiv = document.getElementById('folder_name');
             folderNameDiv.innerHTML = folderName.text; 
@@ -126,12 +149,12 @@ $(function () {
     }
 
     // 선택된 폴더의 파일 목록을 불러오기
-    function loadFiles(folderId) {
+    function loadFiles(folderNo) {
         $.ajax({
             type: 'GET',
             url: '/folder/file',
             data: {
-                folderId: folderId
+                folderNo: folderNo
             },
             dataType: 'json',
             success: function(data) {
@@ -294,6 +317,7 @@ $(function () {
 		event.preventDefault();
 		
 		$('.modal_div').show();
+		$('.first_folder_add_modal').show();
 	});
 		
 	$('#first_folder_add_button').on('click', function(){
@@ -353,9 +377,88 @@ $(function () {
             });				
 		}					
 	});
-	$('.first_folder_cancel_div').on('click', function(){
+	$('.cancel_div').on('click', function(){
 		$('.modal_div').hide();
 	});
+	
+	// 폴더 이름 변경 
+	$('#change_name_button').on('click', function(){
+		event.preventDefault();		
+		$('.modal_div').show();
+		$('.change_name_modal').show();		
+	});
+	
+	$('#folder_name_change_button').on('click', function(){
+		changeFolderName();
+	});
+	
+	// 폴더 이름 변경 함수 
+	function changeFolderName() {
+	    // 입력된 폴더 이름 
+	    const newFolderName = $('#change_folder_name').val();
+	    
+	    if (newFolderName.trim() === '') {
+	        Swal.fire({
+	            text: '새로운 폴더명을 입력해주세요 .',
+	            icon: 'warning',
+	            confirmButtonText: '확인'
+	        });
+	    } else {
+	        const csrfToken = $('input[name="_csrf"]').val();
+	        
+	        // ajax 요청
+	        $.ajax({
+	            type: 'POST',
+	            url: '/change/folder/name',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                folderName: newFolderName, 
+	                folderNo: selectedFolderNo, 
+	            }),
+	            headers: {
+	                'X-Requested-With': 'XMLHttpRequest',
+	                'X-CSRF-TOKEN': csrfToken
+	            },
+	            success: function(response) {
+	                if (response.res_code === '200') {
+	                    Swal.fire({
+	                        icon: 'success',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	
+	                    // 폴더 이름 변경 성공 처리
+	                    $('.modal_div').hide();
+	                    
+	                    // 폴더 이름 업데이트
+                        const updatedFolder = folderList.find(f => f.id == selectedFolderNo);
+                        if (updatedFolder) {
+							// 새로운 폴더 이름을 출력하는 곳에 반영 
+                            updatedFolder.text = newFolderName;
+	                        $('#tree').jstree(true).set_text(selectedFolderNo, newFolderName);
+                            updateFolderName(selectedFolderNo);
+                        }
+                        // 폴더랑 파일 다시 로드 
+                        openFolderToNode(selectedFolderNo);
+                        loadFiles(selectedFolderNo);
+	                    
+	                    $('.document_no_folder').hide();
+	                    $('.document_select_folder').show();
+	                    $('.folder_buttons').show();
+	                    $('.box_size').show();
+	                    $('#change_folder_name').val('');
+	                } else {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            }
+	        });
+	    }
+	}
+
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
@@ -364,8 +467,10 @@ $(function () {
         
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
-            const selectedFolderId = $('#tree').jstree('get_selected')[0];
-            loadFiles(selectedFolderId);
+            const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+            if (selectedFolderNo) {
+            loadFiles(selectedFolderNo);
+        	}
         });
     });
 });

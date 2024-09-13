@@ -38,9 +38,8 @@ public class DocumentFolder {
     @Column(name = "document_folder_name")
     private String documentFolderName;
 
-    @ManyToOne
-    @JoinColumn(name = "document_folder_parent_no")
-    private DocumentFolder documentFolder;
+    @Column(name = "document_folder_parent_no")
+    private Long documentFolderParentNo;
 
     @Column(name = "document_folder_level")
     private Long documentFolderLevel;
@@ -69,7 +68,7 @@ public class DocumentFolder {
         return DocumentFolderDto.builder()
                 .document_folder_no(documentFolderNo)
                 .document_folder_name(documentFolderName)
-                .document_folder_parent_no(documentFolder != null ? documentFolder.getDocumentFolderNo() : null)
+                .document_folder_parent_no(documentFolderParentNo)
                 .document_folder_level(documentFolderLevel)
                 .department_no(department.getDepartmentNo())
                 .document_box_type(documentBoxType)

@@ -164,8 +164,8 @@ $(function () {
                         row.innerHTML = `
                         	<td><input type="checkbox"></td>
                             <td>${file.document_ori_file_name}</td>
-                            <td>${formatDate(file.document_file_upload_date)}</td>
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + file.position_name)}</td>
+                            <td>${formatDate(file.document_file_upload_date)}</td>
                             <td><input type="button" class="file_show_button" value="파일보기"></td>
                             <td>${file.document_file_size}</td>
                             <td><input type="button" class="file_down_button" value="다운로드"></td>

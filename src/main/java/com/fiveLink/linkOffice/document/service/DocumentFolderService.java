@@ -93,4 +93,15 @@ public class DocumentFolderService {
 		}
 		return documentFolderDtoList;
 	}
+	
+	public int changeFolderName(DocumentFolder newDocumentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(newDocumentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
