@@ -213,8 +213,7 @@
     overflow-y: auto;
 }
 
-.move-to-approver,.move-to-reference,.move-to-reference
- {
+.move-to-approver,.move-to-reference,.move-to-reviewer, .move-from-approver,  .move-from-reference, .move-from-reviewer{
     background: none;
     border: none;
     cursor: pointer;
@@ -227,3 +226,18 @@
     height: calc(100% - 50px);
     overflow-y: auto;
 }
+
+   .selected-member.selected {
+        background-color: #e0e0e0;
+    }
+
+    .selected-member {
+        margin: 2px 0;
+        padding: 2px;
+        cursor: pointer;
+    }
+
+.modal_btn{
+	float:right;
+}
+    
