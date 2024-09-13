@@ -101,34 +101,43 @@ public class DocumentViewController {
 	   return ResponseEntity.ok(allFileSize);
    }
 	
-	// 사내 문서함 : 문서함 타입 = 2 로 지정해서 service에 보내줌 
+	// 사내 문서함 
 	@GetMapping("/employee/document/company")
 	public String documentCompanyPage(Model model, 
 			@RequestParam("memberNo") Long memberNo) {
-		Long document_box_type = 2L;
-		List<DocumentFolderDto> folderList = documentFolderService.selectCompanyFolderList(document_box_type);
-		
+
 		// memberDto 불러오기
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    
-		model.addAttribute("folderList", folderList);
+
 		model.addAttribute("memberdto", memberdto);
 		return "employee/document/company";
 	}
 	
-	// 휴지통 
-	@GetMapping("/employee/document/bin/{member_no}")
-	public String documentBinPage(Model model,
-			@PathVariable("member_no") Long memberNo) {
-		// memberDto 불러오기
-	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    List<DocumentFileDto> fileList = documentFileService.documentBinList(memberNo);
-	    
-	    model.addAttribute("memberdto", memberdto);
-	    model.addAttribute("fileList", fileList);
-	    return "employee/document/bin";
-		
-	}
-
+   // 사내 폴더 
+   @GetMapping("/company/folder")
+   public ResponseEntity<List<DocumentFolderDto>> companyFolderList() throws IOException {
+	   List<DocumentFolderDto> folderList = documentFolderService.selectCompanyFolderList();	  
+	   return ResponseEntity.ok(folderList);
+   }
 	
+   // 부서 문서함 파일 사이즈 
+   @GetMapping("/company/fileSize")
+   public ResponseEntity<Double> getCompanyFileSize() throws IOException{
+	   double allFileSize = documentFileService.getCompanyFileSize();
+	   return ResponseEntity.ok(allFileSize);
+   }
+   
+   // 휴지통 
+   @GetMapping("/employee/document/bin/{member_no}")
+   public String documentBinPage(Model model,
+		   @PathVariable("member_no") Long memberNo) {
+	   // memberDto 불러오기
+	   List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	   List<DocumentFileDto> fileList = documentFileService.documentBinList(memberNo);
+	   
+	   model.addAttribute("memberdto", memberdto);
+	   model.addAttribute("fileList", fileList);
+	   return "employee/document/bin";
+		
+   }
 }

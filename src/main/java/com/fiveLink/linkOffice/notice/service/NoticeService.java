@@ -18,6 +18,8 @@ import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.notice.domain.NoticeDto;
 import com.fiveLink.linkOffice.notice.repository.NoticeRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class NoticeService {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeApiController.class);
@@ -29,7 +31,11 @@ public class NoticeService {
         this.noticeRepository = noticeRepository;
         this.memberRepository = memberRepository;
     }
-
+    // 중요 공지사항 개수 확인 메서드
+    public int countImportantNotices() {
+        return noticeRepository.countImportantNotices();  // NoticeRepository에 정의된 쿼리 사용
+    }
+    
     public Notice createNotice(NoticeDto dto) {
         Long noticeWriter = dto.getMember_no(); 
         Member member = memberRepository.findBymemberNo(noticeWriter);
@@ -131,4 +137,31 @@ public class NoticeService {
         return dto;
     }
     
+    @Transactional
+    public Notice updateNotice(NoticeDto dto) {
+    	NoticeDto temp = selectNoticeOne(dto.getNotice_no());
+    	temp.setNotice_title(dto.getNotice_title());
+    	temp.setNotice_content(dto.getNotice_content());
+    	temp.setNotice_importance(dto.getNotice_importance());
+    	temp.setNotice_update_date(dto.getNotice_update_date());
+    	if(dto.getNotice_ori_img() != null
+    			&& "".equals(dto.getNotice_ori_img()) == false) {
+    		temp.setNotice_ori_img(dto.getNotice_ori_img());
+    		temp.setNotice_new_img(dto.getNotice_new_img());
+    	}
+    	Notice notice = temp.toEntity();
+    	Notice result = noticeRepository.save(notice);
+    	return result;
+    }
+    
+    public int deleteNotice(Long notice_no) {
+    	int result =0;
+    	try {
+    		noticeRepository.deleteById(notice_no);
+    		result= 1;
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return result;
+    }
 }

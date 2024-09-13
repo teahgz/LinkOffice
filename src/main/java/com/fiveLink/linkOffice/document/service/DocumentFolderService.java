@@ -78,7 +78,9 @@ public class DocumentFolderService {
 		return result;
 	}
 	// 사내 문서함 
-	public List<DocumentFolderDto> selectCompanyFolderList(Long document_box_type){
+	public List<DocumentFolderDto> selectCompanyFolderList(){
+		// 문서함 타입
+		Long document_box_type = 2L;
 		// 폴더 상태 = 0
 		Long document_folder_status = 0L;
 		// repository에 documentBoxType과 folderStatus를 넘겨줌 
