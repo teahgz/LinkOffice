@@ -129,9 +129,8 @@ $(function () {
     function loadFiles(folderId) {
         $.ajax({
             type: 'GET',
-            url: '/personal/file',
+            url: '/folder/file',
             data: {
-                memberNo: memberNo,
                 folderId: folderId
             },
             dataType: 'json',
@@ -197,7 +196,7 @@ $(function () {
                 } else {
                     $('.document_file_list').show();
                     $('.document_select_folder').hide();
-                    fileTableBody.innerHTML = '<tr><td colspan="6">파일 목록이 존재하지 않습니다.</td></tr>';
+                    fileTableBody.innerHTML = '<tr><td colspan="7">파일 목록이 존재하지 않습니다.</td></tr>';
 
                     // 페이징 버튼 숨기기
                     paginationDiv.innerHTML = '';
@@ -304,7 +303,7 @@ $(function () {
 		
 		if(folderName.trim() === ''){
 			Swal.fire({
-        		text: '폴더영을 입력해주세요 .',
+        		text: '폴더명을 입력해주세요 .',
         		icon: 'warning',
         		confirmButtonText: '확인'
     		});
@@ -353,9 +352,9 @@ $(function () {
                 }
             });				
 		}					
-		$('.first_folder_cancel_div').on('click', function(){
-			$('.modal_div').hide();
-		});
+	});
+	$('.first_folder_cancel_div').on('click', function(){
+		$('.modal_div').hide();
 	});
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴

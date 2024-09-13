@@ -57,20 +57,19 @@ public class DocumentViewController {
 	   return ResponseEntity.ok(folderList);
    }
    
-   // 개인 파일 
-   @GetMapping("/personal/file")
+   // 각 폴더 파일 
+   @GetMapping("/folder/file")
    public ResponseEntity<List<DocumentFileDto>> selectPersonalfileList(
-		   @RequestParam("memberNo") Long memberNo,
 		   @RequestParam("folderId") Long folderId) throws IOException {
-	   List<DocumentFileDto> fileList = documentFileService.selectPersonalfileList(memberNo , folderId);
+	   List<DocumentFileDto> fileList = documentFileService.selectfileList(folderId);
        return ResponseEntity.ok(fileList);
    }
    
    // 개인 문서함 파일 사이즈 
    @GetMapping("/personal/fileSize")
-   public ResponseEntity<Double> getAllFileSize(
+   public ResponseEntity<Double> getPersonalFileSize(
 		   @RequestParam("memberNo") Long memberNo) throws IOException{
-	   double allFileSize = documentFileService.getAllFileSize(memberNo);
+	   double allFileSize = documentFileService.getPersonalFileSize(memberNo);
 	   return ResponseEntity.ok(allFileSize);
    }
 	
@@ -80,14 +79,27 @@ public class DocumentViewController {
 			@PathVariable("department_no") Long departmentNo,
 			@RequestParam("memberNo") Long memberNo
 			) {
-		List<DocumentFolderDto> folderList = documentFolderService.selectDepartmentFolderList(departmentNo);
 		// memberDto 불러오기
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    
-		model.addAttribute("folderList", folderList);
 		model.addAttribute("memberdto", memberdto);
 		return "employee/document/department";
 	}
+   // 부서 폴더 
+   @GetMapping("/department/folder")
+   public ResponseEntity<List<DocumentFolderDto>> departmentFolderList(
+		   @RequestParam("deptNo") Long deptNo) throws IOException {
+	   List<DocumentFolderDto> folderList = documentFolderService.selectDepartmentFolderList(deptNo);	  
+	   return ResponseEntity.ok(folderList);
+   }
+   
+   // 부서 문서함 파일 사이즈 
+   @GetMapping("/department/fileSize")
+   public ResponseEntity<Double> getDepartmentFileSize(
+		   @RequestParam("deptNo") Long deptNo) throws IOException{
+	   double allFileSize = documentFileService.getDeparmentFileSize(deptNo);
+	   return ResponseEntity.ok(allFileSize);
+   }
 	
 	// 사내 문서함 : 문서함 타입 = 2 로 지정해서 service에 보내줌 
 	@GetMapping("/employee/document/company")
