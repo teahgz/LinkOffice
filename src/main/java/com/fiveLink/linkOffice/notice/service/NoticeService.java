@@ -33,7 +33,7 @@ public class NoticeService {
     }
     // 중요 공지사항 개수 확인 메서드
     public int countImportantNotices() {
-        return noticeRepository.countImportantNotices();  // NoticeRepository에 정의된 쿼리 사용
+        return noticeRepository.countImportantNotices(); 
     }
     
     public Notice createNotice(NoticeDto dto) {

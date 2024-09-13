@@ -3,12 +3,12 @@
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorate="~{include/layout}"> 
     <th:block layout:fragment="content">
-        <link th:href="@{/css/employee/meeting/meetingReservation.css}" rel="stylesheet" type="text/css">
-         <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' /> 
+        <link th:href="@{/css/employee/meeting/meetingReservation.css}" rel="stylesheet" type="text/css"> 
+        <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' /> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
-        <script th:src="@{https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@5.11.5/main.global.min.js"></script>
+        <script th:src="@{https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js}"></script> 
         <section>
         <h1>회의실 예약</h1>
         <div class=container>
@@ -37,7 +37,7 @@
 				    </div>
 				</div>
 		        
-		        <h2 class="reservation-table-title">예약 현황</h2>
+		        <h2 class="reservation-table-title"><span id="pick_date_text"></span> 예약 현황</h2>
 			    <div id="reservation-table">
 			        <table>
 			            <thead>
@@ -87,11 +87,15 @@
 		</div> 
 
 		<!-- 예약 모달 -->
-		<div id="reservationModal" class="modal">
+		<div id="reservationModal" class="modal" data-backdrop="static">
 	        <div class="modal-content">
-	            <span class="close">&times;</span>
+	            <span class="close" id="reservation_close">&times;</span>
 	            <h2>회의실 예약</h2>
 	            <form id="reservationForm">
+	            	<input type="hidden" id="memberNo" th:name="${memberdto.member_no}" th:value="${memberdto.member_no}"/>
+	            	<input type="hidden" id="memberName" th:name="${memberdto.member_name}" th:value="${memberdto.member_name}"/>
+	            	<input type="hidden" id="memberPosition" th:name="${memberdto.position_name}" th:value="${memberdto.position_name}"/> 
+	            	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             		<div class="reservation_row">
 	                    <label for="reservation_room">회의실</label>
 	                	<select id="reservation_room" name="reservation_room">
@@ -103,28 +107,52 @@
 	                	<input type="date" id="reservation_date" name="reservation_date"> 
 	                </div> 
 	                <div class="reservation_row"> 
-	                	<select id="reservation_start_time" name="reservation_start_time"> 
+	                	<select class="time_select" id="reservation_start_time" name="reservation_start_time" > 
 	                		<option value="">시작 시간</option>
 	                	</select>
-	                	<select id="reservation_end_time" name="reservation_end_time"> 
+	                	<select class="time_select" id="reservation_end_time" name="reservation_end_time" > 
 	                		<option value="">종료 시간</option>
 	                	</select>
 	                </div> 
 	                <div class="reservation_row">
 	                    <label for="reservation_name">예약자</label>
-	                	<span class="reservation_name"></span>
+	                	<span class="reservation_name" id="reservation_name"></span>
 	                </div> 
 	                <div class="reservation_row">
 	                    <label for="reservation_purpose">목록</label>
 	                	<textarea id="reservation_purpose" name="reservation_purpose"></textarea>
 	                </div> 
-	                <div class="reservation_row">
+	                <div class="reservation_row reservation_participate">
 	                    <label>참여자</label>
-	                	<button type="button" id="reservation_participate" name="reservation_participate"></textarea>
+	                	<button type="button" id="openOrganizationChartButton" class="modal_btn">참여자 선택</button> 
+	               		<div class="selected-participants-container"></div>
 	                </div> 
+	                <input type="hidden" name="selectedMembers" id="selectedMembers" />
+	                <button type="submit" id="reservation_submit">예약</button>
 	            </form>
 	        </div>
 	    </div> 
+	    
+	    <!-- 조직도 모달 -->
+        <div class="participate_modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="participate_modal-content">
+                    <form>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <div class="participate_modal-header">
+                            <div class="participate_organizationchart_title" id="organizationChartModalLabel">참여자 등록</div>
+                            <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
+                        </div>
+                        <div class="participate_modal-body"> 
+                            <div id="selected-members"> </div>
+                            <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
+                            <div id="organization-chart"></div>
+                            <button id="participate_confirmButton" type="button" class="participate_modal_btn">확인</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <script th:src="@{/js/employee/meeting/meetingReservation.js}"></script>
     </th:block>
 </html>

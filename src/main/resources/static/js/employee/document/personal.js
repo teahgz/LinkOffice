@@ -4,6 +4,8 @@ let folderList = [];
 $(function () {
 	// 전역 변수로 selectedFolderNo 정의
 	let selectedFolderNo = null;
+	// 폴더 이름 변경 여부 
+	let isFolderNameChange = false;
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     var deptNo = document.getElementById("dept_no").textContent;
@@ -65,9 +67,11 @@ $(function () {
                         const savedFolderNo = sessionStorage.getItem('selectedFolderNo');
                         if (savedFolderNo) {
                             $('#tree').jstree('select_node', savedFolderNo);
-                            openFolderToNode(savedFolderNo);
-                            updateFolderName(savedFolderNo);
-                            loadFiles(savedFolderNo);
+                            if (isFolderNameChange) {
+                                openFolderToNode(savedFolderNo);
+                                updateFolderName(savedFolderNo);
+                                loadFiles(savedFolderNo);
+                            }
                         } else {
                             $('.document_no_folder').show();
                             $('.document_select_folder').hide();
@@ -439,6 +443,7 @@ $(function () {
                             updateFolderName(selectedFolderNo);
                         }
                         // 폴더랑 파일 다시 로드 
+                        isFolderNameChange = true;
                         openFolderToNode(selectedFolderNo);
                         loadFiles(selectedFolderNo);
 	                    
@@ -469,7 +474,7 @@ $(function () {
         $('#sort_select').on('change', function() {
             const selectedFolderNo = $('#tree').jstree('get_selected')[0];
             if (selectedFolderNo) {
-            loadFiles(selectedFolderNo);
+            	loadFiles(selectedFolderNo);
         	}
         });
     });

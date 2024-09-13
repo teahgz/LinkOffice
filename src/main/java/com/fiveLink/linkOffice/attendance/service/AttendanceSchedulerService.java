@@ -36,7 +36,7 @@ public class AttendanceSchedulerService {
     
     // 매일 오전 9시 10분에 실행됨
 
-    // @Scheduled(cron = "0 10 9 * * *") 
+     //@Scheduled(cron = "0 2 17 * * *")
 
     public void checkAndInsertAttendance() {
         // 모든 사원 조회 

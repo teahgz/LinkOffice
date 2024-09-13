@@ -23,102 +23,104 @@ import com.fiveLink.linkOffice.notice.repository.NoticeRepository;
 
 @Service
 public class FileService {
-	
-	private String fileDir = "C:\\linkoffice\\upload\\"; 
-	
-	private final NoticeRepository NoticeRepository;
-	
-	@Autowired
-	public FileService(NoticeRepository boardRepository) {
-		this.NoticeRepository = boardRepository;
-	}
-	
-	public ResponseEntity<Object> download(Long notice_no){
-		try {
-			Notice n = NoticeRepository.findBynoticeNo(notice_no);
-			
-			String newFileName = n.getNoticeNewImg();
-			String oriFileName = URLEncoder.encode(n.getNoticeOriImg(),"UTF-8");
-			String downDir = fileDir+newFileName;
-			
-			Path filePath = Paths.get(downDir);
-			Resource resource = new InputStreamResource(Files.newInputStream(filePath));
-			
-			File file = new File(downDir);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentDisposition(ContentDisposition.builder("attachment").filename(oriFileName).build());
-			
-			return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			return new ResponseEntity<Object>(null, HttpStatus.CONFLICT);
-		}
-	}
+    
+    private String fileDir = "C:\\linkoffice\\upload\\"; 
 
-	public String upload(MultipartFile file) {
-	    String newFileName = null;
+    private final NoticeRepository NoticeRepository;
+    private final NoticeService NoticeService;
+    
+    @Autowired
+    public FileService(NoticeRepository NoticeRepository, NoticeService noticeService) {
+        this.NoticeRepository = NoticeRepository;
+        this.NoticeService = noticeService;
+    }
 
-	    try {
-	        // 파일이 비어 있는지 확인
-	        if (file.isEmpty()) {
-	            return null; // 파일이 없으면 null 반환
-	        }
+    public ResponseEntity<Object> download(Long notice_no) {
+        try {
+            Notice n = NoticeRepository.findBynoticeNo(notice_no);
+            
+            String newFileName = n.getNoticeNewImg();
+            String oriFileName = URLEncoder.encode(n.getNoticeOriImg(), "UTF-8");
+            String downDir = fileDir + newFileName;
+            
+            Path filePath = Paths.get(downDir);
+            Resource resource = new InputStreamResource(Files.newInputStream(filePath));
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.builder("attachment").filename(oriFileName).build());
+            
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
+    }
 
-	        // 1. 파일 원래 이름
-	        String oriFileName = file.getOriginalFilename();
-	        // 2. 파일 확장자 추출 (확장자가 없는 경우 대비)
-	        int dotIndex = oriFileName.lastIndexOf(".");
-	        String fileExt = "";
-	        if (dotIndex != -1) {
-	            fileExt = oriFileName.substring(dotIndex);
-	        }
-	        // 3. 파일 이름을 UUID로 변경
-	        UUID uuid = UUID.randomUUID();
-	        // 4. UUID에서 하이픈 제거
-	        String uniqueName = uuid.toString().replaceAll("-", "");
-	        // 5. 새로운 파일명 생성
-	        newFileName = uniqueName + fileExt;
+    public String upload(MultipartFile file) {
+        String newFileName = null;
 
-	        // 6. 저장할 디렉토리 경로 설정
-	        File saveDir = new File(fileDir);
-	        // 7. 디렉토리가 없을 경우 생성
-	        if (!saveDir.exists()) {
-	            saveDir.mkdirs();  // 경로 중간에 없는 디렉토리도 생성
-	        }
+        try {
+            if (file.isEmpty()) {
+                return null; 
+            }
 
-	        // 8. 저장할 파일 객체 생성 (디렉토리 + 새로운 파일명)
-	        File saveFile = new File(saveDir, newFileName);
+            String oriFileName = file.getOriginalFilename();
+            int dotIndex = oriFileName.lastIndexOf(".");
+            String fileExt = "";
+            if (dotIndex != -1) {
+                fileExt = oriFileName.substring(dotIndex);
+            }
+            UUID uuid = UUID.randomUUID();
+            String uniqueName = uuid.toString().replaceAll("-", "");
+            newFileName = uniqueName + fileExt;
 
-	        // 9. 파일 저장
-	        file.transferTo(saveFile);
+            File saveDir = new File(fileDir);
+            if (!saveDir.exists()) {
+                saveDir.mkdirs();
+            }
 
-	    } catch(Exception e) {
-	        e.printStackTrace();
-	    }
-	    return newFileName;
-	}
+            File saveFile = new File(saveDir, newFileName);
+            file.transferTo(saveFile);
 
-	
-	public int delete(Long notice_no){
-		int result = -1;
-		try {
-		Notice n = NoticeRepository.findBynoticeNo(notice_no);
-		String newFileName = n.getNoticeNewImg(); 
-		String oriFileName = n.getNoticeOriImg(); 
-		String resultDir = fileDir + URLDecoder.decode(newFileName,"UTF-8");
-		
-		if(resultDir != null && resultDir.isEmpty() == false) {
-			File file = new File(resultDir);
-			
-			if(file.exists()) {
-				file.delete();
-				result = 1;
-			}
-		}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newFileName;
+    }
+
+    public int delete(Long notice_no) {
+        int result = -1;
+        try {
+            Notice notice = NoticeRepository.findBynoticeNo(notice_no);
+            if (notice == null) {
+                return result;  // 공지사항이 없을 경우
+            }
+
+            // 새로운 파일이 업로드될 때만 기존 파일 삭제
+            String newFileName = notice.getNoticeNewImg();
+            if (newFileName != null && !newFileName.isEmpty()) {
+                File file = new File(fileDir + newFileName);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+
+            String oriFileName = notice.getNoticeOriImg();
+            if (oriFileName != null && !oriFileName.isEmpty()) {
+                File oriFile = new File(fileDir + oriFileName);
+                if (oriFile.exists()) {
+                    oriFile.delete();
+                }
+            }
+
+            result = 1;  // 삭제 성공 시 1 반환
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = -1;  // 삭제 실패 시 -1 반환
+        }
+        return result;
+    }
+
 }
