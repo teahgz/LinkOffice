@@ -11,6 +11,7 @@ import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.Position;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -129,7 +130,11 @@ public class Member {
 	
 	// [전주영] 휴가결재 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	private List<VacationApproval> vacationDocument;
+	private VacationApproval vacationApproval;
+	
+	// [전주영] 휴가결재 결재자 
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private VacationApprovalFlow VacationApprovalFlow;
 	
 	// [김민재] 공지사항 관리자 확인
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)

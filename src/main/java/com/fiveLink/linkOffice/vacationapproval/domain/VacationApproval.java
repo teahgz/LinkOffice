@@ -79,6 +79,9 @@ public class VacationApproval {
 	
     @OneToOne(mappedBy = "vacationApproval")
     private VacationApprovalFile vacationApprovalFile;
+    
+    @OneToOne(mappedBy = "vacationApproval")
+    private VacationApprovalFlow VacationApprovalFlow;
 	
 	public VacationApprovalDto toDto() {
 		return VacationApprovalDto.builder()
