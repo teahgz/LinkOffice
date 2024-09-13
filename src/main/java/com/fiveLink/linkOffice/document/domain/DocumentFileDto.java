@@ -22,11 +22,16 @@ public class DocumentFileDto {
     private String document_ori_file_name;  
     private String document_new_file_name;  
     private Long document_folder_no;      
-    private Long member_no;          
+    private Long member_no;
+    private String member_name;
     private String document_file_size;
     private LocalDateTime document_file_upload_date; 
     private LocalDateTime document_file_update_date; 
     private Long document_file_status; 
+    private Long department_no;
+    private String department_name;
+    private Long position_no;
+    private String position_name;
     
     // DTO를 Entity로 변경
     public DocumentFile toEntity(DocumentFile documentFile, Member member,

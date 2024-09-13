@@ -66,6 +66,17 @@ public class DocumentFolderService {
 		}
 		return documentFolderDtoList;
 	}
+	// 부서 문서함 첫 폴더
+	public int departmentFirstFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	// 사내 문서함 
 	public List<DocumentFolderDto> selectCompanyFolderList(Long document_box_type){
 		// 폴더 상태 = 0
