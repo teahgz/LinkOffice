@@ -59,7 +59,7 @@ public class ChatMemberController {
                     memberDto2.setMember_no(currentMemberNo);//초대받은 사람에 대한 정보
                     memberDto2.setChat_room_no(chatRoomNo); //채팅 방 번호
                     memberDto2.setChat_member_room_name(names.get(0));//현재 로그인 된 사람 정보
-                    if( chatMemberService.createMemberRoomOne(memberDto2)>0){
+                    if(chatMemberService.createMemberRoomOne(memberDto2)>0){
                         resultMap.put("res_code", "200");
                         resultMap.put("res_msg", "생성 완료");
 
@@ -67,6 +67,7 @@ public class ChatMemberController {
                 }
 
             }
+
 
 
         } catch (Exception e) {
