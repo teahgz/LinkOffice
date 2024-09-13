@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let selectedMembers = [];  // 선택된 사원을 저장할 배열
-	
-	
-	let approvers = [];  // 결재자 배열
-    let references = []; // 참조자 배열
-    let reviewers = [];  // 검토자 배열
-    // 페이지 로드 시 이전 선택된 사원 로드
+    let selectedMembers = [];
+    let approvers = [];
+    let references = [];
+    let reviewers = [];
+
+    let approverNames = [];
+    let referenceNames = [];
+    let reviewerNames = [];
+
     function loadSelectedMembers() {
         const savedMembers = localStorage.getItem('selectedMembers');
         if (savedMembers) {
@@ -13,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 페이지 로드 시 기존 선택 상태를 복원
     function restoreSelection(instance) {
         selectedMembers.forEach(memberId => {
             const node = instance.get_node(memberId);
@@ -23,21 +24,20 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    $('#openChart').click(function() {
+    $('#openChart').click(function () {
         $('#organizationChartModal').modal('show');
         loadOrganizationChart();
     });
 
-    // 조직도 로딩
     function loadOrganizationChart() {
         $.ajax({
             url: '/organizationChart/chart',
             method: 'GET',
-            success: function(data) {
-                $('#organization-chart').jstree({ 
+            success: function (data) {
+                $('#organization-chart').jstree({
                     'core': {
                         'data': data,
-                        'themes': { 
+                        'themes': {
                             'icons': true,
                             'dots': false,
                         }
@@ -58,216 +58,175 @@ document.addEventListener("DOMContentLoaded", function () {
                     restoreSelection(data.instance);
                 });
 
-                // 체크박스 변경 시 선택된 사원 업데이트
                 $('#organization-chart').on('changed.jstree', function (e, data) {
                     updateSelectedMembers(data.selected, data.instance);
                 });
-                
-                // 검색  
-                $('#organization_search').on('keyup', function() { 
+
+                $('#organization_search').on('keyup', function () {
                     const searchString = $(this).val();
-                    $('#organization-chart').jstree(true).search(searchString); 
+                    $('#organization-chart').jstree(true).search(searchString);
                 });
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('조직도 로딩 오류:', error);
             }
         });
     }
 
-    // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
         const selectedNodes = instance.get_selected(true);
         selectedMembers = [];
 
-        selectedNodes.forEach(function(node) {
+        selectedNodes.forEach(function (node) {
             if (node.original.type === 'member') {
-                const memberId = node.id;  
-                const memberNumber = memberId.replace('member_', ''); // 사원 번호
+                const memberId = node.id;
+                const memberNumber = memberId.replace('member_', '');
                 selectedMembers.push(memberNumber);
             }
         });
-      console.log(selectedMembers);
         localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
     }
 
-$(document).ready(function() {
-   approvers = [];  // 결재자 배열
-    references = []; // 참조자 배열
-    reviewers = [];  // 검토자 배열
-    
-    // 오른쪽 화살표 버튼 클릭 시 사원 이동
-    function moveToList(targetId, array) {
-        event.preventDefault();
-
-        const selectedNodes = $('#organization-chart').jstree(true).get_selected(true);
-
-        selectedNodes.forEach(function(node) {
-            if (node.original.type === 'member') {
-                addMemberToBox(node, targetId, array);
-                $('#organization-chart').jstree(true).disable_node(node);
-
-                const memberId = node.id;
-                const memberNumber = memberId.replace('member_', '');
-                array.push(memberNumber);
-
-                console.log(`${targetId} 배열:`, array);
-            }
-        });
-    }
-
-    // 왼쪽 화살표 버튼 클릭 시 사원 제거
-    function moveFromList(targetId, array) {
-        event.preventDefault();
-
-        $(`#${targetId} .selected-member`).each(function() {
-            const memberName = $(this).find('span').text();
-            const memberNumber = $(this).data('member-number');
-
-            // 배열에서 제거
-            const index = array.indexOf(memberNumber);
-            if (index > -1) {
-                array.splice(index, 1);
-            }
-
-            console.log(`${targetId} 배열:`, array);
-
-            // 화면에서 제거
-            $(this).remove();
-        });
-    }
-
-    // 사원 항목을 추가하는 함수
-    function addMemberToBox(node, boxId, array) {
+    function addMemberToBox(node, boxId, array, nameArray) {
         const memberId = node.id;
         const memberNumber = memberId.replace('member_', '');
         const memberElement = $('<div class="selected-member"></div>');
         const memberName = $('<span></span>').text(node.text).data('member-number', memberNumber);
         const removeButton = $('<button class="remove-member">&times;</button>');
-
-        memberElement.append(memberName).append(removeButton);
+        const checkBox = $('<input type="checkbox" class="remove-checkbox">');
+        memberElement.append(checkBox).append(memberName).append(removeButton);
         $(`#${boxId}`).append(memberElement);
 
-        // X 버튼 클릭 시 사원 제거
-        removeButton.click(function() {
-            const memberNumber = $(this).prev('span').data('member-number');
+        // 이름 배열에도 추가
+        nameArray.push(node.text);
 
-            // 배열에서 제거
-            const index = array.indexOf(memberNumber);
-            if (index > -1) {
-                array.splice(index, 1);
-            }
-
-            console.log(`${boxId} 배열:`, array);
-
-            // 화면에서 제거
-            memberElement.remove();
+        removeButton.click(function () {
+            removeMemberFromBox(memberNumber, memberElement, boxId, array, nameArray);
         });
     }
 
-    // 결재자 이동
-    $('.move-to-approver').click(function(event) {
-        moveToList('approver-list', approvers);
+    function removeMemberFromBox(memberNumber, memberElement, boxId, array, nameArray) {
+        const index = array.indexOf(memberNumber);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+
+        // 이름 배열에서 제거
+        const nameIndex = nameArray.indexOf(memberElement.find('span').text());
+        if (nameIndex > -1) {
+            nameArray.splice(nameIndex, 1);
+        }
+
+        console.log(`${boxId} 배열:`, array);
+
+        memberElement.remove();
+
+        const nodeId = 'member_' + memberNumber;
+        $('#organization-chart').jstree(true).enable_node(nodeId);
+    }
+
+    function moveToList(targetId, array, nameArray) {
+        event.preventDefault();
+
+        const selectedNodes = $('#organization-chart').jstree(true).get_selected(true);
+
+        selectedNodes.forEach(function (node) {
+            if (node.original.type === 'member' && !$('#organization-chart').jstree(true).is_disabled(node)) {
+                const memberId = node.id;
+                const memberNumber = memberId.replace('member_', '');
+
+                if (!array.includes(memberNumber)) {
+                    addMemberToBox(node, targetId, array, nameArray);
+                    $('#organization-chart').jstree(true).disable_node(node);
+                    array.push(memberNumber);
+                    console.log(`${targetId} 배열:`, array);
+                }
+            } 
+        });
+    }
+
+    function moveFromList(boxId, array, nameArray) {
+        event.preventDefault();
+
+        $(`#${boxId} .selected-member .remove-checkbox:checked`).each(function () {
+            const memberElement = $(this).closest('.selected-member');
+            const memberNumber = memberElement.find('span').data('member-number');
+            removeMemberFromBox(memberNumber, memberElement, boxId, array, nameArray);
+        });
+    }
+
+    $('.move-to-approver').click(function (event) {
+        moveToList('approver-list', approvers, approverNames);
     });
 
-    $('.move-from-approver').click(function(event) {
-        moveFromList('approver-list', approvers);
+    $('.move-from-approver').click(function (event) {
+        moveFromList('approver-list', approvers, approverNames);
     });
 
-    // 참조자 이동
-    $('.move-to-reference').click(function(event) {
-        moveToList('reference-list', references);
+    $('.move-to-reference').click(function (event) {
+        moveToList('reference-list', references, referenceNames);
     });
 
-    $('.move-from-reference').click(function(event) {
-        moveFromList('reference-list', references);
+    $('.move-from-reference').click(function (event) {
+        moveFromList('reference-list', references, referenceNames);
     });
 
-    // 검토자 이동
-    $('.move-to-reviewer').click(function(event) {
-        moveToList('reviewer-list', reviewers);
+    $('.move-to-reviewer').click(function (event) {
+        moveToList('reviewer-list', reviewers, reviewerNames);
     });
 
-    $('.move-from-reviewer').click(function(event) {
-        moveFromList('reviewer-list', reviewers);
+    $('.move-from-reviewer').click(function (event) {
+        moveFromList('reviewer-list', reviewers, reviewerNames);
     });
+
+
+
+function updateApproversDisplay() {
+    const approversDisplay = $('#approvers-display');
+    approversDisplay.empty();
+    const referencesDisplay = $('#references-display');
+    referencesDisplay.empty();
+    const reviewersDisplay = $('#reviewers-display');
+    reviewersDisplay.empty();
+
+    if (approvers.length > 0 || references.length > 0 || reviewers.length > 0) {
+        const approverList = $('<ul></ul>');
+        const referenceList = $('<ul></ul>');
+        const reviewerList = $('<ul></ul>');
+
+        approvers.forEach(function (memberNumber, index) {
+            const memberName = approverNames[index];
+            const listItem = $('<li></li>').text(`${memberName} (번호: ${memberNumber})`);
+            approverList.append(listItem);
+        });
+        references.forEach(function (memberNumber, index) {
+            const memberName = referenceNames[index];
+            const listItem = $('<li></li>').text(`${memberName} (번호: ${memberNumber})`);
+            referenceList.append(listItem);
+        });
+        reviewers.forEach(function (memberNumber, index) {
+            const memberName = reviewerNames[index];
+            const listItem = $('<li></li>').text(`${memberName} (번호: ${memberNumber})`);
+            reviewerList.append(listItem);
+        });
+        
+        approversDisplay.append(approverList);
+        referencesDisplay.append(referenceList);
+        reviewersDisplay.append(reviewerList);
+        
+    } 
+}
+
+$('#confirmButton').click(function (event) {
+    event.preventDefault();
+    updateApproversDisplay(); 
+    $('#organizationChartModal').modal('hide');
+    localStorage.removeItem('selectedMembers');
+    $('.permission_pick_list').empty();
 });
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 목록에 사원 추가 함수
-    function addMemberToBox(node, boxId) {
-        const memberId = node.id;  
-        const memberNumber = memberId.replace('member_', ''); // 사원 번호
-        const memberElement = $('<div class="selected-member"></div>');
-        const memberName = $('<span></span>').text(node.text);
-        const removeButton = $('<button class="remove-member">&times;</button>');
-
-        memberElement.append(memberName).append(removeButton);
-        $(`#${boxId}`).append(memberElement);
-
-        removeButton.click(function() {
-            $('#organization-chart').jstree(true).check_node(node);
-            memberElement.remove();
-        });
-
-        localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
-    }
-
-    // 확인 버튼 
-    $('#confirmButton').click(function(event) {
-        event.preventDefault();  // 폼 제출 방지
-        console.log("결재:", approvers);
-        console.log("합의:", references);
-        console.log("참조:", reviewers);
-        alert("결재 사원: " + approvers.join(", "));
-        alert("합의 사원: " + references.join(", "));
-        alert("참조 사원: " + reviewers.join(", "));
-
-        var csrfToken = document.querySelector('input[name="_csrf"]').value; 
-
-        $.ajax({
-            url: '/api/organization/saveSelectedMembers',
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            contentType: 'application/json',
-            data: JSON.stringify({ members: selectedMembers }),
-            success: function(response) {
-                console.log('선택한 사원 저장 성공:', response);
-                alert('선택한 사원이 저장되었습니다.');
-                
-                $('#organizationChartModal').modal('hide');
-
-                localStorage.removeItem('selectedMembers');
-                
-                $('.permission_pick_list').empty();
-            },
-            error: function(xhr, status, error) {
-                console.error('선택한 사원 저장 오류:', error);
-                alert('선택한 사원을 저장하는데 오류가 발생했습니다.');
-            }
-        });
-    });
 
     loadSelectedMembers();
 });

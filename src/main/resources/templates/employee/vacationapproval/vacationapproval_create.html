@@ -39,6 +39,9 @@
                               	<div class="approve_container">
                                 	<button type="button" id="openChart" class="btn btn-primary approve_button">결재선 지정</button>
                             	</div>
+                            	<div id="approvers-display"></div> 
+                                <div id="references-display"></div> 
+                                <div id="reviewers-display"></div>
                             		
                             </div>
                             <div class="editor-container__editor" id="editor"></div>
@@ -60,7 +63,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form>
-                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                 <div class="modal-header">
                     <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div>
                     <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
@@ -68,36 +71,37 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <!-- 검색 -->
                             <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
-                            <!-- 조직도 -->
                             <div id="organization-chart"></div>
                         </div>
                         <div class="member-lists-container">
                             <div class="member-list">
                                 <h3>결재자</h3>
                                 <div class="list-controls">
-                                    <div>
-                                        <button class="move-to-approver" data-target="approver">▶</button>
-                                    </div>
+                                	<div>
+	                                    <button class="move-to-approver" data-target="approver">▶</button>
+	                                    <button class="move-from-approver" data-target="approver">◀</button>
+                                	</div>
                                     <div class="member-box" id="approver-list"></div>
                                 </div>
                             </div>
                             <div class="member-list">
                                 <h3>합의자</h3>
                                 <div class="list-controls">
-                                    <div>
-                                        <button class="move-to-reference" data-target="reference">▶</button>
-                                    </div>
+	                                <div>
+	                                    <button class="move-to-reference" data-target="reference">▶</button>
+	                                    <button class="move-from-reference" data-target="reference">◀</button>
+	                                </div>
                                     <div class="member-box" id="reference-list"></div>
                                 </div>
                             </div>
                             <div class="member-list">
                                 <h3>참조자</h3>
                                 <div class="list-controls">
-                                    <div>
-                                        <button class="move-to-reviewer" data-target="reviewer">▶</button>
-                                    </div>
+	                                <div>
+	                                    <button class="move-to-reviewer" data-target="reviewer">▶</button>
+	                                    <button class="move-from-reviewer" data-target="reviewer">◀</button>
+	                                </div>
                                     <div class="member-box" id="reviewer-list"></div>
                                 </div>
                             </div>
@@ -105,7 +109,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="confirmButton" type="submit" class="modal_btn">확인</button>
+                    <button id="confirmButton" type="button" class="modal_btn">확인</button>
                 </div>
             </form>
         </div>
