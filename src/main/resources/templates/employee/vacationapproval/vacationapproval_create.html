@@ -4,7 +4,7 @@
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
        <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
-   		<link th:href="@{/css/employee/organization/approval.css}" rel="stylesheet" type="text/css">
+   		<link th:href="@{/css/employee/vacationapproval/approval.css}" rel="stylesheet" type="text/css">
         <link th:href="@{/css/employee/vacationapproval/vacationapproval_create.css}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <section th:each="member : ${memberdto}">
@@ -64,65 +64,65 @@
             </div>
             
             
-<!-- 조직도 모달 -->
-<div class="modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form>
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-                <div class="modal-header">
-                    <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div>
-                    <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
-                            <div id="organization-chart"></div>
-                        </div>
-                        <div class="member-lists-container">
-                            <div class="member-list">
-                                <h3>결재자</h3>
-                                <div class="list-controls">
-                                	<div>
-	                                    <button class="move-to-approver" data-target="approver">▶</button>
-	                                    <button class="move-from-approver" data-target="approver">◀</button>
-                                	</div>
-                                    <div class="member-box" id="approver-list"></div>
-                                </div>
-                            </div>
-                            <div class="member-list">
-                                <h3>합의자</h3>
-                                <div class="list-controls">
-	                                <div>
-	                                    <button class="move-to-reference" data-target="reference">▶</button>
-	                                    <button class="move-from-reference" data-target="reference">◀</button>
-	                                </div>
-                                    <div class="member-box" id="reference-list"></div>
-                                </div>
-                            </div>
-                            <div class="member-list">
-                                <h3>참조자</h3>
-                                <div class="list-controls">
-	                                <div>
-	                                    <button class="move-to-reviewer" data-target="reviewer">▶</button>
-	                                    <button class="move-from-reviewer" data-target="reviewer">◀</button>
-	                                </div>
-                                    <div class="member-box" id="reviewer-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="confirmButton" type="button" class="modal_btn">확인</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+			<!-- 조직도 모달 -->
+			<div class="modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
+			    <div class="modal-dialog" role="document">
+			        <div class="modal-content">
+			            <form>
+			                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+			                <div class="modal-header">
+			                    <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div>
+			                    <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
+			                </div>
+			                <div class="modal-body">
+			                    <div class="row">
+			                        <div class="col-md-6">
+			                            <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
+			                            <div id="organization-chart"></div>
+			                        </div>
+			                        <div class="member-lists-container">
+			                            <div class="member-list">
+			                                <h3>결재자</h3>
+			                                <div class="list-controls">
+			                                	<div>
+				                                    <button class="move-to-approver" data-target="approver">▶</button>
+				                                    <button class="move-from-approver" data-target="approver">◀</button>
+			                                	</div>
+			                                    <div class="member-box" id="approver-list"></div>
+			                                </div>
+			                            </div>
+			                            <div class="member-list">
+			                                <h3>합의자</h3>
+			                                <div class="list-controls">
+				                                <div>
+				                                    <button class="move-to-reference" data-target="reference">▶</button>
+				                                    <button class="move-from-reference" data-target="reference">◀</button>
+				                                </div>
+			                                    <div class="member-box" id="reference-list"></div>
+			                                </div>
+			                            </div>
+			                            <div class="member-list">
+			                                <h3>참조자</h3>
+			                                <div class="list-controls">
+				                                <div>
+				                                    <button class="move-to-reviewer" data-target="reviewer">▶</button>
+				                                    <button class="move-from-reviewer" data-target="reviewer">◀</button>
+				                                </div>
+			                                    <div class="member-box" id="reviewer-list"></div>
+			                                </div>
+			                            </div>
+			                        </div>
+			                    </div>
+			                </div>
+			                <div class="modal-footer">
+			                    <button id="confirmButton" type="button" class="modal_btn">확인</button>
+			                </div>
+			            </form>
+			        </div>
+			    </div>
+			</div>
 
-        <script th:src="@{/js/employee/organization/approval.js}"></script>
+        <script th:src="@{/js/employee/vacationapproval/approval.js}"></script>
         </section>
         <script type="importmap">
         {

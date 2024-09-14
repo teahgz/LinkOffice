@@ -197,19 +197,19 @@ function updateApproversDisplay() {
             const memberName = approverNames[index];
             const listItem = $('<p></p>').text(`${memberName}`);
             approverList.append(listItem);
-             $('<input type="hidden">').attr('name', 'approverNumbers').val(memberNumber).appendTo(approversDisplay);
+             $('<input type="hidden">').attr('id', 'approverNumbers').val(memberNumber).appendTo(approversDisplay);
         });
         references.forEach(function (memberNumber, index) {
             const memberName = referenceNames[index];
             const listItem = $('<p></p>').text(`${memberName}`);
             referenceList.append(listItem);
-             $('<input type="hidden">').attr('name', 'referenceNumbers').val(memberNumber).appendTo(referencesDisplay);
+             $('<input type="hidden">').attr('id', 'referenceNumbers').val(memberNumber).appendTo(referencesDisplay);
         });
         reviewers.forEach(function (memberNumber, index) {
             const memberName = reviewerNames[index];
             const listItem = $('<p></p>').text(`${memberName}`);
             reviewerList.append(listItem);
-              $('<input type="hidden">').attr('name', 'reviewerNumbers').val(memberNumber).appendTo(reviewersDisplay);
+              $('<input type="hidden">').attr('id', 'reviewerNumbers').val(memberNumber).appendTo(reviewersDisplay);
         });
         
         approversDisplay.append(approverList);
@@ -229,9 +229,6 @@ $('#confirmButton').click(function (event) {
     localStorage.removeItem('selectedMembers');
     $('.permission_pick_list').empty();
 });
-
-
-
 
     loadSelectedMembers();
 });
