@@ -120,34 +120,36 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
     // 확인 버튼 
-	$(document).ready(function() {
-	    $("#reservationForm").submit(function(e) {
-	        e.preventDefault();
-	        
-	        var formData = new FormData(this);
-	        
-	        // 선택된 참여자 정보 추가
-	        var selectedMembersString = $("#selectedMembers").val();
-	        formData.append("selectedMembers", selectedMembersString);
-	        
-	        $.ajax({
-	            url: '/api/reservation/save',
-	            type: 'POST',
-	            data: formData,
-	            processData: false,
-	            contentType: false,
-	            success: function(response) {
-	                console.log('예약이 성공적으로 저장되었습니다:', response);
-	                alert('예약이 성공적으로 저장되었습니다.');
-	                $('#reservationModal').modal('hide');
-	            },
-	            error: function(xhr, status, error) {
-	                console.error('예약 저장 중 오류 발생:', error);
-	                alert('예약을 저장하는 중 오류가 발생했습니다.');
-	            }
-	        });
-	    });
-	});
+    $('#confirmButton').click(function() {
+        console.log("선택한 사원 정보:", selectedMembers);
+        alert("선택한 사원: " + zselectedMembers.join(", "));
+    
+        var csrfToken = document.querySelector('input[name="_csrf"]').value; 
+    
+        $.ajax({
+            url: '/api/organization/saveSelectedMembers',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            contentType: 'application/json',
+            data: JSON.stringify({ members: selectedMembers }),
+            success: function(response) {
+                console.log('선택한 사원 저장 성공:', response);
+                alert('선택한 사원이 저장되었습니다.');
+                
+                $('#organizationChartModal').modal('hide');
+
+                localStorage.removeItem('selectedMembers');
+                
+                $('.permission_pick_list').empty();
+            },
+            error: function(xhr, status, error) {
+                console.error('선택한 사원 저장 오류:', error);
+                alert('선택한 사원을 저장하는데 오류가 발생했습니다.');
+            }
+        });
+    });
 
     loadSelectedMembers();
 });
