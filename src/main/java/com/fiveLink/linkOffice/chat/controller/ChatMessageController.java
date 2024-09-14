@@ -62,7 +62,6 @@ public class ChatMessageController {
         }
 
     }
-
     @GetMapping("/api/chat/messages/{chat_room_no}")
     @ResponseBody
     public List<Map<String, Object>> chatMessages(@PathVariable("chat_room_no") Long chatRoomNo){
@@ -73,6 +72,7 @@ public class ChatMessageController {
             return Collections.emptyList();
         }
     }
+
 
 
 }
