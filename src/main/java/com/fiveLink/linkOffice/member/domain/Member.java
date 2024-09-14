@@ -128,13 +128,11 @@ public class Member {
 	@Column(name="member_vacation_date")
 	private String memberVacationDate;
 	
-	// [전주영] 휴가결재 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	private VacationApproval vacationApproval;
-	
-	// [전주영] 휴가결재 결재자 
+	private List<VacationApproval> vacationApprovals;
+
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	private VacationApprovalFlow VacationApprovalFlow;
+	private List<VacationApprovalFlow> vacationApprovalFlows;
 	
 	// [김민재] 공지사항 관리자 확인
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)

@@ -1,4 +1,3 @@
-
 // editor
 
 import {
@@ -259,6 +258,13 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    const endDate = document.querySelector('#vacationapproval_end_date').value;
 		    const dateCount = document.querySelector('#vacationapproval_date_count').value;
 		    const vacationFile = document.querySelector('#vacationapproval_file').files[0];
+			const approvers = Array.from(document.querySelectorAll('input[id="approverNumbers"]')).map(input => input.value);
+			const references = Array.from(document.querySelectorAll('input[id="referenceNumbers"]')).map(input => input.value);
+			const reviewers = Array.from(document.querySelectorAll('input[id="reviewerNumbers"]')).map(input => input.value);
+
+			console.log(approvers);
+			console.log(references);
+			console.log(reviewers);
 		
 		 	let vali_check = false;
             let vali_text = "";
@@ -285,14 +291,20 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 });
             } else {
 				const payload = new FormData();
+			    payload.append('vacationapprovalContent', editorData);
 			    payload.append('vacationapprovalTitle', vacationapprovalTitle);
 			    payload.append('vacationtype', vacationtype);
 			    payload.append('memberNo', memberNo);
 			    payload.append('startDate', startDate);
 			    payload.append('endDate', endDate);
 			    payload.append('dateCount', dateCount);
-			    payload.append('vacationFile', vacationFile);
-			    payload.append('vacationapprovalContent', editorData);
+			    
+			    if (vacationFile) {
+           			payload.append('vacationFile', vacationFile);
+        		}
+			    payload.append('approvers', approvers);
+			    payload.append('references', references);
+			    payload.append('reviewers', reviewers);
 			
 			    fetch('/employee/vacationapproval/create', {
 			        method: 'post',

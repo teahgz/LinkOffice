@@ -95,6 +95,18 @@ public class VacationApprovalService {
 	
 	// 사용자 휴가 신청
 	
+	public VacationApproval createVacationApproval(VacationApprovalDto vappdto) {
+		
+		Member member = memberRepository.findByMemberNo(vappdto.getMember_no());
+		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(vappdto.getVacation_type_no());
+		
+		VacationApproval vapp = vappdto.toEntity(member, vacationType);
+		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
+		
+		return vacationApprovalRepository.save(vapp);
+		
+	}
+	
 	public VacationApproval createVacationApproval(VacationApprovalDto vappdto, VacationApprovalFileDto vaFiledto) {
 		
 		Member member = memberRepository.findByMemberNo(vappdto.getMember_no());
