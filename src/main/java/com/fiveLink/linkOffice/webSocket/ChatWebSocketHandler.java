@@ -45,8 +45,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         Map<String, Object> jsonMap = objectMapper.readValue(payload, Map.class);
         String type = (String) jsonMap.get("type");  // 메시지 타입 확인
-        System.out.println("print : "+ type);
-
         if ("chatRoomCreation".equals(type)) {
             // 채팅방 생성 관련 처리
             handleChatRoomCreation(jsonMap, session, type);
@@ -66,7 +64,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 채팅방 생성 처리 메소드
     private void handleChatRoomCreation(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
 
-        System.out.println("채팅방 생성 요청: " + jsonMap);
         List<String> members = (List<String>) jsonMap.get("members");
         Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMemberNo")); // 변환
         List<String> names = (List<String>) jsonMap.get("names");
@@ -78,17 +75,21 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             //먼저 채팅방 먼저 만들기
             dto.setChat_room_type(0);//1:1 채팅방 타입
             Long chatRoomNo = chatRoomService.createRoomOne(dto);
-
+            String position = chatRoomService.searchPosition(currentMemberNo);
+            System.out.println("postion: "+position);
+            String namePosition = currentMemberName + " " + position;
 
             ChatMemberDto memberDto = new ChatMemberDto();
-            memberDto.setMember_no(Long.valueOf(members.get(0)));//초대받은 사람에 대한 정보
-            memberDto.setChat_room_no(chatRoomNo); //채팅 방 번호
-            memberDto.setChat_member_room_name(currentMemberName);//현재 로그인 된 사람 정보
+            memberDto.setMember_no(Long.valueOf(members.get(0)));
+            memberDto.setChat_room_no(chatRoomNo);
+            memberDto.setChat_member_room_name(namePosition);
+
             if(chatMemberService.createMemberRoomOne(memberDto)>0){
                 ChatMemberDto memberDto2 = new ChatMemberDto();
-                memberDto2.setMember_no(currentMemberNo);//초대받은 사람에 대한 정보
-                memberDto2.setChat_room_no(chatRoomNo); //채팅 방 번호
-                memberDto2.setChat_member_room_name(names.get(0));//현재 로그인 된 사람 정보
+                memberDto2.setMember_no(currentMemberNo);
+                memberDto2.setChat_room_no(chatRoomNo);
+                memberDto2.setChat_member_room_name(names.get(0));
+
                 if(chatMemberService.createMemberRoomOne(memberDto2)>0){
                     // 클라이언트로 보낼 데이터를 준비
                     Map<String, Object> responseMap = new HashMap<>();
@@ -96,11 +97,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     responseMap.put("members", members);
                     responseMap.put("currentMemberNo", currentMemberNo);
                     responseMap.put("type", type);
+                    responseMap.put("names", names);
 
                     // JSON으로 변환
                     ObjectMapper objectMapper = new ObjectMapper();
                     String responseJson = objectMapper.writeValueAsString(responseMap);
                     System.out.println("testResponse:"+responseJson);
+
                     // 웹소켓 세션을 통해 클라이언트에 메시지 전송
                     session.sendMessage(new TextMessage(responseJson));
                 }
