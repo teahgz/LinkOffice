@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.vacationapproval.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
@@ -20,12 +22,13 @@ import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 @Controller
 public class VacationApprovalApicontroller {
 
-	
+	private final MemberRepository memberRepository;
 	private final VacationApprovalService vacationApprovalService;
 	private final VacationApprovalFileService vacationApprovalFileService;
 	
 	@Autowired
-	public VacationApprovalApicontroller (VacationApprovalService vacationApprovalService, VacationApprovalFileService vacationApprovalFileService) {
+	public VacationApprovalApicontroller (MemberRepository memberRepository, VacationApprovalService vacationApprovalService, VacationApprovalFileService vacationApprovalFileService) {
+		this.memberRepository = memberRepository;
 		this.vacationApprovalService = vacationApprovalService;
 		this.vacationApprovalFileService = vacationApprovalFileService;
 	}
@@ -41,9 +44,9 @@ public class VacationApprovalApicontroller {
 	        @RequestParam("endDate") String endDate,
 	        @RequestParam("dateCount") String dateCount,
 	        @RequestParam("vacationapprovalContent") String vacationapprovalContent,
-	        @RequestParam("approvers") List<String> approvers,
-	        @RequestParam("references") List<String> references,
-	        @RequestParam("reviewers") List<String> reviewers) {
+	        @RequestParam("approvers") List<Long> approvers,
+	        @RequestParam("references") List<Long> references,
+	        @RequestParam("reviewers") List<Long> reviewers) {
 		
 
 	    Map<String, String> response = new HashMap<>();
@@ -64,7 +67,40 @@ public class VacationApprovalApicontroller {
 	    System.out.println(references);
 	    System.out.println(reviewers);
 	    
-	    
+	    List<VacationApprovalFlowDto> approvalFlowDtos = new ArrayList<>();
+	    int order = 1;
+
+	    // 1. 합의자 (flow_role = 1)
+	    for (Long referenceId : references) {
+	        VacationApprovalFlowDto flowDto = new VacationApprovalFlowDto();
+	        flowDto.setMember_no(referenceId);
+	        flowDto.setVacation_approval_flow_role(1L); 
+	        flowDto.setVacation_approval_flow_order((long) order++);
+	        flowDto.setVacation_approval_flow_status(order == 2 ? 1L : 0L); 
+	        approvalFlowDtos.add(flowDto);
+	    }
+
+	    // 2. 결재자 (flow_role = 2)
+	    for (Long approverId : approvers) {
+	        VacationApprovalFlowDto flowDto = new VacationApprovalFlowDto();
+	        flowDto.setMember_no(approverId);
+	        flowDto.setVacation_approval_flow_role(2L); 
+	        flowDto.setVacation_approval_flow_order((long) order++);
+	        flowDto.setVacation_approval_flow_status(order == 2 && references.isEmpty() ? 1L : 0L); 
+	        approvalFlowDtos.add(flowDto);
+	    }
+
+	    // 3. 참조자 (flow_role = 0)
+	    for (Long reviewerId : reviewers) {
+	        VacationApprovalFlowDto flowDto = new VacationApprovalFlowDto();
+	        flowDto.setMember_no(reviewerId);
+	        flowDto.setVacation_approval_flow_role(0L); 
+	        flowDto.setVacation_approval_flow_order(null); 
+	        flowDto.setVacation_approval_flow_status(4L); 
+	        approvalFlowDtos.add(flowDto);
+	    }
+
+	
 	    
 	    boolean isFileUploaded = false;
 	    
@@ -78,7 +114,7 @@ public class VacationApprovalApicontroller {
 	            vaFiledto.setVacation_approval_file_new_name(saveVacationFileName);
 	            vaFiledto.setVacation_approval_file_size(file.getSize());
 
-	            if (vacationApprovalService.createVacationApproval(vappdto, vaFiledto) != null) {
+	            if (vacationApprovalService.createVacationApprovalFile(vappdto, vaFiledto, approvalFlowDtos) != null) {
 	                response.put("res_code", "200");
 	                response.put("res_msg", "휴가 신청이 완료되었습니다.");
 	                isFileUploaded = true;
@@ -87,7 +123,7 @@ public class VacationApprovalApicontroller {
 	    }
 
 	    if (!isFileUploaded) {
-	        if (vacationApprovalService.createVacationApproval(vappdto) != null) {
+	        if (vacationApprovalService.createVacationApproval(vappdto,approvalFlowDtos) != null) {
 	            response.put("res_code", "200");
 	            response.put("res_msg", "휴가 신청이 완료되었습니다.");
 	        }
