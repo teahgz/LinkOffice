@@ -37,10 +37,10 @@ public class VacationApprovalFlow {
 	@Column(name="vacation_approval_flow_no")
 	private Long vacationApprovalFlowNo;
 	
-    @OneToOne
-    @JoinColumn(name="vacation_approval_no", referencedColumnName = "vacation_approval_no")
+    @ManyToOne
+    @JoinColumn(name = "vacation_approval_no", referencedColumnName = "vacation_approval_no")
     private VacationApproval vacationApproval;
-	
+    
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="member_no", referencedColumnName = "member_no")
 	private Member member;
