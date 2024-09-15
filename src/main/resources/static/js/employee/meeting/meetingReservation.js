@@ -25,14 +25,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const pick_start_time = document.getElementById('reservation_start_time');  
     var csrfToken = document.querySelector('input[name="_csrf"]').value;
     
-    function showReservationModal(meeting, date, startTime) {
-		console.log(startTime);
+    function showReservationModal(meeting, date, startTime) { 
         $(pick_room).val(meeting.meeting_no).trigger('change'); 
         $(pick_date).val(date).trigger('change', date);
          
         pick_username.innerText = memberNameValue + " " + memberPositionValue;
         $(pick_start_time).val(startTime).trigger('change', startTime);   
-       
+        
+    	fetchRoomReservations(date, meeting.meeting_no, function(filteredReservations) { 
+            disableReservedTimes(filteredReservations);
+            updateEndTimeOptions(startTime);  
+        });
+        
         modal.modal('show');
     }
     
@@ -105,8 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
             renderMeetingRooms(meetings); 
             fetchReservations(today);
             console.log(meetings);
-            populateRoomSelect(data);
-            const roomSelect = $('#reservation_room');
+            populateRoomSelect(data); 
             data.forEach(room => {
                 roomSelect.append(`<option value="${room.meeting_no}">${room.meeting_name}</option>`);
             });
@@ -238,6 +241,30 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.display = 'none';
     }
     
+    // 조직도 닫기 
+    function closeInfoModal() {
+        var chartmodal = document.getElementById('organizationChartModal');
+        selectedMembers = [];
+        chartmodal.style.display = 'none';
+    }
+    
+    document.getElementById('chart_close').onclick = function () {
+		Swal.fire({
+            text: '선택한 내역이 저장되지 않습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#B1C2DD',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        }).then((result) => {
+            if (result.isConfirmed) {
+	            closeInfoModal()();
+	        }
+        }); 
+        
+    };
+    
     
     // 예약 모달
     // 회의실 선택 옵션  
@@ -256,16 +283,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const endTime = selectedRoom.data('end');
         
         if (startTime && endTime) {
-            populateTimeSelect(startTime, endTime, 'start');
-            populateTimeSelect(startTime, endTime, 'end');
-             
             const date = $('#reservation_date').val();
-            fetchRoomReservations(date, $(this).val(), function(filteredReservations) {
-                currentReservations = filteredReservations;
-                disableReservedTimes(filteredReservations); 
-            });
+            
+            if (date) {
+                populateTimeSelect(startTime, endTime, 'start');
+                populateTimeSelect(startTime, endTime, 'end');
+                
+                fetchRoomReservations(date, $(this).val(), function(filteredReservations) {
+                    currentReservations = filteredReservations;
+                    disableReservedTimes(filteredReservations); 
+                });
+                 
+                $('#reservation_start_time').prop('disabled', false);
+            } else {
+                $('#reservation_start_time').prop('disabled', true).empty().append('<option value="">시작 시간</option>');
+                $('#reservation_end_time').prop('disabled', true).empty().append('<option value="">종료 시간</option>');
+            }
         } else {
-            $('#reservation_start_time, #reservation_end_time').prop('disabled', true);
+            $('#reservation_start_time').prop('disabled', true).empty().append('<option value="">시작 시간</option>');
+            $('#reservation_end_time').prop('disabled', true).empty().append('<option value="">종료 시간</option>');
         }
     });
 	
@@ -275,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const roomId = $('#reservation_room').val();
         const date = $(this).val();
         
-        if (roomId) {
+        if (roomId && date) {
             const startTime = $('#reservation_room').find(':selected').data('start');
             const endTime = $('#reservation_room').find(':selected').data('end');
             
@@ -286,12 +322,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentReservations = filteredReservations;
                 disableReservedTimes(filteredReservations);  
             });
+             
+            $('#reservation_start_time').prop('disabled', false);
         } else {
-            $('#reservation_start_time, #reservation_end_time').prop('disabled', true);
+            $('#reservation_start_time').prop('disabled', true).empty().append('<option value="">시작 시간</option>');
+            $('#reservation_end_time').prop('disabled', true).empty().append('<option value="">종료 시간</option>');
         }
     });
 
-    // 시작 시간 선택 
+    // 시작 시간 선택  
     $('#reservation_start_time').on('change', function() {
         const startTime = $(this).val(); 
         if (startTime) {
@@ -520,11 +559,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // form 사원 번호 추가
         $('#selectedMembers').val(selectedMembers.join(','));
 
         localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
     }
+    
+    // 조직도 닫을 때 리셋
+    
     
     
     // 조직도 확인 -> 예약 모달 사원 출력 
@@ -540,52 +581,113 @@ document.addEventListener("DOMContentLoaded", function () {
 	        const participantItem = $('<span class="selected-participants"></span>');
 	        participantItem.text(memberName);
 	        reservationArea.append(participantItem);
-	    });
-	    
+	    }); 
 	    $('#organizationChartModal').modal('hide');
 	 });
 	 
 	 
-	// 예약 등록 
-    $("#reservationForm").submit(function(e) {
-        e.preventDefault();
-        
-        var formData = new FormData(this);
-        
-        console.log(formData);
-         
-        $.ajax({
-            url: '/reservation/save',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(response) {
-                if (response.res_code === "200") {
-                    Swal.fire({ 
-					    	text: response.res_msg,
-						    icon: 'success', 
-						    confirmButtonColor: '#B1C2DD', 
-						    confirmButtonText: '확인', 
-						}).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({ 
-					    text: response.res_msg,
-					    icon: 'error', 
-					    confirmButtonColor: '#B1C2DD', 
-					    confirmButtonText: '확인', 
-					});
-                }
-                $('#reservationModal').modal('hide');
-            },
-            error: function () {
-                Swal.fire('서버 오류', "서버 요청 중 오류가 발생했습니다.", 'error');
-            }
+   // 예약 등록 
+   $("#reservationForm").submit(function (e) {
+    e.preventDefault();
+
+    var reservationRoom = $('#reservation_room').val();
+    var reservationDate = $('#reservation_date').val();
+    var reservationStartTime = $('#reservation_start_time').val();
+    var reservationEndTime = $('#reservation_end_time').val();
+    var reservationPurpose = $('#reservation_purpose').val();
+ 
+    if (!reservationRoom) {
+        Swal.fire({
+            text: '회의실을 선택해 주세요.',
+            icon: 'warning',
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: '확인'
         });
+        return;
+    }
+
+    if (!reservationDate) {
+        Swal.fire({
+            text: '예약일을 선택해 주세요.',
+            icon: 'warning',
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: '확인'
+        });
+        return;
+    }
+
+    if (!reservationStartTime) {
+        Swal.fire({
+            text: '시작 시간을 선택해 주세요.',
+            icon: 'warning',
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: '확인'
+        });
+        return;
+    }
+
+    if (!reservationEndTime) {
+        Swal.fire({
+            text: '종료 시간을 선택해 주세요.',
+            icon: 'warning',
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: '확인'
+        });
+        return;
+    }
+
+    if (reservationEndTime <= reservationStartTime) {
+        Swal.fire({
+            text: '종료 시간은 시작 시간 이후로 설정해 주세요.',
+            icon: 'warning',
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: '확인'
+        });
+        return;
+    }
+
+    if (!reservationPurpose) {
+        Swal.fire({
+            text: '예약 목적을 입력해 주세요.',
+            icon: 'warning',
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: '확인'
+        });
+        return;
+    }
+ 
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: '/reservation/save',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function (response) {
+            if (response.res_code === "200") {
+                Swal.fire({
+                    text: response.res_msg,
+                    icon: 'success',
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    text: response.res_msg,
+                    icon: 'error',
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: '확인'
+                });
+            }
+            $('#reservationModal').modal('hide');
+        } 
     });
+});
+
 });

@@ -156,15 +156,13 @@ public class MeetingReservationController {
                             ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
                         }
                     }
-                    
-                    // 하위 부서 추가
+                     
                     children.add(subDeptNode);
                     hasSubDepartments = true;
                 }
             }
 		}
-
-		// 현재 부서의 구성원 확인 및 추가
+ 
 		List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
 		if (deptMembers != null && !deptMembers.isEmpty()) {
 			hasMembers = true;
@@ -210,44 +208,53 @@ public class MeetingReservationController {
 	@PostMapping("/reservation/save")
 	@ResponseBody
 	public Map<String, String> saveReservation( 
-			@RequestParam("member_no") Long memberNo,
-			@RequestParam("reservation_room") Long reservationRoom,
+	        @RequestParam("member_no") Long memberNo,
+	        @RequestParam("reservation_room") Long reservationRoom,
 	        @RequestParam("reservation_date") String reservationDate,
 	        @RequestParam("reservation_start_time") String reservationStartTime,
 	        @RequestParam("reservation_end_time") String reservationEndTime, 
 	        @RequestParam("reservation_purpose") String reservationPurpose,
-	        @RequestParam("selectedMembers") String selectedMembers) {
+	        @RequestParam(value = "selectedMembers", required = false) String selectedMembers) {
 
-			Map<String, String> resultMap = new HashMap<>();
-			resultMap.put("res_code", "404");
+	    Map<String, String> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "회의실 예약 중 오류가 발생했습니다.");
+
+	    try {    
+	        // 예약 정보 DTO 생성
+	        MeetingReservationDto meetingReservationDto = MeetingReservationDto.builder()
+	            .meeting_no(reservationRoom)
+	            .member_no(memberNo)
+	            .meeting_reservation_date(reservationDate)
+	            .meeting_reservation_start_time(reservationStartTime)
+	            .meeting_reservation_end_time(reservationEndTime)
+	            .meeting_reservation_purpose(reservationPurpose)
+	            .meeting_reservation_status(0L)  
+	            .build();
+ 
+	        List<String> memberList = (selectedMembers != null && !selectedMembers.isEmpty()) 
+	            ? new ArrayList<>(Arrays.asList(selectedMembers.split(","))) 
+	            : new ArrayList<>();
+ 
+	        memberList.add(String.valueOf(memberNo));
+ 
+	        List<MeetingParticipantDto> participants = memberList.stream()
+	            .map(membersNo -> MeetingParticipantDto.builder()
+	                .member_no(Long.parseLong(membersNo.trim()))
+	                .meeting_participant_status(0L)  
+	                .build())
+	            .toList();
+ 
+	        meetingParticipantService.saveReservationAndParticipants(meetingReservationDto, participants);
+
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "예약 등록이 완료되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("res_code", "404");
 	        resultMap.put("res_msg", "회의실 예약 중 오류가 발생했습니다.");
-	        
-	        try {   
-	            MeetingReservationDto meetingReservationDto = MeetingReservationDto.builder()
-	                .meeting_no(reservationRoom)
-	                .member_no(memberNo)
-	                .meeting_reservation_date(reservationDate)
-	                .meeting_reservation_start_time(reservationStartTime)
-	                .meeting_reservation_end_time(reservationEndTime)
-	                .meeting_reservation_purpose(reservationPurpose)
-	                .meeting_reservation_status(0L)  
-	                .build();
- 
-	            List<String> memberList = Arrays.asList(selectedMembers.split(","));
-	            List<MeetingParticipantDto> participants = memberList.stream()
-	                .map(membersNo -> MeetingParticipantDto.builder()
-	                    .member_no(Long.parseLong(membersNo.trim()))
-	                    .meeting_participant_status(0L)  
-	                    .build())
-	                .toList();
- 
-	            meetingParticipantService.saveReservationAndParticipants(meetingReservationDto, participants);
-	            resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "예약 등록이 완료되었습니다."); 
-	        } catch (Exception e) {
-	        	resultMap.put("res_code", "404");
-	            resultMap.put("res_msg", "회의실 예약 중 오류가 발생했습니다.");
-	        }
-	        return resultMap; 
-		} 
+	    }
+	    return resultMap; 
+	}
+
 }
