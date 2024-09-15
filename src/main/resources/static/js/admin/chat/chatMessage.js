@@ -1,3 +1,17 @@
+ document.addEventListener("DOMContentLoaded", function() {
+    // 페이지가 로드되면 가장 상단의 채팅방을 자동 선택
+    const firstChatRoom = document.querySelector('.chatItem');
+    console.log(firstChatRoom);
+
+    if (firstChatRoom) {
+        // id가 'chatRoomNo'인 hidden input 요소의 값을 가져옴
+        const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
+
+        if (chatRoomNo) {
+            handleChatRoomClick(chatRoomNo); // 해당 채팅방을 클릭한 것처럼 처리
+        }
+    }
+    });
 (function() {
     let currentChatRoomNo = null;
     let socket = null;
@@ -190,7 +204,7 @@
              newChatItem.classList.add("chatItem");
              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chat_room_no})`);
              newChatItem.innerHTML = `
-             <h3>${message.chat_sender_name}</h3>
+             <h3><p>${message.names}</p></h3>
              <input type="hidden" value="${message.chat_room_no}" />
              `;
              const chatList = document.getElementById('chatList');
@@ -326,4 +340,6 @@
         // 로컬스토리지에서 선택된 사원 정보 초기화
         localStorage.removeItem('selectedMembers');
     }
+
+
 }());
