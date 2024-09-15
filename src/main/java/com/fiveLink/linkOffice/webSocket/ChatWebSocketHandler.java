@@ -76,7 +76,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             dto.setChat_room_type(0);//1:1 채팅방 타입
             Long chatRoomNo = chatRoomService.createRoomOne(dto);
             String position = chatRoomService.searchPosition(currentMemberNo);
-            System.out.println("postion: "+position);
+            //채팅방 이름을 위한 이름+부서명
             String namePosition = currentMemberName + " " + position;
 
             ChatMemberDto memberDto = new ChatMemberDto();
