@@ -137,27 +137,30 @@
         const chatContentDiv = document.getElementById("chatContent");
         console.log(message.type);
 
-        // 메시지 타입에 따른 처리
-        if (message.type === "chatRoomCreation") {
-            if (message.chatRoomNo) {
-                console.log(`채팅방 생성 완료. 채팅방 번호: ${message.chatRoomNo}`);
+         // 메시지 타입에 따른 처리
+         if (message.type === "chatRoomCreation") {
+             if (message.chatRoomNo) {
+                 console.log(`채팅방 생성 완료. 채팅방 번호: ${message.chatRoomNo}`);
 
-                // 새로운 채팅방 정보를 사용하여 채팅방 목록 업데이트
-                const newChatItem = document.createElement("div");
-                newChatItem.classList.add("chatItem");
-                newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
-                newChatItem.innerHTML = `
-                    <h3><p>${message.currentMemberName}</p></h3>
-                    <input type="hidden" id="memberNo" value="${document.getElementById('memberNo').value}"/>
-                    <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
-                `;
-                document.getElementById('chatList').appendChild(newChatItem);
+                 // 새로운 채팅방 정보를 사용하여 채팅방 목록 업데이트
+                 const newChatItem = document.createElement("div");
+                 newChatItem.classList.add("chatItem");
+                 newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
+                 newChatItem.innerHTML = `
+                     <h3><p>${message.names}</p></h3>
+                     <input type="hidden" id="memberNo" value="${document.getElementById('memberNo').value}"/>
+                     <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
+                 `;
 
-                // 선택된 항목 초기화 및 모달 닫기
-                resetSelectedMembers();
-                $('#organizationChartModal').modal('hide');
-            }
-        } else {
+                 const chatList = document.getElementById('chatList');
+                 // 목록 맨 위에 새로운 항목을 삽입
+                 chatList.insertBefore(newChatItem, chatList.firstChild);
+
+                 // 선택된 항목 초기화 및 모달 닫기
+                 resetSelectedMembers();
+                 $('#organizationChartModal').modal('hide');
+             }
+         }else {
             const messageElement = document.createElement("div");
             const now = new Date();
             const formattedTime = formatDateTime(now);

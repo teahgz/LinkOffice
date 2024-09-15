@@ -8,6 +8,7 @@
         SELECT *
         FROM fl_chat_member
         WHERE member_no = #{memberNo}
+        ORDER BY chat_member_join_date DESC
     </select>
 <!-- 채팅 내용 가져오기   -->
     <select id="getChatMessages" parameterType="java.lang.Long" resultType="java.util.HashMap">

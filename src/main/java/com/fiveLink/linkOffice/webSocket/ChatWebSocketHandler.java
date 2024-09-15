@@ -45,8 +45,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         Map<String, Object> jsonMap = objectMapper.readValue(payload, Map.class);
         String type = (String) jsonMap.get("type");  // 메시지 타입 확인
-        System.out.println("print : "+ type);
-
         if ("chatRoomCreation".equals(type)) {
             // 채팅방 생성 관련 처리
             handleChatRoomCreation(jsonMap, session, type);
@@ -96,6 +94,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     responseMap.put("members", members);
                     responseMap.put("currentMemberNo", currentMemberNo);
                     responseMap.put("type", type);
+                    responseMap.put("names", names);
 
                     // JSON으로 변환
                     ObjectMapper objectMapper = new ObjectMapper();
