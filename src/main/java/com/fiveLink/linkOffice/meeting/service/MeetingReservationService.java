@@ -2,13 +2,15 @@ package com.fiveLink.linkOffice.meeting.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
+import com.fiveLink.linkOffice.meeting.repository.MeetingParticipantRepository;
 import com.fiveLink.linkOffice.meeting.repository.MeetingReservationRepository;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.service.MemberService;
@@ -19,12 +21,14 @@ public class MeetingReservationService {
     private final MeetingReservationRepository meetingReservationRepository;
     private final MeetingService meetingService; 
     private final MemberService memberService; 
+    private final MeetingParticipantRepository meetingParticipantRepository;
     
     @Autowired
-    public MeetingReservationService(MeetingReservationRepository meetingReservationRepository, MeetingService meetingService, MemberService memberService) {
+    public MeetingReservationService(MeetingReservationRepository meetingReservationRepository, MeetingService meetingService, MemberService memberService, MeetingParticipantRepository meetingParticipantRepository) {
         this.meetingReservationRepository = meetingReservationRepository;
         this.meetingService = meetingService;
         this.memberService = memberService;
+        this.meetingParticipantRepository = meetingParticipantRepository;
     }
 
     // 해당 날짜 예약 정보 
@@ -60,6 +64,44 @@ public class MeetingReservationService {
         } 
         return dtoList;
     } 
+    
+    // 본인 예약 정보  
+    public Page<MeetingReservationDto> searchReservationsByMemberNo(
+            Long memberNo, String searchText, String meetingNo, Pageable pageable) {
 
+        Page<MeetingReservation> reservationPage;
+ 
+        if (!meetingNo.isEmpty()) { 
+            reservationPage = meetingReservationRepository.findByMemberNoAndMeetingNoAndMeetingReservationPurposeContaining(
+                    memberNo, Long.parseLong(meetingNo), searchText, pageable);
+        } else { 
+            reservationPage = meetingReservationRepository.findByMemberNoAndMeetingReservationPurposeContaining(
+                    memberNo, searchText, pageable);
+        }
 
+        return reservationPage.map(reservation -> {
+            String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
+            String memberName = memberService.getMemberNameById(reservation.getMemberNo());
+
+            long participantCount = meetingParticipantRepository.countByMeetingReservationNo(reservation.getMeetingReservationNo());
+
+            return MeetingReservationDto.builder()
+                    .meeting_reservation_no(reservation.getMeetingReservationNo())
+                    .meeting_no(reservation.getMeetingNo())
+                    .member_no(reservation.getMemberNo())
+                    .meeting_reservation_date(reservation.getMeetingReservationDate())
+                    .meeting_reservation_start_time(reservation.getMeetingReservationStartTime())
+                    .meeting_reservation_end_time(reservation.getMeetingReservationEndTime())
+                    .meeting_reservation_purpose(reservation.getMeetingReservationPurpose())
+                    .meeting_reservation_create_date(reservation.getMeetingReservationCreateDate())
+                    .meeting_reservation_update_date(reservation.getMeetingReservationUpdateDate())
+                    .meeting_reservation_status(reservation.getMeetingReservationStatus())
+                    .meeting_name(meetingName)
+                    .member_name(memberName)
+                    .participant_count(participantCount)
+                    .build();
+        });
+    }
+
+ 
 }

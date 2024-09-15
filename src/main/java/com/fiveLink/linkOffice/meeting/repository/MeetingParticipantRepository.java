@@ -7,6 +7,6 @@ import com.fiveLink.linkOffice.meeting.domain.MeetingParticipant;
 
 @Repository
 public interface MeetingParticipantRepository extends JpaRepository<MeetingParticipant, Long> {
-
+	long countByMeetingReservationNo(Long reservationNo);
 }
 
