@@ -68,7 +68,6 @@ public class VacationApprovalViewController {
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
  		
  		Page<VacationApprovalDto> vacationapprovalList = vacationApprovalService.getVacationApprovalByNo(member_no,searchdto,sortedPageable);
- 		
  		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
  		vacationapprovalList.forEach(vapp -> {
  			if(vapp.getVacation_approval_create_date() != null) {

@@ -18,7 +18,10 @@ import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFile;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalFileRepository;
+import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalFlowRepository;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
 
 @Service
@@ -28,13 +31,15 @@ public class VacationApprovalService {
 	private final MemberRepository memberRepository;
 	private final VacationTypeRepository vacationTypeRepository;
 	private final VacationApprovalFileRepository vacationApprovalFileRepository;
+	private final VacationApprovalFlowRepository vacationApprovalFlowRepository;
 	
 	@Autowired
-	public VacationApprovalService(VacationApprovalRepository vacationApprovalRepository,MemberRepository memberRepository,VacationTypeRepository vacationTypeRepository, VacationApprovalFileRepository vacationApprovalFileRepository) {
+	public VacationApprovalService(VacationApprovalRepository vacationApprovalRepository,MemberRepository memberRepository,VacationTypeRepository vacationTypeRepository, VacationApprovalFileRepository vacationApprovalFileRepository, VacationApprovalFlowRepository vacationApprovalFlowRepository) {
         this.vacationApprovalRepository = vacationApprovalRepository;
         this.memberRepository = memberRepository;
         this.vacationTypeRepository = vacationTypeRepository;
         this.vacationApprovalFileRepository = vacationApprovalFileRepository;
+        this.vacationApprovalFlowRepository = vacationApprovalFlowRepository;
     }
 	
 	// 사용자 휴가신청함 목록 조회
@@ -82,27 +87,47 @@ public class VacationApprovalService {
 
 	    List<VacationApprovalFile> files = vacationApprovalFileRepository.findByVacationApproval(origin);
 	    
-	    // VacationApprovalFile 엔티티를 VacationApprovalFileDto 변환
 	    List<VacationApprovalFileDto> fileDtos = files.stream()
 	        .map(VacationApprovalFile::toDto)
 	        .collect(Collectors.toList());
 	    
-	    // 5. 휴가결재 dto 에 파일 넣어주기
 	    dto.setFiles(fileDtos);
 	    return dto;
 	}
 
 	
-	// 사용자 휴가 신청
-	
-	public VacationApproval createVacationApproval(VacationApprovalDto vappdto, VacationApprovalFileDto vaFiledto) {
+	// 사용자 휴가 신청 (파일 X)
+	public VacationApproval createVacationApproval(VacationApprovalDto vappdto, List<VacationApprovalFlowDto> approvalFlowDtos) {
+	    
+	    Member member = memberRepository.findByMemberNo(vappdto.getMember_no());
+	    
+	    VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(vappdto.getVacation_type_no());
+	    
+	    VacationApproval vapp = vappdto.toEntity(member, vacationType);
+	    VacationApproval savedVapp = vacationApprovalRepository.save(vapp); 
+	    
+	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	vacationApprovalFlowRepository.save(vaf);
+	    }
+	    
+	    return savedVapp; 
+	}
+
+	// 사용자 휴가 신청 (파일 O)
+	public VacationApproval createVacationApprovalFile(VacationApprovalDto vappdto, VacationApprovalFileDto vaFiledto, List<VacationApprovalFlowDto> approvalFlowDtos) {
 		
 		Member member = memberRepository.findByMemberNo(vappdto.getMember_no());
 		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(vappdto.getVacation_type_no());
 		
 		VacationApproval vapp = vappdto.toEntity(member, vacationType);
-		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
 		
+		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
+	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	vacationApprovalFlowRepository.save(vaf);
+	    }
+	    
 		 if (vaFiledto != null) {
 		        VacationApprovalFile vaFile = vaFiledto.toEntity(savedVapp);
 		        vacationApprovalFileRepository.save(vaFile); 

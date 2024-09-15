@@ -3,7 +3,7 @@
     let socket = null;
     if (socket && socket.readyState === WebSocket.OPEN) {
         console.log("WebSocket already connected.");
-    return; // 이미 연결된 상태이므로 아무 작업도 하지 않음
+        return; // 이미 연결된 상태이므로 아무 작업도 하지 않음
     }
 
     socket = new WebSocket(`ws://localhost:8080/websocket/chat`);
@@ -15,7 +15,7 @@
     socket.onclose = function(event) {
         console.log("WebSocket connection closed:", event);
     };
-
+``
     socket.onerror = function(error) {
         console.error("WebSocket error:", error);
     };
@@ -47,50 +47,43 @@
     });
 
     // 조직도 로딩
-    function loadOrganizationChart() {
-        fetch('/chat/chart')
-            .then(response => response.json())
-            .then(data => {
-                console.log('조직도 데이터:', data);
-                $('#organization-chart').jstree({
-                    'core': {
-                        'data': data,
-                        'themes': {
-                            'icons': true,
-                            'dots': false,
-                        }
-                    },
-                    'plugins': ['checkbox', 'types', 'search'],
-                    'types': {
-                        'default': {
-                            'icon': 'fa fa-users'
-                        },
-                        'department': {
-                            'icon': 'fa fa-users'
-                        },
-                        'member': {
-                            'icon': 'fa fa-user'
-                        }
-                    }
-                }).on('ready.jstree', function (e, data) {
-                    restoreSelection(data.instance);
-                });
-
-                // 체크박스 변경 시 선택된 사원 업데이트
-                $('#organization-chart').on('changed.jstree', function (e, data) {
-                    updateSelectedMembers(data.selected, data.instance);
-                });
-
-                // 검색
-                $('#organization_search').on('keyup', function() {
-                    const searchString = $(this).val();
-                    $('#organization-chart').jstree(true).search(searchString);
-                });
-            })
-            .catch(error => {
-                console.error('조직도 로딩 오류:', error);
-            });
-    }
+  function loadOrganizationChart() {
+      $.ajax({
+          url: '/chat/chart',
+          method: 'GET',
+          success: function(data) {
+              $('#organization-chart').jstree('destroy').empty(); // 기존 jstree 인스턴스 파괴 및 비우기
+              $('#organization-chart').jstree({
+                  'core': {
+                      'data': data,
+                      'themes': {
+                          'icons': true,
+                          'dots': false,
+                      }
+                  },
+                  'plugins': ['checkbox', 'types', 'search'],
+                  'types': {
+                      'default': {
+                          'icon': 'fa fa-users'
+                      },
+                      'department': {
+                          'icon': 'fa fa-users'
+                      },
+                      'member': {
+                          'icon': 'fa fa-user'
+                      }
+                  }
+              }).on('ready.jstree', function (e, data) {
+                  restoreSelection(data.instance);
+              }).on('changed.jstree', function (e, data) {
+                  updateSelectedMembers(data.selected, data.instance);
+              });
+          },
+          error: function(xhr, status, error) {
+              console.error('조직도 로딩 오류:', error);
+          }
+      });
+  }
 
     // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
@@ -143,24 +136,31 @@
         const message = JSON.parse(event.data);
         const chatContentDiv = document.getElementById("chatContent");
         console.log(message.type);
-        // 메시지 타입에 따른 처리
-        if (message.type === "chatRoomCreation") {
-            if (message.chatRoomNo) {
-                console.log(`채팅방 생성 완료. 채팅방 번호: ${message.chatRoomNo}`);
 
-                // 새로운 채팅방 정보를 사용하여 채팅방 목록 업데이트
-                const newChatItem = document.createElement("div");
-                newChatItem.classList.add("chatItem");
-                newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
-                newChatItem.innerHTML = `
-                    <h3><p>${message.currentMemberName}</p></h3>
-                    <input type="hidden" id="memberNo" value="${document.getElementById('memberNo').value}"/>
-                    <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
-                `;
-                document.getElementById('chatList').appendChild(newChatItem);
+         // 메시지 타입에 따른 처리
+         if (message.type === "chatRoomCreation") {
+             if (message.chatRoomNo) {
+                 console.log(`채팅방 생성 완료. 채팅방 번호: ${message.chatRoomNo}`);
 
-            }
-        } else {
+                 // 새로운 채팅방 정보를 사용하여 채팅방 목록 업데이트
+                 const newChatItem = document.createElement("div");
+                 newChatItem.classList.add("chatItem");
+                 newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
+                 newChatItem.innerHTML = `
+                     <h3><p>${message.names}</p></h3>
+                     <input type="hidden" id="memberNo" value="${document.getElementById('memberNo').value}"/>
+                     <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
+                 `;
+
+                 const chatList = document.getElementById('chatList');
+                 // 목록 맨 위에 새로운 항목을 삽입
+                 chatList.insertBefore(newChatItem, chatList.firstChild);
+
+                 // 선택된 항목 초기화 및 모달 닫기
+                 resetSelectedMembers();
+                 $('#organizationChartModal').modal('hide');
+             }
+         }else {
             const messageElement = document.createElement("div");
             const now = new Date();
             const formattedTime = formatDateTime(now);
@@ -182,10 +182,9 @@
                 `;
             }
 
-                chatContentDiv.appendChild(messageElement);
-                chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
-            }
-
+            chatContentDiv.appendChild(messageElement);
+            chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
+        }
     };
 
     window.sendMessage = function() {
@@ -213,7 +212,7 @@
         const currentMemberNo = document.getElementById("currentMemberNo").value;
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         const currentMemberName = document.getElementById("currentMemberName").value;
-
+        console.log(csrfToken);
         const message = {
             type: "chatRoomCreation",
             members: selectedMembers,
@@ -222,12 +221,15 @@
             currentMemberName: currentMemberName,
             csrfToken: csrfToken // 필요 시 추가
         };
-
+        // URL이 바뀌지 않도록 기본 동작을 막음
+        event.preventDefault();
         socket.send(JSON.stringify(message));
     };
 
     // 버튼 클릭 이벤트와 window.confirmButton 함수 연결
-    document.getElementById('confirmButton').addEventListener('click', window.confirmButton);
+    document.getElementById('confirmButton').addEventListener('click', function(event) {
+        window.confirmButton();
+    });
 
     function formatDateTime(date) {
         const year = date.getFullYear();
@@ -296,4 +298,19 @@
         currentChatRoomNo = element;
         loadChatMessages(element);
     };
+
+    function resetSelectedMembers() {
+        selectedMembers = [];
+        selectNames = [];
+
+        // jstree의 모든 체크된 노드 해제
+        $('#organization-chart').jstree(true).uncheck_all();
+
+        // 선택된 멤버와 권한 리스트 비우기
+        $('#selected-members').empty();
+        $('.permission_pick_list').empty();
+
+        // 로컬스토리지에서 선택된 사원 정보 초기화
+        localStorage.removeItem('selectedMembers');
+    }
 }());

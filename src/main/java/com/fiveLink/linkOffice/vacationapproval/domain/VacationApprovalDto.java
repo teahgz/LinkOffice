@@ -42,6 +42,7 @@ public class VacationApprovalDto {
 	private String format_vacation_approval_create_date;
 	
 	private List<VacationApprovalFileDto> files;
+	private List<VacationApprovalFlowDto> flows;
 	
 	public VacationApproval toEntity(Member member, VacationType vacationType) {
 		return VacationApproval.builder()

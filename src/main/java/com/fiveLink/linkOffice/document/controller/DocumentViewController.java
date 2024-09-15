@@ -60,8 +60,8 @@ public class DocumentViewController {
    // 각 폴더 파일 
    @GetMapping("/folder/file")
    public ResponseEntity<List<DocumentFileDto>> selectPersonalfileList(
-		   @RequestParam("folderId") Long folderId) throws IOException {
-	   List<DocumentFileDto> fileList = documentFileService.selectfileList(folderId);
+		   @RequestParam("folderNo") Long folderNo) throws IOException {
+	   List<DocumentFileDto> fileList = documentFileService.selectfileList(folderNo);
        return ResponseEntity.ok(fileList);
    }
    

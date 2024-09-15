@@ -29,4 +29,9 @@ public class ChatRoomService {
     public int countRoomNo() {
         return chatMapper.countRoomNo();
     }
+
+    public String searchPosition(Long memberNo){
+        return chatMapper.searchPosition(memberNo);
+    }
+
 }

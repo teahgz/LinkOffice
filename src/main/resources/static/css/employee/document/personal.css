@@ -509,7 +509,7 @@
     height: 100%;
     background-color: rgba(0,0,0,0.4); 
 }
-.first_folder_add_modal{
+.first_folder_add_modal, .change_name_modal{
 	position: fixed;
 	top: 50%;
 	left: 50%;
@@ -523,17 +523,17 @@
     border-radius: 5px;
     align-items: center;
 }
-.first_folder_add_div{
+.first_folder_add_div, .change_folder_name_div{
 	text-align: center;
 	height: 20%;
 	margin-top: 5%;
 }
-.first_folder_button_div{
+.folder_button_div{
 	display: flex;
 	justify-content: right;
 	margin-top: 8%;
 }
-.first_folder_cancel_div{
+.cancel_div{
 	display: flex;
 	justify-content: right;
 	height: 20%;
@@ -541,15 +541,15 @@
 	cursor: pointer;
 	color: #888;
 }
-.first_folder_cancel_div:hover{
+.cancel_div:hover{
 	color: black;
 }
-#first_folder_name{
+#first_folder_name, #change_folder_name{
 	width: 95%;
 	height: 90%;
 	font-size: 15px;
 }
-#first_folder_add_button{
+#first_folder_add_button, #folder_name_change_button{
 	margin-right: 0.5vw;
 	margin-top: 0.4vh;
     padding: 0.5vh 0.5vw;
@@ -563,10 +563,10 @@
     height: 35px;
     text-align: center;
 }
-#first_folder_add_button:hover{
+#first_folder_add_button:hover, #folder_name_change_button:hover{
     background-color: #9CAFC7;
 }
-#first_folder_add_button:active{
+#first_folder_add_button:active, #folder_name_change_button:actiove{
     transform: scale(0.98);
 }
 .swal2-confirm {
