@@ -28,4 +28,11 @@
         SELECT count(*) FROM fl_chat_room
     </select>
 
+<!-- 이름 + 부서 같이 넣기 위해 찾기-->
+    <select id="searchPosition" resultType="String"  parameterType="java.lang.Long">
+        SELECT p.position_name
+        FROM fl_member m
+        JOIN fl_position p ON m.position_no = p.position_no
+        WHERE m.member_no = #{memberNo}
+    </select>
 </mapper>
