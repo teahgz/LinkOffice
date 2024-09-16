@@ -10,5 +10,6 @@ import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFile;
 
 @Repository
 public interface VacationApprovalFileRepository extends JpaRepository<VacationApprovalFile, Long>{
+	
 	List<VacationApprovalFile> findByVacationApproval(VacationApproval vacationApproval);
 }
