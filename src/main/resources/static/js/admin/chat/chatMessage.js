@@ -103,12 +103,15 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateSelectedMembers(selectedIds, instance) {
         const selectedMembersContainer = $('#selected-members');
         const permissionPickList = $('.permission_pick_list');
+        const selectedMembersList = $('#selectedMembersList');
         selectedMembersContainer.empty();
         permissionPickList.empty();
+        selectedMembersList.empty();
 
         const selectedNodes = instance.get_selected(true);
         selectedMembers = [];
         selectNames = [];
+
 
         selectedNodes.forEach(function(node) {
             if (node.original.type === 'member') {
@@ -120,7 +123,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 memberElement.append(memberName).append(removeButton);
                 selectedMembersContainer.append(memberElement);
-
+                // 모달 내 리스트에도 추가
+                selectedMembersList.append(`<p>${node.text}</p>`);
                 selectedMembers.push(memberNumber);
                 selectNames.push(node.text);
 
