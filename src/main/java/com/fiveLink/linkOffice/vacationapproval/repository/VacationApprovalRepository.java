@@ -54,6 +54,7 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
 	 // 기안자로 검색
 	 Page<VacationApproval> findByMemberMemberNameContainingAndVacationApprovalNoIn(String name, List<Long> vacationApprovalNos, Pageable pageable);
 	 
+	 // 전체 조회
 	 @Query("SELECT va FROM VacationApproval va WHERE va.vacationApprovalNo IN :vacationApprovalNos AND (va.vacationApprovalTitle LIKE %:searchText% OR va.member.memberName LIKE %:searchText%)")
 	 Page<VacationApproval> findByTitleOrNameContainingAndVacationApprovalNoIn( @Param("searchText") String searchText, @Param("vacationApprovalNos") List<Long> vacationApprovalNos,Pageable pageable);
 	 

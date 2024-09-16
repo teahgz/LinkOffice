@@ -227,12 +227,10 @@ public class VacationApprovalService {
 			vacationApprovals = vacationApprovalRepository.findByVacationApprovalNoIn(vacationApprovalNos, pageable);
 		}
 	    
-	    // VacationApprovalDto로 변환
 	    List<VacationApprovalDto> approvalDtoList = vacationApprovals.stream()
 	        .map(VacationApproval::toDto)
 	        .collect(Collectors.toList());
 
-	    // PageImpl을 사용하여 Page<VacationApprovalDto>를 반환
 	    return new PageImpl<>(approvalDtoList, pageable, vacationApprovals.getTotalElements());
 	}
 
