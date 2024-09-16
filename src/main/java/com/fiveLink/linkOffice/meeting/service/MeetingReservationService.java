@@ -66,23 +66,27 @@ public class MeetingReservationService {
     } 
     
     // 본인 예약 정보  
-    public Page<MeetingReservationDto> searchReservationsByMemberNo(
-            Long memberNo, String searchText, String meetingNo, Pageable pageable) {
+    public Page<MeetingReservationDto> searchReservations(
+            Long memberNo,
+            String meetingNo,
+            String searchText,
+            String startDate,
+            String endDate,
+            String sortBy, 
+            Pageable pageable) { 
 
-        Page<MeetingReservation> reservationPage;
+        Page<MeetingReservation> reservationPage = meetingReservationRepository.searchReservations(
+                memberNo, 
+                meetingNo.isEmpty() ? null : Long.parseLong(meetingNo), 
+                searchText.isEmpty() ? null : searchText, 
+                startDate.isEmpty() ? null : startDate, 
+                endDate.isEmpty() ? null : endDate, 
+                sortBy, 
+                pageable);
  
-        if (!meetingNo.isEmpty()) { 
-            reservationPage = meetingReservationRepository.findByMemberNoAndMeetingNoAndMeetingReservationPurposeContaining(
-                    memberNo, Long.parseLong(meetingNo), searchText, pageable);
-        } else { 
-            reservationPage = meetingReservationRepository.findByMemberNoAndMeetingReservationPurposeContaining(
-                    memberNo, searchText, pageable);
-        }
-
         return reservationPage.map(reservation -> {
             String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
             String memberName = memberService.getMemberNameById(reservation.getMemberNo());
-
             long participantCount = meetingParticipantRepository.countByMeetingReservationNo(reservation.getMeetingReservationNo());
 
             return MeetingReservationDto.builder()
@@ -101,7 +105,5 @@ public class MeetingReservationService {
                     .participant_count(participantCount)
                     .build();
         });
-    }
-
- 
+    } 
 }
