@@ -263,6 +263,7 @@ public class MeetingReservationController {
 	    return resultMap; 
 	}
 	
+	// 본인 예약 목록
 	@GetMapping("/employee/meeting/reservation/list")
 	public String myMeetingReservation(
 	        @RequestParam(value = "searchText", defaultValue = "") String searchText, 
@@ -290,4 +291,18 @@ public class MeetingReservationController {
 
 	    return "employee/meeting/myMeetingReservation";
 	} 
+	
+	// 예약 상세 페이지  
+	@GetMapping("/employee/meeting/reservation/detail/{id}")
+	public String getReservationDetail(@PathVariable("id") Long id, Model model) {
+	    MeetingReservationDto reservation = meetingReservationService.getReservationById(id);
+	    List<MeetingParticipantDto> participants = meetingParticipantService.getParticipantsByReservationNo(id);
+	    
+	    model.addAttribute("reservation", reservation);
+	    model.addAttribute("participants", participants); 
+	    return "employee/meeting/reservationDetail";
+	}
+
+	
+	 
 }

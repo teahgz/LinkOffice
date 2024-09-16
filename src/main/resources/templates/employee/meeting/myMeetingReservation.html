@@ -43,7 +43,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="reservation : ${reservations.content}">
+                        <tr th:each="reservation : ${reservations.content}"
+					        th:onclick="|location.href='@{/employee/meeting/reservation/detail/{id}(id=${reservation.meeting_reservation_no})}'|"
+					        style="cursor: pointer;">
                             <td th:text="${reservation.meeting_name}"></td>
                             <td th:text="${reservation.meeting_reservation_date}"></td>
                             <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}"></td>
