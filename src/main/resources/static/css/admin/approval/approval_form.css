@@ -68,9 +68,8 @@ select {
     transform: scale(0.98);
 }
 
-.sort_container {
-    display: flex;
-    gap: 20px;
+#sort {
+	margin-left:800px;
 }
 
 .approval_form_table {
