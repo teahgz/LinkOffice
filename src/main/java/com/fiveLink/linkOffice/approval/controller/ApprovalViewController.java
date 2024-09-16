@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.approval.controller;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,143 +20,237 @@ import com.fiveLink.linkOffice.approval.domain.ApprovalFormDto;
 import com.fiveLink.linkOffice.approval.service.ApprovalFormService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
+import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 @Controller
 public class ApprovalViewController {
 
 	private final MemberService memberService;
 	private final ApprovalFormService approvalFormService;
-	
-	
+	private final VacationApprovalService vacationApprovalService;
+
 	@Autowired
-	public ApprovalViewController(MemberService memberService,ApprovalFormService approvalFormService) {
+	public ApprovalViewController(MemberService memberService, ApprovalFormService approvalFormService,
+			VacationApprovalService vacationApprovalService) {
 		this.memberService = memberService;
 		this.approvalFormService = approvalFormService;
+		this.vacationApprovalService = vacationApprovalService;
 	}
-	
+
 	// 관리자 전자결재 양식 등록 페이지
 	@GetMapping("/admin/approval/create")
 	public String adminApprovalCreate(Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		model.addAttribute("memberdto", memberdto);
-		
+
 		return "admin/approval/approval_create";
 	}
-	
+
 	private Sort getSortOption(String sort) {
 		if ("latest".equals(sort)) {
-			return Sort.by(Sort.Order.desc("approvalFormCreateDate")); 
+			return Sort.by(Sort.Order.desc("approvalFormCreateDate"));
 		} else if ("oldest".equals(sort)) {
-			return Sort.by(Sort.Order.asc("approvalFormCreateDate")); 
+			return Sort.by(Sort.Order.asc("approvalFormCreateDate"));
 		}
-		return Sort.by(Sort.Order.desc("approvalFormCreateDate")); 
+		return Sort.by(Sort.Order.desc("approvalFormCreateDate"));
 	}
-	
+
 	// 관리자 전자결재 양식함 페이지
 	@GetMapping("/admin/approval/form")
-	public String adminApprovalForm(Model model, ApprovalFormDto searchdto, @PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+	public String adminApprovalForm(Model model, ApprovalFormDto searchdto,
+			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		Sort sortOption = getSortOption(sort);
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
-		
+
 		Page<ApprovalFormDto> formList = approvalFormService.getAllApprovalForms(sortedPageable, searchdto);
-		
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		formList.forEach(form -> {
-			if(form.getApproval_form_create_date() != null) {
+			if (form.getApproval_form_create_date() != null) {
 				String fomattedCreateDate = form.getApproval_form_create_date().format(formatter);
 				form.setFormat_create_date(fomattedCreateDate);
 			}
 		});
-		
+
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList.getContent());
 		model.addAttribute("page", formList);
 		model.addAttribute("searchDto", searchdto);
 		model.addAttribute("currentSort", sort);
-		
+
 		return "admin/approval/approval_form";
 	}
-	
+
 	// 관리자 전자결재 양식 상세 페이지
 	@GetMapping("/admin/approval/detail/{form_no}")
 	public String adminApprovalDetail(Model model, @PathVariable("form_no") Long formNo) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
-		
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		if (formList.getApproval_form_create_date() != null) {
-		    String formattedCreateDate = formList.getApproval_form_create_date().format(formatter);
-		    formList.setFormat_create_date(formattedCreateDate);
+			String formattedCreateDate = formList.getApproval_form_create_date().format(formatter);
+			formList.setFormat_create_date(formattedCreateDate);
 		}
-		
+
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
 		return "admin/approval/approval_detail";
 	}
-	
+
 	// 관리자 전자결재 양식 수정 페이지
 	@GetMapping("/admin/approval/edit/{form_no}")
 	public String adminApprovalEdit(Model model, @PathVariable("form_no") Long formNo) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
-		
+
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
-		
+
 		return "admin/approval/approval_edit";
 	}
-	
-	// 사용자 결재 내역함 페이지
+
+	private Sort getSortOptionApproval(String sort) {
+		if ("latest".equals(sort)) {
+			return Sort.by(Sort.Order.desc("vacationApprovalCreateDate"));
+		} else if ("oldest".equals(sort)) {
+			return Sort.by(Sort.Order.asc("vacationApprovalCreateDate"));
+		}
+		return Sort.by(Sort.Order.desc("vacationApprovalCreateDate"));
+	}
+
+	// 사용자 전자결재 내역함
 	@GetMapping("/employee/approval/history")
-	public String approvalHistory(Model model) {
-		Long member_no = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+	public String approvalHistory(Model model, VacationApprovalDto searchdto,
+			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
+
+		Long memberNo = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+		Sort sortOption = getSortOptionApproval(sort);
+		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+
+		// 결재흐름에 번호가 있는지 조회
+		List<VacationApprovalFlowDto> vacationApprovalFlowDtos = vacationApprovalService
+				.getVacationApprovalFlowRoleByMemberNo(memberNo);
+
+		List<Long> vacationApprovalNos = vacationApprovalFlowDtos.stream()
+				.map(VacationApprovalFlowDto::getVacation_approval_no).distinct().collect(Collectors.toList());
+
+		// 문서 번호 조회
+		Page<VacationApprovalDto> vacationApprovalDtoPage = vacationApprovalService
+				.getVacationApprovalsByNo(vacationApprovalNos, searchdto, sortedPageable);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		vacationApprovalDtoPage.getContent().forEach(vapp -> {
+			if (vapp.getVacation_approval_create_date() != null) {
+				String formattedCreateDate = vapp.getVacation_approval_create_date().format(formatter);
+				vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
+			}
+		});
+
 		model.addAttribute("memberdto", memberdto);
-		
+		model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
+		model.addAttribute("page", vacationApprovalDtoPage);
+		model.addAttribute("searchDto", searchdto);
+		model.addAttribute("currentSort", sort);
+
 		return "employee/approval/approval_history_list";
+
 	}
+
 	
-	// 사용자 결재 참조함 페이지
-	@GetMapping("/employee/approval/references")
-	public String approvalReferences(Model model) {
-		Long member_no = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
-		model.addAttribute("memberdto", memberdto);
-		
-		return "employee/approval/approval_references_list";
+	 // 사용자 결재 참조함 페이지
+	 
+	 @GetMapping("/employee/approval/references") public String approvalReferences(Model model, VacationApprovalDto searchdto,
+				@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+				@RequestParam(value = "sort", defaultValue = "latest") String sort) { 
+		 Long memberNo =memberService.getLoggedInMemberNo(); 
+		 List<MemberDto> memberdto =  memberService.getMembersByNo(memberNo);
+
+			Sort sortOption = getSortOptionApproval(sort);
+			Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+
+			// 결재흐름에 번호가 있는지 조회
+			List<VacationApprovalFlowDto> vacationApprovalFlowDtos = vacationApprovalService
+					.getVacationApprovalFlowByMemberNo(memberNo);
+
+			List<Long> vacationApprovalNos = vacationApprovalFlowDtos.stream()
+					.map(VacationApprovalFlowDto::getVacation_approval_no).distinct().collect(Collectors.toList());
+
+			// 문서 번호 조회
+			Page<VacationApprovalDto> vacationApprovalDtoPage = vacationApprovalService
+					.getVacationApprovalsByNo(vacationApprovalNos, searchdto, sortedPageable);
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			vacationApprovalDtoPage.getContent().forEach(vapp -> {
+				if (vapp.getVacation_approval_create_date() != null) {
+					String formattedCreateDate = vapp.getVacation_approval_create_date().format(formatter);
+					vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
+				}
+			});		 
+		 
+			model.addAttribute("memberdto", memberdto);
+			model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
+			model.addAttribute("page", vacationApprovalDtoPage);
+			model.addAttribute("searchDto", searchdto);
+			model.addAttribute("currentSort", sort);
+		 
+		 return "employee/approval/approval_references_list"; 
 	}
-	
+	 
+
+	private VacationApprovalDto convertToDto(VacationApproval vacationApproval) {
+		return VacationApprovalDto.builder().vacation_approval_no(vacationApproval.getVacationApprovalNo())
+				.member_no(vacationApproval.getMember().getMemberNo())
+				.vacation_approval_title(vacationApproval.getVacationApprovalTitle())
+				.vacation_type_no(vacationApproval.getVacationType().getVacationTypeNo())
+				.vacation_approval_start_date(vacationApproval.getVacationApprovalStartDate().toString())
+				.vacation_approval_end_date(vacationApproval.getVacationApprovalEndDate().toString())
+				.vacation_approval_total_days(vacationApproval.getVacationApprovalTotalDays())
+				.vacation_approval_content(vacationApproval.getVacationApprovalContent())
+				.vacation_approval_status(vacationApproval.getVacationApprovalStatus())
+				.vacation_approval_cancel_reason(vacationApproval.getVacationApprovalCancelReason())
+				.vacation_approval_create_date(vacationApproval.getVacationApprovalCreateDate())
+				.vacation_approval_update_date(vacationApproval.getVacationApprovalUpdateDate())
+				.member_name(vacationApproval.getMember().getMemberName())
+				.vacation_type_name(vacationApproval.getVacationType().getVacationTypeName()).build();
+	}
+
 	// 사용자 결재 진행함 페이지
 	@GetMapping("/employee/approval/progress")
 	public String approvalProgress(Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		model.addAttribute("memberdto", memberdto);
-		
+
 		return "employee/approval/approval_progress_list";
 	}
-	
+
 	// 사용자 결재 반려함 페이지
 	@GetMapping("/employee/approval/reject")
 	public String approvalReject(Model model) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		model.addAttribute("memberdto", memberdto);
-		
+
 		return "employee/approval/approval_reject_list";
 	}
 }

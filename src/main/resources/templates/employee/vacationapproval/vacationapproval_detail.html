@@ -52,8 +52,9 @@
 						            <tr>
 						                <td>
 						                <div class="signature_box">
-						                <img th:if="${vacationapprovaldto.digitalname != null}" th:src="@{'/linkOfficeImg/member/digital/'+${vacationapprovaldto.digitalname}}" alt="현재 서명" id="currentSignature">
-						                <span th:if="${vacationapprovaldto.digitalname == null}" id="currentSignature" th:text="${vacationapprovaldto.member_name}"></span>
+						                <img th:if="${vacationapprovaldto.vacation_approval_status != 3 and vacationapprovaldto.digitalname != null}" th:src="@{'/linkOfficeImg/member/digital/'+${vacationapprovaldto.digitalname}}" alt="현재 서명" id="currentSignature">
+						                <span th:if="${vacationapprovaldto.vacation_approval_status != 3 and vacationapprovaldto.digitalname == null}" id="currentSignature" th:text="${vacationapprovaldto.member_name}"></span>
+						                <span th:if="${vacationapprovaldto.vacation_approval_status == 3}" id="approvalcancel">기안취소</span>
 						                </div>
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">

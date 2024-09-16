@@ -12,7 +12,7 @@
 			        <select name="search_type" th:value="${searchDto.search_type}" >
 			            <option th:value="1" th:selected="${searchDto.search_type == 1}">전체</option>
 			            <option th:value="2" th:selected="${searchDto.search_type == 2}">제목</option>
-			            <option th:value="3" th:selected="${searchDto.search_type == 3}">상태</option>
+			            <option th:value="3" th:selected="${searchDto.search_type == 3}">기안자</option>
 			        </select>
 			        <input type="text" class="search_text" name="search_text" th:field="*{search_text}" placeholder="검색어를 입력하세요.">
 			        <button type="submit" class="search_button">검색</button>

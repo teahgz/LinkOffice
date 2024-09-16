@@ -275,3 +275,9 @@
     min-width: 100px; 
     text-align: center;
 }
+
+
+#approvalcancel{
+	font-size:17px;
+	color:#ff0000;
+}
