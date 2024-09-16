@@ -124,9 +124,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 memberElement.append(memberName).append(removeButton);
                 selectedMembersContainer.append(memberElement);
                 // 모달 내 리스트에도 추가
-                selectedMembersList.append(`<p>${node.text}</p>`);
+                selectedMembersList.append(`<p><i class="fa-solid fa-user"></i> ${node.text}</p>`);
                 selectedMembers.push(memberNumber);
                 selectNames.push(node.text);
+
 
                 removeButton.click(function() {
                     instance.uncheck_node(node);
@@ -169,7 +170,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 `;
 
                 const chatList = document.getElementById('chatList');
-                // 목록 맨 위에 새로운 항목을 삽입
                 chatList.insertBefore(newChatItem, chatList.firstChild);
 
                 // 선택된 항목 초기화 및 모달 닫기
@@ -345,22 +345,42 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     window.handleChatRoomClick = function(element) {
-        currentChatRoomNo = element;
-        loadChatMessages(element);
-    };
+         currentChatRoomNo = element;
+            getChatRoomName(element).then(chatRoomName => {
+                if (chatRoomName) {
+                    document.getElementById('chatRoomTitle').innerText = chatRoomName;
+                }
+                loadChatMessages(element);
+            }).catch(error => {
+                console.error('Error handling chat room click:', error);
+            });
+    }
+
+
+    function getChatRoomName(chatRoomNo) {
+        return fetch(`/api/chat/roomName/${chatRoomNo}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Chat room not found");
+            }
+            return response.text();
+        })
+        .catch(error => {
+            console.error('Error fetching chat room name:', error);
+            return null;  // 오류 발생 시 null 반환
+        });
+    }
+
 
     function resetSelectedMembers() {
         selectedMembers = [];
         selectNames = [];
 
-        // jstree의 모든 체크된 노드 해제
         $('#organization-chart').jstree(true).uncheck_all();
 
-        // 선택된 멤버와 권한 리스트 비우기
         $('#selected-members').empty();
         $('.permission_pick_list').empty();
 
-        // 로컬스토리지에서 선택된 사원 정보 초기화
         localStorage.removeItem('selectedMembers');
     }
 
