@@ -68,20 +68,8 @@ select {
     transform: scale(0.98);
 }
 
-.sort_container {
-    display: flex;
-    gap: 20px;
-}
-
-.sort_container p {
-    color: #555;
-    margin: 0;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.sort_container p:hover {
-    color: #B1C2DD;
+#sort {
+	margin-left:630px;
 }
 
 .approval_list_table {
