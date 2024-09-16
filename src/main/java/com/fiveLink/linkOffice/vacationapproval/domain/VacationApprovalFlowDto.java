@@ -28,7 +28,9 @@ public class VacationApprovalFlowDto {
 	private String vacation_approval_flow_reject_reason;
 	private LocalDateTime vacation_approval_flow_complete_date;
 	
+	
 	private String member_name;
+	private String format_vacation_approval_flow_complete_date;
 	
 	public VacationApprovalFlow toEntity(VacationApproval vacationApproval, Member member) {
 		return VacationApprovalFlow.builder()

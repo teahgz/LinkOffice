@@ -11,9 +11,9 @@
 				<a href="#">마이페이지</a>
 				<div class="dropdown">
 					<ul th:each = "member : ${memberdto}">
-						<li><a th:href="@{/employee/member/mypage/{no}(no=${member.member_no})}">내 정보</a></li>
-						<li><a th:href="@{/employee/member/myedit/{no}(no=${member.member_no})}">정보 수정</a></li>
-						<li><a th:href="@{/employee/member/digitalname/{no}(no=${member.member_no})}">전자결재 서명 등록</a></li>
+						<li><a th:href="@{/employee/member/mypage}">내 정보</a></li>
+						<li><a th:href="@{/employee/member/myedit}">정보 수정</a></li>
+						<li><a th:href="@{/employee/member/digitalname}">전자결재 서명 등록</a></li>
 					</ul>
 				</div>
 			</li>
@@ -42,7 +42,7 @@
 					<div class="dropdown">
 						<ul>
 							<li><a th:href="@{/employee/meeting/reservation}">회의실 예약</a></li>
-							<li><a href="#">예약 내역</a></li>
+							<li><a th:href="@{/employee/meeting/reservation/list}">예약 내역</a></li>
 						</ul>
 					</div>
 				</li>
@@ -55,8 +55,8 @@
 								<a href="#">결재 상신함</a>
 								<div class="dropdown">
 									<ul>
-										<li><a href="#">결재 진행함</a></li>
-										<li><a href="#">결재 반려함</a></li>
+										<li><a th:href="@{/employee/approval/progress}">결재 진행함</a></li>
+										<li><a th:href="@{/employee/approval/reject}">결재 반려함</a></li>
 									</ul>
 								</div>
 							</li>
@@ -64,8 +64,8 @@
 								<a href="#">결재 수신함</a>
 								<div class="dropdown">
 									<ul>
-										<li><a href="#">결재 내역함</a></li>
-										<li><a href="#">결재 참조함</a></li>
+										<li><a th:href="@{/employee/approval/history}">결재 내역함</a></li>
+										<li><a th:href="@{/employee/approval/references}">결재 참조함</a></li>
 									</ul>
 								</div>
 							</li>

@@ -40,6 +40,8 @@ public class VacationApprovalDto {
 	private int search_type = 1;
 	private String search_text;
 	private String format_vacation_approval_create_date;
+	private String digitalname;
+	
 	
 	private List<VacationApprovalFileDto> files;
 	private List<VacationApprovalFlowDto> flows;

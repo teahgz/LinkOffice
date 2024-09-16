@@ -84,14 +84,26 @@ public class VacationApprovalService {
 	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
 	    
 	    VacationApprovalDto dto = origin.toDto();
+	    
+	    // 사원의 서명 정보를 dto에 추가
+	    if (origin.getMember() != null) {
+	        dto.setDigitalname(origin.getMember().getMemberNewDigitalImg());
+	    }
 
 	    List<VacationApprovalFile> files = vacationApprovalFileRepository.findByVacationApproval(origin);
+	    List<VacationApprovalFlow> flows = vacationApprovalFlowRepository.findByVacationApproval(origin);
 	    
 	    List<VacationApprovalFileDto> fileDtos = files.stream()
 	        .map(VacationApprovalFile::toDto)
 	        .collect(Collectors.toList());
 	    
+	    List<VacationApprovalFlowDto> flowsDtos = flows.stream()
+	        .map(VacationApprovalFlow::toDto)
+	        .collect(Collectors.toList());
+	    
 	    dto.setFiles(fileDtos);
+	    dto.setFlows(flowsDtos);
+	    
 	    return dto;
 	}
 
@@ -107,7 +119,13 @@ public class VacationApprovalService {
 	    VacationApproval savedVapp = vacationApprovalRepository.save(vapp); 
 	    
 	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	
+	        Long approverMemberNo = flowDto.getMember_no();
+	        
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	    	
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, memberFlow);
+	    	
 	    	vacationApprovalFlowRepository.save(vaf);
 	    }
 	    
@@ -124,7 +142,13 @@ public class VacationApprovalService {
 		
 		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
 	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	
+	    	Long approverMemberNo = flowDto.getMember_no();
+	        
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	        
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, memberFlow);
+	    	
 	    	vacationApprovalFlowRepository.save(vaf);
 	    }
 	    
@@ -134,5 +158,18 @@ public class VacationApprovalService {
 		    }
 		return vacationApprovalRepository.save(vapp);
 		
+	}
+	
+	// 휴가 결재 기안 취소
+	public VacationApproval deleteVacationApproval(VacationApprovalDto dto) {
+		
+		Member member = memberRepository.findByMemberNo(dto.getMember_no());
+		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(dto.getVacation_type_no());
+		
+		VacationApproval va = dto.toEntity(member, vacationType);
+		
+		VacationApproval result = vacationApprovalRepository.save(va);
+		
+		return result;
 	}
 }

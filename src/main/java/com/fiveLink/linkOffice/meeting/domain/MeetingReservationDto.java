@@ -28,6 +28,7 @@ public class MeetingReservationDto {
     private String position_name; 
     private String department_name;
     
+    private Long participant_count;
 
     public MeetingReservation toEntity() {
         return MeetingReservation.builder()
