@@ -33,5 +33,10 @@ public class ChatRoomService {
     public String searchPosition(Long memberNo){
         return chatMapper.searchPosition(memberNo);
     }
+    public Long createRoomMany(ChatRoomDto dto) {
+        ChatRoom room = dto.toEntity();
+        ChatRoom savedRoom = chatRoomRepository.save(room);
+        return savedRoom.getChatRoomNo();
+    }
 
 }
