@@ -86,12 +86,18 @@ public class VacationApprovalService {
 	    VacationApprovalDto dto = origin.toDto();
 
 	    List<VacationApprovalFile> files = vacationApprovalFileRepository.findByVacationApproval(origin);
+	    List<VacationApprovalFlow> flows = vacationApprovalFlowRepository.findByVacationApproval(origin);
 	    
 	    List<VacationApprovalFileDto> fileDtos = files.stream()
 	        .map(VacationApprovalFile::toDto)
 	        .collect(Collectors.toList());
 	    
+	    List<VacationApprovalFlowDto> flowsDtos = flows.stream()
+		        .map(VacationApprovalFlow::toDto)
+		        .collect(Collectors.toList());
+	    
 	    dto.setFiles(fileDtos);
+	    dto.setFlows(flowsDtos);
 	    return dto;
 	}
 
@@ -107,7 +113,13 @@ public class VacationApprovalService {
 	    VacationApproval savedVapp = vacationApprovalRepository.save(vapp); 
 	    
 	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	
+	        Long approverMemberNo = flowDto.getMember_no();
+	        
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	    	
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, memberFlow);
+	    	
 	    	vacationApprovalFlowRepository.save(vaf);
 	    }
 	    
@@ -124,7 +136,13 @@ public class VacationApprovalService {
 		
 		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
 	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	
+	    	Long approverMemberNo = flowDto.getMember_no();
+	        
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	        
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, memberFlow);
+	    	
 	    	vacationApprovalFlowRepository.save(vaf);
 	    }
 	    

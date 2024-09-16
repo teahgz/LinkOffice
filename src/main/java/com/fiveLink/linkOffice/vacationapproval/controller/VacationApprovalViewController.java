@@ -96,6 +96,8 @@ public class VacationApprovalViewController {
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);
  		
+ 		System.out.println(vacationapprovaldto);
+ 		
  		return "employee/vacationapproval/vacationapproval_detail";
  	}
  	

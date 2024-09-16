@@ -63,9 +63,6 @@ public class VacationApprovalApicontroller {
 	    vappdto.setVacation_approval_content(vacationapprovalContent);
 	    vappdto.setVacation_approval_status(0L); 
 
-	    System.out.println(approvers);
-	    System.out.println(references);
-	    System.out.println(reviewers);
 	    
 	    List<VacationApprovalFlowDto> approvalFlowDtos = new ArrayList<>();
 	    int order = 1;
