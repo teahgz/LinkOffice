@@ -139,20 +139,25 @@ public class NoticeService {
     
     @Transactional
     public Notice updateNotice(NoticeDto dto) {
-    	NoticeDto temp = selectNoticeOne(dto.getNotice_no());
-    	temp.setNotice_title(dto.getNotice_title());
-    	temp.setNotice_content(dto.getNotice_content());
-    	temp.setNotice_importance(dto.getNotice_importance());
-    	temp.setNotice_update_date(dto.getNotice_update_date());
-    	if(dto.getNotice_ori_img() != null
-    			&& "".equals(dto.getNotice_ori_img()) == false) {
-    		temp.setNotice_ori_img(dto.getNotice_ori_img());
-    		temp.setNotice_new_img(dto.getNotice_new_img());
-    	}
-    	Notice notice = temp.toEntity();
-    	Notice result = noticeRepository.save(notice);
-    	return result;
+        // 기존 공지사항 불러오기
+        Notice notice = noticeRepository.findBynoticeNo(dto.getNotice_no());
+           
+
+        // 공지사항 정보 수정
+        notice.setNoticeTitle(dto.getNotice_title());
+        notice.setNoticeContent(dto.getNotice_content());
+        notice.setNoticeImportance(dto.getNotice_importance());
+        notice.setNoticeUpdateDate(dto.getNotice_update_date());
+
+        // 파일 업데이트 처리
+        if (dto.getNotice_ori_img() != null && !dto.getNotice_ori_img().isEmpty()) {
+            notice.setNoticeOriImg(dto.getNotice_ori_img());
+            notice.setNoticeNewImg(dto.getNotice_new_img());
+        }
+
+        return noticeRepository.save(notice);
     }
+
     
     public int deleteNotice(Long notice_no) {
     	int result =0;
