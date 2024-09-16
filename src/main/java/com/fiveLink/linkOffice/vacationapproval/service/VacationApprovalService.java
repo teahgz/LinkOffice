@@ -172,4 +172,70 @@ public class VacationApprovalService {
 		
 		return result;
 	}
+	
+
+	
+	// 사용자 전자결재 내역함 (로그인한 사용자가 결재 흐름에 있는지 조회 )
+	public List<VacationApprovalFlowDto> getVacationApprovalFlowRoleByMemberNo(Long member_no){
+		
+		List<VacationApprovalFlow> flowList = vacationApprovalFlowRepository.findByMemberMemberNoAndRole(member_no);
+		List<VacationApprovalFlowDto> flowDtoList = new ArrayList<VacationApprovalFlowDto>();
+		
+		for(VacationApprovalFlow vaf : flowList) {
+			VacationApprovalFlowDto dto = vaf.toDto();
+			flowDtoList.add(dto);
+		}
+		return flowDtoList;
+	}
+	
+	// 사용자 전자결재 참조함 (로그인한 사용자가 결재 흐름에 있는지 조회)
+	public List<VacationApprovalFlowDto> getVacationApprovalFlowByMemberNo(Long member_no){
+		
+		List<VacationApprovalFlow> flowList = vacationApprovalFlowRepository.findByMemberMemberNoAndRoleReferens(member_no);
+		List<VacationApprovalFlowDto> flowDtoList = new ArrayList<VacationApprovalFlowDto>();
+		
+		for(VacationApprovalFlow vaf : flowList) {
+			VacationApprovalFlowDto dto = vaf.toDto();
+			flowDtoList.add(dto);
+		}
+		return flowDtoList;
+	}
+	
+	
+	public Page<VacationApprovalDto> getVacationApprovalsByNo(List<Long> vacationApprovalNos, VacationApprovalDto searchdto, Pageable pageable) {
+		
+		Page<VacationApproval> vacationApprovals = null;
+		
+		String searchText = searchdto.getSearch_text();
+		
+		
+		if(searchText != null &&"".equals(searchText) == false) {
+			int searchType = searchdto.getSearch_type();
+			
+			switch(searchType) {
+				case 1 :
+					vacationApprovals = vacationApprovalRepository.findByTitleOrNameContainingAndVacationApprovalNoIn(searchText,vacationApprovalNos, pageable);
+					break;
+				case 2 :
+					vacationApprovals = vacationApprovalRepository.findByVacationApprovalTitleContainingAndVacationApprovalNoIn(searchText, vacationApprovalNos, pageable);
+					break;
+				case 3 :
+					vacationApprovals = vacationApprovalRepository.findByMemberMemberNameContainingAndVacationApprovalNoIn(searchText,vacationApprovalNos, pageable);
+					break;
+			}
+		} else {
+			vacationApprovals = vacationApprovalRepository.findByVacationApprovalNoIn(vacationApprovalNos, pageable);
+		}
+	    
+	    // VacationApprovalDto로 변환
+	    List<VacationApprovalDto> approvalDtoList = vacationApprovals.stream()
+	        .map(VacationApproval::toDto)
+	        .collect(Collectors.toList());
+
+	    // PageImpl을 사용하여 Page<VacationApprovalDto>를 반환
+	    return new PageImpl<>(approvalDtoList, pageable, vacationApprovals.getTotalElements());
+	}
+
+
+	
 }
