@@ -35,4 +35,11 @@
         JOIN fl_position p ON m.position_no = p.position_no
         WHERE m.member_no = #{memberNo}
     </select>
+
+<!-- 채팅방 이름 가져오기   -->
+    <select id="selectChatRoomName" resultType="String" parameterType="java.lang.Long">
+        SELECT chat_room_name
+        FROM fl_chat_room
+        WHERE chat_room_no = #{chatRoomNo}
+    </select>
 </mapper>
