@@ -50,7 +50,6 @@ public class ApprovalFormService {
     // 관리자 전자결재 양식 등록
     public ApprovalForm saveApprovalForm(ApprovalFormDto dto) {
         ApprovalForm approvalForm = dto.toEntity();
-        System.out.println(approvalForm);
         return approvalFormRepository.save(approvalForm);
     }
     

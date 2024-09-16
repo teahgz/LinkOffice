@@ -28,6 +28,62 @@
                                 <div>일)</div>
                             </div>
                         </div>
+                        
+                        
+						<div class="approval_line_section">
+						    <table class="approval_line_table">
+						        <thead>
+						            <tr>
+						            
+						                <th>
+						                    기안자 (<span th:text="${vacationapprovaldto.member_name}"></span>)
+						                </th>
+						                <th th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 1}">
+						                    합의자 (<span th:text="${flow.member_name}"></span>)
+						                </th>
+						                <th th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2}">
+						                    결재자 (<span th:text="${flow.member_name}"></span>)
+						                </th>
+						            </tr>
+						        </thead>
+						        <tbody>
+						            <tr>
+						                <td>
+						                <div class="signature_box">
+						                <img th:if="${vacationapprovaldto.digitalname != null}" th:src="@{'/linkOfficeImg/member/digital/'+${vacationapprovaldto.digitalname}}" alt="현재 서명" id="currentSignature">
+						                <span th:if="${vacationapprovaldto.digitalname == null}" id="currentSignature" th:text="${vacationapprovaldto.member_name}"></span>
+						                </div>
+						                </td>
+						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
+						                    <div class="signature_box">
+						                    </div>
+						                </td>
+						            </tr>
+						            <tr>
+						                <!-- 결재 완료 날짜 // 전자결재 서명이 없으면 안보이도록  수정예정 -->
+						                <td>
+						                    <div class="date_box" 
+						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
+						                </td>
+						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date != null}"
+						                         th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date == null}">
+						                        <span>미결</span>
+						                    </div>
+						                </td>
+						            </tr>
+						        </tbody>
+						    </table>
+						
+						    <div class="reference_section">
+						        <strong>참조자</strong>
+						        <div class="reference_box">
+						            <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 0}"
+						                 th:text="${flow.member_name}"></div>
+						        </div>
+						    </div>
+						</div>
                         <hr class="section_separator"> 
                     </div>
 
