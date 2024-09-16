@@ -166,7 +166,7 @@ form.addEventListener('submit', (e) => {
                 confirmButtonColor: '#B1C2DD', 
                 confirmButtonText: '확인'
             }).then(() => {
-                location.href = "/employee/member/mypage/" + memberNo;
+                location.href = "/employee/member/mypage";
             });
         } else {
             Swal.fire({

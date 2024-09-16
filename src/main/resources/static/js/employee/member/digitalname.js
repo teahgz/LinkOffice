@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     confirmButtonColor: '#B1C2DD', 
                     confirmButtonText: '확인'
                 }).then(() => {
-                    location.href = "/employee/member/digitalname/" + memberNo;
+                    location.href = "/employee/member/digitalname";
                 });
             } else {
                 Swal.fire({
