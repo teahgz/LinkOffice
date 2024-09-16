@@ -7,6 +7,8 @@
         <section>
             <h1>휴가 신청 조회</h1>
             <div class="container">
+            	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
+            	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
                 <div class="main_container">
                     <div class="details_section">
                         <div class="text_field">
@@ -116,8 +118,9 @@
                     </div>
 
                     <div class="button_container">
+                    	<button type="button" class="cancel_button">기안 취소</button>
                         <button type="button" class="edit_button">수정</button>
-                        <button type="button" class="cancel_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
+                        <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
                     </div>
                 </div>
             </div>

@@ -159,4 +159,17 @@ public class VacationApprovalService {
 		return vacationApprovalRepository.save(vapp);
 		
 	}
+	
+	// 휴가 결재 기안 취소
+	public VacationApproval deleteVacationApproval(VacationApprovalDto dto) {
+		
+		Member member = memberRepository.findByMemberNo(dto.getMember_no());
+		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(dto.getVacation_type_no());
+		
+		VacationApproval va = dto.toEntity(member, vacationType);
+		
+		VacationApproval result = vacationApprovalRepository.save(va);
+		
+		return result;
+	}
 }
