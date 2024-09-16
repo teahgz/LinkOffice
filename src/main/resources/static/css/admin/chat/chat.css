@@ -98,3 +98,77 @@
     border-radius: 10px;
     max-width: 50%;
 }
+
+/*그룹명 모달*/
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.modal-header button {
+    border: none;
+    background-color: white;
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+}
+.modal-header h5 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.modal-header .close {
+    outline: none;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#groupChatNameInput {
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 95%;
+    transition: border-color 0.3s;
+}
+
+#groupChatNameInput:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.modal-footer {
+    border-top: none;
+    padding-top: 10px;
+}
+.modal-footer button {
+    border-radius: 5px;
+    border:none;
+    background-color: #B1C2DD;
+    padding: 10px 15px;
+
+}
+
+
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
