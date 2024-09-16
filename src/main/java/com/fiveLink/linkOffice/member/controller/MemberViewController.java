@@ -48,25 +48,28 @@ public class MemberViewController {
 	}
 	
 	// 내정보 페이지
-	@GetMapping("/employee/member/mypage/{member_no}")
-	public String myPage(@PathVariable("member_no") Long memberNo, Model model) {
-		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
+	@GetMapping("/employee/member/mypage")
+	public String myPage(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 	    model.addAttribute("memberdto", memberdto);
 	    return "employee/member/mypage";
 	}
 	// 정보 수정 페이지
-	@GetMapping("/employee/member/myedit/{member_no}")
-	public String myedit(@PathVariable("member_no") Long memberNo, Model model) {
-		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
+	@GetMapping("/employee/member/myedit")
+	public String myedit(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 	    model.addAttribute("memberdto", memberdto);
 		return "employee/member/myedit";
 	}
 	
 	// 정보 수정 페이지
-	@GetMapping("/employee/member/digitalname/{member_no}")
-	public String digitalname(@PathVariable("member_no") Long memberNo, Model model) {
-	    List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
-	    model.addAttribute("memberdto", memberDtoList);
+	@GetMapping("/employee/member/digitalname")
+	public String digitalname( Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+	    model.addAttribute("memberdto", memberdto);
 	    return "employee/member/digitalname";
 	}
 
