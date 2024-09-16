@@ -51,7 +51,6 @@ public class MemberViewController {
 	@GetMapping("/employee/member/mypage/{member_no}")
 	public String myPage(@PathVariable("member_no") Long memberNo, Model model) {
 		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
-		System.out.println(memberdto);
 	    model.addAttribute("memberdto", memberdto);
 	    return "employee/member/mypage";
 	}

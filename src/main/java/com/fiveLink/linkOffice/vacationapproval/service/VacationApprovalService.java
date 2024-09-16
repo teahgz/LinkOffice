@@ -84,6 +84,11 @@ public class VacationApprovalService {
 	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
 	    
 	    VacationApprovalDto dto = origin.toDto();
+	    
+	    // 사원의 서명 정보를 dto에 추가
+	    if (origin.getMember() != null) {
+	        dto.setDigitalname(origin.getMember().getMemberNewDigitalImg());
+	    }
 
 	    List<VacationApprovalFile> files = vacationApprovalFileRepository.findByVacationApproval(origin);
 	    List<VacationApprovalFlow> flows = vacationApprovalFlowRepository.findByVacationApproval(origin);
@@ -93,11 +98,12 @@ public class VacationApprovalService {
 	        .collect(Collectors.toList());
 	    
 	    List<VacationApprovalFlowDto> flowsDtos = flows.stream()
-		        .map(VacationApprovalFlow::toDto)
-		        .collect(Collectors.toList());
+	        .map(VacationApprovalFlow::toDto)
+	        .collect(Collectors.toList());
 	    
 	    dto.setFiles(fileDtos);
 	    dto.setFlows(flowsDtos);
+	    
 	    return dto;
 	}
 

@@ -20,6 +20,7 @@ import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 @Controller
@@ -93,10 +94,23 @@ public class VacationApprovalViewController {
  		
  		List<MemberDto> memberdto = memberService.getMembersByNo(vacationapprovaldto.getMember_no());
  		
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (vacationapprovaldto.getVacation_approval_create_date() != null ) {
+            String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
+            vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
+        }
+        
+        if (vacationapprovaldto.getFlows() != null) {
+            for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
+                if (flow.getVacation_approval_flow_complete_date() != null) {
+                    String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
+                    flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
+                }
+            }
+        }
+ 		
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);
- 		
- 		System.out.println(vacationapprovaldto);
  		
  		return "employee/vacationapproval/vacationapproval_detail";
  	}
