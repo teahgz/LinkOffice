@@ -55,8 +55,8 @@
 								<a href="#">결재 상신함</a>
 								<div class="dropdown">
 									<ul>
-										<li><a href="#">결재 진행함</a></li>
-										<li><a href="#">결재 반려함</a></li>
+										<li><a th:href="@{/employee/approval/progress}">결재 진행함</a></li>
+										<li><a th:href="@{/employee/approval/reject}">결재 반려함</a></li>
 									</ul>
 								</div>
 							</li>
@@ -64,8 +64,8 @@
 								<a href="#">결재 수신함</a>
 								<div class="dropdown">
 									<ul>
-										<li><a href="#">결재 내역함</a></li>
-										<li><a href="#">결재 참조함</a></li>
+										<li><a th:href="@{/employee/approval/history}">결재 내역함</a></li>
+										<li><a th:href="@{/employee/approval/references}">결재 참조함</a></li>
 									</ul>
 								</div>
 							</li>

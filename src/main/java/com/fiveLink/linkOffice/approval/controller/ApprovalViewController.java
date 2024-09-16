@@ -115,4 +115,47 @@ public class ApprovalViewController {
 		return "admin/approval/approval_edit";
 	}
 	
+	// 사용자 결재 내역함 페이지
+	@GetMapping("/employee/approval/history")
+	public String approvalHistory(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		model.addAttribute("memberdto", memberdto);
+		
+		return "employee/approval/approval_history_list";
+	}
+	
+	// 사용자 결재 참조함 페이지
+	@GetMapping("/employee/approval/references")
+	public String approvalReferences(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		model.addAttribute("memberdto", memberdto);
+		
+		return "employee/approval/approval_references_list";
+	}
+	
+	// 사용자 결재 진행함 페이지
+	@GetMapping("/employee/approval/progress")
+	public String approvalProgress(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		model.addAttribute("memberdto", memberdto);
+		
+		return "employee/approval/approval_progress_list";
+	}
+	
+	// 사용자 결재 반려함 페이지
+	@GetMapping("/employee/approval/reject")
+	public String approvalReject(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		model.addAttribute("memberdto", memberdto);
+		
+		return "employee/approval/approval_reject_list";
+	}
 }
