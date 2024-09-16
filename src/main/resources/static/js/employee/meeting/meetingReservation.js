@@ -25,6 +25,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const pick_start_time = document.getElementById('reservation_start_time');  
     var csrfToken = document.querySelector('input[name="_csrf"]').value;
     
+    // 기본 예약 버튼
+    document.getElementById('openReservationModal').addEventListener('click', function() {
+        openReservationModal();
+    });
+
+    function openReservationModal() { 
+        $('#reservationModal').modal('show');
+         
+        resetReservationForm();
+    }
+
+    function resetReservationForm() { 
+        $('#reservation_room').val('');
+        $('#reservation_date').val('');
+        $('#reservation_start_time').val('');
+        $('#reservation_end_time').val('');
+        $('#reservation_purpose').val('');
+ 
+        $('#reservation_start_time').prop('disabled', true).empty().append('<option value="">시작 시간</option>');
+        $('#reservation_end_time').prop('disabled', true).empty().append('<option value="">종료 시간</option>');
+         
+        $('#reservation_date').attr('min', today);
+    } 
+    
+    // 예약 현황 예약 버튼
     function showReservationModal(meeting, date, startTime) { 
         $(pick_room).val(meeting.meeting_no).trigger('change'); 
         $(pick_date).val(date).trigger('change', date);
@@ -232,40 +257,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     document.getElementById('info_close_btn').onclick = function () {
-        closeInfoModal();
+        closeMeetingInfoModal();
     };
 
     // 정보 상세 모달 닫기
-    function closeInfoModal() {
+    function closeMeetingInfoModal() { 
         var modal = document.getElementById('info_meetingroom_modal');
         modal.style.display = 'none';
     }
-    
-    // 조직도 닫기 
-    function closeInfoModal() {
-        var chartmodal = document.getElementById('organizationChartModal');
-        selectedMembers = [];
-        chartmodal.style.display = 'none';
-    }
-    
-    document.getElementById('chart_close').onclick = function () {
-		Swal.fire({
-            text: '선택한 내역이 저장되지 않습니다.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#B1C2DD',
-            cancelButtonColor: '#C0C0C0',
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-        }).then((result) => {
-            if (result.isConfirmed) {
-	            closeInfoModal()();
-	        }
-        }); 
-        
-    };
-    
-    
+  
     // 예약 모달
     // 회의실 선택 옵션  
     function populateRoomSelect(rooms) {
@@ -562,11 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $('#selectedMembers').val(selectedMembers.join(','));
 
         localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
-    }
-    
-    // 조직도 닫을 때 리셋
-    
-    
+    }  
     
     // 조직도 확인 -> 예약 모달 사원 출력 
 	$('#participate_confirmButton').click(function()  {

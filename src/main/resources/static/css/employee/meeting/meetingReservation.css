@@ -37,6 +37,7 @@
     margin-top : -20px;
 }
 .room-info-two { 
+	margin-top : 20px;
     background-color: #ffffff; 
     padding: 0px 10px 5px 10px;  
 } 
@@ -434,5 +435,39 @@ td.available {
     background-size: cover;   
     background-position: center;
     background-repeat: no-repeat;
-} 
+}  
  
+.selected-participants {
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+    background-color: #e0e0e0;
+    border-radius: 20px; 
+    margin-bottom: 5px;
+    font-size: 14px;
+    width : 100px;
+    color: #333;
+}
+
+.selected-participants span {
+    margin-right: 7px;
+   	padding-left :7px;
+}
+ 
+
+.reserve-button { 
+    width: 100%; 
+    max-width: 400px;  
+    padding: 15px;  
+    font-size: 16px; 
+    color: black; 
+    background-color: #B1C2DD;  
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.reserve-button:hover {
+    background-color: #9CAFC7; /* 버튼에 마우스를 올렸을 때 배경색 변경 */
+}

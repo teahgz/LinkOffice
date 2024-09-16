@@ -7,8 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -256,5 +262,42 @@ public class MeetingReservationController {
 	    }
 	    return resultMap; 
 	}
+	
+	// 예약 내역 페이지
+	@GetMapping("/employee/meeting/reservation/list")
+	public String myMeetingReservation(
+	        @RequestParam(value = "searchText", defaultValue = "") String searchText,
+	        @RequestParam(value = "sort", defaultValue = "latest") String sort,
+	        @RequestParam(value = "meetingNo", defaultValue = "") String meetingNo,   
+	        @PageableDefault(size = 10, sort = "meetingReservationDate", direction = Sort.Direction.ASC) Pageable pageable,
+	        Model model) {
+		
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
+	    List<MeetingDto> meetings = meetingService.getAllMeetings();
+	    
+	    Sort sortOption = getSortOption(sort);
+	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+	    
+	    Page<MeetingReservationDto> reservations = meetingReservationService.searchReservationsByMemberNo(memberNo, searchText, meetingNo, sortedPageable);   
 
+	    model.addAttribute("memberdto", memberDto.get(0));
+	    model.addAttribute("reservations", reservations);
+	    model.addAttribute("searchText", searchText);
+	    model.addAttribute("currentSort", sort);
+	    model.addAttribute("meetings", meetings); 
+	    model.addAttribute("meetingNo", meetingNo); 
+
+	    return "employee/meeting/myMeetingReservation";
+	} 
+
+	private Sort getSortOption(String sort) {
+		if ("latest".equals(sort)) {
+			return Sort.by(Sort.Order.desc("meetingReservationDate")); 
+		} else if ("oldest".equals(sort)) {
+			return Sort.by(Sort.Order.asc("meetingReservationDate")); 
+		}
+		return Sort.by(Sort.Order.desc("meetingReservationDate")); 
+	}
+	
 }
