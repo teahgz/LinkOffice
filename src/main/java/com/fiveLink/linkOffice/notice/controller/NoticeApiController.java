@@ -82,35 +82,41 @@ public class NoticeApiController {
 			@PathVariable("notice_no")Long notice_no){
 				return fileService.download(notice_no);
 			}
-	
 	@ResponseBody
 	@PostMapping("/notice/update/{notice_no}")
-	public Map<String,String> updateNotice(NoticeDto dto,
-			@RequestParam(name="file",required=false)MultipartFile file){
-		Map<String,String> resultMap = new HashMap<String,String>();
-		resultMap.put("res_code", "404");
-		resultMap.put("res_msg", "게시글 수정중 오류가 발생했습니다.");
-		
-		if(file != null && "".equals(file.getOriginalFilename()) == false) {
-			String savedFileName = fileService.upload(file);
-			if(savedFileName != null) {
-				dto.setNotice_ori_img(savedFileName);
-				dto.setNotice_new_img(savedFileName);
-				
-				if(fileService.delete(dto.getNotice_no())>0){
-					resultMap.put("res_msg", "기존 파일이 정상적으로 삭제 되었습니다.");
-				}
-				}else {
-					resultMap.put("res_msg", "파일 업로드가 실패하였습니다.");
-				}				
-			}
-		
-		if(noticeService.updateNotice(dto) != null) {
-			resultMap.put("res_code", "200");
-			resultMap.put("res_msg", "게시글이 성공적으로 수정되었습니다.");
-		}
-		
-		return resultMap;
+	public Map<String, String> updateNotice(NoticeDto dto,
+	                                        @RequestParam(name = "file", required = false) MultipartFile file) {
+	    Map<String, String> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "게시글 수정 중 오류가 발생했습니다.");
+
+	    try {
+	        // 파일 처리
+	        if (file != null && !file.isEmpty()) {
+	            String originalFileName = file.getOriginalFilename();  // 원본 파일 이름
+	            String savedFileName = fileService.upload(file);  // 암호화된 파일 이름
+
+	            if (savedFileName != null) {
+	                dto.setNotice_ori_img(originalFileName);  // 원본 파일 이름 저장
+	                dto.setNotice_new_img(savedFileName);  // 암호화된 파일 이름 저장
+	                fileService.delete(dto.getNotice_no());  // 기존 파일 삭제
+	            } else {
+	                resultMap.put("res_msg", "파일 업로드 실패");
+	                return resultMap;
+	            }
+	        }
+
+	        // 공지사항 수정
+	        if (noticeService.updateNotice(dto) != null) {
+	            resultMap.put("res_code", "200");
+	            resultMap.put("res_msg", "게시글이 성공적으로 수정되었습니다.");
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return resultMap;
 	}
 	
 	@ResponseBody
