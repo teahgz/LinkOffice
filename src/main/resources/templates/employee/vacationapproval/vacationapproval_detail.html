@@ -120,7 +120,7 @@
 
                     <div class="button_container">
                     	<button type="button" class="cancel_button">기안 취소</button>
-                        <button type="button" class="edit_button">수정</button>
+                    	<a th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" class="edit_button">수정</a>
                         <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
                     </div>
                 </div>
