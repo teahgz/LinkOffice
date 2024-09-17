@@ -39,5 +39,21 @@ public class ChatMemberService {
         }
         return result;
     }
+    public int createMemberRoomMany(ChatMemberDto dto) {
+
+        int result = -1;
+        try{
+            ChatMember chatMember = dto.toEntity();
+            chatMemberRepository.save(chatMember);
+            result = 1;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public String selectChatRoomName(Long chatRoomNo){
+        return chatMapper.selectChatRoomName(chatRoomNo);
+    }
 
 }

@@ -84,14 +84,26 @@ public class VacationApprovalService {
 	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
 	    
 	    VacationApprovalDto dto = origin.toDto();
+	    
+	    // 사원의 서명 정보를 dto에 추가
+	    if (origin.getMember() != null) {
+	        dto.setDigitalname(origin.getMember().getMemberNewDigitalImg());
+	    }
 
 	    List<VacationApprovalFile> files = vacationApprovalFileRepository.findByVacationApproval(origin);
+	    List<VacationApprovalFlow> flows = vacationApprovalFlowRepository.findByVacationApproval(origin);
 	    
 	    List<VacationApprovalFileDto> fileDtos = files.stream()
 	        .map(VacationApprovalFile::toDto)
 	        .collect(Collectors.toList());
 	    
+	    List<VacationApprovalFlowDto> flowsDtos = flows.stream()
+	        .map(VacationApprovalFlow::toDto)
+	        .collect(Collectors.toList());
+	    
 	    dto.setFiles(fileDtos);
+	    dto.setFlows(flowsDtos);
+	    
 	    return dto;
 	}
 
@@ -107,7 +119,13 @@ public class VacationApprovalService {
 	    VacationApproval savedVapp = vacationApprovalRepository.save(vapp); 
 	    
 	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	
+	        Long approverMemberNo = flowDto.getMember_no();
+	        
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	    	
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, memberFlow);
+	    	
 	    	vacationApprovalFlowRepository.save(vaf);
 	    }
 	    
@@ -124,7 +142,13 @@ public class VacationApprovalService {
 		
 		VacationApproval savedVapp = vacationApprovalRepository.save(vapp);
 	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, member);
+	    	
+	    	Long approverMemberNo = flowDto.getMember_no();
+	        
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	        
+	    	VacationApprovalFlow vaf = flowDto.toEntity(vapp, memberFlow);
+	    	
 	    	vacationApprovalFlowRepository.save(vaf);
 	    }
 	    
@@ -135,4 +159,81 @@ public class VacationApprovalService {
 		return vacationApprovalRepository.save(vapp);
 		
 	}
+	
+	// 휴가 결재 기안 취소
+	public VacationApproval deleteVacationApproval(VacationApprovalDto dto) {
+		
+		Member member = memberRepository.findByMemberNo(dto.getMember_no());
+		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(dto.getVacation_type_no());
+		
+		VacationApproval va = dto.toEntity(member, vacationType);
+		
+		VacationApproval result = vacationApprovalRepository.save(va);
+		
+		return result;
+	}
+	
+
+	
+	// 사용자 전자결재 내역함 (로그인한 사용자가 결재 흐름에 있는지 조회 )
+	public List<VacationApprovalFlowDto> getVacationApprovalFlowRoleByMemberNo(Long member_no){
+		
+		List<VacationApprovalFlow> flowList = vacationApprovalFlowRepository.findByMemberMemberNoAndRole(member_no);
+		List<VacationApprovalFlowDto> flowDtoList = new ArrayList<VacationApprovalFlowDto>();
+		
+		for(VacationApprovalFlow vaf : flowList) {
+			VacationApprovalFlowDto dto = vaf.toDto();
+			flowDtoList.add(dto);
+		}
+		return flowDtoList;
+	}
+	
+	// 사용자 전자결재 참조함 (로그인한 사용자가 결재 흐름에 있는지 조회)
+	public List<VacationApprovalFlowDto> getVacationApprovalFlowByMemberNo(Long member_no){
+		
+		List<VacationApprovalFlow> flowList = vacationApprovalFlowRepository.findByMemberMemberNoAndRoleReferens(member_no);
+		List<VacationApprovalFlowDto> flowDtoList = new ArrayList<VacationApprovalFlowDto>();
+		
+		for(VacationApprovalFlow vaf : flowList) {
+			VacationApprovalFlowDto dto = vaf.toDto();
+			flowDtoList.add(dto);
+		}
+		return flowDtoList;
+	}
+	
+	
+	public Page<VacationApprovalDto> getVacationApprovalsByNo(List<Long> vacationApprovalNos, VacationApprovalDto searchdto, Pageable pageable) {
+		
+		Page<VacationApproval> vacationApprovals = null;
+		
+		String searchText = searchdto.getSearch_text();
+		
+		
+		if(searchText != null &&"".equals(searchText) == false) {
+			int searchType = searchdto.getSearch_type();
+			
+			switch(searchType) {
+				case 1 :
+					vacationApprovals = vacationApprovalRepository.findByTitleOrNameContainingAndVacationApprovalNoIn(searchText,vacationApprovalNos, pageable);
+					break;
+				case 2 :
+					vacationApprovals = vacationApprovalRepository.findByVacationApprovalTitleContainingAndVacationApprovalNoIn(searchText, vacationApprovalNos, pageable);
+					break;
+				case 3 :
+					vacationApprovals = vacationApprovalRepository.findByMemberMemberNameContainingAndVacationApprovalNoIn(searchText,vacationApprovalNos, pageable);
+					break;
+			}
+		} else {
+			vacationApprovals = vacationApprovalRepository.findByVacationApprovalNoIn(vacationApprovalNos, pageable);
+		}
+	    
+	    List<VacationApprovalDto> approvalDtoList = vacationApprovals.stream()
+	        .map(VacationApproval::toDto)
+	        .collect(Collectors.toList());
+
+	    return new PageImpl<>(approvalDtoList, pageable, vacationApprovals.getTotalElements());
+	}
+
+
+	
 }

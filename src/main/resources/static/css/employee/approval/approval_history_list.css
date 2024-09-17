@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-.list_form {
+.approval_list {
     position: relative;
     width: 80%;
     max-width: 1300px;
@@ -16,7 +16,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .search_container {
@@ -39,7 +39,7 @@ select:focus, .search_text:focus {
 }
 
 select {
-    width: 120px;
+    width: 150px;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
@@ -69,10 +69,10 @@ select {
 }
 
 #sort {
-	margin-left:800px;
+	margin-left:630px;
 }
 
-.approval_form_table {
+.approval_list_table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -82,14 +82,14 @@ select {
     margin-bottom: 30px;
 }
 
-.approval_form_table th, .approval_form_table td {
+.approval_list_table th, .approval_list_table td {
     padding: 18px 15px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
 }
 
-.approval_form_table th {
+.approval_list_table th {
     background-color: #f8f9fa;
     font-weight: bold;
     color: #333;
@@ -97,15 +97,15 @@ select {
     font-size: 17px;
 }
 
-.approval_form_table tr:last-child td {
+.approval_list_table tr:last-child td {
     border-bottom: none;
 }
 
-.approval_form_table tbody tr {
+.approval_list_table tbody tr {
     transition: background-color 0.3s;
 }
 
-.approval_form_table tbody tr:hover {
+.approval_list_table tbody tr:hover {
     background-color: #f5f5f5;
 }
 

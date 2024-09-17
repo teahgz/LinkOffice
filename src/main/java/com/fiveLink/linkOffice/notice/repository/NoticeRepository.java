@@ -17,7 +17,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("SELECT m.memberName FROM Member m WHERE m.memberNumber = :memberNumber")
     String findMemberNameByMemberNumber(@Param("memberNumber") String memberNumber);
 
-    // 제목 또는 내용으로 검색 
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " + 
@@ -28,7 +27,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
     Page<Object[]> findNoticesByTitleOrContentContainingWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-    // 제목으로 검색
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " + 
@@ -38,7 +36,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
     Page<Object[]> findNoticesByTitleWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-    // 내용으로 검색
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " + 
@@ -48,7 +45,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
     Page<Object[]> findNoticesByContentWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-    // 작성자로 검색
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " + 
@@ -58,7 +54,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
     Page<Object[]> findNoticesByMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-    // 모든 공지사항 조회
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " +
@@ -67,7 +62,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
     Page<Object[]> findNoticesAllWithMember(@Param("sort") String sort, Pageable pageable);
 
-    // 특정 공지사항 조회
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " +

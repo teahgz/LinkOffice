@@ -48,7 +48,6 @@
 	margin-bottom: 20px;
 }
 
-/* 버튼 스타일 */
 .notice-buttons {
 	display: flex;
 	justify-content: flex-end;
@@ -65,26 +64,30 @@
 }
 
 .notice-buttons .btn-edit {
-	background-color: #a7c4f7;
-	color: white;
+	background-color: #B3C7EE;
+	color: black;
+	text-decoration: none;
 }
 
 .notice-buttons .btn-delete {
-	background-color: #f78a8a;
-	color: white;
-}
-
-.notice-buttons .btn-back {
-	background-color: #d1d1d1;
+	background-color: #EEB3B3;
 	color: black;
 }
 
-/* 버튼 호버 효과 */
+.notice-buttons .btn-back {
+	background-color: #C0C0C0;
+	color: black;
+}
+
+
 .notice-buttons .btn:hover {
 	opacity: 0.9;
 }
 
-/* 이미지 크기 제한 설정 */
+.notice-buttons .btn-edit:hover {
+    text-decoration: none;
+}
+
 .notice-image img {
 	width: 100%;
 	max-width: 600px;
@@ -98,15 +101,15 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    border: 1px solid #ccc; /* 보더 추가 */
-    border-radius: 5px; /* 보더를 둥글게 */
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
     background-color: #f9f9f9;
 }
 
 .file-name {
     text-decoration: underline;
     color: #007bff;
-    margin-right: 10px; /* 파일명과 아이콘 사이 간격 조정 */
+    margin-right: 10px; 
 }
 
 .download-icon {

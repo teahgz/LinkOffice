@@ -68,7 +68,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMemberNo")); // 변환
         List<String> names = (List<String>) jsonMap.get("names");
         String currentMemberName = (String) jsonMap.get("currentMemberName");
-
         ChatRoomDto dto = new ChatRoomDto();
 
         if(members.size() == 1){
@@ -76,7 +75,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             dto.setChat_room_type(0);//1:1 채팅방 타입
             Long chatRoomNo = chatRoomService.createRoomOne(dto);
             String position = chatRoomService.searchPosition(currentMemberNo);
-            System.out.println("postion: "+position);
+            //채팅방 이름을 위한 이름+부서명
             String namePosition = currentMemberName + " " + position;
 
             ChatMemberDto memberDto = new ChatMemberDto();
@@ -108,6 +107,44 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     session.sendMessage(new TextMessage(responseJson));
                 }
             }
+
+        }else{
+            //단체채팅방 만들기
+            dto.setChat_room_type(1);//단체 채팅방 타입
+            String groupChatName =(String) jsonMap.get("groupChatName");// 그룹 채팅명
+            dto.setChat_room_name(groupChatName);
+            Long chatRoomNo = chatRoomService.createRoomMany(dto);
+
+            for(int i = 0; i < members.size(); i++){
+                ChatMemberDto memberDto = new ChatMemberDto();
+                memberDto.setChat_room_no(chatRoomNo);
+                memberDto.setChat_member_room_name(groupChatName);
+                memberDto.setMember_no(Long.valueOf(members.get(i)));
+                // 멤버 추가
+                chatMemberService.createMemberRoomMany(memberDto);
+
+            }
+            // 생성한 방에 현재 사용자도 추가
+            ChatMemberDto currentMemberDto = new ChatMemberDto();
+            currentMemberDto.setMember_no(currentMemberNo);
+            currentMemberDto.setChat_room_no(chatRoomNo);
+            currentMemberDto.setChat_member_room_name(groupChatName);
+            chatMemberService.createMemberRoomOne(currentMemberDto);
+
+            // 클라이언트로 보낼 데이터를 준비
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("chatRoomNo", chatRoomNo);
+            responseMap.put("members", members);
+            responseMap.put("currentMemberNo", currentMemberNo);
+            responseMap.put("type", type);
+            responseMap.put("names", groupChatName);
+
+            // JSON으로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            String responseJson = objectMapper.writeValueAsString(responseMap);
+
+            // 웹소켓 세션을 통해 클라이언트에 메시지 전송
+            session.sendMessage(new TextMessage(responseJson));
 
         }
 

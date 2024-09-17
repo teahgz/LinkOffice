@@ -33,7 +33,9 @@
                     <label>작성일자 :</label>
                     <input type="date" id="date" name="notice_create_date" required>
                 </div>
-                <input type="file" name="file">
+
+                <!-- 파일 업로드 - 이미지 파일만 허용 -->
+                <input type="file" name="file" id="fileInput" accept="image/*">
                 <div id="editor"></div>
                 <input type="hidden" id="noticeContent" name="notice_content">
                 <div class="buttons">
@@ -73,7 +75,6 @@
         }
     });
 
-    // 중요 체크박스 상태에 따른 값 및 중요 표시 변경
     var checkbox = document.getElementById('important');
     var hiddenImportantInput = document.getElementById('notice_important');
     var importantLabel = document.getElementById('importantLabel'); 
@@ -88,7 +89,6 @@
         }
     });
 
-    // 중요 공지사항 개수 확인하는 함수
     function checkImportantNoticeCount() {
         return fetch('/notice/important/count', {
             method: 'GET',
@@ -103,22 +103,46 @@
         });
     }
 
-    // 폼 전송 시 Quill 에디터 내용 추가 및 데이터 전송
+    // 파일 확장자 확인 함수 (이미지 파일만 허용)
+    function validateFileType(fileInput) {
+        const allowedExtensions = ['image/jpeg', 'image/png', 'image/gif'];
+        const file = fileInput.files[0];
+
+        if (file && !allowedExtensions.includes(file.type)) {
+            Swal.fire({
+                icon: 'error',
+                text: '이미지 파일만 업로드할 수 있습니다 (JPG, PNG, GIF)'
+            });
+            fileInput.value = ''; 
+            return false;
+        }
+        return true;
+    }
+
+    const fileInput = document.getElementById('fileInput');
+    fileInput.addEventListener('change', function() {
+        validateFileType(fileInput);
+    });
+
     const form = document.getElementById("noticeAddFrm");
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        
         const importantCount = await checkImportantNoticeCount();
         const isImportantChecked = document.getElementById('important').checked;
 
         if (isImportantChecked && importantCount >= 3) {
             Swal.fire({
                 icon: 'warning',
-                text: data.res_msg
+                text: '중요 공지사항은 최대 3개까지만 등록 가능합니다.'
             });
             return; 
         }
+
+        if (!validateFileType(fileInput)) {
+            return;  
+        }
+
         var content = quill.root.innerHTML;
         document.getElementById('noticeContent').value = content;
 

@@ -20,6 +20,7 @@ import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 @Controller
@@ -91,12 +92,47 @@ public class VacationApprovalViewController {
  		
  		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
  		
- 		List<MemberDto> memberdto = memberService.getMembersByNo(vacationapprovaldto.getMember_no());
+ 		Long member_no = memberService.getLoggedInMemberNo();
+ 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+ 		
+ 		
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (vacationapprovaldto.getVacation_approval_create_date() != null ) {
+            String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
+            vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
+        }
+        
+        if (vacationapprovaldto.getFlows() != null) {
+            for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
+                if (flow.getVacation_approval_flow_complete_date() != null) {
+                    String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
+                    flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
+                }
+            }
+        }
  		
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);
  		
  		return "employee/vacationapproval/vacationapproval_detail";
+ 	}
+ 	
+ 	// 휴가 결재 수정 페이지
+ 	@GetMapping("/employee/vacationapproval/edit/{vacation_approval_no}")
+ 	public String employeevacationapprovalEdit(Model model, @PathVariable("vacation_approval_no") Long vacationApprovalNo) {
+ 		
+ 		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+ 		
+ 		Long member_no = memberService.getLoggedInMemberNo();
+ 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+ 		
+ 		List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
+ 		
+ 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+ 		model.addAttribute("memberdto", memberdto);
+ 		model.addAttribute("vacationTypeList", vacationTypeList);
+ 		
+ 		return "employee/vacationapproval/vacationapproval_edit";
  	}
  	
 }

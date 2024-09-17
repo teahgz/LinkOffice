@@ -95,7 +95,7 @@ public class VacationApproval {
 				.vacation_approval_content(vacationApprovalContent).vacation_approval_status(vacationApprovalStatus)
 				.vacation_approval_cancel_reason(vacationApprovalCancelReason)
 				.vacation_approval_create_date(vacationApprovalCreateDate)
-				.vacation_approval_update_date(vacationApprovalUpdateDate).build();
+				.vacation_approval_update_date(vacationApprovalUpdateDate)
+				.build();
 	}
-
 }
