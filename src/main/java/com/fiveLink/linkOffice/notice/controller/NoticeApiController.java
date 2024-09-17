@@ -45,7 +45,7 @@ public class NoticeApiController {
 	        int importantNoticeCount = noticeService.countImportantNotices();
 	        if (dto.getNotice_importance() == 1 && importantNoticeCount >= 3) {
 	            resultMap.put("res_msg", "중요 공지사항은 최대 3개까지 등록 가능합니다.");
-	            return resultMap;  // 중요 공지사항이 3개 이상일 때 중단
+	            return resultMap; 
 	        }
 
 	        // 매니저 이름을 사용하여 매니저 번호 조회
@@ -61,7 +61,7 @@ public class NoticeApiController {
 	                dto.setNotice_new_img(savedFileName);
 	            } else {
 	                resultMap.put("res_msg", "파일 업로드가 실패하였습니다.");
-	                return resultMap; // 파일 업로드 실패 시 공지사항 등록 중단
+	                return resultMap; 
 	            }
 	        }
 
@@ -82,24 +82,30 @@ public class NoticeApiController {
 			@PathVariable("notice_no")Long notice_no){
 				return fileService.download(notice_no);
 			}
+	
 	@ResponseBody
 	@PostMapping("/notice/update/{notice_no}")
 	public Map<String, String> updateNotice(NoticeDto dto,
-	                                        @RequestParam(name = "file", required = false) MultipartFile file) {
+	                                        @RequestParam(name = "file", required = false) MultipartFile file,
+	                                        @RequestParam(name = "delete_file_flag", required = false) String deleteFileFlag) {
 	    Map<String, String> resultMap = new HashMap<>();
 	    resultMap.put("res_code", "404");
 	    resultMap.put("res_msg", "게시글 수정 중 오류가 발생했습니다.");
 
 	    try {
-	        // 파일 처리
-	        if (file != null && !file.isEmpty()) {
-	            String originalFileName = file.getOriginalFilename();  // 원본 파일 이름
-	            String savedFileName = fileService.upload(file);  // 암호화된 파일 이름
+	       
+	        if ("true".equals(deleteFileFlag)) {
+	            fileService.delete(dto.getNotice_no()); 
+	            dto.setNotice_ori_img(null); 
+	            dto.setNotice_new_img(null); 
+	        } else if (file != null && !file.isEmpty()) {
+	            // 파일이 새로 업로드된 경우 처리
+	            String originalFileName = file.getOriginalFilename();  
+	            String savedFileName = fileService.upload(file);  
 
 	            if (savedFileName != null) {
-	                dto.setNotice_ori_img(originalFileName);  // 원본 파일 이름 저장
-	                dto.setNotice_new_img(savedFileName);  // 암호화된 파일 이름 저장
-	                fileService.delete(dto.getNotice_no());  // 기존 파일 삭제
+	                dto.setNotice_ori_img(originalFileName);  
+	                dto.setNotice_new_img(savedFileName);  
 	            } else {
 	                resultMap.put("res_msg", "파일 업로드 실패");
 	                return resultMap;
@@ -118,6 +124,7 @@ public class NoticeApiController {
 
 	    return resultMap;
 	}
+
 	
 	@ResponseBody
 	@DeleteMapping("/notice/{notice_no}")
@@ -128,11 +135,10 @@ public class NoticeApiController {
 
 	    // 파일 삭제 시도
 	    if (fileService.delete(notice_no) > 0) {
-	        map.put("res_msg", "기존 파일이 정상적으로 삭제되었습니다.");
-	        // 파일 삭제가 성공했을 때만 게시글 삭제 시도
+	        map.put("res_msg", "기존 파일이 삭제되었습니다.");
 	        if (noticeService.deleteNotice(notice_no) > 0) {
 	            map.put("res_code", "200");
-	            map.put("res_msg", "정상적으로 공지사항이 삭제되었습니다.");
+	            map.put("res_msg", "공지사항이 삭제되었습니다.");
 	        } else {
 	            map.put("res_msg", "게시글 삭제 실패");
 	        }

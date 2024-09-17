@@ -94,31 +94,28 @@ public class FileService {
         try {
             Notice notice = NoticeRepository.findBynoticeNo(notice_no);
             if (notice == null) {
-                return result;  // 공지사항이 없을 경우
+                return result; 
             }
 
-            // 새로운 파일이 업로드될 때만 기존 파일 삭제
-            String newFileName = notice.getNoticeNewImg();
-            if (newFileName != null && !newFileName.isEmpty()) {
-                File file = new File(fileDir + newFileName);
-                if (file.exists()) {
-                    file.delete();
-                }
-            }
-
+            
             String oriFileName = notice.getNoticeOriImg();
             if (oriFileName != null && !oriFileName.isEmpty()) {
                 File oriFile = new File(fileDir + oriFileName);
                 if (oriFile.exists()) {
-                    oriFile.delete();
+                    oriFile.delete();  
                 }
             }
 
-            result = 1;  // 삭제 성공 시 1 반환
+           
+            notice.setNoticeOriImg(null);
+            notice.setNoticeNewImg(null);
+            NoticeRepository.save(notice); 
+
+            result = 1; 
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = -1;  // 삭제 실패 시 -1 반환
+            result = -1; 
         }
         return result;
     }

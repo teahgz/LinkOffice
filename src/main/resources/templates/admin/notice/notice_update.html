@@ -31,13 +31,12 @@
                     <label>작성일자 :</label>
                     <input type="date" id="date" name="notice_update_date" th:field="*{notice_update_date}" required>
                 </div>
-
-                <!-- 파일 업로드 - 이미지 파일만 허용 -->
-                <label>현재 첨부파일: </label>
-                <span th:text="${dto.notice_ori_img}"></span>
+                <label>현재 첨부파일 : </label>
+                <span id="currentFileName" th:text="${dto.notice_ori_img}"></span>
+                <button type="button" id="deleteFileButton">이미지 삭제</button> 
                 <input type="file" name="file" id="fileInput" accept="image/*">
-                <input type="hidden" name="existing_file" th:value="${dto.notice_new_img}">
-                
+                <input type="hidden" name="existing_file" id="existingFile" th:value="${dto.notice_new_img}">
+                <input type="hidden" name="delete_file_flag" id="deleteFileFlag" value="false"> 
                 <!-- Quill 에디터 -->
                 <div id="editor" th:utext="${dto.notice_content}"></div>
                 <input type="hidden" id="noticeContent" name="notice_content">
@@ -98,6 +97,7 @@
             }
         });
 
+        // 이미지 파일 유효성 검사 함수
         function validateFileType(fileInput) {
             const allowedExtensions = ['image/jpeg', 'image/png', 'image/gif'];
             const file = fileInput.files[0];
@@ -113,9 +113,21 @@
             return true;
         }
 
-        const fileInput = document.getElementById('fileInput');
-        fileInput.addEventListener('change', function() {
-            validateFileType(fileInput);
+        // 이미지 삭제 버튼 클릭 시 처리
+        var deleteFileButton = document.getElementById('deleteFileButton');
+        var currentFileName = document.getElementById('currentFileName');
+        var deleteFileFlag = document.getElementById('deleteFileFlag');
+        var fileInput = document.getElementById('fileInput');
+
+        deleteFileButton.addEventListener('click', function() {
+            currentFileName.textContent = "파일 삭제";  
+            deleteFileFlag.value = "true"; 
+            fileInput.value = '';  
+        });
+
+        const fileInputElement = document.getElementById('fileInput');
+        fileInputElement.addEventListener('change', function() {
+            validateFileType(fileInputElement);
         });
 
         const form = document.getElementById("noticeEditFrm");
@@ -123,7 +135,7 @@
             var content = quill.root.innerHTML;
             document.getElementById('noticeContent').value = content;
 
-            if (!validateFileType(fileInput)) {
+            if (!validateFileType(fileInputElement)) {
                 e.preventDefault();  
                 return;
             }
