@@ -10,6 +10,7 @@ import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.Position;
+import com.fiveLink.linkOffice.survey.domain.Survey;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 
@@ -137,4 +138,8 @@ public class Member {
 	// [김민재] 공지사항 관리자 확인
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<Notice> notice;
+	
+	// [김민재] 설문 작성자 확인
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<Survey> survey;
 }

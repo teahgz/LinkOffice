@@ -2,8 +2,6 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/admin/notice/list.css}" rel="stylesheet"
-		type="text/css">
 	<link th:href="@{/css/admin/notice/notice_list.css}" rel="stylesheet"
 		type="text/css">
 	<section>
@@ -58,7 +56,7 @@
 				<tbody>
 					<th:block th:if="${#lists.isEmpty(noticeList)}">
 						<tr>
-							<td colspan="6">조회된 목록이 없습니다.</td>
+							<td colspan="4">조회된 목록이 없습니다.</td>
 						</tr>
 					</th:block>
 
