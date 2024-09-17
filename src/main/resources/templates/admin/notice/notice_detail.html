@@ -76,7 +76,6 @@
 			cancelButtonText: '취소'
 		}).then((result) => {
 			if (result.isConfirmed) {
-				// 삭제 확정 시
 				const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 				const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
