@@ -10,28 +10,46 @@ document.addEventListener("DOMContentLoaded", function() {
             handleChatRoomClick(chatRoomNo);
         }
     }
+      document.getElementById('searchInput').oninput = searchMem;
+
+      // 채팅방 자동완성 기능
+      function searchMem() {
+
+          let input = document.getElementById('searchInput').value.toLowerCase().replace(/\s+/g, '');
+          let chatItems = document.getElementsByClassName('chatItem');
+
+          for (let i = 0; i < chatItems.length; i++) {
+              let chatName = chatItems[i].getElementsByTagName('p')[0].innerText.toLowerCase().replace(/\s+/g, '');
+
+              if (chatName.includes(input)) {
+                  chatItems[i].style.display = "";
+              } else {
+                  chatItems[i].style.display = "none";
+              }
+          }
+      }
 });
 
 (function() {
     let currentChatRoomNo = null;
     let socket = null;
     if (socket && socket.readyState === WebSocket.OPEN) {
-        console.log("WebSocket already connected.");
+        console.log("웹소켓 연결 중");
         return;
     }
 
     socket = new WebSocket(`ws://localhost:8080/websocket/chat`);
 
     socket.onopen = function() {
-        console.log("WebSocket connection established.");
+        console.log("웹소켓이 연결되었습니다.");
     };
 
     socket.onclose = function(event) {
-        console.log("WebSocket connection closed:", event);
+        console.log("웹소켓 연결이 해제되었습니다.", event);
     };
 
     socket.onerror = function(error) {
-        console.error("WebSocket error:", error);
+        console.error("에러 발생", error);
     };
 
     let selectedMembers = [];  // 선택된 사원을 저장할 배열
@@ -383,5 +401,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
         localStorage.removeItem('selectedMembers');
     }
+
 
 })();
