@@ -298,10 +298,29 @@ public class MeetingReservationController {
 	    MeetingReservationDto reservation = meetingReservationService.getReservationById(id);
 	    List<MeetingParticipantDto> participants = meetingParticipantService.getParticipantsByReservationNo(id);
 	    
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
+	     
+	    model.addAttribute("memberdto", memberDto.get(0));
 	    model.addAttribute("reservation", reservation);
 	    model.addAttribute("participants", participants); 
 	    return "employee/meeting/reservationDetail";
 	}
+	
+	@GetMapping("/employee/meeting/reservation/detail/modal/{id}")
+	@ResponseBody
+	public Map<String, Object> getReservationInfoDetail(@PathVariable("id") Long id) {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    MeetingReservationDto reservation = meetingReservationService.getReservationById(id);
+	    List<MeetingParticipantDto> participants = meetingParticipantService.getParticipantsByReservationNo(id);
+	    
+	    response.put("reservation", reservation);
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
+
 
 	
 	 
