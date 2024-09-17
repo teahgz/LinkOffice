@@ -193,5 +193,21 @@ public class MeetingReservationService {
             }
         }
     }
+    
+    // 예약 취소
+    public boolean cancelReservation(Long reservationNo) {
+        try {
+            MeetingReservation reservation = meetingReservationRepository.findById(reservationNo)
+                    .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다: " + reservationNo));
+            
+            reservation.setMeetingReservationStatus(1L); 
+            meetingReservationRepository.save(reservation);
+            return true;  
+        } catch (Exception e) { 
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

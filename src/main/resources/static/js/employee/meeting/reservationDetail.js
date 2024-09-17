@@ -8,9 +8,7 @@ $(document).ready(function() {
 	var csrfToken = document.querySelector('input[name="_csrf"]').value;
 	
     $('#editReservationButton').on('click', function() { 
-	    const reservationNo = $(this).data('reservation-no');
-	    console.log(reservationNo);
-	    
+	    const reservationNo = $(this).data('reservation-no'); 
 	    openReservationModal(reservationNo); 
 	});
 	
@@ -534,6 +532,60 @@ $(document).ready(function() {
 	            $('#reservationModal').modal('hide');
 	        } 
 	    });
+	}); 
+	 
+	// 예약 취소  
+	$('#cancelReservationButton').on('click', function() { 
+	    const reservationNo = $(this).data('reservation-no');
+	    console.log(reservationNo);
+	    
+	    cancelReservation(reservationNo); 
 	});
+	
+	function cancelReservation(reservationNo) {
+	    Swal.fire({
+	        text: '예약을 취소하시겠습니까?', 
+	        icon: 'warning',
+	        showCancelButton: true,
+	        confirmButtonColor: '#B1C2DD',
+	        cancelButtonColor: '#C0C0C0',
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+	        if (result.isConfirmed) { 
+	            $.ajax({
+	                type: 'POST',
+	                url: '/reservation/cancel',
+	                contentType: 'application/json',
+	                headers: {
+	                    'X-CSRF-TOKEN': csrfToken
+	                },
+	                data: JSON.stringify({ reservationNo: reservationNo }),
+	                success: function(response) {
+	                    if (response.res_code === "200") {
+	                        Swal.fire({
+							    text: response.res_msg,
+							    icon: 'success',
+							    confirmButtonColor: '#B1C2DD',
+							    confirmButtonText: '확인',
+							}).then(() => {
+	                            window.location.href = '/employee/meeting/reservation/list';
+	                        });
+	                    } else {
+	                        Swal.fire({
+							    text: response.res_msg,
+							    icon: 'error',
+							    confirmButtonColor: '#B1C2DD',
+							    confirmButtonText: '확인',
+							});
+	                    }
+	                },
+	                error: function() {
+	                    Swal.fire('서버 오류', '서버에서 오류가 발생했습니다.', 'error');
+	                }
+	            });
+	        }
+	    });
+	} 
 
 });

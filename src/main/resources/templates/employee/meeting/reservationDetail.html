@@ -23,7 +23,8 @@
                 
                	<div th:if="${reservation.member_no == memberdto.member_no}">
                  	<button type="button" id="editReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">수정</button> 
-                    <button type="button">예약 취소</button>
+                    <button type="button" id="cancelReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 취소</button>
+                    <button type="button" onclick="location.href='/employee/meeting/reservation/list'">목록</button>
                 </div>
             </div>
         </section>
@@ -63,7 +64,7 @@
                     </div> 
                     <div class="reservation_row">
                         <label for="reservation_purpose">목적</label>
-                        <textarea id="reservation_purpose" name="reservation_purpose"></textarea>
+                        <textarea id="reservation_purpose" name="reservation_purpose" maxlength="30"></textarea>
                     </div> 
                     <div class="reservation_row reservation_participate">
                         <label>참여자</label>
