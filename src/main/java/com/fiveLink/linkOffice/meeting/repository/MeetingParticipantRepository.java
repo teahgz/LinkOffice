@@ -11,9 +11,10 @@ import com.fiveLink.linkOffice.meeting.domain.MeetingParticipant;
 
 @Repository
 public interface MeetingParticipantRepository extends JpaRepository<MeetingParticipant, Long> {
-	long countByMeetingReservationNo(Long reservationNo);
+	@Query("SELECT COUNT(mp) FROM MeetingParticipant mp WHERE mp.meetingReservationNo = :reservationNo AND mp.meetingParticipantStatus = :status")
+    long countByMeetingReservationNoAndStatus(@Param("reservationNo") Long reservationNo, @Param("status") Long status);
 	
 	@Query("SELECT mp FROM MeetingParticipant mp WHERE mp.meetingReservationNo = :reservationNo AND mp.meetingParticipantStatus = 0")
-    List<MeetingParticipant> findParticipantsByReservationNo(@Param("reservationNo") Long reservationNo);
+    List<MeetingParticipant> findParticipantsByReservationNo(@Param("reservationNo") Long reservationNo); 
 }
 

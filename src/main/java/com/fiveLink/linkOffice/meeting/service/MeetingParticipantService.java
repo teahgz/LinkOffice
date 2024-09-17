@@ -72,5 +72,22 @@ public class MeetingParticipantService {
                     .build();
         }).collect(Collectors.toList());
     }
+    
+    // 예약 수정
+    public void save(MeetingParticipantDto participant) {
+        meetingParticipantRepository.save(participant.toEntity());
+    }
 
+    @Transactional
+    public void updateParticipantStatus(MeetingParticipantDto participant) {
+        MeetingParticipant entity = meetingParticipantRepository.findById(participant.getMeeting_participant_no())
+                .orElseThrow(() -> new IllegalArgumentException("참여자를 찾을 수 없습니다." + participant.getMeeting_participant_no()));
+        entity.setMeetingParticipantStatus(participant.getMeeting_participant_status());
+        meetingParticipantRepository.save(entity);
+    }
+    
+    public List<MeetingParticipantDto> findParticipantsByReservationNo(Long reservationNo) {
+        List<MeetingParticipant> participants = meetingParticipantRepository.findParticipantsByReservationNo(reservationNo);
+        return participants.stream().map(MeetingParticipantDto::toDto).collect(Collectors.toList());
+    }
 }
