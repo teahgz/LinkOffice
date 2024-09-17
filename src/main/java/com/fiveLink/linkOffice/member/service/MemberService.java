@@ -330,8 +330,7 @@ public class MemberService {
     } 
     
     // [서혜원] 본인 제외 사원 조직도
-    public List<MemberDto> getAllMembersChartOut() {
-        // 현재 로그인한 사용자의 ID를 가져옴
+    public List<MemberDto> getAllMembersChartOut() { 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInMemberNumber = authentication.getName();  
 
@@ -341,9 +340,6 @@ public class MemberService {
         return members.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-    }
-
-
-    
+    } 
     
 } 

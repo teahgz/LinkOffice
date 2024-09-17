@@ -33,30 +33,18 @@ h1 {
 	gap: 15px;
 }
 
-select, .search_input {
-	padding: 10px 15px;
+.search_input {
+	padding: 8px 20px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
-	font-size: 16px;
-}
-
-select {
+	font-size: 14px;
 	width: 200px;
-	appearance: none;
-	background-image:
-		url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
-	background-repeat: no-repeat;
-	background-position: right 10px center;
-}
-
-.search_input {
-	width: 250px;
-}
+}  
 
 .search_button {
-	padding: 10px 20px;
+	padding: 8px 20px;
 	background-color: #B1C2DD;
-	color: white;
+	color: black;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
@@ -76,6 +64,15 @@ select {
 	color: #000;
 	margin: 0;
 	cursor: pointer;
+}
+
+.select_meetingRoom {
+	width : 110px;
+	padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
 }
 
 .reservation_list_table {
@@ -131,4 +128,12 @@ select {
     background-color: #B1C2DD;
     color: white;
     border-color: #B1C2DD;
+}
+
+#meetingRoomSelect {
+	width : 150px;
+}
+
+.meeting_sort_date {
+    margin-left: 245px;
 }

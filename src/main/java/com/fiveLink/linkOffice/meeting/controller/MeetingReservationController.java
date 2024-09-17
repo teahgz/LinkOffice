@@ -263,41 +263,46 @@ public class MeetingReservationController {
 	    return resultMap; 
 	}
 	
-	// 예약 내역 페이지
+	// 본인 예약 목록
 	@GetMapping("/employee/meeting/reservation/list")
 	public String myMeetingReservation(
-	        @RequestParam(value = "searchText", defaultValue = "") String searchText,
-	        @RequestParam(value = "sort", defaultValue = "latest") String sort,
+	        @RequestParam(value = "searchText", defaultValue = "") String searchText, 
+	        @RequestParam(value = "startDate", defaultValue = "") String startDate,
+	        @RequestParam(value = "endDate", defaultValue = "") String endDate,
+	        @RequestParam(value = "sortBy", defaultValue = "latest") String sortBy,
 	        @RequestParam(value = "meetingNo", defaultValue = "") String meetingNo,   
-	        @PageableDefault(size = 10, sort = "meetingReservationDate", direction = Sort.Direction.ASC) Pageable pageable,
+	        @PageableDefault(size = 10) Pageable pageable,
 	        Model model) {
-		
-	    Long memberNo = memberService.getLoggedInMemberNo();
-	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
-	    List<MeetingDto> meetings = meetingService.getAllMeetings();
-	    
-	    Sort sortOption = getSortOption(sort);
-	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
-	    
-	    Page<MeetingReservationDto> reservations = meetingReservationService.searchReservationsByMemberNo(memberNo, searchText, meetingNo, sortedPageable);   
 
-	    model.addAttribute("memberdto", memberDto.get(0));
-	    model.addAttribute("reservations", reservations);
-	    model.addAttribute("searchText", searchText);
-	    model.addAttribute("currentSort", sort);
-	    model.addAttribute("meetings", meetings); 
-	    model.addAttribute("meetingNo", meetingNo); 
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
+	    List<MeetingDto> meetings = meetingService.getAllMeetings();
+ 
+        Page<MeetingReservationDto> reservations = meetingReservationService.searchReservations(memberNo, meetingNo, searchText, startDate, endDate, sortBy, pageable);
+         
+        model.addAttribute("memberdto", memberDto.get(0));
+        model.addAttribute("meetings", meetings);
+        model.addAttribute("reservations", reservations);
+        model.addAttribute("currentSort", sortBy);
+        model.addAttribute("searchText", searchText);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("meetingNo", meetingNo); 
 
 	    return "employee/meeting/myMeetingReservation";
 	} 
-
-	private Sort getSortOption(String sort) {
-		if ("latest".equals(sort)) {
-			return Sort.by(Sort.Order.desc("meetingReservationDate")); 
-		} else if ("oldest".equals(sort)) {
-			return Sort.by(Sort.Order.asc("meetingReservationDate")); 
-		}
-		return Sort.by(Sort.Order.desc("meetingReservationDate")); 
-	}
 	
+	// 예약 상세 페이지  
+	@GetMapping("/employee/meeting/reservation/detail/{id}")
+	public String getReservationDetail(@PathVariable("id") Long id, Model model) {
+	    MeetingReservationDto reservation = meetingReservationService.getReservationById(id);
+	    List<MeetingParticipantDto> participants = meetingParticipantService.getParticipantsByReservationNo(id);
+	    
+	    model.addAttribute("reservation", reservation);
+	    model.addAttribute("participants", participants); 
+	    return "employee/meeting/reservationDetail";
+	}
+
+	
+	 
 }

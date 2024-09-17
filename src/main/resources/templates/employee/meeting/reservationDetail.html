@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}">
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/employee/meeting/reservationDetail.css}" rel="stylesheet" type="text/css">
+        <section>
+            <h1>회의 상세 정보</h1>
+            <div class="reservation_detail">
+                <p><strong>회의실명</strong> <span th:text="${reservation.meeting_name}"></span></p>
+                <p><strong>예약 날짜</strong> <span th:text="${reservation.meeting_reservation_date}"></span></p>
+                <p><strong>예약 시간</strong> 
+                    <span th:text="${reservation.meeting_reservation_start_time}"></span> ~ 
+                    <span th:text="${reservation.meeting_reservation_end_time}"></span>
+                </p>
+                <p><strong>예약자</strong> <span th:text="${reservation.member_name} + ' ' + ${reservation.position_name}"></span></p> 
+                <p><strong>목적</strong> <span th:text="${reservation.meeting_reservation_purpose}"></span></p>
+                <p><strong>참여자 목록</strong></p>
+                <ul>
+                    <li th:each="participant : ${participants}" th:text=" ${participant.departmentName} + ' ' + ${participant.memberName}  + ' ' + ${participant.positionName}"></li>
+                </ul>
+            </div>
+        </section>
+        <script th:src="@{/js/employee/meeting/reservationDetail.js}"></script>
+    </th:block>
+</html>

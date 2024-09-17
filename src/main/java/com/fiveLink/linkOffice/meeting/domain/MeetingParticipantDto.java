@@ -21,6 +21,10 @@ public class MeetingParticipantDto {
 	private Long member_no;
 	private Long meeting_participant_status;
 	
+	private String memberName;
+	private String positionName;
+	private String departmentName;
+	
 	public MeetingParticipant toEntity() {
         return MeetingParticipant.builder()
                 .meetingParticipantNo(meeting_participant_no)
