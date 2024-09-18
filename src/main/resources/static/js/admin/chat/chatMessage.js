@@ -307,17 +307,59 @@ document.addEventListener("DOMContentLoaded", function() {
         createChatRoom(document.getElementById("currentMemberNo").value, document.getElementById("currentMemberName").value, document.querySelector('input[name="_csrf"]').value);
     });
 
-    // 드롭다운 토글
+    document.getElementById('editChatRoomButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            $('#editChatRoomModal').modal('show');
+        });
+
+
     document.getElementById('openDrop').addEventListener('click', function(event) {
-        event.preventDefault(); // 이벤트 객체를 인자로 받아서 preventDefault 호출
+        event.preventDefault();
         const dropdownMenu = document.getElementById('chatDropdownMenu');
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // 페이지의 다른 곳을 클릭하면 드롭다운 닫기
+    // 채팅방 이름 수정 함수
+    document.getElementById('confirmEditButton').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        const currentMemberNo = document.getElementById("currentMemberNo").value;
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+        const chatRoomName = document.getElementById('chatRoomNameInput').value;
+        const roomNo = document.getElementById('chatRoomNo').value;
+
+        if (!chatRoomName.trim()) {
+            alert("채팅방 이름을 입력하세요.");
+            return;
+        }
+
+        // 채팅방 수정 함수 호출
+        updateChatRoom(currentMemberNo, roomNo, csrfToken, chatRoomName);
+    });
+
+       function updateChatRoom(currentMemberNo, roomNo, csrfToken, chatRoomName) {
+
+           if (!roomNo) {
+               console.error("채팅방이 선택되지 않았습니다.");
+               return;
+           }
+
+           const message = {
+               type: "chatRoomUpdate",
+               roomNo: roomNo,
+               currentMemberNo: currentMemberNo,
+               chatRoomName: chatRoomName,
+               csrfToken: csrfToken
+           };
+
+           // 웹소켓을 통해 서버로 메시지 전송
+           socket.send(JSON.stringify(message));
+
+           $('#editChatRoomModal').modal('hide'); // 모달 닫기
+       }
     window.addEventListener('click', function(e) {
         const dropdownMenu = document.getElementById('chatDropdownMenu');
-        // 드롭다운 버튼 또는 드롭다운 내에서 클릭하지 않았다면 드롭다운을 닫기
+
         if (!e.target.matches('#openDrop') && !e.target.closest('.chatDropdown')) {
             dropdownMenu.style.display = 'none';
         }
