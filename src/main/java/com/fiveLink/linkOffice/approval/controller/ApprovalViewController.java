@@ -253,4 +253,18 @@ public class ApprovalViewController {
 
 		return "employee/approval/approval_reject_list";
 	}
+	
+	// 사용자 결재 내역함 상세 페이지 
+	@GetMapping("/employee/approval/approval_history_detail/{vacationapproval_no}")
+	public String approvalHistoryDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+		
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+		
+		return "employee/approval/approval_history_detail";
+	}
 }
