@@ -108,6 +108,9 @@
     background-color: #f0f0f0;
 }
 
+.chatItem.selected {
+    background-color:#f0f0f0;
+}
 .chatInput {
     border-top: 1px solid #ddd;
     display: flex;

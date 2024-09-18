@@ -370,6 +370,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.handleChatRoomClick = function(element) {
         currentChatRoomNo = element;
+
+            let chatItems = document.getElementsByClassName('chatItem');
+            for (let i = 0; i < chatItems.length; i++) {
+                chatItems[i].classList.remove('selected');
+            }
+
+            let selectedChatItem = document.querySelector(`input[value="${element}"]`).closest('.chatItem');
+            if (selectedChatItem) {
+                selectedChatItem.classList.add('selected');
+            }
+
         getChatRoomName(element).then(chatRoomName => {
             if (chatRoomName) {
                 document.getElementById('chatRoomTitle').innerText = chatRoomName;
