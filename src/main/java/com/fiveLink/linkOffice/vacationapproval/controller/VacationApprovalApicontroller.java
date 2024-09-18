@@ -137,7 +137,7 @@ public class VacationApprovalApicontroller {
 	public Map<String,String> employeeVacationApprovalDelete(@PathVariable("vacationapproval_no") Long vapNo){
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
-	    response.put("res_msg", "양식 삭제 중 오류가 발생하였습니다.");
+	    response.put("res_msg", "기안 취소 중 오류가 발생하였습니다.");
 	    
 	    VacationApprovalDto dto = vacationApprovalService.selectVacationApprovalOne(vapNo);
 	    dto.setVacation_approval_status(3L);
@@ -147,5 +147,36 @@ public class VacationApprovalApicontroller {
 		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
 	    }
 	    return response; 
+	}
+	
+	// 휴가 결재 수정 
+	@ResponseBody
+	@PutMapping("/employee/vacationapproval/edit/{vacationapproval_no}")
+	public Map<String,String> employeeVacationApprovalEdit(@PathVariable("vacationapproval_no") Long vapNo, @RequestParam(value = "vacationFile", required = false) MultipartFile file,
+	        @RequestParam("vacationapprovalTitle") String vacationapprovalTitle,
+	        @RequestParam("vacationtype") Long vacationtype,
+	        @RequestParam("startDate") String startDate,
+	        @RequestParam("endDate") String endDate,
+	        @RequestParam("dateCount") String dateCount,
+	        @RequestParam("vacationapprovalContent") String vacationapprovalContent,
+	        @RequestParam("approvers") List<Long> approvers,
+	        @RequestParam("references") List<Long> references,
+	        @RequestParam("reviewers") List<Long> reviewers){
+		Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "수정 중 오류가 발생하였습니다.");
+	    
+	    System.out.println(file.getOriginalFilename());
+	    System.out.println(vacationapprovalTitle);
+	    System.out.println(vacationtype);
+	    System.out.println(startDate);
+	    System.out.println(endDate);
+	    System.out.println(dateCount);
+	    System.out.println(vacationapprovalContent);
+	    System.out.println(approvers);
+	    System.out.println(references);
+	    System.out.println(reviewers);
+	    
+	    return response;
 	}
 }
