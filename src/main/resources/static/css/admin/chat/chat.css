@@ -190,6 +190,11 @@
     font-size: 0.8em;
     color: #666;
 }
+
+.other-message span {
+    display: block;
+    color: #666;
+}
 .my-message {
     text-align: right;
     background-color: #B1C2DD;
@@ -286,5 +291,18 @@
     display: flex;
     align-items: center;
     min-height: calc(100% - 1rem);
+}
+
+
+.send-button:disabled {
+    background-color: #d3d3d3;
+    border-color: #b0b0b0;
+    color: #a9a9a9;
+}
+
+.btn-disabled {
+    background-color: #d3d3d3;
+    border-color: #b0b0b0;
+    color: #a9a9a9;
 }
 

@@ -1,60 +1,60 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // 페이지 로드 시 첫 번째 채팅방 자동 클릭
     const firstChatRoom = document.querySelector('.chatItem');
-    console.log(firstChatRoom);
-
     if (firstChatRoom) {
-
         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
-
         if (chatRoomNo) {
             handleChatRoomClick(chatRoomNo);
         }
     }
-      document.getElementById('searchInput').oninput = searchMem;
 
-      // 채팅방 자동완성 기능
-      function searchMem() {
+    // 메시지 입력 필드 변경 시 전송 버튼 활성화/비활성화 처리
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    if (sendButton && messageInput) {
+        function toggleSendButton() {
+            sendButton.disabled = messageInput.value.trim() === '';
+        }
+        messageInput.addEventListener('input', toggleSendButton);
+        toggleSendButton();
+    } else {
+        console.error("버튼 또는 입력 필드를 찾을 수 없습니다.");
+    }
 
-          let input = document.getElementById('searchInput').value.toLowerCase().replace(/\s+/g, '');
-          let chatItems = document.getElementsByClassName('chatItem');
+    // 채팅방 자동완성 기능
+    document.getElementById('searchInput').oninput = searchMem;
+    function searchMem() {
+        let input = document.getElementById('searchInput').value.toLowerCase().replace(/\s+/g, '');
+        let chatItems = document.getElementsByClassName('chatItem');
+        for (let i = 0; i < chatItems.length; i++) {
+            let chatName = chatItems[i].getElementsByTagName('p')[0].innerText.toLowerCase().replace(/\s+/g, '');
+            chatItems[i].style.display = chatName.includes(input) ? "" : "none";
+        }
+    }
 
-          for (let i = 0; i < chatItems.length; i++) {
-              let chatName = chatItems[i].getElementsByTagName('p')[0].innerText.toLowerCase().replace(/\s+/g, '');
-
-              if (chatName.includes(input)) {
-                  chatItems[i].style.display = "";
-              } else {
-                  chatItems[i].style.display = "none";
-              }
-          }
-      }
-      window.toggleSearch = function() {
-
-               let searchContainer = document.getElementById("searchContainer");
-               let searchChatButton = document.getElementById("searchChatButton");
-
-               if (searchContainer.style.display === "none") {
-                   searchContainer.style.display = "flex";
-                   searchChatButton.classList.remove("btn-primary");
-                   searchChatButton.classList.add("btn-secondary");
-               } else {
-                   searchContainer.style.display = "none";
-                   searchChatButton.classList.remove("btn-secondary");
-                   searchChatButton.classList.add("btn-primary");
-               }
+    // 검색 버튼 토글 기능
+    window.toggleSearch = function() {
+        let searchContainer = document.getElementById("searchContainer");
+        let searchChatButton = document.getElementById("searchChatButton");
+        if (searchContainer.style.display === "none") {
+            searchContainer.style.display = "flex";
+            searchChatButton.classList.remove("btn-primary");
+            searchChatButton.classList.add("btn-secondary");
+        } else {
+            searchContainer.style.display = "none";
+            searchChatButton.classList.remove("btn-secondary");
+            searchChatButton.classList.add("btn-primary");
+        }
     };
-
 });
 
 (function() {
     let currentChatRoomNo = null;
     let socket = null;
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        console.log("웹소켓 연결 중");
-        return;
-    }
 
-    socket = new WebSocket(`ws://localhost:8080/websocket/chat`);
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        socket = new WebSocket(`ws://localhost:8080/websocket/chat`);
+    }
 
     socket.onopen = function() {
         console.log("웹소켓이 연결되었습니다.");
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.error("에러 발생", error);
     };
 
-    let selectedMembers = [];  // 선택된 사원을 저장할 배열
+    let selectedMembers = [];
     let selectNames = [];
 
     // 페이지 로드 시 이전 선택된 사원 로드
@@ -146,7 +146,6 @@ document.addEventListener("DOMContentLoaded", function() {
         selectedMembers = [];
         selectNames = [];
 
-
         selectedNodes.forEach(function(node) {
             if (node.original.type === 'member') {
                 const memberId = node.id;
@@ -157,11 +156,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 memberElement.append(memberName).append(removeButton);
                 selectedMembersContainer.append(memberElement);
-                // 모달 내 리스트에도 추가
                 selectedMembersList.append(`<p><i class="fa-solid fa-user"></i> ${node.text}</p>`);
                 selectedMembers.push(memberNumber);
                 selectNames.push(node.text);
-
 
                 removeButton.click(function() {
                     instance.uncheck_node(node);
@@ -192,8 +189,6 @@ document.addEventListener("DOMContentLoaded", function() {
         // 메시지 타입에 따른 처리
         if (message.type === "chatRoomCreation") {
             if (message.chatRoomNo) {
-
-                // 새로운 채팅방 정보를 사용하여 채팅방 목록 업데이트
                 const newChatItem = document.createElement("div");
                 newChatItem.classList.add("chatItem");
                 newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
@@ -202,11 +197,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     <input type="hidden" id="memberNo" value="${document.getElementById('memberNo').value}"/>
                     <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
                 `;
-
                 const chatList = document.getElementById('chatList');
                 chatList.insertBefore(newChatItem, chatList.firstChild);
 
-                // 선택된 항목 초기화 및 모달 닫기
                 resetSelectedMembers();
                 $('#organizationChartModal').modal('hide');
             }
@@ -255,12 +248,17 @@ document.addEventListener("DOMContentLoaded", function() {
         const chat_sender_no = document.getElementById("userNo").value;
         const chat_content = document.getElementById("messageInput").value;
         const chat_sender_name = document.getElementById("userName").value;
-
+        const sendButton = document.getElementById("sendButton");
         if (currentChatRoomNo === null) {
             console.error("방이 선택되지 않음");
             return;
         }
-
+        if (chat_content.trim() === '') {
+            console.error("메시지 내용이 비어 있음");
+            return;
+        }
+        sendButton.disabled = true;
+        sendButton.classList.add("btn-disabled");
         const message = {
             chat_sender_no: chat_sender_no,
             chat_room_no: currentChatRoomNo,
@@ -276,45 +274,39 @@ document.addEventListener("DOMContentLoaded", function() {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         const currentMemberName = document.getElementById("currentMemberName").value;
 
-        // 참여자 인원수를 확인
         if (selectedMembers.length > 1) {
-            // 그룹 채팅방 이름 입력 모달 띄우기
             $('#groupChatNameModal').modal('show');
         } else {
-            // 바로 채팅방 생성 요청
             createChatRoom(currentMemberNo, currentMemberName, csrfToken);
         }
     };
 
     function createChatRoom(currentMemberNo, currentMemberName, csrfToken) {
         const groupChatName = selectedMembers.length > 1 ? document.getElementById('groupChatNameInput').value : null;
-
         const message = {
             type: "chatRoomCreation",
             members: selectedMembers,
             currentMemberNo: currentMemberNo,
             names: selectNames,
             currentMemberName: currentMemberName,
-            groupChatName: groupChatName,  // 그룹 채팅방 이름 포함
-            csrfToken: csrfToken  // 필요 시 추가
+            groupChatName: groupChatName,
+            csrfToken: csrfToken
         };
 
-        event.preventDefault();
         socket.send(JSON.stringify(message));
-
-        // 그룹 채팅방 이름 모달 닫기
         $('#groupChatNameModal').modal('hide');
     }
 
     document.getElementById('confirmButton').addEventListener('click', function(event) {
-        event.preventDefault();  // 기본 동작을 막아 URL이 변경되지 않도록 설정
+        event.preventDefault();
         window.confirmButton();
     });
 
     document.getElementById('confirmGroupChatName').addEventListener('click', function(event) {
-        event.preventDefault();  // 기본 동작을 막아 URL이 변경되지 않도록 설정
+        event.preventDefault();
         createChatRoom(document.getElementById("currentMemberNo").value, document.getElementById("currentMemberName").value, document.querySelector('input[name="_csrf"]').value);
     });
+
     function formatDateTime(date) {
         const year = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -341,7 +333,6 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(data => {
                 displayChatMessages(data);
-                console.log(data);
             })
             .catch(error => {
                 console.error('전송 중 오류 발생', error);
@@ -358,14 +349,13 @@ document.addEventListener("DOMContentLoaded", function() {
             const messageElement = document.createElement("div");
 
             if (message.senderNo === memberNo) {
-                messageElement.classList.add("my-message");
-                messageElement.classList.add("messageItem");
+                messageElement.classList.add("my-message", "messageItem");
                 messageElement.innerHTML = `
                     <p>${message.chatContent}</p>
                     <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
                 `;
             } else {
-                messageElement.classList.add("other-message");
+                messageElement.classList.add("other-message", "messageItem");
                 messageElement.innerHTML = `
                     <p><strong>${message.senderName}:</strong> ${message.chatContent}</p>
                     <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
@@ -379,44 +369,40 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     window.handleChatRoomClick = function(element) {
-         currentChatRoomNo = element;
-            getChatRoomName(element).then(chatRoomName => {
-                if (chatRoomName) {
-                    document.getElementById('chatRoomTitle').innerText = chatRoomName;
-                }
-                loadChatMessages(element);
-            }).catch(error => {
-                console.error('error', error);
-            });
-    }
-
-
-    function getChatRoomName(chatRoomNo) {
-         const memberNo = document.getElementById('memberNo').value;
-        return fetch(`/api/chat/roomName/${chatRoomNo}/${memberNo}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("채팅방 이름을 찾지 못했습니다.");
+        currentChatRoomNo = element;
+        getChatRoomName(element).then(chatRoomName => {
+            if (chatRoomName) {
+                document.getElementById('chatRoomTitle').innerText = chatRoomName;
             }
-            return response.text();
-        })
-        .catch(error => {
-            console.error("error", error);
-            return null;  // 오류 발생 시 null 반환
+            loadChatMessages(element);
+        }).catch(error => {
+            console.error('error', error);
         });
     }
 
+    function getChatRoomName(chatRoomNo) {
+        const memberNo = document.getElementById('memberNo').value;
+        return fetch(`/api/chat/roomName/${chatRoomNo}/${memberNo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("채팅방 이름을 찾지 못했습니다.");
+                }
+                return response.text();
+            })
+            .catch(error => {
+                console.error("error", error);
+                return null;
+            });
+    }
 
     function resetSelectedMembers() {
         selectedMembers = [];
         selectNames = [];
 
         $('#organization-chart').jstree(true).uncheck_all();
-
         $('#selected-members').empty();
         $('.permission_pick_list').empty();
 
         localStorage.removeItem('selectedMembers');
     }
-
 })();
