@@ -6,6 +6,13 @@
     margin-top: 2vw;
     margin-bottom: 5vw;
 }
+.no-style {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
 
 .chatElement {
     border: none;
@@ -24,7 +31,7 @@
        background-color: #f9f9f9;
        border-radius: 10px 10px 0 0 ;
        gap: 10px;
-       height: 60px;
+       height: 100px;
        box-sizing: border-box;
 }
 
@@ -41,7 +48,17 @@
     background-color: white;
     height: 85vh;
 }
-
+.chatContainer .header{
+    padding: 1vw;
+}
+#searchChatButton {
+    margin-right: 3px;
+}
+.searchContainer {
+    display: flex;
+    justify-content: space-between;
+    padding : 1vw;
+}
 .chatContent {
     border-radius: 0;
     background-color: white;
@@ -53,10 +70,10 @@
 }
 
 #searchInput {
-    width: 70%;
+    width: 80%;
     padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 10px;
 }
 
 #searchChatButton, #addChatButton {
@@ -64,17 +81,18 @@
     background-color: white;
     cursor: pointer;
 }
-
+#listButtons{
+    display:flex;
+    gap:1vw;
+}
 
 .chatList {
     max-height: calc(100vh - 60px);
     overflow-y: auto;
-    border-top: 1px solid #ddd;
 }
 
 .chatItem {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
     cursor: pointer;
 }
 
