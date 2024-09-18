@@ -209,5 +209,38 @@ public class MeetingReservationService {
         }
     }
 
+    // 관리자 전체 예약 목록
+    public Page<MeetingReservationDto> allReservations(String meetingNo, String searchText, String startDate, String endDate, String sortBy, Pageable pageable) { 
+
+        Page<MeetingReservation> reservationPage = meetingReservationRepository.allReservations(
+									                meetingNo.isEmpty() ? null : Long.parseLong(meetingNo), 
+									                searchText.isEmpty() ? null : searchText, 
+									                startDate.isEmpty() ? null : startDate, 
+									                endDate.isEmpty() ? null : endDate, 
+									                sortBy, 
+									                pageable);
+ 
+        return reservationPage.map(reservation -> {
+            String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
+            String memberName = memberService.getMemberNameById(reservation.getMemberNo());
+            long participantCount = meetingParticipantRepository.countByMeetingReservationNoAndStatus(reservation.getMeetingReservationNo(), 0L);
+
+            return MeetingReservationDto.builder()
+                    .meeting_reservation_no(reservation.getMeetingReservationNo())
+                    .meeting_no(reservation.getMeetingNo())
+                    .member_no(reservation.getMemberNo())
+                    .meeting_reservation_date(reservation.getMeetingReservationDate())
+                    .meeting_reservation_start_time(reservation.getMeetingReservationStartTime())
+                    .meeting_reservation_end_time(reservation.getMeetingReservationEndTime())
+                    .meeting_reservation_purpose(reservation.getMeetingReservationPurpose())
+                    .meeting_reservation_create_date(reservation.getMeetingReservationCreateDate())
+                    .meeting_reservation_update_date(reservation.getMeetingReservationUpdateDate())
+                    .meeting_reservation_status(reservation.getMeetingReservationStatus())
+                    .meeting_name(meetingName)
+                    .member_name(memberName)
+                    .participant_count(participantCount)
+                    .build();
+        });
+    } 
 
 }
