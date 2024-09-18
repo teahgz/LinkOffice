@@ -163,7 +163,8 @@ public class ApprovalViewController {
 				vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
 			}
 		});
-
+		System.out.println(vacationApprovalDtoPage.getContent());
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
 		model.addAttribute("page", vacationApprovalDtoPage);
