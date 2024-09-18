@@ -204,15 +204,15 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		
         editor.ui.view.editable.element.style.height = '500px';
 
-			const form = document.getElementById('vacAppCreateFrm');
+			const form = document.getElementById('vacAppEditFrm');
 			form.addEventListener('submit', (e) => {
 	  		  e.preventDefault();
 	    // 수정 폼
-/*		    const editorData = editor.getData();
+		    const editorData = editor.getData();
 		    const vacationapprovalTitle = document.querySelector('#vacationapproval_title').value;
+		    const vacationApprovalNo = document.querySelector('#vacationapproval_no').value;
 		    const vacationtype = document.querySelector('select[name="vacationtype"]').value;
 		    const csrfToken = document.querySelector('#csrf_token').value;
-		    const memberNo = document.querySelector('#member_no').value;
 		    const startDate = document.querySelector('#vacationapproval_start_date').value;
 		    const endDate = document.querySelector('#vacationapproval_end_date').value;
 		    const dateCount = document.querySelector('#vacationapproval_date_count').value;
@@ -253,7 +253,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    payload.append('vacationapprovalContent', editorData);
 			    payload.append('vacationapprovalTitle', vacationapprovalTitle);
 			    payload.append('vacationtype', vacationtype);
-			    payload.append('memberNo', memberNo);
 			    payload.append('startDate', startDate);
 			    payload.append('endDate', endDate);
 			    payload.append('dateCount', dateCount);
@@ -265,8 +264,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    payload.append('references', references);
 			    payload.append('reviewers', reviewers);
 			
-			    fetch('/employee/vacationapproval/create', {
-			        method: 'post',
+			    fetch('/employee/vacationapproval/edit/'+vacationApprovalNo, {
+			        method: 'put',
 			        body: payload,
 			        headers: {
 			            'X-CSRF-TOKEN': csrfToken
@@ -281,7 +280,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			                confirmButtonColor: '#B1C2DD',
 			                confirmButtonText: "확인"
 			            }).then((result) => {
-			                location.href = "/employee/vacationapproval/list";
+			                location.href = "/employee/vacationapproval/detail/"+vacationApprovalNo;
 			            });
 			        } else {
 			            Swal.fire({
@@ -292,7 +291,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            });
 			        }
 			    })
-			} */
+			} 
 	});
 
 

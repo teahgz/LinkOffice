@@ -24,6 +24,8 @@ import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalFileR
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalFlowRepository;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class VacationApprovalService {
 	
@@ -234,6 +236,94 @@ public class VacationApprovalService {
 	    return new PageImpl<>(approvalDtoList, pageable, vacationApprovals.getTotalElements());
 	}
 
+	// 휴가 결재 수정 (파일 있을 때)
+	@Transactional
+	public VacationApproval updateVacationApprovalFile(
+	        VacationApprovalDto vappdto,
+	        VacationApprovalFileDto vaFiledto,
+	        List<VacationApprovalFlowDto> approvalFlowDtos) {
 
+	    VacationApproval existingVapp = vacationApprovalRepository.findByVacationApprovalNo(vappdto.getVacation_approval_no());
+
+	    existingVapp.setVacationApprovalTitle(vappdto.getVacation_approval_title());
+	    existingVapp.setVacationType(vacationTypeRepository.findByvacationTypeNo(vappdto.getVacation_type_no()));
+	    existingVapp.setVacationApprovalStartDate(vappdto.getVacation_approval_start_date());
+	    existingVapp.setVacationApprovalEndDate(vappdto.getVacation_approval_end_date());
+	    existingVapp.setVacationApprovalTotalDays(vappdto.getVacation_approval_total_days());
+	    existingVapp.setVacationApprovalContent(vappdto.getVacation_approval_content());
+	    existingVapp.setMember(memberRepository.findByMemberNo(vappdto.getMember_no()));
+
+	    vacationApprovalRepository.save(existingVapp);
+	    
+	    if (!approvalFlowDtos.isEmpty()) {
+	        vacationApprovalFlowRepository.deleteByVacationApproval(existingVapp);
+
+	        for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
+	            Long approverMemberNo = flowDto.getMember_no();
+	            Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	            VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
+	            vacationApprovalFlowRepository.save(vaf);
+	        }
+	    }
+
+	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
+	        Long approverMemberNo = flowDto.getMember_no();
+	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	        VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
+	        vacationApprovalFlowRepository.save(vaf);
+	    }
+
+	    if (vaFiledto != null) {
+	        List<VacationApprovalFile> existingFiles = vacationApprovalFileRepository.findByVacationApproval(existingVapp);
+	        if (!existingFiles.isEmpty()) {
+	            for (VacationApprovalFile file : existingFiles) {
+	                vacationApprovalFileRepository.delete(file);
+	            }
+	        }
+	        VacationApprovalFile vaFile = vaFiledto.toEntity(existingVapp);
+	        vacationApprovalFileRepository.save(vaFile);
+	    }
+
+	    return existingVapp;
+	}
 	
+	// 휴가 결재 수정 (파일 없을 때)
+	@Transactional
+	public VacationApproval updateVacationApproval(
+			VacationApprovalDto vappdto,
+			List<VacationApprovalFlowDto> approvalFlowDtos) {
+		
+		VacationApproval existingVapp = vacationApprovalRepository.findByVacationApprovalNo(vappdto.getVacation_approval_no());
+		
+		existingVapp.setVacationApprovalTitle(vappdto.getVacation_approval_title());
+		existingVapp.setVacationType(vacationTypeRepository.findByvacationTypeNo(vappdto.getVacation_type_no()));
+		existingVapp.setVacationApprovalStartDate(vappdto.getVacation_approval_start_date());
+		existingVapp.setVacationApprovalEndDate(vappdto.getVacation_approval_end_date());
+		existingVapp.setVacationApprovalTotalDays(vappdto.getVacation_approval_total_days());
+		existingVapp.setVacationApprovalContent(vappdto.getVacation_approval_content());
+		existingVapp.setMember(memberRepository.findByMemberNo(vappdto.getMember_no()));
+		
+		vacationApprovalRepository.save(existingVapp);
+		
+	    if (!approvalFlowDtos.isEmpty()) {
+	        vacationApprovalFlowRepository.deleteByVacationApproval(existingVapp);
+
+	        for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
+	            Long approverMemberNo = flowDto.getMember_no();
+	            Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	            VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
+	            vacationApprovalFlowRepository.save(vaf);
+	        }
+	    }
+		
+		for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
+			Long approverMemberNo = flowDto.getMember_no();
+			Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+			VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
+			vacationApprovalFlowRepository.save(vaf);
+		}
+		return existingVapp;
+	}
+
+
 }
