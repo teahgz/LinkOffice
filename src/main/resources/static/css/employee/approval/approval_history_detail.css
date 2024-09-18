@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    position: relative;
 }
 
 .details_section,
@@ -24,7 +25,6 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 20px;
 }
 
 .text_field {
@@ -52,7 +52,7 @@
     position: relative;
 }
 
-.edit_button {
+.approval_button {
     padding: 8px 15px;
     background-color: #B3C7EE;
     border: none;
@@ -63,14 +63,24 @@
     color: #000000;
 }
 
-.cancel_button {
+.details_section {
+    position: relative;
+    padding: 20px; 
+}
+
+.reject_button_container {
+    position: absolute;
+    right: 20px; 
+}
+
+.reject_button {
+	display: inline-block;
     padding: 8px 15px;
     background-color: #EEB3B3; 
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    position: absolute;
     bottom: 5px; 
     left: 5px; 
 }
@@ -84,9 +94,9 @@
     cursor: pointer;
 }
 
-.edit_button:hover,
+.approval_button:hover,
 .list_button:hover,
-.cancel_button:hover {
+.reject_button:hover {
     opacity: 0.8;
 }
 
