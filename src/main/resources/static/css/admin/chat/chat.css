@@ -27,20 +27,25 @@
        border-bottom: 1px solid #ddd;
        display: flex;
        align-items: center;
-       padding: 10px;
+       padding: 1vw;
        background-color: #f9f9f9;
        border-radius: 10px 10px 0 0 ;
-       gap: 10px;
        height: 100px;
        box-sizing: border-box;
+       justify-content: space-between;
 }
 
 #chatRoomTitle {
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
+     flex-grow: 1;
+     text-align: left;
 }
-
+.chatHeader-buttons {
+    display: flex;
+    gap: 1.5vw;
+}
 .chatContainer {
     border: none;
     width: 25%;
@@ -296,8 +301,6 @@
 
 }
 
-
-
 .modal-dialog-centered {
     display: flex;
     align-items: center;
@@ -316,4 +319,45 @@
     border-color: #b0b0b0;
     color: #a9a9a9;
 }
+#openDrop {
+    margin-bottom:2px;
+}
+.chatDropdown {
+    position: relative;
+    display: inline-block;
+}
 
+.chat-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    border-radius: 5px;
+    background-color: white;
+    min-width: 120px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.chat-dropdown-item {
+    padding: 10px;
+    text-align: left;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: black;
+    cursor: pointer;
+
+}
+.chat-dropdown-item i {
+    margin-right: 8px;
+}
+.chat-dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+.menu-text {
+    margin-left: 4px;
+}
+#searchChatContent {
+margin-top : 3px;
+}
