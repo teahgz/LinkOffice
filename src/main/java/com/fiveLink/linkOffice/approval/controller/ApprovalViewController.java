@@ -214,24 +214,6 @@ public class ApprovalViewController {
 		 
 		 return "employee/approval/approval_references_list"; 
 	}
-	 
-
-	private VacationApprovalDto convertToDto(VacationApproval vacationApproval) {
-		return VacationApprovalDto.builder().vacation_approval_no(vacationApproval.getVacationApprovalNo())
-				.member_no(vacationApproval.getMember().getMemberNo())
-				.vacation_approval_title(vacationApproval.getVacationApprovalTitle())
-				.vacation_type_no(vacationApproval.getVacationType().getVacationTypeNo())
-				.vacation_approval_start_date(vacationApproval.getVacationApprovalStartDate().toString())
-				.vacation_approval_end_date(vacationApproval.getVacationApprovalEndDate().toString())
-				.vacation_approval_total_days(vacationApproval.getVacationApprovalTotalDays())
-				.vacation_approval_content(vacationApproval.getVacationApprovalContent())
-				.vacation_approval_status(vacationApproval.getVacationApprovalStatus())
-				.vacation_approval_cancel_reason(vacationApproval.getVacationApprovalCancelReason())
-				.vacation_approval_create_date(vacationApproval.getVacationApprovalCreateDate())
-				.vacation_approval_update_date(vacationApproval.getVacationApprovalUpdateDate())
-				.member_name(vacationApproval.getMember().getMemberName())
-				.vacation_type_name(vacationApproval.getVacationType().getVacationTypeName()).build();
-	}
 
 	// 사용자 결재 진행함 페이지
 	@GetMapping("/employee/approval/progress")
@@ -271,6 +253,7 @@ public class ApprovalViewController {
 		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+		model.addAttribute("currentUserMemberNo", member_no);
 		
 		return "employee/approval/approval_history_detail";
 	}
