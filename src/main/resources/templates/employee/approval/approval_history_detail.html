@@ -63,7 +63,6 @@
 						                </td>
 						            </tr>
 						            <tr>
-						                <!-- 결재 완료 날짜 // 전자결재 서명이 없으면 안보이도록  수정예정 -->
 						                <td>
 						                    <div class="date_box" 
 						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
@@ -119,14 +118,12 @@
                     </div>
 
                     <div class="button_container">
-                    	<button type="button" class="cancel_button">기안 취소</button>
-                    	<a th:if="${vacationapprovaldto.vacation_approval_status == 0}" th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" class="edit_button">수정</a>
-                        <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
+                        <button type="button" class="list_button" onclick="location.href='/employee/approval/history'">목록</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <script th:src="@{/js/employee/vacationapproval/vacationapproval_detail.js}"></script>
+        <script th:src="@{/js/employee/approval/approval_history_detail.js}"></script>
     </th:block>
 </html>
