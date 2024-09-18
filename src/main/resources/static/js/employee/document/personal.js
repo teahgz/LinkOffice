@@ -4,7 +4,7 @@ let folderList = [];
 $(function () {
 	// 전역 변수로 selectedFolderNo 정의
 	let selectedFolderNo = null;
-	// 생성, 삭제, 변경 여부  
+	// 폴더 이름 변경 여부  
 	let isFolderNameChange = false;
     let savedFolderNo = null;
     // memberNo 받아오기 
