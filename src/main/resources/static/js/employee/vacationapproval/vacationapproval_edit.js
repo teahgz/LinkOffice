@@ -280,7 +280,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			                confirmButtonColor: '#B1C2DD',
 			                confirmButtonText: "확인"
 			            }).then((result) => {
-			                location.href = "/employee/vacationapproval/detail"+vacationApprovalNo;
+			                location.href = "/employee/vacationapproval/detail/"+vacationApprovalNo;
 			            });
 			        } else {
 			            Swal.fire({

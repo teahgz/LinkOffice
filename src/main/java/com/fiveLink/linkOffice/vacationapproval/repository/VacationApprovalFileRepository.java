@@ -12,4 +12,7 @@ import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFile;
 public interface VacationApprovalFileRepository extends JpaRepository<VacationApprovalFile, Long>{
 	
 	List<VacationApprovalFile> findByVacationApproval(VacationApproval vacationApproval);
+	
+	boolean existsByVacationApproval(VacationApproval vacationApproval);
+	
 }

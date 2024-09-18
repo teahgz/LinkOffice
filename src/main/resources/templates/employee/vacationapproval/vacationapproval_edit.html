@@ -40,31 +40,31 @@
                                 	<button type="button" id="openChart" class="btn btn-primary approve_button">결재선 지정</button>
                             	</div>
                             </div>
-<div class="app_navbar">
-    <div class="app_nav">결재자</div>
-    <div class="app_nav">합의자</div>
-    <div class="app_nav">참조자</div>    
-</div>
-
-<div class="app_member">
-    <div class="approversDisplay" >
-        <span th:each="flow : ${vacationapprovaldto.flows}" 
-              th:if="${flow.vacation_approval_flow_role == 2}"
-              th:text="${flow.member_name}"></span>
-    </div>
-
-    <div class="referencesDisplay">
-        <span th:each="flow : ${vacationapprovaldto.flows}" 
-              th:if="${flow.vacation_approval_flow_role == 1}"
-              th:text="${flow.member_name}"></span>
-    </div>
-
-    <div class="reviewersDisplay">
-        <span th:each="flow : ${vacationapprovaldto.flows}" 
-              th:if="${flow.vacation_approval_flow_role == 0}"
-              th:text="${flow.member_name}"></span>
-    </div>
-</div>
+							<div class="app_navbar">
+							    <div class="app_nav">결재자</div>
+							    <div class="app_nav">합의자</div>
+							    <div class="app_nav">참조자</div>    
+							</div>
+							
+							<div class="app_member">
+							    <div class="approversDisplay" >
+							        <span th:each="flow : ${vacationapprovaldto.flows}" 
+							              th:if="${flow.vacation_approval_flow_role == 2}"
+							              th:text="${flow.member_name}"></span>
+							    </div>
+							
+							    <div class="referencesDisplay">
+							        <span th:each="flow : ${vacationapprovaldto.flows}" 
+							              th:if="${flow.vacation_approval_flow_role == 1}"
+							              th:text="${flow.member_name}"></span>
+							    </div>
+							
+							    <div class="reviewersDisplay">
+							        <span th:each="flow : ${vacationapprovaldto.flows}" 
+							              th:if="${flow.vacation_approval_flow_role == 0}"
+							              th:text="${flow.member_name}"></span>
+							    </div>
+							</div>
 
                  	
                             <div class="editor-container__editor" id="editor" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>
