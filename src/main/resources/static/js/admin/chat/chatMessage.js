@@ -31,8 +31,6 @@ document.addEventListener("DOMContentLoaded", function() {
             chatItems[i].style.display = chatName.includes(input) ? "" : "none";
         }
     }
-
-    // 검색 버튼 토글 기능
     window.toggleSearch = function() {
         let searchContainer = document.getElementById("searchContainer");
         let searchChatButton = document.getElementById("searchChatButton");
@@ -44,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function() {
             searchContainer.style.display = "none";
             searchChatButton.classList.remove("btn-secondary");
             searchChatButton.classList.add("btn-primary");
+            searchInput.value = '';
+           searchMem();
         }
     };
 });
