@@ -28,6 +28,22 @@ document.addEventListener("DOMContentLoaded", function() {
               }
           }
       }
+      window.toggleSearch = function() {
+
+               let searchContainer = document.getElementById("searchContainer");
+               let searchChatButton = document.getElementById("searchChatButton");
+
+               if (searchContainer.style.display === "none") {
+                   searchContainer.style.display = "flex";
+                   searchChatButton.classList.remove("btn-primary");
+                   searchChatButton.classList.add("btn-secondary");
+               } else {
+                   searchContainer.style.display = "none";
+                   searchChatButton.classList.remove("btn-secondary");
+                   searchChatButton.classList.add("btn-primary");
+               }
+    };
+
 });
 
 (function() {
@@ -370,21 +386,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 loadChatMessages(element);
             }).catch(error => {
-                console.error('Error handling chat room click:', error);
+                console.error('error', error);
             });
     }
 
 
     function getChatRoomName(chatRoomNo) {
-        return fetch(`/api/chat/roomName/${chatRoomNo}`)
+         const memberNo = document.getElementById('memberNo').value;
+        return fetch(`/api/chat/roomName/${chatRoomNo}/${memberNo}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error("Chat room not found");
+                throw new Error("채팅방 이름을 찾지 못했습니다.");
             }
             return response.text();
         })
         .catch(error => {
-            console.error('Error fetching chat room name:', error);
+            console.error("error", error);
             return null;  // 오류 발생 시 null 반환
         });
     }
@@ -401,6 +418,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
         localStorage.removeItem('selectedMembers');
     }
-
 
 })();

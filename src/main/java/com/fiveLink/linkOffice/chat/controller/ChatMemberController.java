@@ -26,12 +26,12 @@ public class ChatMemberController {
         this.chatMemberService =chatMemberService;
 
     }
-    //채팅방 이름 가져오기
-    @GetMapping("/api/chat/roomName/{chatRoomNo}")
+    // 채팅방 이름 가져오기
+    @GetMapping("/api/chat/roomName/{chatRoomNo}/{memberNo}")
     @ResponseBody
-    public String roomName(@PathVariable Long chatRoomNo) {
+    public String roomName(@PathVariable Long chatRoomNo, @PathVariable Long memberNo) {
         try {
-            String chatRoomName = chatMemberService.selectChatRoomName(chatRoomNo);
+            String chatRoomName = chatMemberService.selectChatRoomName(chatRoomNo, memberNo);
 
             if (chatRoomName != null) {
                 return chatRoomName;
@@ -44,4 +44,5 @@ public class ChatMemberController {
             return "에러발생";
         }
     }
+
 }

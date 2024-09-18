@@ -19,5 +19,5 @@ public interface ChatMapper {
     //채팅방 목록 디비 입력 이름+부서
     String searchPosition(Long memberNo);
     //채팅방 이름 가져오기
-    String selectChatRoomName(Long chatRoomNo);
+    String selectChatRoomName(Long chatRoomNo, Long memberNo);
 }
