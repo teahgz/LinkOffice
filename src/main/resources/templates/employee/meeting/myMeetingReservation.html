@@ -42,46 +42,43 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="reservation : ${reservations.content}"
-					        th:onclick="|location.href='@{/employee/meeting/reservation/detail/{id}(id=${reservation.meeting_reservation_no})}'|"
-					        style="cursor: pointer;">
-                            <td th:text="${reservation.meeting_name}"></td>
-                            <td th:text="${reservation.meeting_reservation_date}"></td>
-                            <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}"></td>
-                            <td th:text="${reservation.meeting_reservation_purpose}"></td>
-                            <td th:text="${reservation.participant_count}"></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
+                    <tbody> 
+				        <tr th:if="${#lists.isEmpty(reservations.content)}">
+				            <td colspan="6" style="text-align: center;">예약 내역이 존재하지 않습니다</td>
+				        </tr>
+				         
+				        <tr th:each="reservation : ${reservations.content}"
+				            th:onclick="|location.href='@{/employee/meeting/reservation/detail/{id}(id=${reservation.meeting_reservation_no})}'|"
+				            style="cursor: pointer;">
+				            <td th:text="${reservation.meeting_name}"></td>
+				            <td th:text="${reservation.meeting_reservation_date}"></td>
+				            <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}"></td>
+				            <td th:text="${reservation.meeting_reservation_purpose}"></td>
+				            <td th:text="${reservation.participant_count}"></td>
+				            <td></td>
+				        </tr>
+				    </tbody>
                 </table>
-                <div class="pagination">
-                    <th:block th:if="${reservations.totalElements > 0}">
-                        <button th:if="${reservations.hasPrevious()}"
-                                th:onclick="|location.href='@{/employee/meeting/reservation/list(page=0, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&lt;&lt;</button>
-                        <button th:if="${reservations.hasPrevious()}"
-                                th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${reservations.number - 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&lt;</button>
-                        <th:block th:with="totalPages=${reservations.totalPages}, currentPage=${reservations.number}">
-                            <th:block th:with="startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)}, 
-                                         endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
-                                <span th:if="${totalPages > 0}"
-                                      th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
-                                    <button th:classappend="${i == currentPage} ? 'active'"
-                                            th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${i}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|"
-                                            th:text="${i + 1}"></button>
-                                </span>
-                            </th:block>
-                        </th:block>
-                        <button th:if="${reservations.hasNext()}"
-                                th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${reservations.number + 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&gt;</button>
-                        <button th:if="${reservations.number < reservations.totalPages - 1}"
-                                th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${reservations.totalPages - 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&gt;&gt;</button>
-                    </th:block>
-                    <th:block th:if="${reservations.totalElements == 0}">
-                        <button class="active">1</button>
-                    </th:block>
-                </div>
-            </div>
+                <div class="pagination" th:if="${reservations.totalElements > 0}">
+				    <th:block th:if="${reservations.hasPrevious()}">
+				        <button th:onclick="|location.href='@{/employee/meeting/reservation/list(page=0, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&lt;&lt;</button>
+				        <button th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${reservations.number - 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&lt;</button>
+				    </th:block>
+				    <th:block th:with="totalPages=${reservations.totalPages}, currentPage=${reservations.number}">
+				        <th:block th:with="startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)}, 
+				                     endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
+				            <span th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
+				                <button th:classappend="${i == currentPage} ? 'active'"
+				                        th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${i}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|"
+				                        th:text="${i + 1}"></button>
+				            </span>
+				        </th:block>
+				    </th:block>
+				    <th:block th:if="${reservations.hasNext()}">
+				        <button th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${reservations.number + 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&gt;</button>
+				        <button th:onclick="|location.href='@{/employee/meeting/reservation/list(page=${reservations.totalPages - 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&gt;&gt;</button>
+				    </th:block>
+				</div> 
         </section>
         <script th:src="@{/js/employee/meeting/myMeetingReservation.js}"></script>
     </th:block>
