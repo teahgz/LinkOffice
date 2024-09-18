@@ -69,11 +69,8 @@
 						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date != null}"
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status == 2}"
 						                         th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date == null}">
-						                        <span>미결</span>
-						                    </div>
 						                </td>
 						            </tr>
 						        </tbody>
