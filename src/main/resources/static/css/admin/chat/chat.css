@@ -361,3 +361,8 @@
 #searchChatContent {
 margin-top : 3px;
 }
+
+.modal-content-element{
+    display: flex;
+    justify-content: space-between;
+}
