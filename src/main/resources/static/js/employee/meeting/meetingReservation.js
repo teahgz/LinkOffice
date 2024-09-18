@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function openReservationModal() { 
         $('#reservationModal').modal('show');
-         
+        pick_username.innerText = memberNameValue + " " + memberPositionValue; 
         resetReservationForm();
     }
 
@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", function () {
      
 
     // 모달 닫기  
-    $('#reservation_close').on('click', function () {
+    $('.reservation_close').on('click', function () {
         Swal.fire({
             text: '작성한 내용이 저장되지 않습니다.',
             icon: 'warning',
@@ -441,9 +441,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	 
 	    $('#organization-chart').jstree("uncheck_all");
 	 
-	    const reservationArea = $('.reservation_participate');
+	    const reservationArea = $('.selected-participants-container');  
 	    reservationArea.find('.selected-participants').remove(); 
-	     
+	    
 	    selectedMembers = [];
 	    localStorage.removeItem('selectedMembers');  
 	    $('#selectedMembers').val('');
@@ -566,7 +566,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // 조직도 확인 -> 예약 모달 사원 출력 
 	$('#participate_confirmButton').click(function()  {
-	    const reservationArea = $('.reservation_participate');  
+	    const reservationArea = $('.selected-participants-container');  
 	    const selectedMembersContainer = $('#selected-members');  
 	    const selectedMembersList = selectedMembersContainer.find('.selected-member');
 	    

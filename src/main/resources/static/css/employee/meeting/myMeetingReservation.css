@@ -1,9 +1,8 @@
 @charset "UTF-8";
 
 .myMeetingReservation_list {
-	position: relative;
-	width: 90%;
-	max-width: 1200px;
+	position: relative; 
+	max-width: 1250px;
 	margin: 40px auto;
 	padding: 30px;
 	box-sizing: border-box;
@@ -11,15 +10,7 @@
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 	border-radius: 8px;
 }
-
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    width: auto; 
-    align-self: flex-start; 
-    margin-left: 100px;
-}
-
+ 
 .search_sort_container {
 	display: flex;
 	justify-content: space-between;
@@ -135,5 +126,5 @@ h1 {
 }
 
 .meeting_sort_date {
-    margin-left: 245px;
+    margin-left: 295px;
 }

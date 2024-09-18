@@ -29,7 +29,7 @@ $(document).ready(function() {
                 $('#reservation_date').val(data.reservation.meeting_reservation_date);
                 $('#reservation_purpose').val(data.reservation.meeting_reservation_purpose);
            
-                let selectedParticipants = data.participants.map(p => `<span class="selected-participants">${p.memberName} ${p.positionName}`).join(' </span><br/>');
+                let selectedParticipants = data.participants.map(p => `<span class="selected-participants">${p.memberName} ${p.positionName}`).join(' </span>');
                 $('.selected-participants-container').html(selectedParticipants);
                  
             	participantMembers = data.participants.map(p => p.member_no); 
@@ -411,7 +411,7 @@ $(document).ready(function() {
     
     // 조직도 확인 -> 수정 모달 사원 출력 
 	$('#participate_confirmButton').click(function()  {
-	    const reservationArea = $('.reservation_participate');  
+	    const reservationArea = $('.selected-participants-container');  
 	    const selectedMembersContainer = $('#selected-members');  
 	    const selectedMembersList = selectedMembersContainer.find('.selected-member');
 	    
