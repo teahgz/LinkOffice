@@ -55,7 +55,7 @@
                     <input type="hidden" id="userNo" th:value="${member.member_no}">
                     <input type="hidden" id="userName" th:value="${member.member_name}">
                     <input type="text" id="messageInput" class="message-input" placeholder="메시지를 입력하세요.">
-                    <button class="send-button" onclick="sendMessage()">전송</button>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()" disabled>전송</button>
                 </div>
             </div>
 
