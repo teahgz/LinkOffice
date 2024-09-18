@@ -82,7 +82,6 @@ public class DocumentApiController {
             .build();
 
       int result = documentFolderService.personalFirstFolder(documentFolder);
-      System.out.println("Service result: " + result);
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
@@ -90,6 +89,51 @@ public class DocumentApiController {
       } 
       return resultMap;
    }	
+   // 개인 폴더 생성  
+   @PostMapping("/personal/create/folder")
+   @ResponseBody
+   public Map<String, Object> personalCreateFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, Object> resultMap = new HashMap<>();
+	  resultMap.put("res_code", "404");
+	  resultMap.put("res_msg", "경로 오류");
+	
+	  String folderName = (String) payload.get("folderName");
+	  String folderNoStr = (String) payload.get("parentFolderNo");  
+	  String memberNoStr = (String) payload.get("memberNo");
+	  String deptNoStr = (String) payload.get("deptNo");
+    
+	  Long memberNo = Long.valueOf(memberNoStr);
+	  Long deptNo = Long.valueOf(deptNoStr);
+	  Long folderNo = Long.valueOf(folderNoStr);
+      Long docBoxType = 0L;
+      Long folderStatus = 0L;
+      
+      Member member = memberRepository.findByMemberNo(memberNo);
+      Department department = departmentRepository.findByDepartmentNo(deptNo);
+      DocumentFolder documentFolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+      
+      Long folderLevel = documentFolder.getDocumentFolderLevel() + 1;
+      
+      DocumentFolder newDocumentFolder = DocumentFolder.builder()
+            .documentFolderName(folderName)
+            .documentFolderParentNo(folderNo)            
+            .documentFolderLevel(folderLevel)
+            .department(department)
+            .documentBoxType(docBoxType)
+            .member(member)
+            .documentFolderStatus(folderStatus)
+            .build();
+
+      int result = documentFolderService.personalCreateFolder(newDocumentFolder);
+
+      if (result > 0) {
+    	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
+    	  resultMap.put("res_code", "200");
+    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
+      } 
+      return resultMap;
+   }
    
    // 부서 첫 폴더 
    @PostMapping("/department/first/folder")
@@ -130,6 +174,52 @@ public class DocumentApiController {
       } 
       return resultMap;
    }	
+ 
+   // 부서 폴더 생성  
+   @PostMapping("/department/create/folder")
+   @ResponseBody
+   public Map<String, Object> departmentCreateFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, Object> resultMap = new HashMap<>();
+	  resultMap.put("res_code", "404");
+	  resultMap.put("res_msg", "경로 오류");
+	
+	  String folderName = (String) payload.get("folderName");
+	  String folderNoStr = (String) payload.get("parentFolderNo");  
+	  String memberNoStr = (String) payload.get("memberNo");
+	  String deptNoStr = (String) payload.get("deptNo");
+    
+	  Long memberNo = Long.valueOf(memberNoStr);
+	  Long deptNo = Long.valueOf(deptNoStr);
+	  Long folderNo = Long.valueOf(folderNoStr);
+      Long docBoxType = 1L;
+      Long folderStatus = 0L;
+      
+      Member member = memberRepository.findByMemberNo(memberNo);
+      Department department = departmentRepository.findByDepartmentNo(deptNo);
+      DocumentFolder documentFolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+      
+      Long folderLevel = documentFolder.getDocumentFolderLevel() + 1;
+      
+      DocumentFolder newDocumentFolder = DocumentFolder.builder()
+            .documentFolderName(folderName)
+            .documentFolderParentNo(folderNo)            
+            .documentFolderLevel(folderLevel)
+            .department(department)
+            .documentBoxType(docBoxType)
+            .member(member)
+            .documentFolderStatus(folderStatus)
+            .build();
+
+      int result = documentFolderService.departmentCreateFolder(newDocumentFolder);
+
+      if (result > 0) {
+    	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
+    	  resultMap.put("res_code", "200");
+    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
+      } 
+      return resultMap;
+   }
    
    // 사내 첫 폴더 
    @PostMapping("/company/first/folder")
@@ -170,6 +260,53 @@ public class DocumentApiController {
       } 
       return resultMap;
    }
+   
+   // 사내 폴더 생성  
+   @PostMapping("/company/create/folder")
+   @ResponseBody
+   public Map<String, Object> companyCreateFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, Object> resultMap = new HashMap<>();
+	  resultMap.put("res_code", "404");
+	  resultMap.put("res_msg", "경로 오류");
+	
+	  String folderName = (String) payload.get("folderName");
+	  String folderNoStr = (String) payload.get("parentFolderNo");  
+	  String memberNoStr = (String) payload.get("memberNo");
+	  String deptNoStr = (String) payload.get("deptNo");
+    
+	  Long memberNo = Long.valueOf(memberNoStr);
+	  Long deptNo = Long.valueOf(deptNoStr);
+	  Long folderNo = Long.valueOf(folderNoStr);
+      Long docBoxType = 2L;
+      Long folderStatus = 0L;
+      
+      Member member = memberRepository.findByMemberNo(memberNo);
+      Department department = departmentRepository.findByDepartmentNo(deptNo);
+      DocumentFolder documentFolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+      
+      Long folderLevel = documentFolder.getDocumentFolderLevel() + 1;
+      
+      DocumentFolder newDocumentFolder = DocumentFolder.builder()
+            .documentFolderName(folderName)
+            .documentFolderParentNo(folderNo)            
+            .documentFolderLevel(folderLevel)
+            .department(department)
+            .documentBoxType(docBoxType)
+            .member(member)
+            .documentFolderStatus(folderStatus)
+            .build();
+
+      int result = documentFolderService.companyCreateFolder(newDocumentFolder);
+
+      if (result > 0) {
+    	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
+    	  resultMap.put("res_code", "200");
+    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
+      } 
+      return resultMap;
+   }
+   
    // 폴더 이름 변경
    @PostMapping("/change/folder/name")
    @ResponseBody
