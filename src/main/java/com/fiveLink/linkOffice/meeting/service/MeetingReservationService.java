@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.meeting.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.meeting.repository.MeetingParticipantRepository;
@@ -25,14 +28,17 @@ public class MeetingReservationService {
     private final MemberService memberService; 
     private final MeetingParticipantRepository meetingParticipantRepository;
     private final MemberRepository memberRepository;
+    private final MeetingParticipantService meetingParticipantService;
     
     @Autowired
-    public MeetingReservationService(MeetingReservationRepository meetingReservationRepository, MeetingService meetingService, MemberService memberService, MeetingParticipantRepository meetingParticipantRepository, MemberRepository memberRepository) {
+    public MeetingReservationService(MeetingReservationRepository meetingReservationRepository, MeetingService meetingService, MemberService memberService, 
+    		                         MeetingParticipantRepository meetingParticipantRepository, MemberRepository memberRepository, MeetingParticipantService meetingParticipantService) {
         this.meetingReservationRepository = meetingReservationRepository;
         this.meetingService = meetingService;
         this.memberService = memberService;
         this.meetingParticipantRepository = meetingParticipantRepository;
         this.memberRepository = memberRepository;
+        this.meetingParticipantService = meetingParticipantService;
     }
 
     // 해당 날짜 예약 정보 
@@ -84,7 +90,7 @@ public class MeetingReservationService {
         return reservationPage.map(reservation -> {
             String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
             String memberName = memberService.getMemberNameById(reservation.getMemberNo());
-            long participantCount = meetingParticipantRepository.countByMeetingReservationNo(reservation.getMeetingReservationNo());
+            long participantCount = meetingParticipantRepository.countByMeetingReservationNoAndStatus(reservation.getMeetingReservationNo(), 0L);
 
             return MeetingReservationDto.builder()
                     .meeting_reservation_no(reservation.getMeetingReservationNo())
@@ -113,7 +119,7 @@ public class MeetingReservationService {
  
         String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
         String memberName = memberService.getMemberNameById(reservation.getMemberNo());
-        long participantCount = meetingParticipantRepository.countByMeetingReservationNo(reservation.getMeetingReservationNo());
+        long participantCount = meetingParticipantRepository.countByMeetingReservationNoAndStatus(reservation.getMeetingReservationNo(), 0L);
 
         List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(reservation.getMemberNo()); 
         String positionName = "직위";
@@ -141,5 +147,67 @@ public class MeetingReservationService {
                 .participant_count(participantCount)
                 .build();
     }
+    
+    // 수정
+    @Transactional
+    public void updateReservation(MeetingReservationDto meetingReservationDto, String selectedMembers) {
  
+        MeetingReservation existingReservation = meetingReservationRepository.findById(meetingReservationDto.getMeeting_reservation_no())
+                .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다." + meetingReservationDto.getMeeting_reservation_no()));
+ 
+        existingReservation.setMeetingNo(meetingReservationDto.getMeeting_no());
+        existingReservation.setMemberNo(meetingReservationDto.getMember_no());
+        existingReservation.setMeetingReservationDate(meetingReservationDto.getMeeting_reservation_date());
+        existingReservation.setMeetingReservationStartTime(meetingReservationDto.getMeeting_reservation_start_time());
+        existingReservation.setMeetingReservationEndTime(meetingReservationDto.getMeeting_reservation_end_time());
+        existingReservation.setMeetingReservationPurpose(meetingReservationDto.getMeeting_reservation_purpose());
+        existingReservation.setMeetingReservationStatus(meetingReservationDto.getMeeting_reservation_status());
+ 
+        meetingReservationRepository.save(existingReservation);
+
+        // 참여자 정보 
+        if (selectedMembers != null && !selectedMembers.isEmpty()) { 
+            List<MeetingParticipantDto> existingParticipants = meetingParticipantService.getParticipantsByReservationNo(meetingReservationDto.getMeeting_reservation_no());
+            List<String> newMemberList = new ArrayList<>(Arrays.asList(selectedMembers.split(","))); 
+ 
+            for (MeetingParticipantDto participant : existingParticipants) {
+                if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
+                    participant.setMeeting_participant_status(1L);  
+                    meetingParticipantService.updateParticipantStatus(participant);
+                }
+            }
+ 
+            for (String memberId : newMemberList) {
+                Long memberIdLong = Long.parseLong(memberId.trim());
+                boolean isExisting = existingParticipants.stream()
+                    .anyMatch(participant -> participant.getMember_no().equals(memberIdLong));
+ 
+                if (!isExisting) {
+                    MeetingParticipantDto newParticipant = MeetingParticipantDto.builder()
+                        .meeting_reservation_no(meetingReservationDto.getMeeting_reservation_no())
+                        .member_no(memberIdLong)
+                        .meeting_participant_status(0L) 
+                        .build();
+                    meetingParticipantService.save(newParticipant);
+                }
+            }
+        }
+    }
+    
+    // 예약 취소
+    public boolean cancelReservation(Long reservationNo) {
+        try {
+            MeetingReservation reservation = meetingReservationRepository.findById(reservationNo)
+                    .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다: " + reservationNo));
+            
+            reservation.setMeetingReservationStatus(1L); 
+            meetingReservationRepository.save(reservation);
+            return true;  
+        } catch (Exception e) { 
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

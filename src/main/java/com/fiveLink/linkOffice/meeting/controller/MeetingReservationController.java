@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -199,10 +200,7 @@ public class MeetingReservationController {
 	@PostMapping("/api/meeting/saveSelectedMembers")
 	@ResponseBody
 	public Map<String, Object> saveSelectedMembers(@RequestBody Map<String, List<String>> selectedMembers) {
-		List<String> memberNumbers = selectedMembers.get("members");
-
-		// 조직도에서 선택한 사원 번호 출력
-		System.out.println("선택한 사원 번호 목록: " + memberNumbers);
+		List<String> memberNumbers = selectedMembers.get("members"); 
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("status", "success");
@@ -226,8 +224,7 @@ public class MeetingReservationController {
 	    resultMap.put("res_code", "404");
 	    resultMap.put("res_msg", "회의실 예약 중 오류가 발생했습니다.");
 
-	    try {    
-	        // 예약 정보 DTO 생성
+	    try {     
 	        MeetingReservationDto meetingReservationDto = MeetingReservationDto.builder()
 	            .meeting_no(reservationRoom)
 	            .member_no(memberNo)
@@ -321,7 +318,72 @@ public class MeetingReservationController {
 	    return response;
 	}
 
+	// 수정
+	@PostMapping("/reservation/update")
+	@ResponseBody
+	public Map<String, String> updateReservation(
+	        @RequestParam("reservation_id") Long reservationNo,
+	        @RequestParam("member_no") Long memberNo,
+	        @RequestParam("reservation_room") Long reservationRoom,
+	        @RequestParam("reservation_date") String reservationDate,
+	        @RequestParam("reservation_start_time") String reservationStartTime,
+	        @RequestParam("reservation_end_time") String reservationEndTime,
+	        @RequestParam("reservation_purpose") String reservationPurpose,
+	        @RequestParam(value = "selectedMembers", required = false) String selectedMembers) {
 
+	    Map<String, String> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "회의실 예약 수정 중 오류가 발생했습니다."); 
+
+	    try {
+	        MeetingReservationDto meetingReservationDto = MeetingReservationDto.builder()
+	            .meeting_reservation_no(reservationNo)
+	            .meeting_no(reservationRoom)
+	            .member_no(memberNo)
+	            .meeting_reservation_date(reservationDate)
+	            .meeting_reservation_start_time(reservationStartTime)
+	            .meeting_reservation_end_time(reservationEndTime)
+	            .meeting_reservation_purpose(reservationPurpose)
+	            .meeting_reservation_status(0L)
+	            .build();
+  
+	        meetingReservationService.updateReservation(meetingReservationDto, selectedMembers);
+
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "회의실 예약이 수정되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("res_code", "404");
+	        resultMap.put("res_msg", "회의실 예약 수정 중 오류가 발생했습니다.");
+	    }
+
+	    return resultMap;
+	} 
 	
-	 
+	// 예약 취소  
+	@PostMapping("/reservation/cancel")
+	@ResponseBody
+	public Map<String, Object> cancelReservation(@RequestBody Map<String, Long> requestBody) {
+	    Map<String, Object> resultMap = new HashMap<>();
+	    Long reservationNo = requestBody.get("reservationNo");
+ 
+	    try {
+	        boolean canceled = meetingReservationService.cancelReservation(reservationNo);
+
+	        if (canceled) {
+	            resultMap.put("res_code", "200");
+	            resultMap.put("res_msg", "예약이 취소되었습니다.");
+	        } else {
+	            resultMap.put("res_code", "404");
+	            resultMap.put("res_msg", "예약 취소 중 오류가 발생했습니다.");
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "서버 오류가 발생했습니다.");
+	        e.printStackTrace();
+	    }
+
+	    return resultMap;
+	}
+
 }
