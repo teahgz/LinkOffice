@@ -88,7 +88,6 @@ public class NoticeService {
                     break;
             }
         } else {
-            // 검색어가 없을 때 모든 공지사항 조회
             results = noticeRepository.findNoticesAllWithMember(sort, pageable);
         }
 
