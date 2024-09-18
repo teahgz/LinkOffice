@@ -262,6 +262,12 @@ public class ApprovalViewController {
 		
 		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
 		
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	        if (vacationapprovaldto.getVacation_approval_create_date() != null ) {
+	            String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
+	            vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
+	        }
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
 		
