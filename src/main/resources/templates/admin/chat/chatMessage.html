@@ -13,7 +13,7 @@
             <div class="chatContainer">
                 <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
                     <div id="chatRoomTitleContainer">
-                        <h3 id="chatListTitle">메신저 방</h3>
+                        <h3 id="chatListTitle">메신저</h3>
                     </div>
                     <div id ="listButtons">
                         <button id="searchChatButton"  onclick="toggleSearch()" class="btn btn-primary no-style">
@@ -45,6 +45,33 @@
             <div class="chatElement">
                 <div class="chatHeader">
                     <h4 id="chatRoomTitle">채팅방 이름</h4>
+                    <div class="chatHeader-buttons">
+                        <button id="searchChatContent" class="btn btn-primary no-style">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <div class="chatDropdown">
+                            <button id="openDrop" class="btn btn-primary no-style">
+                                <i class="fa-solid fa-bars"></i>
+                            </button>
+                            <div id="chatDropdownMenu" class="chat-dropdown-menu">
+                                <a href="#" class="chat-dropdown-item">
+                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">고정</span>
+                                </a>
+                                <a href="#" class="chat-dropdown-item">
+                                    <i class="fa-regular fa-bell"></i> <span class="menu-text">알림</span>
+                                </a>
+                                <a href="#" class="chat-dropdown-item">
+                                    <i class="fa-solid fa-plus"></i> <span class="menu-text">추가</span>
+                                </a>
+                                <a href="#" class="chat-dropdown-item">
+                                    <i class="fa-regular fa-pen-to-square"></i> <span class="menu-text">수정</span>
+                                </a>
+                                <a href="#" class="chat-dropdown-item">
+                                    <i class="fa-solid fa-arrow-right"></i> <span class="menu-text">나가기</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="chatContent" id="chatContent">
                     <div>

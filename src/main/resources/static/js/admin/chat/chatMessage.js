@@ -31,8 +31,6 @@ document.addEventListener("DOMContentLoaded", function() {
             chatItems[i].style.display = chatName.includes(input) ? "" : "none";
         }
     }
-
-    // 검색 버튼 토글 기능
     window.toggleSearch = function() {
         let searchContainer = document.getElementById("searchContainer");
         let searchChatButton = document.getElementById("searchChatButton");
@@ -44,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function() {
             searchContainer.style.display = "none";
             searchChatButton.classList.remove("btn-secondary");
             searchChatButton.classList.add("btn-primary");
+            searchInput.value = '';
+           searchMem();
         }
     };
 });
@@ -307,6 +307,22 @@ document.addEventListener("DOMContentLoaded", function() {
         createChatRoom(document.getElementById("currentMemberNo").value, document.getElementById("currentMemberName").value, document.querySelector('input[name="_csrf"]').value);
     });
 
+    // 드롭다운 토글
+    document.getElementById('openDrop').addEventListener('click', function(event) {
+        event.preventDefault(); // 이벤트 객체를 인자로 받아서 preventDefault 호출
+        const dropdownMenu = document.getElementById('chatDropdownMenu');
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // 페이지의 다른 곳을 클릭하면 드롭다운 닫기
+    window.addEventListener('click', function(e) {
+        const dropdownMenu = document.getElementById('chatDropdownMenu');
+        // 드롭다운 버튼 또는 드롭다운 내에서 클릭하지 않았다면 드롭다운을 닫기
+        if (!e.target.matches('#openDrop') && !e.target.closest('.chatDropdown')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+
     function formatDateTime(date) {
         const year = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -370,6 +386,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.handleChatRoomClick = function(element) {
         currentChatRoomNo = element;
+
+            let chatItems = document.getElementsByClassName('chatItem');
+            for (let i = 0; i < chatItems.length; i++) {
+                chatItems[i].classList.remove('selected');
+            }
+
+            let selectedChatItem = document.querySelector(`input[value="${element}"]`).closest('.chatItem');
+            if (selectedChatItem) {
+                selectedChatItem.classList.add('selected');
+            }
+
         getChatRoomName(element).then(chatRoomName => {
             if (chatRoomName) {
                 document.getElementById('chatRoomTitle').innerText = chatRoomName;
