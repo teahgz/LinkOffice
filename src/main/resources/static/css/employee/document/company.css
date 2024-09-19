@@ -570,7 +570,7 @@
     width: 95%;
 }
 #first_folder_add_button, #folder_name_change_button, #folder_create_button,
-#file_upload_button:hover{
+#file_upload_button{
 	margin-right: 0.5vw;
 	margin-top: 0.4vh;
     padding: 0.5vh 0.5vw;

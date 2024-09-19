@@ -208,7 +208,10 @@ $(function () {
 					        </td>
                             <td>${file.document_file_size}</td>
                             <td><input type="button" class="file_down_button" value="다운로드"></td>
-                            <td><input type="button" class="delete_button" value="삭제"></td>
+                            <td>
+					            ${file.member_no == memberNo ? 
+					                `<input type="button" class="delete_button" value="삭제" id="${file.document_file_no}">` : ''}
+					        </td>
                         `;
                         fileTableBody.appendChild(row);
                     });
@@ -239,8 +242,12 @@ $(function () {
 
                     // 페이징 버튼 숨기기
                     paginationDiv.innerHTML = '';
-
                 }
+                // 파일 삭제
+                 $('.delete_button').on('click', function() {
+	                const fileNo = this.id;
+	                deleteFile(fileNo);
+	            });
             }
         });
     }
@@ -745,7 +752,8 @@ $(function () {
 				                  
 		                    $('.modal_div').hide();
 		                    $('#file_input').val('');
-		                    loadFiles(selectedFolderNo);		                  						
+		                    loadFiles(selectedFolderNo);
+		                    getAllFileSize();		                  						
 		                } else {
 		                    Swal.fire({
 		                        icon: 'error',
@@ -758,6 +766,47 @@ $(function () {
 			}
 	    }			
 	});	
+	// 파일 삭제 함수
+	function deleteFile(fileNo){
+		Swal.fire({
+			icon: 'warning',
+		    text: '정말 삭제하시겠습니까?',
+		    showCancelButton: true,
+		    confirmButtonText: '확인',
+		    cancelButtonText: '취소'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					type: 'POST',
+					url: '/document/file/delete',
+					data: {
+						fileNo: fileNo
+					},
+					headers: {
+	                    'X-Requested-With': 'XMLHttpRequest',
+	                    'X-CSRF-TOKEN': csrfToken
+	                },
+					success: function(response){
+						if (response.res_code === '200') {
+			                    Swal.fire({
+			                        icon: 'success',
+			                        text: response.res_msg,
+			                        confirmButtonText: '확인'
+			                    });
+			            	loadFiles(selectedFolderNo);
+			            	getAllFileSize();
+	                    } else {
+	                        Swal.fire({
+		                        icon: 'error',
+		                        text: response.res_msg,
+		                        confirmButtonText: '확인'
+		                    });
+	                    }
+					}
+				});
+			}
+		})
+	}
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
         getFolders();
