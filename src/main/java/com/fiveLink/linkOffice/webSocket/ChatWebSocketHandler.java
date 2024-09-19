@@ -153,7 +153,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private void handleChatRoomUpdate(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         String chatRoomName = (String) jsonMap.get("chatRoomName");
         Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMemberNo"));
-        Long roomNo = Long.parseLong((String) jsonMap.get("roomNo"));
+        Integer roomNoInt = (Integer) jsonMap.get("roomNo");
+        Long roomNo = roomNoInt.longValue();
 
         if(chatMemberService.updateChatRoom(chatRoomName, currentMemberNo, roomNo) > 0){
             Map<String, Object> response = new HashMap<>();
