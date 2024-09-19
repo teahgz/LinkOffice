@@ -38,5 +38,20 @@ public interface MeetingReservationRepository extends JpaRepository<MeetingReser
     	       "CASE WHEN :sortBy = 'oldest' THEN mr.meetingReservationDate END ASC")
     Page<MeetingReservation> searchReservations(@Param("memberNo") Long memberNo, @Param("meetingNo") Long meetingNo, @Param("searchText") String searchText, @Param("startDate") String startDate, 
     											@Param("endDate") String endDate, @Param("sortBy") String sortBy, Pageable pageable);
+    
+    // 관리자 - 전체 예약 목록
+    @Query("SELECT mr FROM MeetingReservation mr " +
+ 	       "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
+ 	       "JOIN Member mem ON mr.memberNo = mem.memberNo " + 
+ 	       "WHERE (:meetingNo IS NULL OR mr.meetingNo = :meetingNo) " +
+ 	       "AND (:searchText IS NULL OR mr.meetingReservationPurpose LIKE %:searchText%) " +
+ 	       "AND (:startDate IS NULL OR mr.meetingReservationDate >= :startDate) " +
+ 	       "AND (:endDate IS NULL OR mr.meetingReservationDate <= :endDate) " +
+ 	       "AND mr.meetingReservationStatus = 0 " +
+ 	       "ORDER BY " +
+ 	       "CASE WHEN :sortBy = 'latest' THEN mr.meetingReservationDate END DESC, " +
+ 	       "CASE WHEN :sortBy = 'oldest' THEN mr.meetingReservationDate END ASC")
+    Page<MeetingReservation> allReservations(@Param("meetingNo") Long meetingNo, @Param("searchText") String searchText, @Param("startDate") String startDate, 
+ 											@Param("endDate") String endDate, @Param("sortBy") String sortBy, Pageable pageable);
 
 } 

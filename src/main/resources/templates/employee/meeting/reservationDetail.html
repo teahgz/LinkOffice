@@ -6,26 +6,42 @@
         <link th:href="@{/css/employee/meeting/reservationDetail.css}" rel="stylesheet" type="text/css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
         <section>
-            <h1>회의 상세 정보</h1>
-            <div class="reservation_detail">
-                <p><strong>회의실명</strong> <span th:text="${reservation.meeting_name}"></span></p>
-                <p><strong>예약 날짜</strong> <span th:text="${reservation.meeting_reservation_date}"></span></p>
-                <p><strong>예약 시간</strong> 
-                    <span th:text="${reservation.meeting_reservation_start_time}"></span> ~ 
-                    <span th:text="${reservation.meeting_reservation_end_time}"></span>
-                </p>
-                <p><strong>예약자</strong> <span th:text="${reservation.member_name} + ' ' + ${reservation.position_name}"></span></p> 
-                <p><strong>목적</strong> <span th:text="${reservation.meeting_reservation_purpose}"></span></p>
-                <p><strong>참여자 목록</strong></p>
-                <ul>
-                    <li th:each="participant : ${participants}" th:text=" ${participant.departmentName} + ' ' + ${participant.memberName}  + ' ' + ${participant.positionName}"></li>
-                </ul>
-                
-               	<div th:if="${reservation.member_no == memberdto.member_no}">
-                 	<button type="button" id="editReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">수정</button> 
-                    <button type="button" id="cancelReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 취소</button>
-                    <button type="button" onclick="location.href='/employee/meeting/reservation/list'">목록</button>
-                </div>
+            <h1>회의실 예약 상세 정보</h1>
+            <div class="reservation_detail">  
+           	  <div class="info-row">
+                   <div class="info-label">회의실명</div>
+                   <div class="info-value" th:text="${reservation.meeting_name}"></div>
+              </div> 
+		      <div class="info-row">
+                   <div class="info-label">예약 날짜</div>
+                   <div class="info-value" th:text="${reservation.meeting_reservation_date}"></div>
+              </div> 
+			  <div class="info-row">
+				   <div class="info-label">예약 시간</div>
+				   		<div class="info-value" th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}">
+				   </div>
+			  </div> 
+		      <div class="info-row">
+                   <div class="info-label">예약자</div>
+                   <div class="info-value" th:text="${reservation.member_name} + ' ' + ${reservation.position_name}"></div>
+              </div>      
+		      <div class="info-row">
+                   <div class="info-label">목적</div>
+                   <div class="info-value" th:text="${reservation.meeting_reservation_purpose}"></div> 
+              </div>   
+		      <div class="info-row">
+                   <div class="info-label">참여자</div>
+                   <div class="info-participant-row">
+                      <div class="info-participant-value" th:each="participant : ${participants}" th:text=" ${participant.departmentName} + ' ' + ${participant.memberName}  + ' ' + ${participant.positionName}"></div>
+              	   </div>
+              </div>   
+			 <div class="bottom-btn-three" th:if="${reservation.member_no == memberdto.member_no}">
+			    <button type="button" class="left-button" id="golistButton" onclick="location.href='/employee/meeting/reservation/list'">목록</button>
+			    <div class="right-buttons">
+			        <button type="button" id="editReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 수정</button> 
+			        <button type="button" id="cancelReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 취소</button>
+			    </div>
+			</div> 
             </div>
         </section>
         
@@ -34,46 +50,55 @@
             <div class="modal-content">
                 <span class="close" id="reservation_close">&times;</span>
                 <h2>회의실 예약 수정</h2>
-                <form id="reservationForm">
-                    <input type="hidden" id="memberNo" name="member_no" th:value="${memberdto.member_no}"/>
-                    <input type="hidden" id="memberName" name="member_name" th:value="${memberdto.member_name}"/>
-                    <input type="hidden" id="memberPosition" name="member_position_no" th:value="${memberdto.position_name}"/> 
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <input type="hidden" id="reservationId" name="reservation_id" th:value="${reservation.meeting_reservation_no}" />
-                    <div class="reservation_row">
-                        <label for="reservation_room">회의실</label>
-                        <select id="reservation_room" name="reservation_room">
-                            <option value="">회의실 선택</option> 
-                        </select>
-                    </div>
-                    <div class="reservation_row">
-                        <label for="reservation_date">예약일</label>
-                        <input type="date" id="reservation_date" name="reservation_date"> 
-                    </div> 
-                    <div class="reservation_row"> 
-                        <select class="time_select" id="reservation_start_time" name="reservation_start_time" > 
-                            <option value="">시작 시간</option> 
-                        </select>
-                        <select class="time_select" id="reservation_end_time" name="reservation_end_time" > 
-                            <option value="">종료 시간</option> 
-                        </select>
-                    </div> 
-                    <div class="reservation_row">
-                        <label for="reservation_name">예약자</label>
-                        <span class="reservation_name" id="reservation_name" th:text="${memberdto.member_name}"></span>
-                    </div> 
-                    <div class="reservation_row">
-                        <label for="reservation_purpose">목적</label>
-                        <textarea id="reservation_purpose" name="reservation_purpose" maxlength="30"></textarea>
-                    </div> 
-                    <div class="reservation_row reservation_participate">
-                        <label>참여자</label>
-                        <button type="button" id="openOrganizationChartButton" class="modal_btn">참여자 선택</button> 
-                        <div class="selected-participants-container"></div>
-                    </div> 
-                    <input type="hidden" name="selectedMembers" id="selectedMembers" />
-                    <button type="submit" id="reservation_submit">수정</button>
-                </form>
+                <hr>
+                <div class ="form_scroll">
+	                <form id="reservationForm">
+	                    <input type="hidden" id="memberNo" name="member_no" th:value="${memberdto.member_no}"/>
+	                    <input type="hidden" id="memberName" name="member_name" th:value="${memberdto.member_name}"/>
+	                    <input type="hidden" id="memberPosition" name="member_position_no" th:value="${memberdto.position_name}"/> 
+	                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	                    <input type="hidden" id="reservationId" name="reservation_id" th:value="${reservation.meeting_reservation_no}" />
+	                    <div class="reservation_row">
+	                        <label for="reservation_room">회의실</label>
+	                        <select id="reservation_room" name="reservation_room">
+	                            <option value="">회의실 선택</option> 
+	                        </select>
+	                    </div>
+	                    <div class="reservation_row">
+	                        <label for="reservation_date">예약일</label>
+	                        <input type="date" class="date_select" id="reservation_date" name="reservation_date"> 
+	                        <select class="time_select" id="reservation_start_time" name="reservation_start_time" > 
+	                            <option value="">시작 시간</option> 
+	                        </select>
+	                        <span class="time_space"> ~ </span>
+	                        <select class="time_select" id="reservation_end_time" name="reservation_end_time" > 
+	                            <option value="">종료 시간</option> 
+	                        </select>
+	                    </div> 
+	                    <div class="reservation_row">
+	                        <label for="reservation_name">예약자</label>
+	                        <span class="reservation_name" id="reservation_name" th:text="${memberdto.member_name} + ' ' + ${memberdto.position_name}"></span>
+	                    </div> 
+	                    <div class="reservation_row">
+	                        <label for="reservation_purpose">목적</label>
+	                        <textarea id="reservation_purpose" name="reservation_purpose" maxlength="30"></textarea>
+	                    </div> 
+	                    <div class="reservation_row">
+	                        <label for="reservation_purpose"></label>
+	                        <div class="pupose_info">최대 30자까지 작성 가능합니다.</div>
+	                    </div>  
+	                    <div class="reservation_row reservation_participate">
+	                        <label>참여자</label>
+	                        <button type="button" id="openOrganizationChartButton" class="modal_btn participate_btn">참여자 추가</button> 
+	                    </div> 
+	                    <div class="reservation_row">
+	           	        	<label></label>
+		                  	<div class="selected-participants-container"></div>
+		                </div>  
+	                    <input type="hidden" name="selectedMembers" id="selectedMembers" />
+	                </div>
+	                    <button type="submit" id="reservation_submit">수정</button>
+	                </form>
             </div>
         </div>
         
