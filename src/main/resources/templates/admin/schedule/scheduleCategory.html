@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{include/layout}"> 
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/admin/schedule/scheduleCategory.css}" rel="stylesheet" type="text/css">
+        <section>
+	        <h1>일정 범주 관리</h1> 
+     		<div class="container">
+               <!-- 범주 목록 -->
+               <div class="scheduleCategory_list_box">
+				<div class="scheduleCategory_title">범주 목록</div>
+				<div class="scheduleCategory-list">
+				    <ul class="scheduleCategory_Lists">
+				        <li th:each="scheduleCategory : ${scheduleCategories}">
+				            <a href="#" th:text="${scheduleCategory.schedule_category_name}" 
+				               th:data-id="${scheduleCategory.schedule_category_no}" 
+				               onclick="fetchCategoryDetails(this)"></a> 
+				        </li>
+				    </ul> 
+				</div> 
+               </div> 
+               
+               <!-- 상세 정보 -->
+                <div class="details" th:if="${selectedCategory}">
+                    <div class="details-header">
+                        <h2>범주 정보</h2>
+                    </div>
+                    <div class="details-content">
+                        <p><strong>범주명</strong> <span class="th_text1" th:text="${selectedCategory.schedule_category_name}"></span></p>
+                        <p><strong>색상</strong> <span class="th_text2" th:text="${selectedCategory.schedule_category_color}"></span></p>
+                        <p><strong>관리자</strong> <span class="th_text3" th:text="${selectedCategory.schedule_category_admin}"></span></p>
+                    </div>
+				    <div class="info_btn">
+				    	<button id="editButton" th:data-category-id="${selectedCategory.schedule_category_no}">수정</button>
+				    	<button id="deleteButton" th:data-category-id="${selectedCategory.schedule_category_no}">삭제</button>  
+				    </div>
+                </div> 
+             </div>
+        </section> 
+        <script th:src="@{/js/admin/schedule/scheduleCategory.js}"></script>
+    </th:block>
+</html>
