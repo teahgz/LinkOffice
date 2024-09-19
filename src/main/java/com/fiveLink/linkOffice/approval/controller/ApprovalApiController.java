@@ -19,7 +19,6 @@ import com.fiveLink.linkOffice.member.service.MemberService;
 public class ApprovalApiController {
 	
 	private final ApprovalFormService approvalFormService;
-
 	
 	@Autowired
 	public ApprovalApiController( ApprovalFormService approvalFormService) {
@@ -29,7 +28,8 @@ public class ApprovalApiController {
 	// 관리자 전자결재 양식 등록
 	@ResponseBody
 	@PostMapping("/admin/approval/create")
-	public Map<String,String> adminApprovalCreate(@RequestParam("approval_title") String approvalTitle, @RequestParam("editor_content") String editorContent) {
+	public Map<String,String> adminApprovalCreate(@RequestParam("approval_title") String approvalTitle, 
+			@RequestParam("editor_content") String editorContent) {
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "양식 등록 중 오류가 발생하였습니다.");
@@ -48,7 +48,9 @@ public class ApprovalApiController {
 	// 관리자 전자결재 양식 수정
 	@ResponseBody
 	@PutMapping("/admin/approval/edit")
-	public Map<String,String> adminApprovalEdit(@RequestParam("form_no") String formNo,@RequestParam("approval_title") String approvalTitle, @RequestParam("editor_content") String editorContent) {
+	public Map<String,String> adminApprovalEdit(@RequestParam("form_no") String formNo, 
+			@RequestParam("approval_title") String approvalTitle, 
+			@RequestParam("editor_content") String editorContent) {
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "양식 수정 중 오류가 발생하였습니다.");
