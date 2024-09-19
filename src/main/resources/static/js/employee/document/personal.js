@@ -10,6 +10,7 @@ $(function () {
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     var deptNo = document.getElementById("dept_no").textContent;
+    const csrfToken = $('input[name="_csrf"]').val();
 
     // 페이지당 리스트 10개, 페이징 요소들 넣을 영역 지정 
     const pageSize = 10; 
@@ -203,7 +204,9 @@ $(function () {
                         	<td><input type="checkbox"></td>
                             <td>${file.document_ori_file_name}</td>
                             <td>${formatDate(file.document_file_upload_date)}</td>
-                            <td><input type="button" class="file_show_button" value="파일보기"></td>
+                            <td>${file.document_ori_file_name.endsWith('.pdf') ? 
+					            '<input type="button" class="file_show_button" value="파일보기">' : ''}
+					        </td>
                             <td>${file.document_file_size}</td>
                             <td><input type="button" class="file_down_button" value="다운로드"></td>
                             <td><input type="button" class="delete_button" value="삭제"></td>
@@ -326,7 +329,7 @@ $(function () {
     }
     
     // 폴더가 없을 때 폴더 생성 버튼 
-    $('#first_folder_add').on('click', function(){
+    $('#first_folder_add').on('click', function(event){
 		event.preventDefault();
 		
 		$('.modal_div').show();
@@ -345,9 +348,6 @@ $(function () {
         		confirmButtonText: '확인'
     		});
 		} else{			
-			 const csrfToken = $('input[name="_csrf"]').val();
-			
-			// ajax 
 			$.ajax({
                 type: 'POST',
                 url: '/personal/first/folder',
@@ -390,12 +390,21 @@ $(function () {
             });				
 		}					
 	});
+	// X 버튼 
 	$('.cancel_div').on('click', function(){
 		$('.modal_div').hide();
+		$('.first_folder_add_div').hide();
+		$('.change_name_modal').hide();
+		$('.folder_create_modal').hide();
+		$('.file_upload_modal').hide();
+		$('#first_folder_name').val('');
+		$('#change_folder_name').val('');
+		$('#create_folder_name').val('');
+		$('#file_input').val('');
 	});
 	
 	// 폴더 이름 변경 
-	$('#change_name_button').on('click', function(){
+	$('#change_name_button').on('click', function(event){
 		event.preventDefault();		
 		$('.modal_div').show();
 		$('.change_name_modal').show();		
@@ -417,9 +426,6 @@ $(function () {
 	            confirmButtonText: '확인'
 	        });
 	    } else {
-	        const csrfToken = $('input[name="_csrf"]').val();
-	        
-	        // ajax 요청
 	        $.ajax({
 	            type: 'POST',
 	            url: '/change/folder/name',
@@ -474,7 +480,7 @@ $(function () {
 	}
 
 	// 폴더 생성
-	$('#folder_add_button').on('click', function(){
+	$('#folder_add_button').on('click', function(event){
 		event.preventDefault();		
 		$('.modal_div').show();
 		$('.folder_create_modal').show();		
@@ -496,9 +502,6 @@ $(function () {
 	            confirmButtonText: '확인'
 	        });
 	    } else {
-	        const csrfToken = $('input[name="_csrf"]').val();
-	        
-	        // ajax 요청
 	        $.ajax({
 	            type: 'POST',
 	            url: '/personal/create/folder',
@@ -562,7 +565,6 @@ $(function () {
 	
 	// 폴더 삭제
 	$('#folder_delete_button').on('click', function(){
-		const csrfToken = $('input[name="_csrf"]').val();
 		$.ajax({
 	            type: 'POST',
 	            url: '/document/parent/existence',
@@ -688,6 +690,73 @@ $(function () {
                 }
             }
         });
+	});
+	// 파일 업로드 
+	$('#upload_button').on('click', function(event){
+		event.preventDefault();		
+		$('.modal_div').show();
+		$('.file_upload_modal').show();	
+	});
+	$('#file_upload_button').on('click', function(){
+		const fileInput = $('#file_input')[0];
+		// 유효성 검사 
+		// 선택된 파일이 존재하지 않을 때
+	    if (fileInput.files.length === 0) {
+	        Swal.fire({
+	            icon: 'warning',
+	            text: '업로드할 파일을 선택해주세요.',
+	            confirmButtonText: '확인'
+	        });
+	        return; 
+	    }
+		if (fileInput.files.length > 0) {
+	        const file = fileInput.files[0]; 
+	        const maxSizeBytes = 25 * 1024 * 1024; 
+			// 파일 용량 초과 
+	        if (file.size > maxSizeBytes) {
+	            Swal.fire({
+	                icon: 'warning',
+	                text: '25MB 미만의 파일만 업로드 가능합니다.',
+	                confirmButtonText: '확인'
+	            });
+	            return; 
+	        } else {
+				const formData = new FormData();
+    			formData.append('file', file);
+			    formData.append('folderNo', selectedFolderNo);
+			    formData.append('memberNo', memberNo);
+				$.ajax({
+		            type: 'POST',
+		            url: '/document/file/upload',
+		            data: formData,
+		            processData: false, 
+        			contentType: false, 
+        			headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+		            success: function(response) {
+		                if (response.res_code === '200') {
+		                    Swal.fire({
+		                        icon: 'success',
+		                        text: response.res_msg,
+		                        confirmButtonText: '확인'
+		                    });
+				                  
+		                    $('.modal_div').hide();
+		                    $('#file_input').val('');
+		                    loadFiles(selectedFolderNo);		                  						
+		                } else {
+		                    Swal.fire({
+		                        icon: 'error',
+		                        text: response.res_msg,
+		                        confirmButtonText: '확인'
+		                    });
+		                }
+		            }
+		        });
+			}
+	    }			
 	});
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
