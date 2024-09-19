@@ -450,7 +450,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('전송 중 오류 발생', error);
             });
     }
-
+    //채팅방 타입
+    function getChatRoomType(chatRoomNo) {
+        return fetch(`/api/chat/roomType/${chatRoomNo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("채팅방 타입을 찾을 수 없습니다.");
+                }
+                return response.text();
+            })
+            .catch(error => {
+                console.error("error", error);
+                return null;
+            });
+    }
     function displayChatMessages(messages) {
         const chatContentDiv = document.getElementById("chatContent");
         chatContentDiv.innerHTML = '';
@@ -501,6 +514,24 @@ document.addEventListener("DOMContentLoaded", function() {
         }).catch(error => {
             console.error('error', error);
         });
+
+      getChatRoomType(element).then(chatRoomType => {
+             const dropdownMenu = document.getElementById('chatDropdownMenu');
+             const editChatItem = document.getElementById('editChatRoomButton');
+             const addChatItem = document.getElementById('addChatItem');
+
+             if (chatRoomType === '1') {
+                 // Show edit and add items
+                 editChatItem.style.display = 'block';
+                 addChatItem.style.display = 'block';
+             } else {
+                 // Hide edit and add items
+                 editChatItem.style.display = 'none';
+                 addChatItem.style.display = 'none';
+             }
+         }).catch(error => {
+             console.error('error', error);
+         });
     }
 
     function getChatRoomName(chatRoomNo) {

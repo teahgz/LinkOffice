@@ -67,5 +67,11 @@ public class ChatMemberService {
         }
         return result;
     }
+    public int chatRoomType(Long chatRoomNo) {
+
+        return chatMapper.chatRoomType(chatRoomNo);
+
+    }
+
 
 }

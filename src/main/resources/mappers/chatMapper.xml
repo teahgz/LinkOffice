@@ -51,4 +51,10 @@
         WHERE member_no = #{memberNo}
         AND chat_room_no = #{roomNo}
     </update>
+
+<!-- 채팅방 타입 가져오기  -->
+    <select id="chatRoomType" resultType="int">
+        SELECT chat_room_type FROM fl_chat_room
+        WHERE chat_room_no = #{chatRoomNo}
+    </select>
 </mapper>

@@ -164,7 +164,7 @@ public class ApprovalViewController {
 			}
 		});
 		System.out.println(vacationApprovalDtoPage.getContent());
-		
+
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
 		model.addAttribute("page", vacationApprovalDtoPage);
@@ -175,44 +175,43 @@ public class ApprovalViewController {
 
 	}
 
-	
-	 // 사용자 결재 참조함 페이지
-	 
-	 @GetMapping("/employee/approval/references") public String approvalReferences(Model model, VacationApprovalDto searchdto,
-				@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
-				@RequestParam(value = "sort", defaultValue = "latest") String sort) { 
-		 Long memberNo =memberService.getLoggedInMemberNo(); 
-		 List<MemberDto> memberdto =  memberService.getMembersByNo(memberNo);
+	// 사용자 결재 참조함 페이지
+	@GetMapping("/employee/approval/references")
+	public String approvalReferences(Model model, VacationApprovalDto searchdto,
+			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
+		Long memberNo = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
-			Sort sortOption = getSortOptionApproval(sort);
-			Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+		Sort sortOption = getSortOptionApproval(sort);
+		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
-			// 결재흐름에 번호가 있는지 조회
-			List<VacationApprovalFlowDto> vacationApprovalFlowDtos = vacationApprovalService
-					.getVacationApprovalFlowByMemberNo(memberNo);
+		// 결재흐름에 번호가 있는지 조회
+		List<VacationApprovalFlowDto> vacationApprovalFlowDtos = vacationApprovalService
+				.getVacationApprovalFlowByMemberNo(memberNo);
 
-			List<Long> vacationApprovalNos = vacationApprovalFlowDtos.stream()
-					.map(VacationApprovalFlowDto::getVacation_approval_no).distinct().collect(Collectors.toList());
+		List<Long> vacationApprovalNos = vacationApprovalFlowDtos.stream()
+				.map(VacationApprovalFlowDto::getVacation_approval_no).distinct().collect(Collectors.toList());
 
-			// 문서 번호 조회
-			Page<VacationApprovalDto> vacationApprovalDtoPage = vacationApprovalService
-					.getVacationApprovalsByNo(vacationApprovalNos, searchdto, sortedPageable);
+		// 문서 번호 조회
+		Page<VacationApprovalDto> vacationApprovalDtoPage = vacationApprovalService
+				.getVacationApprovalsByNo(vacationApprovalNos, searchdto, sortedPageable);
 
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			vacationApprovalDtoPage.getContent().forEach(vapp -> {
-				if (vapp.getVacation_approval_create_date() != null) {
-					String formattedCreateDate = vapp.getVacation_approval_create_date().format(formatter);
-					vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
-				}
-			});		 
-		 
-			model.addAttribute("memberdto", memberdto);
-			model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
-			model.addAttribute("page", vacationApprovalDtoPage);
-			model.addAttribute("searchDto", searchdto);
-			model.addAttribute("currentSort", sort);
-		 
-		 return "employee/approval/approval_references_list"; 
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		vacationApprovalDtoPage.getContent().forEach(vapp -> {
+			if (vapp.getVacation_approval_create_date() != null) {
+				String formattedCreateDate = vapp.getVacation_approval_create_date().format(formatter);
+				vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
+			}
+		});
+
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
+		model.addAttribute("page", vacationApprovalDtoPage);
+		model.addAttribute("searchDto", searchdto);
+		model.addAttribute("currentSort", sort);
+
+		return "employee/approval/approval_references_list";
 	}
 
 	// 사용자 결재 진행함 페이지
@@ -236,42 +235,40 @@ public class ApprovalViewController {
 
 		return "employee/approval/approval_reject_list";
 	}
-	
-	// 사용자 결재 내역함 상세 페이지 
+
+	// 사용자 결재 내역함 상세 페이지
 	@GetMapping("/employee/approval/approval_history_detail/{vacationapproval_no}")
 	public String approvalHistoryDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
-		
+
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		
+
 		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
-		
-		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	        if (vacationapprovaldto.getVacation_approval_create_date() != null ) {
-	            String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
-	            vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
-	        }
-	        
-	        if (vacationapprovaldto.getFlows() != null) {
-	            for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
-	                if (flow.getVacation_approval_flow_complete_date() != null) {
-	                    String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
-	                    flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
-	                }
-	                
-	                MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
-	                flow.setDigital_name(currentMember.getMember_new_digital_img());
-	                
-	            }
-	        }
-	 		
-	        
-	        System.out.println(vacationapprovaldto);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		if (vacationapprovaldto.getVacation_approval_create_date() != null) {
+			String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
+			vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
+		}
+
+		if (vacationapprovaldto.getFlows() != null) {
+			for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
+				if (flow.getVacation_approval_flow_complete_date() != null) {
+					String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
+					flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
+				}
+
+				MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+				flow.setDigital_name(currentMember.getMember_new_digital_img());
+
+			}
+		}
+
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
 		model.addAttribute("currentUserMemberNo", member_no);
-		
+
 		return "employee/approval/approval_history_detail";
 	}
-	
+
 }
