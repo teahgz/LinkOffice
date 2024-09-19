@@ -142,4 +142,15 @@ public class DocumentFolderService {
 		}
 		return result;
 	}
+	// 폴더 삭제 
+	public int deleteFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);		
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
