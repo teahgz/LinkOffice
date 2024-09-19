@@ -264,17 +264,28 @@ document.addEventListener("DOMContentLoaded", function() {
             const memberNoCheck = parseInt(message.chat_sender_no, 10);
 
             if (memberNoCheck === memberNo) {
-                messageElement.classList.add("my-message", "messageItem");
-                messageElement.innerHTML = `
-                    <p>${message.chat_content}</p>
-                    <span>${formattedTime}</span>
-                `;
+                 messageElement.classList.add("my-message", "messageItem");
+                            messageElement.innerHTML = `
+                                <div class="message-ele">
+                                    <span class="message-time">${formattedTime}</span>
+                                    <div class="message-content">
+                                        <p>${message.chat_content}</p>
+                                    </div>
+                                </div>
+                            `;
             } else {
                 messageElement.classList.add("other-message", "messageItem");
-                messageElement.innerHTML = `
-                    <p><strong>${message.chat_sender_name}:</strong> ${message.chat_content}</p>
-                    <span>${formattedTime}</span>
-                `;
+                  messageElement.innerHTML = `
+                                <div class="message-sender">
+                                    <strong>${message.chat_sender_name}</strong>
+                                </div>
+                                <div class="message-ele">
+                                    <div class="message-content">
+                                        <p>${message.chat_content}</p>
+                                    </div>
+                                    <span class="message-time">${formattedTime}</span>
+                                </div>
+                            `;
             }
 
             chatContentDiv.appendChild(messageElement);
@@ -419,22 +430,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    function formatDateTime(date) {
-        const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2);
-        const day = ('0' + date.getDate()).slice(-2);
-
-        let hours = date.getHours();
-        const minutes = ('0' + date.getMinutes()).slice(-2);
-        const seconds = ('0' + date.getSeconds()).slice(-2);
-
-        const ampm = hours >= 12 ? '오후' : '오전';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-
-        return `${year}-${month}-${day}. ${ampm} ${hours}:${minutes}:${seconds}`;
-    }
-
+function formatDateTime(date) {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
     function loadChatMessages(chatRoomNo) {
         fetch(`/api/chat/messages/${chatRoomNo}`)
             .then(response => {
@@ -472,21 +470,32 @@ document.addEventListener("DOMContentLoaded", function() {
 
         messages.forEach(function(message) {
             const messageElement = document.createElement("div");
+            const formattedTime = new Date(message.chatMessageCreateDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            if (message.senderNo === memberNo) {
-                messageElement.classList.add("my-message", "messageItem");
-                messageElement.innerHTML = `
-                    <p>${message.chatContent}</p>
-                    <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
-                `;
-            } else {
-                messageElement.classList.add("other-message", "messageItem");
-                messageElement.innerHTML = `
-                    <p><strong>${message.senderName}:</strong> ${message.chatContent}</p>
-                    <span>${new Date(message.chatMessageCreateDate).toLocaleString()}</span>
-                `;
-            }
-
+             if (message.senderNo === memberNo) {
+                        messageElement.classList.add("my-message", "messageItem");
+                        messageElement.innerHTML = `
+                            <div class="message-ele">
+                                <span class="message-time">${formattedTime}</span>
+                                <div class="message-content">
+                                    <p>${message.chatContent}</p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        messageElement.classList.add("other-message", "messageItem");
+                        messageElement.innerHTML = `
+                            <div class="message-sender">
+                                <strong>${message.senderName}</strong>
+                            </div>
+                            <div class="message-ele">
+                                <div class="message-content">
+                                    <p>${message.chatContent}</p>
+                                </div>
+                                <span class="message-time">${formattedTime}</span>
+                            </div>
+                        `;
+                    }
             chatContentDiv.appendChild(messageElement);
         });
 
