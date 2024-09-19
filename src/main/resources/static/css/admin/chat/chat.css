@@ -198,7 +198,7 @@
     margin-bottom: 10px;
     padding: 5px;
     border-radius: 5px;
-    max-width: 70%;
+    max-width: 100%;
 }
 
 .messageItem span {
@@ -211,23 +211,47 @@
     display: block;
     color: #666;
 }
-.my-message {
+.my-message .message-ele {
     text-align: right;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.my-message .message-content {
     background-color: #B1C2DD;
     padding: 10px;
     margin: 5px 0;
     border-radius: 10px;
     max-width: 50%;
     margin-left: auto;
+    display: inline-block;
 }
 
-.other-message {
+.my-message .message-time {
+    display: block;
+    text-align: right;
+    color: #666;
+}
+
+.other-message .message-ele {
     text-align: left;
+    margin-right: auto;
+}
+
+.other-message .message-content {
     background-color: #e3e3e3;
     padding: 10px;
     margin: 5px 0;
     border-radius: 10px;
     max-width: 50%;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.other-message .message-time {
+    display: block;
+    color: #666;
 }
 
 /*그룹명 모달*/
