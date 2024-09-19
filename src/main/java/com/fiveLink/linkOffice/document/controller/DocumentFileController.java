@@ -124,5 +124,34 @@ public class DocumentFileController {
 	        }
 	        return resultMap;
 	    }
+	// 파일 삭제
+	@PostMapping("/document/file/delete")
+	@ResponseBody
+	public Map<String, Object> deleteFile(@RequestParam("fileNo") Long fileNo){
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "파일을 삭제하지 못했습니다.");
+		
+        DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
+        DocumentFile documentFile = DocumentFile.builder()
+        		.documentFileNo(file.getDocumentFileNo())    			
+        		.documentOriFileName(file.getDocumentOriFileName())
+    			.documentNewFileName(file.getDocumentNewFileName())
+    			.documentFolder(file.getDocumentFolder())
+    			.member(file.getMember())
+    			.documentFileSize(file.getDocumentFileSize())  
+    			.documentFileUploadDate(file.getDocumentFileUploadDate()) 			
+    			.documentFileUpdateDate(LocalDateTime.now())
+    			.documentFileStatus(1L)
+    			.build();
+        int result = documentFileService.saveFile(documentFile);
+    	if(result > 0) {
+    		resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	}
+		return resultMap;
+	}
+	
+	
 	
 }

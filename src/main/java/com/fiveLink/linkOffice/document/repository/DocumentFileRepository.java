@@ -31,7 +31,8 @@ public interface DocumentFileRepository extends JpaRepository<DocumentFile, Long
 		       "AND f.documentFileStatus = :fileStatus")
 	List<Object[]> findDocumentFileWithMemberDepartmentAndPosition(@Param("folderNo") Long folderNo, @Param("fileStatus") Long fileStatus);
 
-	// List<Object[]> findDocumentFileWithMemberAndDepartment(Long folderId, Long fileStatus);
+	// 파일 번호로 파일 찾기 
+	DocumentFile findByDocumentFileNo(Long documentFileNo);
 
 
 }
