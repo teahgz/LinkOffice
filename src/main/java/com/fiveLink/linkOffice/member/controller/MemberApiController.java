@@ -141,7 +141,6 @@ public class MemberApiController {
 		    return response;
 	}
 	
-	
 	// [전주영] 관리자 사원 등록 
 	@ResponseBody
 	@PostMapping("/admin/member/create")
@@ -312,7 +311,6 @@ public class MemberApiController {
 	    	}
 	    }
 	    
-	    
 	    memberdto.setMember_name(name);
 	    
 		String national = nationalNumberFront + "-" + nationalNumberBack;
@@ -325,7 +323,6 @@ public class MemberApiController {
 		memberdto.setMember_mobile(mobile);
 		
 		memberdto.setMember_internal(internal);
-		
 		
 		long departmentNo = Long.parseLong(department);
 	    long positionNo = Long.parseLong(position);		

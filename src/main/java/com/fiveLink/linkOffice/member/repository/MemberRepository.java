@@ -184,6 +184,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     		  + "ORDER BY m.memberHireDate DESC")
       List<Object[]> findAllMembers(); 
       
+      // [서혜원] 권한자 등록
       @Transactional
       @Modifying
       @Query("UPDATE Member m SET m.memberAdditional = :status WHERE m.memberNo = :memberNo")
