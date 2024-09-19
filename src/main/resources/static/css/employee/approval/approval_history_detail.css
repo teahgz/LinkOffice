@@ -261,6 +261,11 @@
     justify-content: center;
 }
 
+#reject{
+	color: #ff8080;
+	font-size: 17px;
+}
+
 .date_box {
     font-size: 14px;
 }
