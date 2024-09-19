@@ -221,7 +221,7 @@
 .my-message .message-content {
     background-color: #B1C2DD;
     padding: 10px;
-    margin: 5px 0;
+    margin: 5px;
     border-radius: 10px;
     max-width: 50%;
     margin-left: auto;
@@ -242,7 +242,7 @@
 .other-message .message-content {
     background-color: #e3e3e3;
     padding: 10px;
-    margin: 5px 0;
+    margin: 5px;
     border-radius: 10px;
     max-width: 50%;
     display: inline-block;
