@@ -56,4 +56,16 @@ public class ChatMemberService {
         return chatMapper.selectChatRoomName(chatRoomNo, memberNo);
     }
 
+    public int updateChatRoom( String roomName, Long memberNo, Long roomNo){
+        int result = -1;
+        try{
+            chatMapper.updateChatRoom(roomName, memberNo, roomNo);
+            result = 1;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
