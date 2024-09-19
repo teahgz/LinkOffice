@@ -59,6 +59,11 @@
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
 						                    <div class="signature_box">
+						                    <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
+									                 th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+									                 alt="현재 서명" id="currentSignature">
+									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
+									                  id="currentSignature" th:text="${flow.member_name}"></span>
 						                    </div>
 						                </td>
 						            </tr>

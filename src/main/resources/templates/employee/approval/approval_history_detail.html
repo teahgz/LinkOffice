@@ -16,7 +16,7 @@
 						        <strong>제목</strong>
 						        <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
 						        <div class="reject_button_container">
-						            <button type="button" class="reject_button" th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.member_no == currentUserMemberNo}"
+						            <button type="button" class="reject_button" th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_status == 1 and flow.member_no == currentUserMemberNo}"
 						                    onclick="rejectRequest()">반려</button>
 						        </div>
 						    </div>
@@ -66,9 +66,14 @@
 									    </td>
 									    <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
 									        <div class="signature_box">
-									            <button th:if="${flow.member_no == currentUserMemberNo}" 
+									            <button th:if="${flow.vacation_approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
 									                    type="button" class="approval_button" 
 									                    onclick="approveRequest()">승인</button>
+									             <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
+									                 th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+									                 alt="현재 서명" id="currentSignature">
+									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
+									                  id="currentSignature" th:text="${flow.member_name}"></span>
 									        </div>
 									    </td>
 									</tr>
