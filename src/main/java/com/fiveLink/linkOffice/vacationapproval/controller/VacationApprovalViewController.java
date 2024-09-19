@@ -108,9 +108,14 @@ public class VacationApprovalViewController {
                     String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
                     flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
                 }
+                
+                MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+                flow.setDigital_name(currentMember.getMember_new_digital_img());
+                
             }
         }
- 		
+        
+
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);
  		

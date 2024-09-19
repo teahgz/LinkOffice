@@ -240,6 +240,7 @@ public class ApprovalViewController {
 	// 사용자 결재 내역함 상세 페이지 
 	@GetMapping("/employee/approval/approval_history_detail/{vacationapproval_no}")
 	public String approvalHistoryDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
+		
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
@@ -250,7 +251,22 @@ public class ApprovalViewController {
 	            String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
 	            vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
 	        }
-		
+	        
+	        if (vacationapprovaldto.getFlows() != null) {
+	            for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
+	                if (flow.getVacation_approval_flow_complete_date() != null) {
+	                    String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
+	                    flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
+	                }
+	                
+	                MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+	                flow.setDigital_name(currentMember.getMember_new_digital_img());
+	                
+	            }
+	        }
+	 		
+	        
+	        System.out.println(vacationapprovaldto);
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
 		model.addAttribute("currentUserMemberNo", member_no);
