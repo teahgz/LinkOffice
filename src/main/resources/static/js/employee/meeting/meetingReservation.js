@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function openReservationModal() { 
         $('#reservationModal').modal('show');
-         
+        pick_username.innerText = memberNameValue + " " + memberPositionValue; 
         resetReservationForm();
     }
 
@@ -145,6 +145,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderMeetingRooms(meetings) {
         const tableBody = $('#room-info-table tbody');
         tableBody.html('');
+        
+        if (meetings.length === 0) {
+	        tableBody.append('<tr><td colspan="3">회의실 정보가 존재하지 않습니다.</td></tr>');
+	        return;
+	    }
+    
         meetings.forEach(meeting => {
             tableBody.append(`
                 <tr onclick="fetchMeetingDetails(${meeting.meeting_no})" data-id="${meeting.meeting_no}">
@@ -179,6 +185,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	    const tbody = table.find('tbody').empty();
 	
+		if (meetings.length === 0) {
+	        tbody.append('<tr><td colspan="' + (timeSlots.length + 1) + '">회의실 정보가 존재하지 않습니다.</td></tr>');
+	        return;
+	    }
+    
 	    meetings.forEach(meeting => { 
 	        const row = $('<tr>').append(`
 			    <td onclick="fetchMeetingDetails(${meeting.meeting_no})" data-id="${meeting.meeting_no}">
@@ -418,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
      
 
     // 모달 닫기  
-    $('#reservation_close').on('click', function () {
+    $('.reservation_close').on('click', function () {
         Swal.fire({
             text: '작성한 내용이 저장되지 않습니다.',
             icon: 'warning',
@@ -441,9 +452,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	 
 	    $('#organization-chart').jstree("uncheck_all");
 	 
-	    const reservationArea = $('.reservation_participate');
+	    const reservationArea = $('.selected-participants-container');  
 	    reservationArea.find('.selected-participants').remove(); 
-	     
+	    
 	    selectedMembers = [];
 	    localStorage.removeItem('selectedMembers');  
 	    $('#selectedMembers').val('');
@@ -566,7 +577,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // 조직도 확인 -> 예약 모달 사원 출력 
 	$('#participate_confirmButton').click(function()  {
-	    const reservationArea = $('.reservation_participate');  
+	    const reservationArea = $('.selected-participants-container');  
 	    const selectedMembersContainer = $('#selected-members');  
 	    const selectedMembersList = selectedMembersContainer.find('.selected-member');
 	    

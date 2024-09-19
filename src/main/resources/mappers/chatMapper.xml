@@ -43,4 +43,12 @@
         WHERE chat_room_no = #{chatRoomNo}
         AND member_no = #{memberNo}
     </select>
+
+<!-- 채팅방 이름 수정   -->
+    <update id="updateChatRoom">
+        UPDATE fl_chat_member SET
+        chat_member_room_name = #{roomName}
+        WHERE member_no = #{memberNo}
+        AND chat_room_no = #{roomNo}
+    </update>
 </mapper>

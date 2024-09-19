@@ -144,14 +144,14 @@
             <div class="modal-content">
                 <div class="modal-content-element">
                     <h2>채팅방 이름 수정</h2>
-                    <span class="close">&times;</span>
+                    <button type="button" class="close">&times;</button>
                 </div>
 
-                <form id="editChatRoomForm">
-                    <label for="chatRoomNameInput">채팅방 이름</label>
+                <form id="editChatRoomForm" style="display:flex; flex-direction:column;">
                     <input type="text" id="chatRoomNameInput" value="" />
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="button" class="btn btn-primary" id="confirmEditButton">수정 완료</button>
+                    <button type="button" class="update-button" id="confirmEditButton" disabled>확인</button>
+
                 </form>
             </div>
         </div>

@@ -46,6 +46,42 @@ document.addEventListener("DOMContentLoaded", function() {
            searchMem();
         }
     };
+       function closeEditChat() {
+           const editChatRoomModal = document.getElementById('editChatRoomModal');
+          $('#editChatRoomModal').modal('hide');
+       }
+       const closeButton = document.querySelector('.modal-content-element button');
+       if (closeButton) {
+           closeButton.addEventListener('click', closeEditChat);
+       } else {
+           console.error("닫기 버튼을 찾을 수 없습니다.");
+       }
+
+
+    const editChatRoomNameInput = document.getElementById('chatRoomNameInput');
+    const confirmEditButton = document.getElementById('confirmEditButton');
+
+    function toggleConfirmEditButton() {
+        confirmEditButton.disabled = editChatRoomNameInput.value.trim() === '';
+         if (confirmEditButton.disabled) {
+                confirmEditButton.classList.add('button-disabled');
+            } else {
+                confirmEditButton.classList.remove('button-disabled');
+            }
+    }
+
+    editChatRoomNameInput.addEventListener('input', toggleConfirmEditButton);
+    toggleConfirmEditButton();
+
+        $('#editChatRoomModal').on('show.bs.modal', function () {
+            toggleConfirmEditButton();
+        });
+
+      $('#editChatRoomModal').on('hide.bs.modal', function () {
+          editChatRoomNameInput.value = '';
+          confirmEditButton.disabled = true;
+          confirmEditButton.classList.add('update-button');
+      });
 });
 
 (function() {
@@ -203,6 +239,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 resetSelectedMembers();
                 $('#organizationChartModal').modal('hide');
             }
+        } else if(message.type === "chatRoomUpdate"){
+            const updatedChatRoomNo = message.roomNo;
+            const updatedChatRoomName = message.updatedChatRoomName;
+            const chatItem = document.querySelector(`input[value="${updatedChatRoomNo}"]`);
+
+            if (chatItem) {
+                const chatItemDiv = chatItem.closest('.chatItem');
+                const chatNameElement = chatItemDiv.querySelector('h3 p');
+                chatNameElement.textContent = updatedChatRoomName;
+            }
+           const currentChatRoomNo = document.getElementById('chatRoomNo').value;
+           if (parseInt(currentChatRoomNo, 10) === updatedChatRoomNo) {
+               const chatRoomTitleElement = document.getElementById("chatRoomTitle");
+               chatRoomTitleElement.textContent = updatedChatRoomName;
+           }
+           document.getElementById('chatRoomNameInput').value = '';
         } else {
             const messageElement = document.createElement("div");
             const now = new Date();
@@ -309,8 +361,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('editChatRoomButton').addEventListener('click', function(event) {
             event.preventDefault();
+
             $('#editChatRoomModal').modal('show');
         });
+
 
 
     document.getElementById('openDrop').addEventListener('click', function(event) {

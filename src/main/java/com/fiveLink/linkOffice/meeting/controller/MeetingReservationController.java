@@ -386,4 +386,32 @@ public class MeetingReservationController {
 	    return resultMap;
 	}
 
+	// 관리자 - 예약 전체 목록
+	@GetMapping("/meeting/reservation/list")
+	public String allMeetingReservation(
+	        @RequestParam(value = "searchText", defaultValue = "") String searchText, 
+	        @RequestParam(value = "startDate", defaultValue = "") String startDate,
+	        @RequestParam(value = "endDate", defaultValue = "") String endDate,
+	        @RequestParam(value = "sortBy", defaultValue = "latest") String sortBy,
+	        @RequestParam(value = "meetingNo", defaultValue = "") String meetingNo,   
+	        @PageableDefault(size = 10) Pageable pageable,
+	        Model model) {
+
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
+	    List<MeetingDto> meetings = meetingService.getAllMeetings();
+ 
+        Page<MeetingReservationDto> reservations = meetingReservationService.allReservations(meetingNo, searchText, startDate, endDate, sortBy, pageable);
+         
+        model.addAttribute("memberdto", memberDto.get(0));
+        model.addAttribute("meetings", meetings);
+        model.addAttribute("reservations", reservations);
+        model.addAttribute("currentSort", sortBy);
+        model.addAttribute("searchText", searchText);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("meetingNo", meetingNo); 
+
+	    return "admin/meeting/meetingReservationList";
+	} 
 }

@@ -20,4 +20,6 @@ public interface ChatMapper {
     String searchPosition(Long memberNo);
     //채팅방 이름 가져오기
     String selectChatRoomName(Long chatRoomNo, Long memberNo);
+    //채팅방 이름 수정
+    int updateChatRoom(String roomName, Long memberNo, Long roomNo);
 }

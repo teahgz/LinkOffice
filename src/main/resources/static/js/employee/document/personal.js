@@ -559,7 +559,136 @@ $(function () {
 	        });
 	    }
 	}
-
+	
+	// 폴더 삭제
+	$('#folder_delete_button').on('click', function(){
+		const csrfToken = $('input[name="_csrf"]').val();
+		$.ajax({
+	            type: 'POST',
+	            url: '/document/parent/existence',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                folderNo: selectedFolderNo
+	            }),
+	            headers: {
+	                'X-Requested-With': 'XMLHttpRequest',
+	                'X-CSRF-TOKEN': csrfToken
+	            },
+	            success: function(response) {
+					// 삭제할 폴더가 최상위 폴더가 아닐 경우 
+	                if (response.res_result == 0) {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: response.res_msg,
+	                        showCancelButton: true,
+	                        confirmButtonText: '확인',
+	                        cancelButtonText: '취소'
+	                    }).then((result) => {
+							if(result.isConfirmed){
+								$.ajax({
+		                            type: 'POST',
+		                            url: '/document/personal/folder/delete',
+		                            contentType: 'application/json',
+		                            data: JSON.stringify({
+		                                folderNo: selectedFolderNo,
+		                                memberNo: memberNo
+		                            }),
+			                        headers: {
+		                                'X-Requested-With': 'XMLHttpRequest',
+		                                'X-CSRF-TOKEN': csrfToken
+		                            },
+		                            success: function(deleteResponse){
+										if(deleteResponse.res_code === '200'){
+											Swal.fire({
+		                                        icon: 'success',
+		                                        text: deleteResponse.res_msg,
+		                                        confirmButtonText: '확인'
+	                                    	});
+	                                    	// 폴더 리스트를 다시 가져오기
+											getFolders().then(() => {
+												// 기존 선택 해제
+						                        const tree = $('#tree').jstree(true);
+						                        const prevSelectedNode = tree.get_selected(true)[0];
+						                        if (prevSelectedNode) {
+						                            tree.deselect_node(prevSelectedNode);
+						                        }
+						                        // 최상위 폴더를 세션에 저장 						                       
+						                        savedFolderNo = deleteResponse.parentNo;
+						                        sessionStorage.setItem('selectedFolderNo', savedFolderNo);
+						                        
+						                        // 최상위 폴더를 선택하고 열기
+						                        tree.select_node(savedFolderNo);
+						                        openFolderToNode(savedFolderNo);
+						                        
+						                        // 최상위 폴더의 파일 목록 불러오기
+						                        loadFiles(savedFolderNo);
+						
+						                        $('.document_no_folder').hide();
+						                        $('.document_select_folder').show();
+						                        $('.folder_buttons').show();
+						                        $('.box_size').show();
+						                    });
+										} else{
+											Swal.fire({
+		                                        icon: 'error',
+		                                        text: deleteResponse.res_msg,
+		                                        confirmButtonText: '확인'
+		                                    });
+	                                    }
+									}
+								});
+							}
+						});
+	                // 삭제할 폴더가 최상위 폴더일 경우 
+	                } else {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: response.res_msg,
+	                        showCancelButton: true,
+	                        confirmButtonText: '확인',
+	                        cancelButtonText: '취소'
+	                   }).then((result) => {
+	                    if (result.isConfirmed) {                     
+	                        $.ajax({
+	                            type: 'POST',
+	                            url: '/document/top/folder/delete',
+	                            contentType: 'application/json',
+	                            data: JSON.stringify({
+	                                folderNo: selectedFolderNo,
+	                                memberNo: memberNo
+	                            }),
+	                            headers: {
+	                                'X-Requested-With': 'XMLHttpRequest',
+	                                'X-CSRF-TOKEN': csrfToken
+	                            },
+	                            success: function(deleteResponse) {
+	                                if (deleteResponse.res_code === '200') {
+	                                    Swal.fire({
+	                                        icon: 'success',
+	                                        text: deleteResponse.res_msg,
+	                                        confirmButtonText: '확인'
+	                                    });
+	                                    $('#tree').hide();
+                                    	$('.document_no_folder').show();
+                                    	$('.document_file_list').hide();
+                                 	   	$('.document_select_folder').hide();
+                                   	 	$('.folder_buttons').hide();
+                                   	 	$('.box_size').hide();
+	                                } else {
+	                                    Swal.fire({
+	                                        icon: 'error',
+	                                        text: deleteResponse.res_msg,
+	                                        confirmButtonText: '확인'
+	                                    });
+	                                }
+	                            }
+                        	});
+                        }
+                    });
+                }
+            }
+        });
+	});
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
         getFolders();

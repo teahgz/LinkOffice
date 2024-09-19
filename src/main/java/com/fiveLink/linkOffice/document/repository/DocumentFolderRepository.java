@@ -24,6 +24,13 @@ public interface DocumentFolderRepository extends JpaRepository<DocumentFolder, 
 	// folderNo로 폴더 찾기
 	DocumentFolder findByDocumentFolderNo(Long documentFolderNo);
 	
-	// folderParentNo로 폴더 찾기
+	// 폴더이름과 folderParentNo로 폴더 찾기
 	DocumentFolder findByDocumentFolderNameAndDocumentFolderParentNo(String documentFolderName, Long documentFolderParentNo);
+	
+	// parentNo로 폴더 찾기
+	List<DocumentFolder> findByDocumentFolderParentNo(Long documentFolderParentNo);
+
+	// 문서함 최상위 폴더 찾기 
+	DocumentFolder findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(Long memberNo, Long documentBoxType, 
+			Long documentFolderParentNo);
 }

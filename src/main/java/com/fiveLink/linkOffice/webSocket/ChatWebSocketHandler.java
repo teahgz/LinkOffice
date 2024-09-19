@@ -48,6 +48,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if ("chatRoomCreation".equals(type)) {
             // 채팅방 생성 관련 처리
             handleChatRoomCreation(jsonMap, session, type);
+        } else if("chatRoomUpdate".equals(type)){
+            //채팅방 이름 수정
+            handleChatRoomUpdate(jsonMap, session, type);
         } else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
@@ -124,14 +127,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 chatMemberService.createMemberRoomMany(memberDto);
 
             }
-            // 생성한 방에 현재 사용자도 추가
             ChatMemberDto currentMemberDto = new ChatMemberDto();
             currentMemberDto.setMember_no(currentMemberNo);
             currentMemberDto.setChat_room_no(chatRoomNo);
             currentMemberDto.setChat_member_room_name(groupChatName);
             chatMemberService.createMemberRoomOne(currentMemberDto);
 
-            // 클라이언트로 보낼 데이터를 준비
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("chatRoomNo", chatRoomNo);
             responseMap.put("members", members);
@@ -139,15 +140,29 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             responseMap.put("type", type);
             responseMap.put("names", groupChatName);
 
-            // JSON으로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             String responseJson = objectMapper.writeValueAsString(responseMap);
 
-            // 웹소켓 세션을 통해 클라이언트에 메시지 전송
             session.sendMessage(new TextMessage(responseJson));
 
         }
 
+
+    }
+
+    private void handleChatRoomUpdate(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+        String chatRoomName = (String) jsonMap.get("chatRoomName");
+        Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMemberNo"));
+        Long roomNo = Long.parseLong((String) jsonMap.get("roomNo"));
+
+        if(chatMemberService.updateChatRoom(chatRoomName, currentMemberNo, roomNo) > 0){
+            Map<String, Object> response = new HashMap<>();
+            response.put("updatedChatRoomName", chatRoomName);
+            response.put("roomNo", roomNo);
+            response.put("type", type);
+            String jsonResponse = new ObjectMapper().writeValueAsString(response);
+            session.sendMessage(new TextMessage(jsonResponse));
+        }
 
     }
     @Override
