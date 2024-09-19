@@ -71,9 +71,11 @@
 									                    onclick="approveRequest()">승인</button>
 									             <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
 									                 th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
-									                 alt="현재 서명" id="currentSignature">
+									                 alt="현재 서명" class="currentSignature">
 									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
-									                  id="currentSignature" th:text="${flow.member_name}"></span>
+									                  class="currentSignature" th:text="${flow.member_name}"></span>
+									            <span th:if="${flow.vacation_approval_flow_status == 3 }" 
+									                  class="currentSignature" id="reject" th:text="반려"></span>									            
 									        </div>
 									    </td>
 									</tr>
