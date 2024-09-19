@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fiveLink.linkOffice.document.domain.DocumentFile;
 import com.fiveLink.linkOffice.document.domain.DocumentFolder;
+import com.fiveLink.linkOffice.document.repository.DocumentFileRepository;
 import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
 import com.fiveLink.linkOffice.document.service.DocumentFileService;
 import com.fiveLink.linkOffice.document.service.DocumentFolderService;
@@ -32,6 +34,7 @@ public class DocumentApiController {
 	private MemberRepository memberRepository;
 	private DepartmentRepository departmentRepository;
 	private DocumentFolderRepository documentFolderRepository;
+	private DocumentFileRepository documentFileRepository;
 	
 	private static final Logger LOGGER
 		= LoggerFactory.getLogger(DocumentApiController.class);
@@ -42,13 +45,15 @@ public class DocumentApiController {
 			DocumentFileService documentFileService,
 			MemberRepository memberRepository, 
 			DepartmentRepository departmentRepository,
-			DocumentFolderRepository documentFolderRepository) {
+			DocumentFolderRepository documentFolderRepository,
+			DocumentFileRepository documentFileRepository) {
 		this.documentFolderService = documentFolderService;
 		this.memberService = memberService;
 		this.documentFileService = documentFileService;
 		this.memberRepository = memberRepository;
 		this.departmentRepository = departmentRepository;
 		this.documentFolderRepository = documentFolderRepository;
+		this.documentFileRepository = documentFileRepository;
 	}
 	
    // 개인 첫 폴더 
@@ -340,4 +345,452 @@ public class DocumentApiController {
 	      }
 	      return resultMap;
 	   }
+
+   // 폴더 삭제 전 부모 폴더 존재 여부 확인
+   @PostMapping("/document/parent/existence")
+   @ResponseBody
+   public Map<String, Object> parentFolderExistence(@RequestBody Map<String, Object> payload){
+   	  Map<String, Object> resultMap = new HashMap<>();
+   	  resultMap.put("res_code", "404");
+   	  resultMap.put("res_msg", "경로 오류");
+      resultMap.put("res_result", 0);
+   	  
+      String folderNoStr = (String) payload.get("folderNo");
+   	  Long folderNo = Long.valueOf(folderNoStr);
+             
+      DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+
+     if (documentfolder.getDocumentFolderParentNo() != null) {
+    	 resultMap.put("res_code", "200");
+   	  	 resultMap.put("res_msg", "해당 폴더의 하위 폴더가 모두 삭제되고 이 폴더와 하위 폴더의 파일이 최상위 폴더로 이동합니다. 폴더를 삭제하시겠습니까?");
+     } else{
+         resultMap.put("res_code", "200");
+   	  	 resultMap.put("res_msg", "해당 폴더의 해당 폴더의 하위 폴더가 모두 삭제되고 이 폴더와 하위 폴더의 파일이 모두 휴지통으로 이동합니다. 폴더를 삭제하시겠습니까?");
+         resultMap.put("res_result", 1);
+     }
+     return resultMap;
+   }
+   
+   // 최상위 폴더가 존재하는 개인 폴더 삭제 
+   @PostMapping("/document/personal/folder/delete")
+   @ResponseBody
+   public Map<String, Object> personalfolderDelete(@RequestBody Map<String, Object> payload){
+	   Map<String, Object> resultMap = new HashMap<>();
+   	   resultMap.put("res_code", "404");
+   	   resultMap.put("res_msg", "경로 오류");
+   	  
+   	   String memberNoStr = (String) payload.get("memberNo");
+       String folderNoStr = (String) payload.get("folderNo");
+       Long memberNo = Long.valueOf(memberNoStr);  	   
+       Long folderNo = Long.valueOf(folderNoStr);
+   	   Long fileStatus = 0L;
+   	   Long docBoxType = 0L;
+   	   Long docParentNo = null;
+       
+   	   // 현재 폴더 
+       DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+       // 현재 폴더의 파일리스트 
+       List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
+       // 최상위 폴더 
+       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(memberNo, docBoxType, docParentNo);
+       // 자식 폴더 
+       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+       
+       // 최상위 폴더로 파일리스트를 옮김 
+       Long parentFolderNo = parentFolder.getDocumentFolderNo();
+       if (documentFileList != null && !documentFileList.isEmpty()) {
+           for (DocumentFile file : documentFileList) {
+               DocumentFile newFile = new DocumentFile();
+               newFile.setDocumentFileNo(file.getDocumentFileNo());
+               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+               newFile.setDocumentFolder(parentFolder); 
+               newFile.setMember(file.getMember()); 
+               newFile.setDocumentFileSize(file.getDocumentFileSize());
+               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+               newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+               
+               // 새 파일 저장
+               documentFileRepository.save(newFile);
+           }
+       }
+       // 자식 폴더가 존재하는 경우
+       if (childFolders != null && !childFolders.isEmpty()) {
+           for (DocumentFolder childFolder : childFolders) {
+               // 각 자식 폴더의 파일리스트 가져오기
+               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
+               
+               // 자식 폴더의 파일을 최상위 폴더로 옮김
+               if (childFileList != null && !childFileList.isEmpty()) {
+                   for (DocumentFile file : childFileList) {
+                       DocumentFile newFile = new DocumentFile();
+                       newFile.setDocumentFileNo(file.getDocumentFileNo());
+                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+                       newFile.setDocumentFolder(parentFolder); 
+                       newFile.setMember(file.getMember()); 
+                       newFile.setDocumentFileSize(file.getDocumentFileSize());
+                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+                       newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+
+                       // 새 파일 저장
+                       documentFileRepository.save(newFile);
+                   }
+               }
+               // 자식 폴더도 삭제
+               DocumentFolder updatedChildFolder = DocumentFolder.builder()
+                       .documentFolderNo(childFolder.getDocumentFolderNo())
+                       .documentFolderName(childFolder.getDocumentFolderName())
+                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
+                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
+                       .department(childFolder.getDepartment())
+                       .documentBoxType(childFolder.getDocumentBoxType())
+                       .member(childFolder.getMember())
+                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
+                       .documentFolderUpdateDate(LocalDateTime.now())
+                       .documentFolderStatus(1L)
+                       .build();
+               
+               // 자식 폴더 저장
+               documentFolderRepository.save(updatedChildFolder);
+           }
+       }
+       DocumentFolder newDocumentFolder = DocumentFolder.builder()
+	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
+	            .documentFolderName(documentfolder.getDocumentFolderName())
+	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
+	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
+	            .department(documentfolder.getDepartment())
+	            .documentBoxType(documentfolder.getDocumentBoxType())
+	            .member(documentfolder.getMember())
+	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
+	            .documentFolderUpdateDate(LocalDateTime.now())
+	            .documentFolderStatus(1L)
+	            .build();
+       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+    	   resultMap.put("res_code", "200");
+    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("parentNo", parentFolderNo);
+       }
+       
+       return resultMap;       
+   }
+   
+   // 최상위 폴더가 존재하지 않는 폴더 삭제 
+   @PostMapping("/document/top/folder/delete")
+   @ResponseBody
+   public Map<String, Object> personalTopfolderDelete(@RequestBody Map<String, Object> payload){
+	   Map<String, Object> resultMap = new HashMap<>();
+   	   resultMap.put("res_code", "404");
+   	   resultMap.put("res_msg", "경로 오류");
+   	  
+       String folderNoStr = (String) payload.get("folderNo");
+       Long folderNo = Long.valueOf(folderNoStr);
+   	   Long fileStatus = 0L;
+             
+       List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
+       DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+       
+       // 파일리스트를 휴지통으로 옮김 
+       if (documentFileList != null && !documentFileList.isEmpty()) {
+           for (DocumentFile file : documentFileList) {
+               DocumentFile newFile = new DocumentFile();
+               newFile.setDocumentFileNo(file.getDocumentFileNo());
+               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+               newFile.setDocumentFolder(file.getDocumentFolder()); 
+               newFile.setMember(file.getMember()); 
+               newFile.setDocumentFileSize(file.getDocumentFileSize());
+               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+               newFile.setDocumentFileStatus(1L);
+               
+               // 새 파일 저장
+               documentFileRepository.save(newFile);
+           }
+       }
+       // 자식 폴더 조회
+       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+       
+       // 각 자식 폴더의 파일 리스트를 휴지통으로 옮김
+       if (childFolders != null && !childFolders.isEmpty()) {
+           for (DocumentFolder childFolder : childFolders) {
+               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
+               
+               if (childFileList != null && !childFileList.isEmpty()) {
+                   for (DocumentFile file : childFileList) {
+                       DocumentFile newFile = new DocumentFile();
+                       newFile.setDocumentFileNo(file.getDocumentFileNo());
+                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+                       newFile.setDocumentFolder(file.getDocumentFolder()); 
+                       newFile.setMember(file.getMember()); 
+                       newFile.setDocumentFileSize(file.getDocumentFileSize());
+                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+                       newFile.setDocumentFileStatus(1L);
+                       
+                       // 새 파일 저장
+                       documentFileRepository.save(newFile);
+                   }
+               }
+               // 자식 폴더도 삭제
+               DocumentFolder updatedChildFolder = DocumentFolder.builder()
+                       .documentFolderNo(childFolder.getDocumentFolderNo())
+                       .documentFolderName(childFolder.getDocumentFolderName())
+                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
+                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
+                       .department(childFolder.getDepartment())
+                       .documentBoxType(childFolder.getDocumentBoxType())
+                       .member(childFolder.getMember())
+                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
+                       .documentFolderUpdateDate(LocalDateTime.now())
+                       .documentFolderStatus(1L)
+                       .build();
+               
+               // 자식 폴더 저장
+               documentFolderRepository.save(updatedChildFolder);
+           }
+       }
+       DocumentFolder newDocumentFolder = DocumentFolder.builder()
+	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
+	            .documentFolderName(documentfolder.getDocumentFolderName())
+	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
+	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
+	            .department(documentfolder.getDepartment())
+	            .documentBoxType(documentfolder.getDocumentBoxType())
+	            .member(documentfolder.getMember())
+	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
+	            .documentFolderUpdateDate(LocalDateTime.now())
+	            .documentFolderStatus(1L)
+	            .build();
+       
+       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+    	   resultMap.put("res_code", "200");
+    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+       }
+       
+       return resultMap;       
+   }
+   
+   // 최상위 폴더가 존재하는 부서 폴더 삭제 
+   @PostMapping("/document/department/folder/delete")
+   @ResponseBody
+   public Map<String, Object> departmentfolderDelete(@RequestBody Map<String, Object> payload){
+	   Map<String, Object> resultMap = new HashMap<>();
+   	   resultMap.put("res_code", "404");
+   	   resultMap.put("res_msg", "경로 오류");
+   	  
+   	   String memberNoStr = (String) payload.get("memberNo");
+       String folderNoStr = (String) payload.get("folderNo");
+       Long memberNo = Long.valueOf(memberNoStr);  	   
+       Long folderNo = Long.valueOf(folderNoStr);
+   	   Long fileStatus = 0L;
+   	   Long docBoxType = 1L;
+   	   Long docParentNo = null;
+       
+   	   // 현재 폴더 
+       DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+       // 현재 폴더의 파일리스트 
+       List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
+       // 최상위 폴더 
+       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(memberNo, docBoxType, docParentNo);
+       // 자식 폴더 
+       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+       
+       // 최상위 폴더로 파일리스트를 옮김 
+       Long parentFolderNo = parentFolder.getDocumentFolderNo();
+       if (documentFileList != null && !documentFileList.isEmpty()) {
+           for (DocumentFile file : documentFileList) {
+               DocumentFile newFile = new DocumentFile();
+               newFile.setDocumentFileNo(file.getDocumentFileNo());
+               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+               newFile.setDocumentFolder(parentFolder); 
+               newFile.setMember(file.getMember()); 
+               newFile.setDocumentFileSize(file.getDocumentFileSize());
+               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+               newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+               
+               // 새 파일 저장
+               documentFileRepository.save(newFile);
+           }
+       }
+       // 자식 폴더가 존재하는 경우
+       if (childFolders != null && !childFolders.isEmpty()) {
+           for (DocumentFolder childFolder : childFolders) {
+               // 각 자식 폴더의 파일리스트 가져오기
+               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
+               
+               // 자식 폴더의 파일을 최상위 폴더로 옮김
+               if (childFileList != null && !childFileList.isEmpty()) {
+                   for (DocumentFile file : childFileList) {
+                       DocumentFile newFile = new DocumentFile();
+                       newFile.setDocumentFileNo(file.getDocumentFileNo());
+                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+                       newFile.setDocumentFolder(parentFolder); 
+                       newFile.setMember(file.getMember()); 
+                       newFile.setDocumentFileSize(file.getDocumentFileSize());
+                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+                       newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+
+                       // 새 파일 저장
+                       documentFileRepository.save(newFile);
+                   }
+               }
+               // 자식 폴더도 삭제
+               DocumentFolder updatedChildFolder = DocumentFolder.builder()
+                       .documentFolderNo(childFolder.getDocumentFolderNo())
+                       .documentFolderName(childFolder.getDocumentFolderName())
+                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
+                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
+                       .department(childFolder.getDepartment())
+                       .documentBoxType(childFolder.getDocumentBoxType())
+                       .member(childFolder.getMember())
+                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
+                       .documentFolderUpdateDate(LocalDateTime.now())
+                       .documentFolderStatus(1L)
+                       .build();
+               
+               // 자식 폴더 저장
+               documentFolderRepository.save(updatedChildFolder);
+           }
+       }
+       DocumentFolder newDocumentFolder = DocumentFolder.builder()
+	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
+	            .documentFolderName(documentfolder.getDocumentFolderName())
+	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
+	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
+	            .department(documentfolder.getDepartment())
+	            .documentBoxType(documentfolder.getDocumentBoxType())
+	            .member(documentfolder.getMember())
+	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
+	            .documentFolderUpdateDate(LocalDateTime.now())
+	            .documentFolderStatus(1L)
+	            .build();
+       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+    	   resultMap.put("res_code", "200");
+    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("parentNo", parentFolderNo);
+       }
+       
+       return resultMap;       
+   }
+   
+   // 최상위 폴더가 존재하는 사내 폴더 삭제 
+   @PostMapping("/document/company/folder/delete")
+   @ResponseBody
+   public Map<String, Object> companyFolderDelete(@RequestBody Map<String, Object> payload){
+	   Map<String, Object> resultMap = new HashMap<>();
+   	   resultMap.put("res_code", "404");
+   	   resultMap.put("res_msg", "경로 오류");
+   	  
+   	   String memberNoStr = (String) payload.get("memberNo");
+       String folderNoStr = (String) payload.get("folderNo");
+       Long memberNo = Long.valueOf(memberNoStr);  	   
+       Long folderNo = Long.valueOf(folderNoStr);
+   	   Long fileStatus = 0L;
+   	   Long docBoxType = 2L;
+   	   Long docParentNo = null;
+       
+   	   // 현재 폴더 
+       DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+       // 현재 폴더의 파일리스트 
+       List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
+       // 최상위 폴더 
+       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(memberNo, docBoxType, docParentNo);
+       // 자식 폴더 
+       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+       
+       // 최상위 폴더로 파일리스트를 옮김 
+       Long parentFolderNo = parentFolder.getDocumentFolderNo();
+       if (documentFileList != null && !documentFileList.isEmpty()) {
+           for (DocumentFile file : documentFileList) {
+               DocumentFile newFile = new DocumentFile();
+               newFile.setDocumentFileNo(file.getDocumentFileNo());
+               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+               newFile.setDocumentFolder(parentFolder); 
+               newFile.setMember(file.getMember()); 
+               newFile.setDocumentFileSize(file.getDocumentFileSize());
+               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+               newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+               
+               // 새 파일 저장
+               documentFileRepository.save(newFile);
+           }
+       }
+       // 자식 폴더가 존재하는 경우
+       if (childFolders != null && !childFolders.isEmpty()) {
+           for (DocumentFolder childFolder : childFolders) {
+               // 각 자식 폴더의 파일리스트 가져오기
+               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
+               
+               // 자식 폴더의 파일을 최상위 폴더로 옮김
+               if (childFileList != null && !childFileList.isEmpty()) {
+                   for (DocumentFile file : childFileList) {
+                       DocumentFile newFile = new DocumentFile();
+                       newFile.setDocumentFileNo(file.getDocumentFileNo());
+                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
+                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
+                       newFile.setDocumentFolder(parentFolder); 
+                       newFile.setMember(file.getMember()); 
+                       newFile.setDocumentFileSize(file.getDocumentFileSize());
+                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
+                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
+                       newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+
+                       // 새 파일 저장
+                       documentFileRepository.save(newFile);
+                   }
+               }
+               // 자식 폴더도 삭제
+               DocumentFolder updatedChildFolder = DocumentFolder.builder()
+                       .documentFolderNo(childFolder.getDocumentFolderNo())
+                       .documentFolderName(childFolder.getDocumentFolderName())
+                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
+                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
+                       .department(childFolder.getDepartment())
+                       .documentBoxType(childFolder.getDocumentBoxType())
+                       .member(childFolder.getMember())
+                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
+                       .documentFolderUpdateDate(LocalDateTime.now())
+                       .documentFolderStatus(1L)
+                       .build();
+               
+               // 자식 폴더 저장
+               documentFolderRepository.save(updatedChildFolder);
+           }
+       }
+       DocumentFolder newDocumentFolder = DocumentFolder.builder()
+	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
+	            .documentFolderName(documentfolder.getDocumentFolderName())
+	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
+	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
+	            .department(documentfolder.getDepartment())
+	            .documentBoxType(documentfolder.getDocumentBoxType())
+	            .member(documentfolder.getMember())
+	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
+	            .documentFolderUpdateDate(LocalDateTime.now())
+	            .documentFolderStatus(1L)
+	            .build();
+       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+    	   resultMap.put("res_code", "200");
+    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("parentNo", parentFolderNo);
+       }
+       
+       return resultMap;       
+   }
+   
+   
+   
+   
+   
 }
