@@ -1,24 +1,29 @@
 package com.fiveLink.linkOffice.document.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.document.domain.DocumentFile;
 import com.fiveLink.linkOffice.document.domain.DocumentFileDto;
 import com.fiveLink.linkOffice.document.domain.DocumentFolder;
 import com.fiveLink.linkOffice.document.repository.DocumentFileRepository;
 import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
-import com.fiveLink.linkOffice.member.domain.Member;
-import com.fiveLink.linkOffice.member.domain.MemberDto;
 
 @Service
 public class DocumentFileService {
+	
+	private String fileDir = "C:\\linkoffice\\upload\\document\\";
+	// [박혜선] mac 파일 저장 경로 
+	// private String fileDir = "/Users/parkhyeseon/Desktop/fiveLink/upload/";
 
 	private final DocumentFileRepository documentFileRepository;
 	private final DocumentFolderRepository documentFolderRepository;
@@ -211,5 +216,41 @@ public class DocumentFileService {
 			documentFileDtoList.add(fileDto);
 		}		
 		return documentFileDtoList;
+	}
+	// 폴더에 파일 저장  
+	public String fileUpload(MultipartFile file, Long folderNo) {
+		String newFileName = null;
+		
+		try {
+			String oriFileName = file.getOriginalFilename();
+			String fileExt 
+				= oriFileName.substring(oriFileName.lastIndexOf("."),oriFileName.length());
+			UUID uuid = UUID.randomUUID();
+			String uniqueName = uuid.toString().replaceAll("-", "");
+			newFileName = uniqueName + fileExt;
+			
+			// folderNo를 경로에 추가 
+			String saveDir = fileDir + folderNo + "\\";
+			File saveFile = new File(saveDir + newFileName);
+	        if (!saveFile.exists()) {
+	        	saveFile.mkdirs(); 
+	        }
+	        file.transferTo(saveFile);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return newFileName;
+	}
+	// DB에 파일 저장 
+	public int saveFile(DocumentFile file) {
+		int result = -1;
+		try {
+			documentFileRepository.save(file);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }
