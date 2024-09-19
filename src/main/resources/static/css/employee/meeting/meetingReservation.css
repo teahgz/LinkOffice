@@ -265,6 +265,11 @@ td.available {
     cursor: not-allowed;
 }
 
+/* 현재 날짜 - 이전 시간 */
+.past-time {   
+    cursor: not-allowed;
+}
+
 /* fullcalendar */
 .fc-day-sun a {
   color: red;

@@ -7,6 +7,20 @@ $(document).ready(function() {
 	let reservationOwnerPosition = null;
 	var csrfToken = document.querySelector('input[name="_csrf"]').value;
 	
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    const today = `${year}-${month}-${day}`;
+	
+    // 현재 시간
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
+    
     $('#editReservationButton').on('click', function() { 
 	    const reservationNo = $(this).data('reservation-no'); 
 	    openReservationModal(reservationNo); 
@@ -147,8 +161,7 @@ $(document).ready(function() {
         }
     });
     
-    // 날짜 선택
-    const today = new Date().toISOString().split('T')[0];
+    // 날짜 선택 
     $('#reservation_date').attr('min', today);
     $('#reservation_date').on('change', function() {
         const roomId = $('#reservation_room').val();
@@ -194,35 +207,49 @@ $(document).ready(function() {
     timeSlots.push('23:00');
     
     // 시간 선택 옵션 
-    function populateTimeSelect(startTime, endTime, type) {
-        const select = type === 'start' ? $('#reservation_start_time') : $('#reservation_end_time');
-        
-        select.empty().append(`<option value="">${type === 'start' ? '시작 시간' : '종료 시간'}</option>`);
-        
-        timeSlots.forEach(time => {
-            if (type === 'start' && time >= startTime && time < endTime) {
-                select.append(`<option value="${time}">${time}</option>`);
-            } else if (type === 'end' && time > startTime && time <= endTime) {
-                select.append(`<option value="${time}">${time}</option>`);
-            }
-        });
-    }
+	function populateTimeSelect(startTime, endTime, type) {
+	        const select = type === 'start' ? $('#reservation_start_time') : $('#reservation_end_time');
+	        const selectedDate = $('#reservation_date').val();
+	        const currentTime = getCurrentTime();
+	        
+	        select.empty().append(`<option value="">${type === 'start' ? '시작 시간' : '종료 시간'}</option>`);
+	        
+	        timeSlots.forEach(time => {
+	            let shouldDisable = false;
+	            if (selectedDate === today && time <= currentTime) {
+	                shouldDisable = true;
+	            }
+	            
+	            if (type === 'start' && time >= startTime && time < endTime) {
+	                select.append(`<option value="${time}" ${shouldDisable ? 'disabled' : ''}>${time}</option>`);
+	            } else if (type === 'end' && time > startTime && time <= endTime) {
+	                select.append(`<option value="${time}" ${shouldDisable ? 'disabled' : ''}>${time}</option>`);
+	            }
+	        });
+	    }
+     
      
     // 예약된 시간 비활성화  
-    function disableReservedTimes(reservations) {
+	function disableReservedTimes(reservations) {
         const startSelect = $('#reservation_start_time');
+        const selectedDate = $('#reservation_date').val();
+        const currentTime = getCurrentTime();
         
         startSelect.find('option').prop('disabled', false);
         
+        if (selectedDate === today) {
+            startSelect.find('option').filter(function() {
+                return $(this).val() <= currentTime;
+            }).prop('disabled', true);
+        }
+        
         reservations.forEach(reservation => {
-            if (reservation.meeting_reservation_no != currentReservationNo) {
-                const start = reservation.meeting_reservation_start_time;
-                const end = reservation.meeting_reservation_end_time;
-                
-                startSelect.find('option').filter(function() {
-                    return $(this).val() >= start && $(this).val() <= end;
-                }).prop('disabled', true);
-            }
+            const start = reservation.meeting_reservation_start_time;
+            const end = reservation.meeting_reservation_end_time;
+            
+            startSelect.find('option').filter(function() {
+                return $(this).val() >= start && $(this).val() < end;
+            }).prop('disabled', true);
         });
     }
 
