@@ -48,6 +48,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if ("chatRoomCreation".equals(type)) {
             // 채팅방 생성 관련 처리
             handleChatRoomCreation(jsonMap, session, type);
+        } else if("chatRoomUpdate".equals(type)){
+            //채팅방 이름 수정
+            handleChatRoomUpdate(jsonMap, session, type);
         } else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
@@ -148,6 +151,22 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         }
 
+
+    }
+
+    private void handleChatRoomUpdate(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+        String chatRoomName = (String) jsonMap.get("chatRoomName");
+        Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMemberNo"));
+        Long roomNo = Long.parseLong((String) jsonMap.get("roomNo"));
+
+        if(chatMemberService.updateChatRoom(chatRoomName, currentMemberNo, roomNo) > 0){
+            Map<String, Object> response = new HashMap<>();
+            response.put("updatedChatRoomName", chatRoomName);
+            response.put("roomNo", roomNo);
+            response.put("type", type);
+            String jsonResponse = new ObjectMapper().writeValueAsString(response);
+            session.sendMessage(new TextMessage(jsonResponse));
+        }
 
     }
     @Override

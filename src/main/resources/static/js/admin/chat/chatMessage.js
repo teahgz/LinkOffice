@@ -203,6 +203,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 resetSelectedMembers();
                 $('#organizationChartModal').modal('hide');
             }
+        }else if(message.type === "chatRoomUpdate"){
+            const updatedChatRoomNo = message.roomNo;
+            const updatedChatRoomName = message.updatedChatRoomName;
+            const chatItem = document.querySelector(`input[value="${updatedChatRoomNo}"]`);
+
+            if (chatItem) {
+                const chatItemDiv = chatItem.closest('.chatItem');
+                const chatNameElement = chatItemDiv.querySelector('h3 p');
+                chatNameElement.textContent = updatedChatRoomName;
+            }
+           const currentChatRoomNo = document.getElementById('chatRoomNo').value;
+           if (parseInt(currentChatRoomNo, 10) === updatedChatRoomNo) {
+               const chatRoomTitleElement = document.getElementById("chatRoomTitle");
+               chatRoomTitleElement.textContent = updatedChatRoomName;
+           }
         } else {
             const messageElement = document.createElement("div");
             const now = new Date();
