@@ -6,44 +6,46 @@
         <link th:href="@{/css/employee/meeting/reservationDetail.css}" rel="stylesheet" type="text/css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
         <section>
-            <h1>회의실 예약 상세 정보</h1>
-            <div class="reservation_detail">  
-           	  <div class="info-row">
-                   <div class="info-label">회의실명</div>
-                   <div class="info-value" th:text="${reservation.meeting_name}"></div>
-              </div> 
-		      <div class="info-row">
-                   <div class="info-label">예약 날짜</div>
-                   <div class="info-value" th:text="${reservation.meeting_reservation_date}"></div>
-              </div> 
-			  <div class="info-row">
-				   <div class="info-label">예약 시간</div>
-				   		<div class="info-value" th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}">
-				   </div>
-			  </div> 
-		      <div class="info-row">
-                   <div class="info-label">예약자</div>
-                   <div class="info-value" th:text="${reservation.member_name} + ' ' + ${reservation.position_name}"></div>
-              </div>      
-		      <div class="info-row">
-                   <div class="info-label">목적</div>
-                   <div class="info-value" th:text="${reservation.meeting_reservation_purpose}"></div> 
-              </div>   
-		      <div class="info-row">
-                   <div class="info-label">참여자</div>
-                   <div class="info-participant-row">
-                      <div class="info-participant-value" th:each="participant : ${participants}" th:text=" ${participant.departmentName} + ' ' + ${participant.memberName}  + ' ' + ${participant.positionName}"></div>
-              	   </div>
-              </div>   
-			 <div class="bottom-btn-three" th:if="${reservation.member_no == memberdto.member_no}">
-			    <button type="button" class="left-button" id="golistButton" onclick="location.href='/employee/meeting/reservation/list'">목록</button>
-			    <div class="right-buttons">
-			        <button type="button" id="editReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 수정</button> 
-			        <button type="button" id="cancelReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 취소</button>
-			    </div>
-			</div> 
-            </div>
-        </section>
+		    <h1>회의실 예약 상세 정보</h1>
+		    <div class="reservation_detail">  
+		        <div class="info-row">
+		            <div class="info-label">회의실명</div>
+		            <div class="info-value" th:text="${reservation.meeting_name}"></div>
+		        </div> 
+		        <div class="info-row">
+		            <div class="info-label">예약 날짜</div>
+		            <div id="reservation_date" class="info-value" th:text="${reservation.meeting_reservation_date}"></div>
+		        </div> 
+		        <div class="info-row">
+		            <div class="info-label">예약 시간</div>
+		            <div id="reservation_start_time_text"  class="info-value" th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}"></div>
+		        </div> 
+		        <div class="info-row">
+		            <div class="info-label">예약자</div>
+		            <div class="info-value" th:text="${reservation.member_name} + ' ' + ${reservation.position_name}"></div>
+		        </div>      
+		        <div class="info-row">
+		            <div class="info-label">목적</div>
+		            <div class="info-value" th:text="${reservation.meeting_reservation_purpose}"></div> 
+		        </div>   
+		        <div class="info-row">
+		            <div class="info-label">참여자</div>
+		            <div class="info-participant-row">
+		                <div class="info-participant-value" th:each="participant : ${participants}" th:text="${participant.departmentName} + ' ' + ${participant.memberName} + ' ' + ${participant.positionName}"></div>
+		            </div>
+		        </div>   
+		        <div class="bottom-btn-three" th:if="${reservation.member_no == memberdto.member_no}">
+		            <button type="button" class="left-button" id="golistButton" onclick="location.href='/employee/meeting/reservation/list'">목록</button>
+		            <div class="right-buttons" id="reservation-buttons" 
+		                data-reservation-date="${reservation.meeting_reservation_date}"
+		                data-reservation-start-time="${reservation.meeting_reservation_start_time}">
+		                <button type="button" id="editReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 수정</button> 
+		                <button type="button" id="cancelReservationButton" th:data-reservation-no="${reservation.meeting_reservation_no}">예약 취소</button>
+		            </div>
+		        </div> 
+		    </div>
+		</section>
+
         
         <!-- 수정 모달 -->
         <div id="reservationModal" class="modal" data-backdrop="static">
@@ -65,8 +67,8 @@
 	                        </select>
 	                    </div>
 	                    <div class="reservation_row">
-	                        <label for="reservation_date">예약일</label>
-	                        <input type="date" class="date_select" id="reservation_date" name="reservation_date"> 
+	                        <label for="reservation_date_input">예약일</label>
+	                        <input type="date" class="date_select" id="reservation_date_input" name="reservation_date"> 
 	                        <select class="time_select" id="reservation_start_time" name="reservation_start_time" > 
 	                            <option value="">시작 시간</option> 
 	                        </select>

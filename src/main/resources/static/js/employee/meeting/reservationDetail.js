@@ -40,7 +40,7 @@ $(document).ready(function() {
                 console.log(data);
                 
                 $('#reservationId').val(data.reservation.meeting_reservation_no);
-                $('#reservation_date').val(data.reservation.meeting_reservation_date);
+                $('#reservation_date_input').val(data.reservation.meeting_reservation_date);
                 $('#reservation_purpose').val(data.reservation.meeting_reservation_purpose);
            
                 let selectedParticipants = data.participants.map(p => `<span class="selected-participants">${p.memberName} ${p.positionName}`).join(' </span>');
@@ -161,9 +161,9 @@ $(document).ready(function() {
         }
     });
     
-    // 날짜 선택 
-    $('#reservation_date').attr('min', today);
-    $('#reservation_date').on('change', function() {
+    // 날짜 선택  
+    document.getElementById("reservation_date_input").setAttribute('min', today);
+    $('#reservation_date_input').on('change', function() {
         const roomId = $('#reservation_room').val();
         const date = $(this).val();
         
@@ -175,7 +175,7 @@ $(document).ready(function() {
             populateTimeSelect(startTime, endTime, 'end');
             
             fetchRoomReservations(date, roomId, function(filteredReservations) {
-                currentReservations = filteredReservations;
+                currentReservations = filteredReservations; 
                 disableReservedTimes(filteredReservations);  
             });
              
@@ -232,10 +232,8 @@ $(document).ready(function() {
     // 예약된 시간 비활성화  
 	function disableReservedTimes(reservations) {
         const startSelect = $('#reservation_start_time');
-        const selectedDate = $('#reservation_date').val();
-        const currentTime = getCurrentTime();
-        
-        startSelect.find('option').prop('disabled', false);
+        const selectedDate = $('#reservation_date_input').val();
+        const currentTime = getCurrentTime(); 
         
         if (selectedDate === today) {
             startSelect.find('option').filter(function() {
@@ -243,13 +241,15 @@ $(document).ready(function() {
             }).prop('disabled', true);
         }
         
-        reservations.forEach(reservation => {
-            const start = reservation.meeting_reservation_start_time;
-            const end = reservation.meeting_reservation_end_time;
-            
-            startSelect.find('option').filter(function() {
-                return $(this).val() >= start && $(this).val() < end;
-            }).prop('disabled', true);
+		reservations.forEach(reservation => {
+            if (reservation.meeting_reservation_no != currentReservationNo) {
+                const start = reservation.meeting_reservation_start_time;
+                const end = reservation.meeting_reservation_end_time;
+                
+                startSelect.find('option').filter(function() {
+                    return $(this).val() >= start && $(this).val() <= end;
+                }).prop('disabled', true);
+            }
         });
     }
 
@@ -462,7 +462,7 @@ $(document).ready(function() {
 	    e.preventDefault(); 
 	    
 	    var reservationRoom = $('#reservation_room').val();
-	    var reservationDate = $('#reservation_date').val();
+	    var reservationDate = $('#reservation_date_input').val();
 	    var reservationStartTime = $('#reservation_start_time').val();
 	    var reservationEndTime = $('#reservation_end_time').val();
 	    var reservationPurpose = $('#reservation_purpose').val();
@@ -614,5 +614,13 @@ $(document).ready(function() {
 	        }
 	    });
 	} 
-
+ 
+    const reservationButtons = document.getElementById('reservation-buttons'); 
+	const reservationDate = $('#reservation_date').text();  
+    const reservationStartTime = $('#reservation_start_time').text();  
+	const currentTime = getCurrentTime(); 
+	 
+    if (reservationDate <= today && reservationStartTime < currentTime) { 
+        reservationButtons.style.display = 'none';
+    }
 });

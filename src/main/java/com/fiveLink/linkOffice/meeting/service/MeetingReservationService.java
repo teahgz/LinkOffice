@@ -224,6 +224,14 @@ public class MeetingReservationService {
             String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
             String memberName = memberService.getMemberNameById(reservation.getMemberNo());
             long participantCount = meetingParticipantRepository.countByMeetingReservationNoAndStatus(reservation.getMeetingReservationNo(), 0L);
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(reservation.getMemberNo()); 
+            String positionName = "직위";
+            String departmentName = "부서";
+            
+            Object[] row = memberInfo.get(0);   
+            positionName = (String) row[1];
+            departmentName = (String) row[2];
 
             return MeetingReservationDto.builder()
                     .meeting_reservation_no(reservation.getMeetingReservationNo())
@@ -238,6 +246,8 @@ public class MeetingReservationService {
                     .meeting_reservation_status(reservation.getMeetingReservationStatus())
                     .meeting_name(meetingName)
                     .member_name(memberName)
+                    .position_name(positionName)
+                    .department_name(departmentName)
                     .participant_count(participantCount)
                     .build();
         });

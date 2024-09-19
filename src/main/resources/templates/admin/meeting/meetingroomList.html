@@ -41,47 +41,42 @@
 					            <td th:text="${meeting.meeting_available_start} + ' ~ ' + ${meeting.meeting_available_end}"></td> 
 					            <td th:text="${meeting.meeting_comment}"></td>
 					        </tr>
-                        </tbody>
-                         
-                
-                    </table>
-                    <div id="pagination" class="pagination"></div>
+                        </tbody> 
+                    </table> 
+                    <div id="pagination" class="pagination" th:if="${meetings.totalPages > 0}">
+					    <th:block th:if="${meetings.hasPrevious()}">
+					        <button th:if="${meetings.hasPrevious()}"
+					                th:onclick="|location.href='@{/meetingroomList(page=0, searchText=${searchText})}'|">&lt;&lt;
+					        </button>
+					        <button th:if="${meetings.hasPrevious()}"
+					                th:onclick="|location.href='@{/meetingroomList(page=${meetings.number - 1}, searchText=${searchText})}'|">&lt;
+					        </button>
+					    </th:block>
+					    <th:block th:with="totalPages=${meetings.totalPages}, currentPage=${meetings.number}">
+					        <th:block th:with="
+					            startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)},
+					            endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
+					            <span th:if="${totalPages > 0}"
+					                  th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
+					                <button th:classappend="${i == currentPage} ? 'active'"
+					                        th:onclick="|location.href='@{/meetingroomList(page=${i}, searchText=${searchText})}'|"
+					                        th:text="${i + 1}">
+					                </button>
+					            </span>
+					        </th:block>
+					    </th:block>
+					    <th:block th:if="${meetings.hasNext()}">
+					        <button th:if="${meetings.hasNext()}"
+					                th:onclick="|location.href='@{/meetingroomList(page=${meetings.number + 1}, searchText=${searchText})}'|">&gt;
+					        </button>
+					        <button th:if="${meetings.number < meetings.totalPages - 1}"
+					                th:onclick="|location.href='@{/meetingroomList(page=${meetings.totalPages - 1}, searchText=${searchText})}'|">&gt;&gt;
+					        </button>
+					    </th:block>
+					</div>
+                    
                 </div>
-            </div>
-            
-			<div id="pagination" class="pagination" th:if="${meetings.totalPages > 0}">
-			    <th:block th:if="${meetings.hasPrevious()}">
-			        <button th:if="${meetings.hasPrevious()}"
-			                th:onclick="|location.href='@{/meetingroomList(page=0, searchText=${searchText})}'|">&lt;&lt;
-			        </button>
-			        <button th:if="${meetings.hasPrevious()}"
-			                th:onclick="|location.href='@{/meetingroomList(page=${meetings.number - 1}, searchText=${searchText})}'|">&lt;
-			        </button>
-			    </th:block>
-			    <th:block th:with="totalPages=${meetings.totalPages}, currentPage=${meetings.number}">
-			        <th:block th:with="
-			            startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)},
-			            endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
-			            <span th:if="${totalPages > 0}"
-			                  th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
-			                <button th:classappend="${i == currentPage} ? 'active'"
-			                        th:onclick="|location.href='@{/meetingroomList(page=${i}, searchText=${searchText})}'|"
-			                        th:text="${i + 1}">
-			                </button>
-			            </span>
-			        </th:block>
-			    </th:block>
-			    <th:block th:if="${meetings.hasNext()}">
-			        <button th:if="${meetings.hasNext()}"
-			                th:onclick="|location.href='@{/meetingroomList(page=${meetings.number + 1}, searchText=${searchText})}'|">&gt;
-			        </button>
-			        <button th:if="${meetings.number < meetings.totalPages - 1}"
-			                th:onclick="|location.href='@{/meetingroomList(page=${meetings.totalPages - 1}, searchText=${searchText})}'|">&gt;&gt;
-			        </button>
-			    </th:block>
-			</div>
-
-
+            </div> 
         </section>
 		
         <!-- 등록 모달 -->

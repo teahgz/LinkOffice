@@ -44,7 +44,7 @@ public interface MeetingReservationRepository extends JpaRepository<MeetingReser
  	       "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
  	       "JOIN Member mem ON mr.memberNo = mem.memberNo " + 
  	       "WHERE (:meetingNo IS NULL OR mr.meetingNo = :meetingNo) " +
- 	       "AND (:searchText IS NULL OR mr.meetingReservationPurpose LIKE %:searchText%) " +
+ 	       "AND (:searchText IS NULL OR mem.memberName LIKE %:searchText%) " +
  	       "AND (:startDate IS NULL OR mr.meetingReservationDate >= :startDate) " +
  	       "AND (:endDate IS NULL OR mr.meetingReservationDate <= :endDate) " +
  	       "AND mr.meetingReservationStatus = 0 " +
