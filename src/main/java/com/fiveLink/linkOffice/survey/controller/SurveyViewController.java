@@ -90,5 +90,31 @@ public class SurveyViewController {
 
         return "employee/survey/survey_end_list";
     }
+    
+    @GetMapping("/employee/survey/ingList")
+    public String surveyIngList(
+            @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "sort", defaultValue = "latest") String sort,
+            Model model,
+            SurveyDto searchDto) {
+
+        Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+        model.addAttribute("memberdto", memberdto);
+        model.addAttribute("currentSort", sort);
+
+        Sort sortOption = getSortOption(sort);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+
+        Page<SurveyDto> surveyPage = surveyService.getIngAllSurveyPage(sortedPageable, searchDto, memberNo);
+
+        model.addAttribute("surveyIngList", surveyPage.getContent());
+        model.addAttribute("page", surveyPage);
+        model.addAttribute("searchDto", searchDto);
+
+        return "employee/survey/survey_ing_list";
+    }
+
 
 }
