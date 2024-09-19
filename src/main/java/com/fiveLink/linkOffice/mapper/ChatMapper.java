@@ -22,4 +22,7 @@ public interface ChatMapper {
     String selectChatRoomName(Long chatRoomNo, Long memberNo);
     //채팅방 이름 수정
     int updateChatRoom(String roomName, Long memberNo, Long roomNo);
+
+    //채팅방 타입 가져오기
+    int chatRoomType(Long chatRooNo);
 }
