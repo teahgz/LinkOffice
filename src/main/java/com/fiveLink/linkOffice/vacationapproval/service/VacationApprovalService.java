@@ -324,6 +324,38 @@ public class VacationApprovalService {
 		}
 		return existingVapp;
 	}
+	
+	// 휴가 결재 승인 
+	 @Transactional
+	    public VacationApproval employeeVacationApprovalFlowUpdate(Long vacationApprovalNo, Long memberNo) {
+	        VacationApproval vacationApproval = vacationApprovalRepository.findById(vacationApprovalNo).orElse(null);
+
+	        List<VacationApprovalFlow> approvalFlows = vacationApprovalFlowRepository.findByVacationApproval(vacationApproval);
+
+	        VacationApprovalFlow currentFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
+	            .findFirst()
+	            .orElse(null);
+
+	        currentFlow.setVacationApprovalFlowStatus(2L); 
+	        vacationApprovalFlowRepository.save(currentFlow);
+
+	        VacationApprovalFlow nextFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getVacationApprovalFlowOrder() != null)
+	            .filter(flow -> flow.getVacationApprovalFlowOrder() > currentFlow.getVacationApprovalFlowOrder())
+	            .findFirst()
+	            .orElse(null);
+
+	        if (nextFlow != null) {
+	            nextFlow.setVacationApprovalFlowStatus(1L);
+	            vacationApprovalFlowRepository.save(nextFlow);
+	        } else {
+	            vacationApproval.setVacationApprovalStatus(1L);
+	            vacationApprovalRepository.save(vacationApproval);
+	        }
+
+	        return vacationApproval;
+	    }
 
 
 }
