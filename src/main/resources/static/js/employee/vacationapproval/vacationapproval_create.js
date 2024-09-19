@@ -117,7 +117,6 @@ const editorConfig = {
 };
 
 // 시작 기간 선택 전 disable
-
 document.addEventListener("DOMContentLoaded", function() {
     const startDateInput = document.getElementById("vacationapproval_start_date");
     const endDateInput = document.getElementById("vacationapproval_end_date");
@@ -203,7 +202,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
 		
         editor.ui.view.editable.element.style.height = '500px';
-
+			// 에디터에 휴가 양식 
             editor.setData(`
             <h1><span style="font-family:나눔고딕, NanumGothic, sans-serif;"><strong>휴가 신청서</strong> </span></h1>
             <p>&nbsp;</p>
@@ -244,7 +243,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             </table>
             </figure>
             <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;상가 본인은 위와 같이 휴가 신청서를 제출 합니다.</p><p>&nbsp;</p><p>&nbsp;</p>`);
-		
+			
+			// 등록  폼
 			const form = document.getElementById('vacAppCreateFrm');
 			form.addEventListener('submit', (e) => {
 	  		  e.preventDefault();

@@ -1,7 +1,5 @@
 @charset "UTF-8";
 
-@charset "UTF-8";
-
 .my_profile {
     position: relative; 
     display: flex;
@@ -94,7 +92,6 @@
     margin-right: 30px;
     gap: 20px; 
 }
-
 
 #list_button {
     padding: 8px 15px;
