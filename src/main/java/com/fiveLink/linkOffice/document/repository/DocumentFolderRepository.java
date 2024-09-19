@@ -30,7 +30,7 @@ public interface DocumentFolderRepository extends JpaRepository<DocumentFolder, 
 	// parentNo로 폴더 찾기
 	List<DocumentFolder> findByDocumentFolderParentNo(Long documentFolderParentNo);
 
-	// 개인 문서함 최상위 폴더 찾기 
+	// 문서함 최상위 폴더 찾기 
 	DocumentFolder findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(Long memberNo, Long documentBoxType, 
 			Long documentFolderParentNo);
 }

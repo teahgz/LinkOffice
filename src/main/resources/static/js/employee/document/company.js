@@ -687,7 +687,6 @@ $(function () {
             }
         });
 	});
-	
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
         getFolders();

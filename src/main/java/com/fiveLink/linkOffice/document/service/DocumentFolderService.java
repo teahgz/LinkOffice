@@ -142,7 +142,7 @@ public class DocumentFolderService {
 		}
 		return result;
 	}
-	// 폴더 삭제
+	// 폴더 삭제 
 	public int deleteFolder(DocumentFolder documentFolder) {
 		int result = -1;
 		try {

@@ -787,10 +787,6 @@ public class DocumentApiController {
        }
        
        return resultMap;       
-   }
-   
-   
-   
-   
+   }   
    
 }
