@@ -49,8 +49,8 @@ public class SurveyViewController {
         Model model,
         SurveyDto searchDto) {
         
-        Long member_no = memberService.getLoggedInMemberNo();
-        List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+        Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
         
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("currentSort", sort);  
@@ -58,12 +58,37 @@ public class SurveyViewController {
         Sort sortOption = getSortOption(sort);
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
-        Page<SurveyDto> surveyPage = surveyService.getAllSurveyPage(sortedPageable, searchDto);
+        Page<SurveyDto> surveyPage = surveyService.getAllSurveyPage(sortedPageable, searchDto, memberNo);
 
         model.addAttribute("surveyList", surveyPage.getContent());
         model.addAttribute("page", surveyPage);
         model.addAttribute("searchDto", searchDto);
         return "employee/survey/survey_my_list";
+    }
+    
+    @GetMapping("/employee/survey/endList")
+    public String surveyEndList(
+            @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "sort", defaultValue = "latest") String sort,
+            Model model,
+            SurveyDto searchDto) {
+
+        Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+        model.addAttribute("memberdto", memberdto);
+        model.addAttribute("currentSort", sort);
+
+        Sort sortOption = getSortOption(sort);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+
+        Page<SurveyDto> surveyPage = surveyService.getEndAllSurveyPage(sortedPageable, searchDto, memberNo);
+
+        model.addAttribute("surveyEndList", surveyPage.getContent());
+        model.addAttribute("page", surveyPage);
+        model.addAttribute("searchDto", searchDto);
+
+        return "employee/survey/survey_end_list";
     }
 
 }

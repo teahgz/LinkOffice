@@ -54,7 +54,6 @@ select {
     width: 150px;
 }
 
-/* 검색 버튼 */
 .search_button {
     padding: 12px 25px;
     background-color: #B1C2DD;
@@ -151,7 +150,6 @@ select {
     border-color: #B1C2DD;
 }
 
-/* 전체 공통 스타일 */
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f2f5;
