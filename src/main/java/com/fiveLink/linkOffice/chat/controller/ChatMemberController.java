@@ -12,10 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class ChatMemberController {
@@ -45,4 +42,12 @@ public class ChatMemberController {
         }
     }
 
+    @GetMapping("/api/chat/roomType/{chatRoomNo}")
+    @ResponseBody
+    public int chatRoomType(@PathVariable Long chatRoomNo){
+        System.out.println("test : "+ chatRoomNo);
+        System.out.println(chatMemberService.chatRoomType(chatRoomNo));
+        return chatMemberService.chatRoomType(chatRoomNo);
+
+    }
 }
