@@ -20,7 +20,7 @@
                                 </th:block>
                             </select>
                             <input type="text" class="search_input" name="searchText" 
-                                   th:placeholder="'회의 목적으로 검색하세요.'" th:value="${searchText}">
+                                   th:placeholder="'사원명으로 검색하세요.'" th:value="${searchText}">
 							<input type="date" id="startDate" name="startDate" th:value="${startDate}" placeholder="조회 시작일" class="all_sort_select_box">
 							<input type="date" id="endDate" name="endDate" th:value="${endDate}" placeholder="조회 종료일" class="all_sort_select_box">
                             <button type="submit" class="search_button">검색</button>
@@ -37,6 +37,7 @@
                             <th>회의실명</th>
                             <th>예약 날짜</th>
                             <th>예약 시간</th>
+                            <th>예약자</th>
                             <th>목적</th>
                             <th>참여 인원</th>
                             <th>예약 등록일</th>
@@ -48,12 +49,13 @@
 				        </tr>
 				         
 				        <tr th:each="reservation : ${reservations.content}">
-				            <td th:text="${reservation.meeting_name}" style="width: 15%"></td>
-				            <td th:text="${reservation.meeting_reservation_date}" style="width: 15%"></td>
-				            <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}" style="width: 20%"></td>
-				            <td th:text="${reservation.meeting_reservation_purpose}" style="width: 30%"></td>
+				            <td th:text="${reservation.meeting_name}" style="width: 10%"></td>
+				            <td th:text="${reservation.meeting_reservation_date}" style="width: 10%"></td>
+				            <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}" style="width: 12%"></td>
+				            <td th:text="${reservation.department_name} + ' ' + ${reservation.member_name} + ' ' + ${reservation.position_name}" style="width: 22%"></td>
+				            <td th:text="${reservation.meeting_reservation_purpose}" style="width: 25%"></td>
 				            <td th:text="${reservation.participant_count}" style="width: 10%; text-align: center;"></td>
-				            <td class="create_date" th:text="${reservation.meeting_reservation_create_date}" style="width: 10%"></td>
+				            <td class="create_date" th:text="${reservation.meeting_reservation_create_date}" style="width: 13%"></td>
 				        </tr>
 				    </tbody>
                 </table>

@@ -498,12 +498,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 	
 	function openOrganizationChartModal() {
-	    selectedMembers = [];  
-	 
-	    const displayElement = document.getElementById('selected-members');
-	    if (displayElement) {
-	        displayElement.innerHTML = '';
-	    }
+	    selectedMembers = [];   
 	
 	    $('#organizationChartModal').modal('show');
 	

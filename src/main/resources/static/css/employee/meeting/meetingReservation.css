@@ -638,4 +638,12 @@ hr {
 	margin-top : -15px;
 }
 
+select option:disabled {
+    color : gray;
+}
+
+select option {
+	font-weight : 550;
+}
+ 
  

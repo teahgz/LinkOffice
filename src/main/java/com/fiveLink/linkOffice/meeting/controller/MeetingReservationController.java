@@ -401,7 +401,7 @@ public class MeetingReservationController {
 	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
 	    List<MeetingDto> meetings = meetingService.getAllMeetings();
  
-        Page<MeetingReservationDto> reservations = meetingReservationService.allReservations(meetingNo, searchText, startDate, endDate, sortBy, pageable);
+        Page<MeetingReservationDto> reservations = meetingReservationService.allReservations(meetingNo, searchText, startDate, endDate, sortBy, pageable); 
         
         model.addAttribute("memberdto", memberDto.get(0));
         model.addAttribute("meetings", meetings);
