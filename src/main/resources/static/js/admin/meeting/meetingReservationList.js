@@ -15,14 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
  
     updateMinEndDate();
     
-    // 예약 등록일
-    const dateElements = document.querySelectorAll('td');
+    // 예약 등록일 
+	document.querySelectorAll('tr').forEach(row => {
+	    const lastDateElement = row.querySelector('td.create_date');
+	    if (lastDateElement) {
+	        const dateStr = lastDateElement.textContent.trim();
+	        const formattedDate = dateStr.substring(0, 10); 
+	        lastDateElement.textContent = formattedDate;
+	    }
+	});
 
-    dateElements.forEach(element => {
-        const dateStr = element.textContent.trim();
-         
-        const formattedDate = dateStr.substring(0, 10);
 
-        element.textContent = formattedDate;
-    });
 });

@@ -395,14 +395,14 @@ public class MeetingReservationController {
 	        @RequestParam(value = "sortBy", defaultValue = "latest") String sortBy,
 	        @RequestParam(value = "meetingNo", defaultValue = "") String meetingNo,   
 	        @PageableDefault(size = 10) Pageable pageable,
-	        Model model) {
+	        Model model) { 
 
 	    Long memberNo = memberService.getLoggedInMemberNo();
 	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
 	    List<MeetingDto> meetings = meetingService.getAllMeetings();
  
         Page<MeetingReservationDto> reservations = meetingReservationService.allReservations(meetingNo, searchText, startDate, endDate, sortBy, pageable);
-         
+        
         model.addAttribute("memberdto", memberDto.get(0));
         model.addAttribute("meetings", meetings);
         model.addAttribute("reservations", reservations);
@@ -410,7 +410,7 @@ public class MeetingReservationController {
         model.addAttribute("searchText", searchText);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
-        model.addAttribute("meetingNo", meetingNo); 
+        model.addAttribute("meetingNo", meetingNo);   
 
 	    return "admin/meeting/meetingReservationList";
 	} 

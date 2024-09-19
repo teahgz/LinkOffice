@@ -15,7 +15,7 @@
                                 <th:block th:each="meeting : ${meetings}">
                                     <option th:value="${meeting.meeting_no}" 
                                             th:text="${meeting.meeting_name}" 
-                                            th:selected="${meeting.meeting_no == meetingNo}">
+                                            th:selected="${meeting.meeting_no.toString() == meetingNo}">
                                     </option>
                                 </th:block>
                             </select>
@@ -44,17 +44,17 @@
                     </thead>
                     <tbody> 
 				        <tr th:if="${#lists.isEmpty(reservations.content)}">
-				            <td colspan="6" style="text-align: center;">예약 내역이 존재하지 않습니다</td>
+				            <td colspan="6" style="text-align: center;">예약 내역이 존재하지 않습니다.</td>
 				        </tr>
 				         
 				        <tr th:each="reservation : ${reservations.content}"
 				            th:onclick="|location.href='@{/employee/meeting/reservation/detail/{id}(id=${reservation.meeting_reservation_no})}'|"
 				            style="cursor: pointer;">
-				            <td th:text="${reservation.meeting_name}"></td>
-				            <td th:text="${reservation.meeting_reservation_date}"></td>
-				            <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}"></td>
-				            <td th:text="${reservation.meeting_reservation_purpose}"></td>
-				            <td th:text="${reservation.participant_count}"></td>
+				            <td th:text="${reservation.meeting_name}" style="width: 15%"></td>
+				            <td th:text="${reservation.meeting_reservation_date}" style="width: 15%"></td>
+				            <td th:text="${reservation.meeting_reservation_start_time} + ' ~ ' + ${reservation.meeting_reservation_end_time}" style="width: 20%"></td>
+				            <td th:text="${reservation.meeting_reservation_purpose}" style="width: 40%"></td>
+				            <td th:text="${reservation.participant_count}" style="width: 10%; text-align: center;"></td>
 				            <td></td>
 				        </tr>
 				    </tbody>
