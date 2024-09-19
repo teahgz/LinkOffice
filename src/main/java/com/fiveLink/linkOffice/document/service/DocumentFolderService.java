@@ -49,6 +49,18 @@ public class DocumentFolderService {
 		return result;
 	}
 	
+	// 개인 문서함 폴더 생성
+	public int personalCreateFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	// 부서 문서함 
 	public List<DocumentFolderDto> selectDepartmentFolderList(Long department_no) {
 		// 문서함 타입 = 1(부서)
@@ -77,6 +89,19 @@ public class DocumentFolderService {
 		}
 		return result;
 	}
+
+	// 부서 문서함 폴더 생성
+	public int departmentCreateFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	// 사내 문서함 
 	public List<DocumentFolderDto> selectCompanyFolderList(){
 		// 문서함 타입
@@ -94,10 +119,34 @@ public class DocumentFolderService {
 		return documentFolderDtoList;
 	}
 	
+	// 부서 문서함 폴더 생성
+	public int companyCreateFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	// 폴더 이름 변경
 	public int changeFolderName(DocumentFolder newDocumentFolder) {
 		int result = -1;
 		try {
 			documentFolderRepository.save(newDocumentFolder);
+			result = 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	// 폴더 삭제 
+	public int deleteFolder(DocumentFolder documentFolder) {
+		int result = -1;
+		try {
+			documentFolderRepository.save(documentFolder);		
 			result = 1;
 		} catch(Exception e) {
 			e.printStackTrace();

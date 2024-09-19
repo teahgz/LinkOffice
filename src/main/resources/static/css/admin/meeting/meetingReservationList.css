@@ -1,0 +1,126 @@
+@charset "UTF-8";
+
+.myMeetingReservation_list {
+	position: relative; 
+	max-width: 1250px;
+	margin: 40px auto;
+	padding: 30px;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+}
+ 
+.search_sort_container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.search_container {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.search_input {
+	padding: 8px 20px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+	width: 200px;
+}  
+
+.search_button {
+	padding: 8px 20px;
+	background-color: #B1C2DD;
+	color: black;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.search_button:hover {
+	background-color: #9CAFC7;
+}
+
+.sort_container {
+	display: flex;
+	gap: 15px;
+}
+
+.sort_container p {
+	color: #000;
+	margin: 0;
+	cursor: pointer;
+}
+
+.select_meetingRoom {
+	width : 110px;
+	padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.reservation_list_table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.reservation_list_table th, .reservation_list_table td {
+	padding: 15px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+.reservation_list_table th {
+	background-color: #f2f2f2;
+	font-weight: bold;
+	color: #333;
+}
+
+.reservation_list_table tr:last-child td {
+	border-bottom: none;
+} 
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+
+.pagination button:hover {
+    background-color: #e9ecef;
+}
+
+.pagination button.active {
+    background-color: #B1C2DD;
+    color: white;
+    border-color: #B1C2DD;
+}
+
+#meetingRoomSelect {
+	width : 150px;
+}
+
+.meeting_sort_date {
+    margin-left: 295px;
+} 

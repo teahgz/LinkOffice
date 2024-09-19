@@ -17,10 +17,12 @@ public interface VacationApprovalFlowRepository extends JpaRepository<VacationAp
 	List<VacationApprovalFlow> findByVacationApproval(VacationApproval vacationApproval);
 	
 	// 결재 내역함 조회
-	@Query("SELECT v FROM VacationApprovalFlow v WHERE v.member.memberNo = :memberNo AND v.vacationApprovalFlowRole IN (1, 2)")
+	@Query("SELECT v FROM VacationApprovalFlow v WHERE v.member.memberNo = :memberNo AND v.vacationApprovalFlowRole IN (1, 2) AND v.vacationApprovalFlowStatus <> 0")
 	List<VacationApprovalFlow> findByMemberMemberNoAndRole(@Param("memberNo") Long memberNo);
 	
 	//결재 참조함 조회
 	@Query("SELECT v FROM VacationApprovalFlow v WHERE v.member.memberNo = :memberNo AND v.vacationApprovalFlowRole IN (0)")
 	List<VacationApprovalFlow> findByMemberMemberNoAndRoleReferens(@Param("memberNo") Long memberNo);
+	
+	void deleteByVacationApproval(VacationApproval vacationApproval);
 }

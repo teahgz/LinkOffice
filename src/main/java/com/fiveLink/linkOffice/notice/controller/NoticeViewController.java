@@ -38,7 +38,6 @@ public class NoticeViewController {
     // 공지사항 생성 페이지
     @GetMapping("/admin/notice/create/{member_no}")
     public String noticeCreate(@PathVariable("member_no") Long memberNo, Model model) {
-        // 멤버 정보 조회
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
         model.addAttribute("memberDto", memberDto);
 
@@ -87,6 +86,7 @@ public class NoticeViewController {
         return "admin/notice/notice_list";
     }
     
+    // 공지사항 상세 페이지
     @GetMapping("/admin/notice/list/{notice_no}")
     public String selectNoticeOne(Model model,
     		@PathVariable("notice_no")Long notice_no) {
@@ -102,6 +102,7 @@ public class NoticeViewController {
     	return "admin/notice/notice_detail";
     }
     
+    // 공지사항 수정 페이지
     @GetMapping("/admin/notice/update/{notice_no}")
     public String updateNoticePage(Model model,
     		@PathVariable("notice_no")Long notice_no) {

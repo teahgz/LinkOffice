@@ -23,15 +23,35 @@ public interface MeetingReservationRepository extends JpaRepository<MeetingReser
 		       "AND mr.meetingReservationStatus = :status " +
 		       "ORDER BY mr.meetingReservationStartTime ASC")
     List<Object[]> findReservations(@Param("date") String date, @Param("status") Long status);
-
+  
     @Query("SELECT mr FROM MeetingReservation mr " +
-            "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
-            "WHERE mr.memberNo = :memberNo " +
-            "AND mr.meetingNo = :meetingNo " +
-            "AND mr.meetingReservationPurpose LIKE %:searchText% " +
-            "AND mr.meetingReservationStatus = 0")
-     Page<MeetingReservation> findByMemberNoAndMeetingNoAndMeetingReservationPurposeContaining(@Param("memberNo") Long memberNo,@Param("meetingNo") Long meetingNo, @Param("searchText") String searchText, Pageable pageable);
-
-     Page<MeetingReservation> findByMemberNoAndMeetingReservationPurposeContaining(Long memberNo, String searchText, Pageable pageable);
+    	       "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
+    	       "JOIN Member mem ON mr.memberNo = mem.memberNo " +
+    	       "WHERE (:memberNo IS NULL OR mr.memberNo = :memberNo) " +
+    	       "AND (:meetingNo IS NULL OR mr.meetingNo = :meetingNo) " +
+    	       "AND (:searchText IS NULL OR mr.meetingReservationPurpose LIKE %:searchText%) " +
+    	       "AND (:startDate IS NULL OR mr.meetingReservationDate >= :startDate) " +
+    	       "AND (:endDate IS NULL OR mr.meetingReservationDate <= :endDate) " +
+    	       "AND mr.meetingReservationStatus = 0 " +
+    	       "ORDER BY " +
+    	       "CASE WHEN :sortBy = 'latest' THEN mr.meetingReservationDate END DESC, " +
+    	       "CASE WHEN :sortBy = 'oldest' THEN mr.meetingReservationDate END ASC")
+    Page<MeetingReservation> searchReservations(@Param("memberNo") Long memberNo, @Param("meetingNo") Long meetingNo, @Param("searchText") String searchText, @Param("startDate") String startDate, 
+    											@Param("endDate") String endDate, @Param("sortBy") String sortBy, Pageable pageable);
+    
+    // 관리자 - 전체 예약 목록
+    @Query("SELECT mr FROM MeetingReservation mr " +
+ 	       "JOIN Meeting m ON mr.meetingNo = m.meetingNo " +
+ 	       "JOIN Member mem ON mr.memberNo = mem.memberNo " + 
+ 	       "WHERE (:meetingNo IS NULL OR mr.meetingNo = :meetingNo) " +
+ 	       "AND (:searchText IS NULL OR mr.meetingReservationPurpose LIKE %:searchText%) " +
+ 	       "AND (:startDate IS NULL OR mr.meetingReservationDate >= :startDate) " +
+ 	       "AND (:endDate IS NULL OR mr.meetingReservationDate <= :endDate) " +
+ 	       "AND mr.meetingReservationStatus = 0 " +
+ 	       "ORDER BY " +
+ 	       "CASE WHEN :sortBy = 'latest' THEN mr.meetingReservationDate END DESC, " +
+ 	       "CASE WHEN :sortBy = 'oldest' THEN mr.meetingReservationDate END ASC")
+    Page<MeetingReservation> allReservations(@Param("meetingNo") Long meetingNo, @Param("searchText") String searchText, @Param("startDate") String startDate, 
+ 											@Param("endDate") String endDate, @Param("sortBy") String sortBy, Pageable pageable);
 
 } 

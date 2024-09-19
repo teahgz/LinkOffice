@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fiveLink.linkOffice.member.domain.Member;
-import com.fiveLink.linkOffice.member.domain.MemberDto;
+
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {

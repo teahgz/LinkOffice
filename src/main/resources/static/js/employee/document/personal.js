@@ -4,8 +4,9 @@ let folderList = [];
 $(function () {
 	// 전역 변수로 selectedFolderNo 정의
 	let selectedFolderNo = null;
-	// 폴더 이름 변경 여부 
+	// 폴더 이름 변경 여부  
 	let isFolderNameChange = false;
+    let savedFolderNo = null;
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     var deptNo = document.getElementById("dept_no").textContent;
@@ -26,82 +27,90 @@ $(function () {
     }
 
     // 폴더 리스트 받아오기
-    function getFolders() {
-        $.ajax({
-            type: 'GET',
-            url: '/personal/folder',
-            data: { memberNo: memberNo },
-            dataType: 'json',
-            success: function(data) {
-				// 폴더리스트 초기화 
-                folderList = []; 
-                $.each(data, function(idx, item) {
-                    folderList.push({
-						// 폴더 번호, 부모폴더가 있는지, 폴더 이름을 배열에 담음 
-                        id: item.document_folder_no,
-                        parent: item.document_folder_parent_no ? item.document_folder_parent_no : '#',
-                        text: item.document_folder_name
-                    });
-                });
-
-                // 폴더 리스트가 존재할 때
-                if (folderList.length > 0) {
-                    $('#tree').show();
-                    $('#tree').jstree({
-                        'core': {
-                            'data': folderList,
-                            'animation': 0
-                        },
-                        'themes': {
-                            'name': 'proton',
-                            'responsive': true,
-                            'dots': false
-                        },
-                        'types': {
-                            'default': {
-                                'icon': 'fa fa-folder'
-                            }
-                        },
-                        'plugins': ['wholerow', 'types']
-                    }).on('ready.jstree', function () {
-                        const savedFolderNo = sessionStorage.getItem('selectedFolderNo');
-                        if (savedFolderNo) {
-                            $('#tree').jstree('select_node', savedFolderNo);
-                            if (isFolderNameChange) {
-                                openFolderToNode(savedFolderNo);
-                                updateFolderName(savedFolderNo);
-                                loadFiles(savedFolderNo);
-                            }
-                        } else {
-                            $('.document_no_folder').show();
-                            $('.document_select_folder').hide();
-                        }
-                        $('.document_no_folder').hide();
-                        $('.document_select_folder').show();
-                        $('.folder_buttons').show();
-                        $('.box_size').show();
-                    });
-
-                    $('#tree').on('changed.jstree', function (e, data) {
-						// 현재페이지를 1페이지로 리셋 
-                        currentPage = 0; 
-                        selectedFolderNo = data.node.id;
-                        // 폴더 이름 출력을 위한 함수 
-                        updateFolderName(selectedFolderNo); 
-                        // 폴더 안에 든 파일을 불러올 함수 
-                        loadFiles(selectedFolderNo);                       
-                        // 선택된 폴더 번호를 저장
-                        sessionStorage.setItem('selectedFolderNo', selectedFolderNo);
-                    });
-                } else {
-					// 폴더가 없으면 폴더 생성 버튼 띄우기 
-                    $('#tree').hide();
-                    $('.document_no_folder').show();
-                }
-            }
-        });
-    }
-    
+	function getFolders() {
+	    return new Promise((resolve, reject) => {
+	        $.ajax({
+	            type: 'GET',
+	            url: '/personal/folder',
+	            data: { memberNo: memberNo },
+	            dataType: 'json',
+	            success: function(data) {
+	                // 폴더리스트 초기화 
+	                folderList = []; 
+	                $.each(data, function(idx, item) {
+	                    folderList.push({
+							// 폴더 번호, 부모폴더가 있는지, 폴더 이름을 배열에 담음 
+	                        id: item.document_folder_no,
+	                        parent: item.document_folder_parent_no ? item.document_folder_parent_no : '#',
+	                        text: item.document_folder_name
+	                    });
+	                });
+	
+	                // 폴더 리스트가 존재할 때
+	                if (folderList.length > 0) {
+	                    $('#tree').show();
+	                    $('#tree').jstree('destroy').empty();
+	                    $('#tree').jstree({
+	                        'core': {
+	                            'data': folderList,
+	                            'animation': 0
+	                        },
+	                        'themes': {
+	                            'name': 'proton',
+	                            'responsive': true,
+	                            'dots': false
+	                        },
+	                        'types': {
+	                            'default': {
+	                                'icon': 'fa fa-folder'
+	                            }
+	                        },
+	                        'plugins': ['wholerow', 'types']
+	                    }).on('ready.jstree', function() {
+	                        savedFolderNo = sessionStorage.getItem('selectedFolderNo');
+	                        if (savedFolderNo) {
+	                            $('#tree').jstree('select_node', savedFolderNo);
+	                            if (isFolderNameChange) {
+	                                openFolderToNode(savedFolderNo);
+	                                updateFolderName(savedFolderNo);
+	                                loadFiles(savedFolderNo);
+	                            }
+	                        } else {
+	                            $('.document_no_folder').show();
+	                            $('.document_select_folder').hide();
+	                        }
+	                        $('.document_no_folder').hide();
+	                        $('.document_select_folder').show();
+	                        $('.folder_buttons').show();
+	                        $('.box_size').show();
+	                        resolve(); 
+	                    });
+	
+	                    $('#tree').on('changed.jstree', function (e, data) {
+	                        // 현재페이지를 1페이지로 리셋 
+	                        currentPage = 0; 
+	                        selectedFolderNo = data.node.id;
+	                        // 폴더 이름 출력을 위한 함수 
+	                        updateFolderName(selectedFolderNo);
+	                        // 폴더 안에 든 파일을 불러올 함수  
+	                        loadFiles(selectedFolderNo); 
+	                        // 선택된 폴더 번호를 저장                      
+	                        sessionStorage.setItem('selectedFolderNo', selectedFolderNo);
+	                    });
+	                } else {
+						// 폴더가 없으면 폴더 생성 버튼 띄우기 
+	                    $('#tree').hide();
+	                    $('.document_no_folder').show();
+	                    resolve();
+	                }
+	            },
+	            error: function(err) {
+	                reject(err); 
+	            }
+	        });
+	    });
+	}
+   
     // 선택된 폴더까지 열린 상태로 있게 하기 
     function openFolderToNode(savedFolderNo) {
         var node = $('#tree').jstree(true).get_node(savedFolderNo);
@@ -403,7 +412,7 @@ $(function () {
 	    
 	    if (newFolderName.trim() === '') {
 	        Swal.fire({
-	            text: '새로운 폴더명을 입력해주세요 .',
+	            text: '새로운 폴더명을 입력해주세요.',
 	            icon: 'warning',
 	            confirmButtonText: '확인'
 	        });
@@ -464,7 +473,222 @@ $(function () {
 	    }
 	}
 
-
+	// 폴더 생성
+	$('#folder_add_button').on('click', function(){
+		event.preventDefault();		
+		$('.modal_div').show();
+		$('.folder_create_modal').show();		
+	});
+	
+	$('#folder_create_button').on('click', function(){
+		createFolder();
+	});
+	
+	// 폴더 생성 함수
+	function createFolder() {
+	    // 입력된 폴더 이름 
+	    const folderName = $('#create_folder_name').val();
+	    
+	    if (folderName.trim() === '') {
+	        Swal.fire({
+	            text: '생성할 폴더명을 입력해주세요.',
+	            icon: 'warning',
+	            confirmButtonText: '확인'
+	        });
+	    } else {
+	        const csrfToken = $('input[name="_csrf"]').val();
+	        
+	        // ajax 요청
+	        $.ajax({
+	            type: 'POST',
+	            url: '/personal/create/folder',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                folderName: folderName, 
+	                parentFolderNo: selectedFolderNo, 
+	                memberNo: memberNo,
+	                deptNo: deptNo
+	            }),
+	            headers: {
+	                'X-Requested-With': 'XMLHttpRequest',
+	                'X-CSRF-TOKEN': csrfToken
+	            },
+	            success: function(response) {
+	                if (response.res_code === '200') {
+	                    Swal.fire({
+	                        icon: 'success',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	
+	                    // 폴더 생성 성공 처리
+	                    $('.modal_div').hide();
+	                    // 폴더 리스트를 다시 가져오기
+						getFolders().then(() => {
+							// 기존 선택 해제
+	                        const tree = $('#tree').jstree(true);
+	                        const prevSelectedNode = tree.get_selected(true)[0];
+	                        if (prevSelectedNode) {
+	                            tree.deselect_node(prevSelectedNode);
+	                        }
+	                        // 새로 생성된 폴더를 세션에 저장 
+	                        savedFolderNo = response.folderNo;
+	                        sessionStorage.setItem('selectedFolderNo', savedFolderNo);
+	                        
+	                        // 새로 생성된 폴더를 선택하고 열기
+	                        tree.select_node(savedFolderNo);
+	                        openFolderToNode(savedFolderNo);
+	                        
+	                        // 새로 생성된 폴더의 파일 목록 불러오기
+	                        loadFiles(savedFolderNo);
+	
+	                        $('.document_no_folder').hide();
+	                        $('.document_select_folder').show();
+	                        $('.folder_buttons').show();
+	                        $('.box_size').show();
+	                        $('#create_folder_name').val('');
+	                    });
+	                } else {
+	                    Swal.fire({
+	                        icon: 'error',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            }
+	        });
+	    }
+	}
+	
+	// 폴더 삭제
+	$('#folder_delete_button').on('click', function(){
+		const csrfToken = $('input[name="_csrf"]').val();
+		$.ajax({
+	            type: 'POST',
+	            url: '/document/parent/existence',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                folderNo: selectedFolderNo
+	            }),
+	            headers: {
+	                'X-Requested-With': 'XMLHttpRequest',
+	                'X-CSRF-TOKEN': csrfToken
+	            },
+	            success: function(response) {
+					// 삭제할 폴더가 최상위 폴더가 아닐 경우 
+	                if (response.res_result == 0) {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: response.res_msg,
+	                        showCancelButton: true,
+	                        confirmButtonText: '확인',
+	                        cancelButtonText: '취소'
+	                    }).then((result) => {
+							if(result.isConfirmed){
+								$.ajax({
+		                            type: 'POST',
+		                            url: '/document/personal/folder/delete',
+		                            contentType: 'application/json',
+		                            data: JSON.stringify({
+		                                folderNo: selectedFolderNo,
+		                                memberNo: memberNo
+		                            }),
+			                        headers: {
+		                                'X-Requested-With': 'XMLHttpRequest',
+		                                'X-CSRF-TOKEN': csrfToken
+		                            },
+		                            success: function(deleteResponse){
+										if(deleteResponse.res_code === '200'){
+											Swal.fire({
+		                                        icon: 'success',
+		                                        text: deleteResponse.res_msg,
+		                                        confirmButtonText: '확인'
+	                                    	});
+	                                    	// 폴더 리스트를 다시 가져오기
+											getFolders().then(() => {
+												// 기존 선택 해제
+						                        const tree = $('#tree').jstree(true);
+						                        const prevSelectedNode = tree.get_selected(true)[0];
+						                        if (prevSelectedNode) {
+						                            tree.deselect_node(prevSelectedNode);
+						                        }
+						                        // 최상위 폴더를 세션에 저장 						                       
+						                        savedFolderNo = deleteResponse.parentNo;
+						                        sessionStorage.setItem('selectedFolderNo', savedFolderNo);
+						                        
+						                        // 최상위 폴더를 선택하고 열기
+						                        tree.select_node(savedFolderNo);
+						                        openFolderToNode(savedFolderNo);
+						                        
+						                        // 최상위 폴더의 파일 목록 불러오기
+						                        loadFiles(savedFolderNo);
+						
+						                        $('.document_no_folder').hide();
+						                        $('.document_select_folder').show();
+						                        $('.folder_buttons').show();
+						                        $('.box_size').show();
+						                    });
+										} else{
+											Swal.fire({
+		                                        icon: 'error',
+		                                        text: deleteResponse.res_msg,
+		                                        confirmButtonText: '확인'
+		                                    });
+	                                    }
+									}
+								});
+							}
+						});
+	                // 삭제할 폴더가 최상위 폴더일 경우 
+	                } else {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: response.res_msg,
+	                        showCancelButton: true,
+	                        confirmButtonText: '확인',
+	                        cancelButtonText: '취소'
+	                   }).then((result) => {
+	                    if (result.isConfirmed) {                     
+	                        $.ajax({
+	                            type: 'POST',
+	                            url: '/document/top/folder/delete',
+	                            contentType: 'application/json',
+	                            data: JSON.stringify({
+	                                folderNo: selectedFolderNo,
+	                                memberNo: memberNo
+	                            }),
+	                            headers: {
+	                                'X-Requested-With': 'XMLHttpRequest',
+	                                'X-CSRF-TOKEN': csrfToken
+	                            },
+	                            success: function(deleteResponse) {
+	                                if (deleteResponse.res_code === '200') {
+	                                    Swal.fire({
+	                                        icon: 'success',
+	                                        text: deleteResponse.res_msg,
+	                                        confirmButtonText: '확인'
+	                                    });
+	                                    $('#tree').hide();
+                                    	$('.document_no_folder').show();
+                                    	$('.document_file_list').hide();
+                                 	   	$('.document_select_folder').hide();
+                                   	 	$('.folder_buttons').hide();
+                                   	 	$('.box_size').hide();
+	                                } else {
+	                                    Swal.fire({
+	                                        icon: 'error',
+	                                        text: deleteResponse.res_msg,
+	                                        confirmButtonText: '확인'
+	                                    });
+	                                }
+	                            }
+                        	});
+                        }
+                    });
+                }
+            }
+        });
+	});
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
         getFolders();

@@ -164,15 +164,21 @@
  
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 5% auto;
     padding: 40px;
     border: 1px solid #888; 
     z-index: 1060;  
     position: relative;  
-    max-width: 600px;
-    border-radius: 8px;
+    max-width: 600px;  
+    height: auto; 
+    overflow: hidden; 
+    border-radius: 8px; 
 }
- 
+.form_scroll {
+    max-height: 350px;  
+    overflow-y: auto;  
+    padding-right: 10px; 
+}
 #reservation-table {
     position: relative;
     z-index: 1;  
@@ -188,6 +194,8 @@
     float: right;
     font-size: 28px;
     font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
 .close:hover,
 .close:focus {
@@ -275,7 +283,7 @@ td.available {
     position: fixed;
     z-index: 9999;
     right : 20px;
-    top: 70px;
+    top: 95px;
     width: 450px;
     height: 400px; 
     padding: 0;   
@@ -446,7 +454,7 @@ td.available {
     margin-bottom: 5px;
     font-size: 14px;
     width : 100px;
-    color: #333;
+    color: #333; 
 }
 
 .selected-participants span {
@@ -469,5 +477,160 @@ td.available {
 }
 
 .reserve-button:hover {
-    background-color: #9CAFC7; /* 버튼에 마우스를 올렸을 때 배경색 변경 */
+    background-color: #9CAFC7;  
+} 
+
+textarea{
+	resize: none;
 }
+ 
+/* 예약 모달 */
+#reservationModal {
+    display: none;
+    position: fixed;
+    z-index: 1050;  
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 40px;
+    border: 1px solid #888; 
+    z-index: 1060;  
+    position: relative;  
+    max-width: 600px;
+    max-height: 500px;  
+    height: 500px; 
+    overflow-y: auto;   
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 예약 모달 */ 
+hr {
+	margin-top: 40px;
+}
+
+#reservationForm {
+	margin-top : 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.reservation_row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.reservation_row label {
+    flex: 0 0 150px; 
+    text-align: left;
+    font-weight: bold;
+}
+
+.reservation_row input,
+.reservation_row select,
+.reservation_row textarea {
+    flex: 1;  
+    width : 110px;
+	padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+} 
+
+.reservation_row input:focus,
+.reservation_row select:focus,
+.reservation_row textarea:focus {
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+.time_space {
+	margin : 0 7px;
+}
+
+.date_select {
+	margin-right : 10px;
+}
+
+.two_btn {
+	margin-left : 365px;
+}
+
+.reservation_btn {
+	width : 110px;
+    padding: 10px 20px;
+    background-color: #B1C2DD;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right : 5px;
+}
+
+.cancel_btn {
+	width : 110px;
+    padding: 10px 20px;
+    background-color: #C0C0C0;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel_btn:hover {
+    background-color: #9b9b9b;
+}
+
+.reservation_btn:hover {
+    background-color: #9CAFC7;
+}
+
+.participate_btn {
+	width : 110px;
+    padding: 10px 20px;
+    background-color: rbg(192, 192, 192);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.participate_btn:hover { 
+	background-color: #b5b5b5;
+}
+
+.selected-participants-container {
+	width : 100%;  
+}
+.pupose_info {
+	font-size:12px;
+	color:red;
+	margin-top : -15px;
+}
+
+ 

@@ -268,6 +268,24 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
             return;
         }
+        if (meetingAvailableStart < "07:00") {
+			Swal.fire({
+			    text: '이용 시작 시간은 오전 7시 이후로 설정해 주세요.',
+			    icon: 'warning',
+			    confirmButtonColor: '#B1C2DD',
+			    confirmButtonText: '확인',
+			});
+            return;
+        }
+        if (meetingAvailableEnd > "23:00") {
+			Swal.fire({
+			    text: '이용 종료 시간은 오후 11시 이전으로 설정해 주세요.',
+			    icon: 'warning',
+			    confirmButtonColor: '#B1C2DD',
+			    confirmButtonText: '확인',
+			});
+            return;
+        }
         if (meetingAvailableEnd <= meetingAvailableStart) {
 			Swal.fire({
 			    text: '이용 종료 시간은 이용 시작 시간 이후로 설정해 주세요.',
@@ -310,13 +328,18 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             success: function (response) {
                 if (response.res_code === "200") {
-                    Swal.fire('등록 성공', response.res_msg, 'success').then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('등록 실패', response.res_msg, 'error');
-                }
-            },
+                    Swal.fire({
+			            text: '회의실 정보가 등록되었습니다.',
+			            icon: 'success', 
+			            confirmButtonColor: '#B1C2DD', 
+			            confirmButtonText: '확인', 
+			        }).then(() => {
+			                        location.reload();
+			                    });
+			                } else {
+			                    Swal.fire('등록 실패', response.res_msg, 'error');
+			                }
+			            },
             error: function () {
                 Swal.fire('서버 오류', '서버에서 오류가 발생했습니다.', 'error');
             }
@@ -369,6 +392,24 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
             return;
         }
+        if (meetingAvailableStart < "07:00") {
+			Swal.fire({
+			    text: '이용 시작 시간은 오전 7시 이후로 설정해 주세요.',
+			    icon: 'warning',
+			    confirmButtonColor: '#B1C2DD',
+			    confirmButtonText: '확인',
+			});
+            return;
+        }
+        if (meetingAvailableEnd > "23:00") {
+			Swal.fire({
+			    text: '이용 종료 시간은 오후 11시 이전으로 설정해 주세요.',
+			    icon: 'warning',
+			    confirmButtonColor: '#B1C2DD',
+			    confirmButtonText: '확인',
+			});
+            return;
+        }
         if (meetingAvailableEnd <= meetingAvailableStart) {
 			Swal.fire({
 			    text: '이용 종료 시간은 이용 시작 시간 이후로 설정해 주세요.',
@@ -402,11 +443,11 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (response) {
                 if (response.res_code === "200") {
                     Swal.fire({
-					    text: response.res_msg,
-					    icon: 'success',
-					    confirmButtonColor: '#B1C2DD',
-					    confirmButtonText: '확인',
-					}).then(() => {
+			            text: '회의실 정보가 수정되었습니다.',
+			            icon: 'success', 
+			            confirmButtonColor: '#B1C2DD', 
+			            confirmButtonText: '확인', 
+			        }).then(() => {
                         location.reload();
                     });
                 } else {
@@ -446,9 +487,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 
-        Swal.fire({
-            title: '삭제 확인',
-            text: '선택한 항목을 삭제하시겠습니까?',
+        Swal.fire({ 
+            text: '선택한 회의실을 삭제하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#EEB3B3',

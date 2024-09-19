@@ -163,7 +163,8 @@ public class ApprovalViewController {
 				vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
 			}
 		});
-
+		System.out.println(vacationApprovalDtoPage.getContent());
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
 		model.addAttribute("page", vacationApprovalDtoPage);
@@ -213,24 +214,6 @@ public class ApprovalViewController {
 		 
 		 return "employee/approval/approval_references_list"; 
 	}
-	 
-
-	private VacationApprovalDto convertToDto(VacationApproval vacationApproval) {
-		return VacationApprovalDto.builder().vacation_approval_no(vacationApproval.getVacationApprovalNo())
-				.member_no(vacationApproval.getMember().getMemberNo())
-				.vacation_approval_title(vacationApproval.getVacationApprovalTitle())
-				.vacation_type_no(vacationApproval.getVacationType().getVacationTypeNo())
-				.vacation_approval_start_date(vacationApproval.getVacationApprovalStartDate().toString())
-				.vacation_approval_end_date(vacationApproval.getVacationApprovalEndDate().toString())
-				.vacation_approval_total_days(vacationApproval.getVacationApprovalTotalDays())
-				.vacation_approval_content(vacationApproval.getVacationApprovalContent())
-				.vacation_approval_status(vacationApproval.getVacationApprovalStatus())
-				.vacation_approval_cancel_reason(vacationApproval.getVacationApprovalCancelReason())
-				.vacation_approval_create_date(vacationApproval.getVacationApprovalCreateDate())
-				.vacation_approval_update_date(vacationApproval.getVacationApprovalUpdateDate())
-				.member_name(vacationApproval.getMember().getMemberName())
-				.vacation_type_name(vacationApproval.getVacationType().getVacationTypeName()).build();
-	}
 
 	// 사용자 결재 진행함 페이지
 	@GetMapping("/employee/approval/progress")
@@ -253,4 +236,42 @@ public class ApprovalViewController {
 
 		return "employee/approval/approval_reject_list";
 	}
+	
+	// 사용자 결재 내역함 상세 페이지 
+	@GetMapping("/employee/approval/approval_history_detail/{vacationapproval_no}")
+	public String approvalHistoryDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
+		
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+		
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	        if (vacationapprovaldto.getVacation_approval_create_date() != null ) {
+	            String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
+	            vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
+	        }
+	        
+	        if (vacationapprovaldto.getFlows() != null) {
+	            for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
+	                if (flow.getVacation_approval_flow_complete_date() != null) {
+	                    String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
+	                    flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
+	                }
+	                
+	                MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+	                flow.setDigital_name(currentMember.getMember_new_digital_img());
+	                
+	            }
+	        }
+	 		
+	        
+	        System.out.println(vacationapprovaldto);
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+		model.addAttribute("currentUserMemberNo", member_no);
+		
+		return "employee/approval/approval_history_detail";
+	}
+	
 }

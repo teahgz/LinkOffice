@@ -59,21 +59,22 @@
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
 						                    <div class="signature_box">
+						                    <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
+									                 th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+									                 alt="현재 서명" id="currentSignature">
+									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
+									                  id="currentSignature" th:text="${flow.member_name}"></span>
 						                    </div>
 						                </td>
 						            </tr>
 						            <tr>
-						                <!-- 결재 완료 날짜 // 전자결재 서명이 없으면 안보이도록  수정예정 -->
 						                <td>
 						                    <div class="date_box" 
 						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date != null}"
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status == 2}"
 						                         th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date == null}">
-						                        <span>미결</span>
-						                    </div>
 						                </td>
 						            </tr>
 						        </tbody>
@@ -120,7 +121,9 @@
 
                     <div class="button_container">
                     	<button type="button" class="cancel_button">기안 취소</button>
-                        <button type="button" class="edit_button">수정</button>
+		                <a th:if="${#lists.size(vacationapprovaldto.flows) > 0 and vacationapprovaldto.flows[0].vacation_approval_flow_status == 1}" 
+		                   th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" 
+		                   class="edit_button">수정</a>
                         <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
                     </div>
                 </div>
