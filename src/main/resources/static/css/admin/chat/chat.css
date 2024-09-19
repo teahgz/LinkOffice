@@ -359,10 +359,35 @@
     margin-left: 4px;
 }
 #searchChatContent {
-margin-top : 3px;
+    margin-top : 3px;
 }
-
 .modal-content-element{
     display: flex;
     justify-content: space-between;
+}
+.modal-content-element .close {
+    border:none;
+    background-color:white;
+    color: #aaa;
+    font-size: 28px;
+    cursor: pointer;
+}
+#chatRoomNameInput{
+margin-top: 10px;
+    font-size: 17px;
+    padding: 5px;
+}
+
+#editChatRoomForm button {
+    margin-top: 10px;
+    width: 65px;
+    border-radius: 5px;
+    border:none;
+    background-color: #B1C2DD;
+    padding: 10px 15px;
+}
+.update-button:disabled {
+    background-color: #d3d3d3;
+    color: #a9a9a9;
+    opacity: 0.6;
 }

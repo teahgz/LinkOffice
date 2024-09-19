@@ -127,14 +127,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 chatMemberService.createMemberRoomMany(memberDto);
 
             }
-            // 생성한 방에 현재 사용자도 추가
             ChatMemberDto currentMemberDto = new ChatMemberDto();
             currentMemberDto.setMember_no(currentMemberNo);
             currentMemberDto.setChat_room_no(chatRoomNo);
             currentMemberDto.setChat_member_room_name(groupChatName);
             chatMemberService.createMemberRoomOne(currentMemberDto);
 
-            // 클라이언트로 보낼 데이터를 준비
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("chatRoomNo", chatRoomNo);
             responseMap.put("members", members);
@@ -142,11 +140,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             responseMap.put("type", type);
             responseMap.put("names", groupChatName);
 
-            // JSON으로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             String responseJson = objectMapper.writeValueAsString(responseMap);
 
-            // 웹소켓 세션을 통해 클라이언트에 메시지 전송
             session.sendMessage(new TextMessage(responseJson));
 
         }
