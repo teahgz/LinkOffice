@@ -197,7 +197,7 @@ $(function () {
                     paginatedFiles.forEach(file => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                        	<td><input type="checkbox"></td>
+                        	<td><input type="checkbox" class="file_checkbox" id="${file.member_no}"></td>
                             <td>${file.document_ori_file_name}</td>
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + file.position_name + "(" + file.department_name + ")")}</td>
                             <td>${formatDate(file.document_file_upload_date)}</td>
@@ -246,6 +246,47 @@ $(function () {
 	                const fileNo = this.id;
 	                deleteFile(fileNo);
 	            });
+	            // th 체크박스 클릭하면 전부 선택
+	             $('#select_all').on('change', function() {
+                	const isChecked = this.checked; 
+                	$('.file_checkbox').prop('checked', isChecked);
+            	});
+            	// 파일 선택 삭제
+				$('#select_delete').on('click', function() {
+				    const fileNos = []; 
+				    // 삭제 가능 여부 
+				    let canDeleteFiles = true; 
+				
+				    // 체크된 파일들의 fileNo 가져오기 
+				    $('.file_checkbox:checked').each(function() {
+				        const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+				        const memberNoOfFile = this.id;
+				
+				        // 본인이 등록한 파일만 삭제 가능 
+				        if (memberNoOfFile != memberNo) {
+				            canDeleteFiles = false; 
+				        } else {
+				            fileNos.push(fileNo); 
+				        }
+				    });
+				
+				    if (!canDeleteFiles) {
+				        Swal.fire({
+				            icon: 'warning',
+				            text: '본인이 등록한 파일만 삭제 가능합니다.',
+				            confirmButtonText: '확인'
+				        });
+				    } else if (fileNos.length > 0) {
+				        deleteSelectedFile(fileNos); 
+				    } else {
+				        Swal.fire({
+				            icon: 'warning',
+				            text: '삭제할 파일을 선택해 주세요.',
+				            confirmButtonText: '확인'
+				        });
+				    }
+				});
+
             }
         });
     }
@@ -805,6 +846,48 @@ $(function () {
 			}
 		})
 	}	
+	// 파일 선택 삭제
+	function deleteSelectedFile(fileNos) {
+	    Swal.fire({
+	        icon: 'warning',
+	        text: '정말 삭제하시겠습니까?',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            $.ajax({
+	                type: 'POST',
+	                url: '/document/fileList/delete',  
+	                contentType: 'application/json',
+	                data: JSON.stringify({ 
+						fileNos: fileNos 
+					}), 
+	                headers: {
+	                    'X-Requested-With': 'XMLHttpRequest',
+	                    'X-CSRF-TOKEN': csrfToken
+	                },
+	                success: function(response) {
+	                    if (response.res_code === '200') {
+	                        Swal.fire({
+	                            icon: 'success',
+	                            text: response.res_msg,
+	                            confirmButtonText: '확인'
+	                        });
+	                        loadFiles(selectedFolderNo); 
+	                        getAllFileSize();
+	                    } else {
+	                        Swal.fire({
+	                            icon: 'error',
+	                            text: response.res_msg,
+	                            confirmButtonText: '확인'
+	                        });
+	                    }
+	                }
+	            });
+	        }
+	    });
+	}
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
         getFolders();

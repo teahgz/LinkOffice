@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.document.controller;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -133,25 +135,42 @@ public class DocumentFileController {
         resultMap.put("res_msg", "파일을 삭제하지 못했습니다.");
 		
         DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
-        DocumentFile documentFile = DocumentFile.builder()
-        		.documentFileNo(file.getDocumentFileNo())    			
-        		.documentOriFileName(file.getDocumentOriFileName())
-    			.documentNewFileName(file.getDocumentNewFileName())
-    			.documentFolder(file.getDocumentFolder())
-    			.member(file.getMember())
-    			.documentFileSize(file.getDocumentFileSize())  
-    			.documentFileUploadDate(file.getDocumentFileUploadDate()) 			
-    			.documentFileUpdateDate(LocalDateTime.now())
-    			.documentFileStatus(1L)
-    			.build();
-        int result = documentFileService.saveFile(documentFile);
+        file.setDocumentFileStatus(1L);
+        int result = documentFileService.saveFile(file);
     	if(result > 0) {
     		resultMap.put("res_code", "200");
 	        resultMap.put("res_msg", "삭제 완료되었습니다.");
     	}
 		return resultMap;
 	}
-	
+	// 여러 파일 삭제 
+	@PostMapping("/document/fileList/delete")
+	@ResponseBody
+	public Map<String, Object> deleteFiles(@RequestBody Map<String, List<Long>> payload) {
+		List<Long> fileNos = payload.get("fileNos");
+		Map<String, Object> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "파일을 삭제하지 못했습니다.");
+	    
+	    int deletedCount = 0;
+
+	    // 리스트로 가져온 파일들을 하나씩 삭제 
+	    for (Long fileNo : fileNos) {
+	        DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
+	        if (file != null) {
+	            file.setDocumentFileStatus(1L); 
+	            documentFileService.saveFile(file); 
+	            deletedCount++;
+	        }
+	    }
+	    
+	    if (deletedCount == fileNos.size()) {
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "삭제 완료되었습니다.");
+	    } 
+	    return resultMap;
+	}
+
 	
 	
 }
