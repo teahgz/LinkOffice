@@ -1,3 +1,4 @@
+@charset "UTF-8";
 
 .main_container {
     font-size: 14px;
@@ -124,12 +125,10 @@ input:focus, select:focus {
     position: relative;
 }
 
-
 .form-group div {
     gap: 10px;
 
 }
-
 
 .form-group strong {
     flex: 0 0 150px; 
@@ -142,7 +141,6 @@ input:focus, select:focus {
     flex: 1; 
     max-width: 300px; 
 }
-
 
 .approversDisplay, .referencesDisplay, .reviewersDisplay {
     width: 120px;

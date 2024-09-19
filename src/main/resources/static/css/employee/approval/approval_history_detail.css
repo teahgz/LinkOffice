@@ -216,9 +216,6 @@
     color: #6c757d;
 }
 
-
-
-
 .approval_line_section {
     margin-top: 20px;
 }
@@ -241,7 +238,6 @@
     align-items: center;
     gap: 5px;
 }
-
 
 .signature_box {
     display: flex;
@@ -285,7 +281,6 @@
     min-width: 100px; 
     text-align: center;
 }
-
 
 #approvalcancel{
 	font-size:17px;
