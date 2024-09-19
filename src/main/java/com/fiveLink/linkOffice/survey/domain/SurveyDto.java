@@ -26,6 +26,7 @@ public class SurveyDto {
 	private Long member_no;
 	private String member_name;
 	private Integer survey_status;
+	private Integer survey_participant_status;
 	
 	private int search_type = 1;
 	private String search_text;

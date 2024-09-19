@@ -32,17 +32,22 @@ public class SurveyService {
     }
     
     private List<SurveyDto> convertToDtoList(List<Survey> surveys) {
-    	return surveys.stream().map(survey -> {
-    		return SurveyDto.builder()
-    				.survey_no(survey.getSurveyNo())
-    				.survey_title(survey.getSurveyTitle())
-    				.survey_start_date(survey.getSurveyStartDate())
-    				.survey_end_date(survey.getSurveyEndDate())
-    				.survey_status(survey.getSurveyStatus())
-    				.member_name(survey.getMember().getMemberName()) 
-    				.build();
-    	}).collect(Collectors.toList());
+        return surveys.stream().map(survey -> {
+            Integer participantStatus = survey.getSurveyParticipant().isEmpty() ? null
+                    : survey.getSurveyParticipant().get(0).getSurveyParticipantStatus();
+            
+            return SurveyDto.builder()
+                    .survey_no(survey.getSurveyNo())
+                    .survey_title(survey.getSurveyTitle())
+                    .survey_start_date(survey.getSurveyStartDate())
+                    .survey_end_date(survey.getSurveyEndDate())
+                    .survey_status(survey.getSurveyStatus())
+                    .member_name(survey.getMember().getMemberName())
+                    .survey_participant_status(participantStatus) 
+                    .build();
+        }).collect(Collectors.toList());
     }
+
     
     public Page<SurveyDto> getAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
         Page<Survey> results = null;
@@ -76,7 +81,7 @@ public class SurveyService {
     }
     
     
- // 마감된 설문조사 목록을 가져오는 메서드
+    // 마감된 설문조사 목록을 가져오는 메서드
     public Page<SurveyDto> getEndAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
         Page<Survey> results = null;
 
@@ -99,6 +104,35 @@ public class SurveyService {
             }
         } else {
             results = surveyRepository.findAllEndedSurveysForMember(memberNo, pageable);
+        }
+
+        List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent());
+        return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
+    }
+    
+    // 진행중인 설문조사 목록을 가져오는 메서드
+    public Page<SurveyDto> getIngAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
+        Page<Survey> results = null;
+
+        String searchText = searchDto.getSearch_text();
+        if (searchText != null && !searchText.isEmpty()) {
+            int searchType = searchDto.getSearch_type();
+            switch (searchType) {
+                case 1:
+                    results = surveyRepository.findSurveyByTitleOrContentForIngList(searchText, memberNo, pageable);
+                    break;
+                case 2:
+                    results = surveyRepository.findSurveyByTitleForIngList(searchText, memberNo, pageable);
+                    break;
+                case 3:
+                    results = surveyRepository.findSurveyByDescriptionForIngList(searchText, memberNo, pageable);
+                    break;
+                case 4:
+                    results = surveyRepository.findSurveyByAuthorForIngList(searchText, memberNo, pageable);
+                    break;
+            }
+        } else {
+            results = surveyRepository.findAllOngoingSurveysForMember(memberNo, pageable);
         }
 
         List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent());
