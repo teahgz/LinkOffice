@@ -86,8 +86,6 @@
                 </div>
             </div>
 
-
-
         </div>
 
         <div class="modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
@@ -155,6 +153,33 @@
                 </form>
             </div>
         </div>
+        <div class="modal" id="organizationAddModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form>
+                        <input type="hidden" id="currentNo" th:value="${member.member_no}"/>
+                        <input type="hidden" id="currentName" th:value="${member.member_name}"/>
+                        <!--                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                        <div class="modal-header">
+                            <div class="organizationchart_title" id="organizationAddModalLabel">조직도</div>
+                            <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <!-- 선택된 사원 출력 -->
+                            <div id="selected-member"></div>
+
+                            <!-- 검색  -->
+                            <input type="text" id="organization_add_search" placeholder="검색어를 입력하세요." class="organization_search">
+
+                            <div id="organization-chart-add"></div>
+
+                            <button id="addButton" type="submit" class="modal_btn">추가</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </section>
 
     <script th:src="@{/js/admin/chat/chatMessage.js}"></script>

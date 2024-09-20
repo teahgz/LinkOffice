@@ -72,6 +72,12 @@ public class ChatMemberService {
         return chatMapper.chatRoomType(chatRoomNo);
 
     }
+    public List<Long> chatRoomMemberNo(Long chatRoomNo) {
+        return chatMapper.chatRoomMemberNo(chatRoomNo);
+    }
+    public String selectMemberChatRoomName(Long chatRoomNo){
+        return chatMapper.selectMemberChatRoomName(chatRoomNo);
+    }
 
 
 }

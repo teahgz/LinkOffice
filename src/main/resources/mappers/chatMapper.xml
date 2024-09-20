@@ -57,4 +57,16 @@
         SELECT chat_room_type FROM fl_chat_room
         WHERE chat_room_no = #{chatRoomNo}
     </select>
+
+    <!-- 채팅방 타입 가져오기  -->
+    <select id="chatRoomMemberNo" resultType="Long">
+        SELECT member_no FROM fl_chat_member
+        WHERE chat_room_no = #{chatRoomNo}
+    </select>
+
+    <select id="selectMemberChatRoomName" resultType="String" parameterType="java.lang.Long">
+        SELECT chat_room_name
+        FROM fl_chat_room
+        WHERE chat_room_no = #{chatRoomNo}
+    </select>
 </mapper>
