@@ -171,6 +171,7 @@ $(function () {
 	            // 날짜 필터링
 	            const startDate = new Date(startDateInput.value);
 	            const endDate = new Date(endDateInput.value);
+	            endDate.setHours(23, 59, 59, 999); 
 	            
 	            const filteredFiles = fileList.filter(file => {
 	                const fileDate = new Date(file.document_file_upload_date);
@@ -196,8 +197,8 @@ $(function () {
 
                     // 한 페이지에 10개씩 추가 
                     const start = currentPage * pageSize;
-                    const end = Math.min(start + pageSize, fileList.length);
-                    const paginatedFiles = fileList.slice(start, end);
+                    const end = Math.min(start + pageSize, filteredFiles.length);
+                    const paginatedFiles = filteredFiles.slice(start, end);
 
                     paginatedFiles.forEach(file => {
                         const row = document.createElement('tr');
@@ -754,7 +755,8 @@ $(function () {
 	        return; 
 	    }
 		if (fileInput.files.length > 0) {
-	        const file = fileInput.files[0]; 
+			const file = fileInput.files[0]; 
+	        const allowedExtensions = /(\.pdf|\.hwp|\.doc|\.docx|\.ppt|\.pptx|\.xls|\.xlsx)$/i;
 	        const maxSizeBytes = 25 * 1024 * 1024; 
 			// 파일 용량 초과 
 	        if (file.size > maxSizeBytes) {
@@ -764,6 +766,13 @@ $(function () {
 	                confirmButtonText: '확인'
 	            });
 	            return; 
+	        } else if(!allowedExtensions.exec(file.name)){
+				Swal.fire({
+		            icon: 'warning',
+		            text: '허용된 파일 형식이 아닙니다.',
+		            confirmButtonText: '확인'
+		        });
+		        return;
 	        } else {
 				const formData = new FormData();
     			formData.append('file', file);
@@ -900,10 +909,12 @@ $(function () {
     function startDateLimit() {
         const startDate = new Date(startDateInput.value);
         const endDate = new Date(endDateInput.value);
-        if (endDate < startDate) {
-            endDateInput.value = formatDate(startDate);
-        }
-        startDateInput.max = formatDate(endDate);
+        // endDate가 startDate보다 이전일 때 startDate를 endDate와 같게 설정
+	    if (endDate < startDate) {
+	        startDateInput.value = formatDate(endDate);
+	    }	    
+	    // startDate의 최대값을 endDate로 설정
+	    startDateInput.max = formatDate(endDate);
     }
     // startDate의 기본값을 오늘로부터 1년 전으로 설정
 	startDateInput.value = oneYearAgoStr;
@@ -935,12 +946,14 @@ $(function () {
         });
         // 날짜가 변경될 때 파일 목록을 새로 로드
 	    startDateInput.addEventListener('change', function() {
+	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
 	            loadFiles(selectedFolderNo);
 	        }
 	    });
 	    endDateInput.addEventListener('change', function() {
+	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
 	            loadFiles(selectedFolderNo);
