@@ -31,7 +31,6 @@
                             </div>
                         </div>
                         
-                        
 						<div class="approval_line_section">
 						    <table class="approval_line_table">
 						        <thead>
@@ -88,9 +87,16 @@
 						        </div>
 						    </div>
 						</div>
-                        <hr class="section_separator"> 
                     </div>
 
+					<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
+					    <strong>기안 취소 사유</strong>
+					    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
+					</div>
+
+
+                        <hr class="section_separator"> 
+                        
                     <div class="content_section">
                         <div class="vacationapproval_content">
                             <div class="table_container" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>
@@ -126,6 +132,19 @@
 		                   class="edit_button">수정</a>
                         <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
                     </div>
+                    
+                    	<div id="myModal" class="modal" style=display:none;>
+							<div class="modal_content">
+								<h2>취소 사유를 입력하세요.</h2>
+								<span class="close">&times;</span>
+									<div class="cancel_reason_div">
+									    <textarea id="cancel_reason" name="cancel_reason"></textarea>
+									</div>
+									<div class="modal_button">
+										<button type="submit" id="confirm_cancel_button">확인</button>
+									</div>
+							</div>
+						</div>
                 </div>
             </div>
         </section>

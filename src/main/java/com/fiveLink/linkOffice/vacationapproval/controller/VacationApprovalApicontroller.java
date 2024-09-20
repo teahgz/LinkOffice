@@ -10,15 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalFileService;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
@@ -136,14 +135,16 @@ public class VacationApprovalApicontroller {
 	
 	// 휴가 결재 기안 취소 (업데이트)
 	@ResponseBody
-	@PutMapping("/employee/vacationapproval/delete/{vacationapproval_no}")
-	public Map<String,String> employeeVacationApprovalDelete(@PathVariable("vacationapproval_no") Long vapNo){
+	@PutMapping("/employee/vacationapproval/cancel/{vacationapproval_no}")
+	public Map<String,String> employeeVacationApprovalDelete(@PathVariable("vacationapproval_no") Long vapNo,
+			@RequestBody VacationApprovalDto vacationApprovalDto){
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "기안 취소 중 오류가 발생하였습니다.");
 	    
 	    VacationApprovalDto dto = vacationApprovalService.selectVacationApprovalOne(vapNo);
 	    dto.setVacation_approval_status(3L);
+	    dto.setVacation_approval_cancel_reason(vacationApprovalDto.getVacation_approval_cancel_reason());
 	    
 	    if(vacationApprovalService.deleteVacationApproval(dto) != null) {
 	    	response.put("res_code", "200");
