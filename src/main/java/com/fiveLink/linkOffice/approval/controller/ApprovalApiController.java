@@ -1,6 +1,8 @@
 package com.fiveLink.linkOffice.approval.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +12,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
+import com.fiveLink.linkOffice.approval.domain.ApprovalFileDto;
+import com.fiveLink.linkOffice.approval.domain.ApprovalFlowDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFormDto;
+import com.fiveLink.linkOffice.approval.service.ApprovalFileService;
 import com.fiveLink.linkOffice.approval.service.ApprovalFormService;
+import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.member.service.MemberService;
 
 @Controller
 public class ApprovalApiController {
 	
 	private final ApprovalFormService approvalFormService;
+	private final MemberService memberService;
+	private final ApprovalFileService approvalFileService;
+	private final ApprovalService approvalService;
+	
 	
 	@Autowired
-	public ApprovalApiController( ApprovalFormService approvalFormService) {
+	public ApprovalApiController( ApprovalFormService approvalFormService, MemberService memberService, ApprovalFileService approvalFileService, ApprovalService approvalService) {
 		this.approvalFormService = approvalFormService;
+		this.memberService = memberService;
+		this.approvalFileService = approvalFileService;
+		this.approvalService = approvalService;
 	}
 	
 	// 관리자 전자결재 양식 등록
@@ -86,5 +101,97 @@ public class ApprovalApiController {
 	    return response; 
 	}
 	
+	// 사용자 전자결재 양식 등록 
+	@ResponseBody
+	@PostMapping("/employee/approval/create")
+	public Map<String,String> createApproval(
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			@RequestParam("approvalTitle") String approvalTitle,
+			@RequestParam("approvalContent")String approvalContent,
+	        @RequestParam("approvers") List<Long> approvers,
+	        @RequestParam("references") List<Long> references,
+	        @RequestParam("reviewers") List<Long> reviewers){
+		
+	    Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "결재 중 오류가 발생했습니다.");
+	    
+	    Long member_no = memberService.getLoggedInMemberNo();
+	    
+	    ApprovalDto appdto = new ApprovalDto();
+	    appdto.setApproval_title(approvalTitle);
+	    appdto.setMember_no(member_no);
+	    appdto.setApproval_content(approvalContent);
+	    appdto.setApproval_status(0L);
+	    
+	    List<ApprovalFlowDto> approvalFlowdto =  new ArrayList<>();
+	    
+	    int order = 1;
+	    
+	 // 1. 합의자 (flow_role = 1)
+	    for (Long referenceId : references) {
+	        ApprovalFlowDto flowDto = new ApprovalFlowDto();
+	        flowDto.setMember_no(referenceId);
+	        flowDto.setApproval_flow_role(1L); 
+	        flowDto.setApproval_flow_order((long) order++);
+	        flowDto.setApproval_flow_status(order == 2 ? 1L : 0L); 
+	        approvalFlowdto.add(flowDto);
+	    }
+
+	    // 2. 결재자 (flow_role = 2)
+	    for (Long approverId : approvers) {
+	        ApprovalFlowDto flowDto = new ApprovalFlowDto();
+	        flowDto.setMember_no(approverId);
+	        flowDto.setApproval_flow_role(2L); 
+	        flowDto.setApproval_flow_order((long) order++);
+	        flowDto.setApproval_flow_status(order == 2 && references.isEmpty() ? 1L : 0L); 
+	        approvalFlowdto.add(flowDto);
+	    }
+
+	    // 3. 참조자 (flow_role = 0)
+	    for (Long reviewerId : reviewers) {
+	        ApprovalFlowDto flowDto = new ApprovalFlowDto();
+	        flowDto.setMember_no(reviewerId);
+	        flowDto.setApproval_flow_role(0L); 
+	        flowDto.setApproval_flow_order(null); 
+	        flowDto.setApproval_flow_status(4L); 
+	        approvalFlowdto.add(flowDto);
+	    }
+	    
+	    System.out.println(approvalTitle);
+	    System.out.println(approvalContent);
+	    
+	    boolean isFileUploaded = false;
+	    
+	    // 파일이 있을 떄 
+	    if (file != null && !file.isEmpty()) {
+	        ApprovalFileDto filedto = new ApprovalFileDto();
+	        
+	        String saveFileName = approvalFileService.upload(file);
+	        
+	        if (saveFileName != null) {
+	        	filedto.setApproval_file_ori_name(file.getOriginalFilename());
+	        	filedto.setApproval_file_new_name(saveFileName);
+	        	filedto.setApproval_file_size(file.getSize());
+
+	        	System.out.println(file.getOriginalFilename());
+	            if (approvalService.createApprovalFile(appdto, filedto, approvalFlowdto) != null) {
+	                response.put("res_code", "200");
+	                response.put("res_msg", "결재 작성이 완료되었습니다.");
+	                isFileUploaded = true;
+	            }
+	        } 
+	    }
+
+	    // 파일이 없을 때
+	    if (!isFileUploaded) {
+	        if (approvalService.createApproval(appdto, approvalFlowdto) != null) {
+	            response.put("res_code", "200");
+	            response.put("res_msg", "결재 작성이 완료되었습니다."); 
+	        }
+	    }
+	    
+	    return response;
+	}
 
 }
