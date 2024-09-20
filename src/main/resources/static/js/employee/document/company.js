@@ -168,6 +168,7 @@ $(function () {
 
 	            // 날짜 필터링
 	            const startDate = new Date(startDateInput.value);
+	            startDate.setHours(0, 0, 0, 0);
 	            const endDate = new Date(endDateInput.value);
 	            endDate.setHours(23, 59, 59, 999); 
 	            
@@ -194,8 +195,8 @@ $(function () {
 
                     // 한 페이지에 10개씩 추가 
                     const start = currentPage * pageSize;
-                    const end = Math.min(start + pageSize, fileList.length);
-                    const paginatedFiles = fileList.slice(start, end);
+                    const end = Math.min(start + pageSize, filteredFiles.length);
+                    const paginatedFiles = filteredFiles.slice(start, end);
 
                     paginatedFiles.forEach(file => {
                         const row = document.createElement('tr');
