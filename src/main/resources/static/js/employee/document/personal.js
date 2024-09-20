@@ -83,7 +83,6 @@ $(function () {
 	                        $('.box_size').show();
 	                        resolve(); 
 	                    });
-	
 	                    $('#tree').on('changed.jstree', function (e, data) {
 	                        // 현재페이지를 1페이지로 리셋 
 	                        currentPage = 0; 
