@@ -379,4 +379,34 @@ public class VacationApprovalService {
 
 	        return vacationApproval;
 	    }
+	 
+	 // 휴가 결재 승윈 취소
+	 @Transactional
+	 public VacationApproval employeeVacationApprovalFlowApproveCancel(Long vacationApprovalNo, Long memberNo) {
+		 
+		 VacationApproval vacationApproval = vacationApprovalRepository.findById(vacationApprovalNo).orElse(null);
+
+	        List<VacationApprovalFlow> approvalFlows = vacationApprovalFlowRepository.findByVacationApproval(vacationApproval);
+
+	        VacationApprovalFlow currentFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
+	            .findFirst()
+	            .orElse(null);
+
+	        currentFlow.setVacationApprovalFlowStatus(1L); 
+	        vacationApprovalFlowRepository.save(currentFlow);
+
+	        VacationApprovalFlow nextFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getVacationApprovalFlowOrder() != null)
+	            .filter(flow -> flow.getVacationApprovalFlowOrder() > currentFlow.getVacationApprovalFlowOrder())
+	            .findFirst()
+	            .orElse(null);
+
+	        if (nextFlow != null) {
+	            nextFlow.setVacationApprovalFlowStatus(0L);
+	            vacationApprovalFlowRepository.save(nextFlow);
+	        } 
+
+	        return vacationApproval;
+	 }
 }

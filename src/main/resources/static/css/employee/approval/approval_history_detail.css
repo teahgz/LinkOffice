@@ -265,11 +265,11 @@
 
 .cancel_button {
     position: absolute; 
-    top: -5px; 
+    top: -10px; 
     right: -5px;
     border: none;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 550;
@@ -279,7 +279,6 @@
     padding: 0;
     background-color: transparent;
     color: #ff0000;
-    
 }
 
 #reject{
