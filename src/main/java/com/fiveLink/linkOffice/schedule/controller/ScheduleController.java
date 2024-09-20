@@ -105,10 +105,27 @@ public class ScheduleController {
 	        }
 	    } catch (Exception e) {
 	        resultMap.put("res_msg", e.getMessage());
-	    }
-
+	    } 
 	    return resultMap;
 	}
 
+	// 등록
+	@PostMapping("/schedule/category/add")
+	@ResponseBody
+	public Map<String, String> addScheduleCategory(@RequestBody Map<String, Object> payload) {
+	    String categoryName = (String) payload.get("scheduleCategoryName");
+	    String categoryColor = (String) payload.get("scheduleCategoryColor");
+	    Long onlyAdmin = (long) ((Boolean) payload.get("onlyAdmin") ? 1 : 0);
+
+	    Map<String, String> response = scheduleCategoryService.addScheduleCategory(categoryName, categoryColor, onlyAdmin);
+
+	    if (response.containsKey("success")) {
+	        response.put("res_code", "200");
+	    } else {
+	        response.put("res_code", "400"); 
+	    }
+
+	    return response;
+	} 
 
 }

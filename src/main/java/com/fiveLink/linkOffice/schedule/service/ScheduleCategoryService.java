@@ -1,6 +1,8 @@
 package com.fiveLink.linkOffice.schedule.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -72,5 +74,40 @@ public class ScheduleCategoryService {
         return false;
     }
 
+    // 등록
+    @Transactional
+    public Map<String, String> addScheduleCategory(String scheduleCategoryName, String scheduleCategoryColor, Long onlyAdmin) {
+        Map<String, String> response = new HashMap<>();
 
+        // 중복 카테고리명  
+        boolean isNameDuplicate = scheduleCategoryRepository.existsByScheduleCategoryNameAndScheduleCategoryStatus(scheduleCategoryName, 0L);
+        if (isNameDuplicate) {
+            response.put("name", "중복된 카테고리명이 존재합니다.");
+        }
+
+        // 중복 색상  
+        boolean isColorDuplicate = scheduleCategoryRepository.existsByScheduleCategoryColorAndScheduleCategoryStatus(scheduleCategoryColor, 0L);
+        if (isColorDuplicate) {
+            response.put("color", "중복된 색상이 존재합니다.");
+        }
+ 
+        if (!isNameDuplicate) {
+            if (!isColorDuplicate) {
+                ScheduleCategory scheduleCategory = ScheduleCategory.builder()
+                    .scheduleCategoryName(scheduleCategoryName)
+                    .scheduleCategoryColor(scheduleCategoryColor)
+                    .scheduleCategoryAdmin(onlyAdmin)
+                    .scheduleCategoryStatus(0L)  
+                    .build();
+
+                scheduleCategoryRepository.save(scheduleCategory);
+                response.put("success", "카테고리가 성공적으로 등록되었습니다.");
+            }
+        } 
+        return response;  
+    }
+
+
+
+    
 }

@@ -3,6 +3,7 @@
 .color_box {
 	width : 20px;
 	height : 20px;
+	border: 1px solid black; 
 }
 
 .modal {
@@ -46,7 +47,7 @@
     margin-bottom: 5px;  
 }
 
-.close {
+.create_close, .close {
     color: #aaa;
     float: right;
     font-size: 28px;
@@ -55,6 +56,14 @@
     margin-top : 15px;
 }
 
-.close:hover {
+.create_close:hover, .close:hover {
     color: #000;
+}
+
+.list, .details {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 40px;
+    flex: 1;
 }
