@@ -40,4 +40,5 @@ public interface DocumentFolderRepository extends JpaRepository<DocumentFolder, 
 	
 	// 사내 문서함 최상위 폴더 찾기
 	DocumentFolder findByDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(Long documentBoxType, Long documentParentNo, Long DocumentFolderStatus);
+
 }

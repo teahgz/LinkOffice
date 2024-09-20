@@ -380,7 +380,6 @@ public class DocumentApiController {
      }
      return resultMap;
    }
-   
    // 최상위 폴더가 존재하는 개인 폴더 삭제 
    @PostMapping("/document/personal/folder/delete")
    @ResponseBody
