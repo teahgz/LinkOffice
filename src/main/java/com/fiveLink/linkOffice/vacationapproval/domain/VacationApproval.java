@@ -85,8 +85,11 @@ public class VacationApproval {
 	private List<VacationApprovalFlow> vacationApprovalFlows;
 	 
 	public VacationApprovalDto toDto() {
-		return VacationApprovalDto.builder().vacation_approval_no(vacationApprovalNo).member_no(member.getMemberNo())
-				.member_name(member.getMemberName()).vacation_approval_title(vacationApprovalTitle)
+		return VacationApprovalDto.builder()
+				.vacation_approval_no(vacationApprovalNo)
+				.member_no(member.getMemberNo())
+				.member_name(member.getMemberName())
+				.vacation_approval_title(vacationApprovalTitle)
 				.vacation_type_no(vacationType.getVacationTypeNo())
 				.vacation_type_name(vacationType.getVacationTypeName())
 				.vacation_approval_start_date(vacationApprovalStartDate)
