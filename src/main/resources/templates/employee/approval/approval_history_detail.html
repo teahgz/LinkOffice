@@ -64,22 +64,28 @@
 									            <span th:if="${vacationapprovaldto.vacation_approval_status == 3}" id="approvalcancel">기안취소</span>
 									        </div>
 									    </td>
-									    <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-									        <div class="signature_box">
-									            <button th:if="${flow.vacation_approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
-									                    type="button" class="approval_button" 
-									                    onclick="approveRequest()">승인</button>
-									             <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
-									                 th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
-									                 alt="현재 서명" class="currentSignature">
-									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
-									                  class="currentSignature" th:text="${flow.member_name}"></span>
-									            <span th:if="${flow.vacation_approval_flow_status == 3 }" 
-									                  class="currentSignature" id="reject" th:text="반려"></span>									            
-									        </div>
-									    </td>
+										<td th:each="flow, stat : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
+										    <div class="signature_box">
+										        <button th:if="${flow.vacation_approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
+										         type="button" class="approval_button" 
+										         onclick="approveRequest(this)">승인</button>
+										        <button th:if="${flow.vacation_approval_flow_status == 2 
+										                        and vacationapprovaldto.vacation_approval_status == 0 
+										                        and flow.member_no == currentUserMemberNo 
+										                        and stat.index + 1 < vacationapprovaldto.flows.size() 
+										                        and vacationapprovaldto.flows[stat.index + 1].vacation_approval_flow_status == 1}" 
+										                class="cancel_button" 
+										                onclick="cancelApproval(this)">X</button>
+										        <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
+										             th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+										             alt="현재 서명" class="currentSignature">
+										        <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
+										              class="currentSignature" th:text="${flow.member_name}"></span>
+										        <span th:if="${flow.vacation_approval_flow_status == 3}" 
+										              class="currentSignature" id="reject" th:text="반려"></span>
+										    </div>
+										</td>
 									</tr>
-
 						            <tr>
 						                <td>
 						                    <div class="date_box" 
