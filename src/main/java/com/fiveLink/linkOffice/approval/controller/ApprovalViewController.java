@@ -305,5 +305,20 @@ public class ApprovalViewController {
 
 		return "employee/approval/approval_references_detail";
 	}
+	
+	// 사용자 전자결재 작성 페이지 
+	@GetMapping("/employee/approval/create")
+	public String approvalCreate(Model model) {
+		
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		List<ApprovalFormDto> formList = approvalFormService.findAllByApprovalStatusNot(1L);
+		System.out.println(formList);
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("formList", formList);
+		
+		return "employee/approval/approval_create";
+	}
 
 }
