@@ -170,6 +170,7 @@ $(function () {
 
 	            // 날짜 필터링
 	            const startDate = new Date(startDateInput.value);
+	            startDate.setHours(0, 0, 0, 0);
 	            const endDate = new Date(endDateInput.value);
 	            endDate.setHours(23, 59, 59, 999); 
 	            

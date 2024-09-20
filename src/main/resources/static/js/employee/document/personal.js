@@ -157,7 +157,7 @@ $(function () {
     }
 
 	// 선택된 폴더의 파일 목록을 불러오기
-	function loadFiles(folderNo) {
+	function loadFiles(folderNo, searchInput = '') {
 	    $.ajax({
 	        type: 'GET',
 	        url: '/folder/file',
@@ -168,14 +168,18 @@ $(function () {
 	            const sortOption = $('#sort_select').val();
 	            const fileList = data;
 	
-	            // 날짜 필터링
+	            // 날짜&검색 필터링
 	            const startDate = new Date(startDateInput.value);
+				startDate.setHours(0, 0, 0, 0);
 	            const endDate = new Date(endDateInput.value);
 				endDate.setHours(23, 59, 59, 999); 
 	            
 	            const filteredFiles = fileList.filter(file => {
 	                const fileDate = new Date(file.document_file_upload_date);
-	                return fileDate >= startDate && fileDate <= endDate;
+	                const isDateInRange = fileDate >= startDate && fileDate <= endDate;
+					const isSearchMatch = file.document_ori_file_name.toLowerCase().includes(searchInput.toLowerCase());
+					
+				    return isDateInRange && isSearchMatch;
 	            });
 	            // 정렬
 	            if (sortOption === 'latest') {
@@ -195,8 +199,8 @@ $(function () {
 	
 	                // 한 페이지에 10개씩 추가 
 	                const start = currentPage * pageSize;
-	                const end = Math.min(start + pageSize, fileList.length);
-	                const paginatedFiles = fileList.slice(start, end);
+	                const end = Math.min(start + pageSize, filteredFiles.length);
+	                const paginatedFiles = filteredFiles.slice(start, end);
 	
 	                paginatedFiles.forEach(file => {
 	                    const row = document.createElement('tr');
@@ -906,9 +910,16 @@ $(function () {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
+    
+    // 파일 검색 
+   $('#search_button').on('click', function(){
+		const searchInput = $('#file_name_input').val();
+		loadFiles(selectedFolderNo, searchInput);
+   });
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
+		let previousFolderNo = null;
 	    getFolders().then(() => {
 	        getAllFileSize();
 	
@@ -916,9 +927,20 @@ $(function () {
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
 	            loadFiles(selectedFolderNo);
+	            previousFolderNo = selectedFolderNo;
+	        }
+	    });       
+        // 폴더 선택 변경 함수 
+	    $('#tree').on('select_node.jstree', function(e, data) {
+	        const selectedFolderNo = data.selected[0];
+	        if (selectedFolderNo !== previousFolderNo) {
+	            $('#file_name_input').val(''); 
+	            loadFiles(selectedFolderNo);
+	            previousFolderNo = selectedFolderNo; 
+	            startDateInput.value = oneYearAgoStr;
+	            endDateInput.value = todayStr;
 	        }
 	    });
-        
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
             const selectedFolderNo = $('#tree').jstree('get_selected')[0];
@@ -938,6 +960,7 @@ $(function () {
 	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
+				$('#file_name_input').val('');
 	            loadFiles(selectedFolderNo);
 	        }
 	    });
