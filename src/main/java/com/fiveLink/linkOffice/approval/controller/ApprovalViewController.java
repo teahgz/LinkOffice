@@ -239,6 +239,15 @@ public class ApprovalViewController {
 
 		Page<ApprovalDto> ApprovalDtoPage = approvalService.getAllApproval(member_no, searchdto, sortedPageable);
 		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		ApprovalDtoPage.getContent().forEach(vapp -> {
+		    if (vapp.getApproval_create_date() != null) {  
+		        String formattedCreateDate = vapp.getApproval_create_date().format(formatter); 
+		        vapp.setFormat_approval_create_date(formattedCreateDate); 
+		    }
+		});
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("approvalDtoList", ApprovalDtoPage.getContent());
 		model.addAttribute("page", ApprovalDtoPage);
@@ -260,6 +269,16 @@ public class ApprovalViewController {
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
 		Page<ApprovalDto> ApprovalDtoPage = approvalService.getAllReject(member_no, searchdto, sortedPageable);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		ApprovalDtoPage.getContent().forEach(vapp -> {
+		    if (vapp.getApproval_create_date() != null) {  
+		        String formattedCreateDate = vapp.getApproval_create_date().format(formatter); 
+		        vapp.setFormat_approval_create_date(formattedCreateDate); 
+		    }
+		});
+
 		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("approvalDtoList", ApprovalDtoPage.getContent());

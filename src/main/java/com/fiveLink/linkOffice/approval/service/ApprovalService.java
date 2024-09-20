@@ -151,6 +151,7 @@ public class ApprovalService {
 	        	ApprovalDto dto = app.toDto();
 	        	approvalDtoList.add(dto);
 	        }
+	        
         return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
 	}
 	

@@ -37,6 +37,8 @@ public class ApprovalDto {
 	private int search_type;
 	private String search_text;
 	
+	private String format_approval_create_date;
+	
 	private List<ApprovalFileDto> files;
 	private List<ApprovalFlowDto> flows;
 	
