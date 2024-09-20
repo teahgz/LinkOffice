@@ -12,12 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = "none";
     });
 
-    window.addEventListener('click', function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    });
-
     document.getElementById('confirm_cancel_button').addEventListener('click', function() {
         const cancelReason = document.getElementById('cancel_reason').value;
         const vapNo = document.querySelector('#vacationapproval_no').value;

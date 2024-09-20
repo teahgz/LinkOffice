@@ -383,3 +383,8 @@
     font-size: 15px;
     color: #333; 
 }
+
+#reject{
+	color: #ff8080;
+	font-size: 17px;
+}
