@@ -5,39 +5,76 @@
     <th:block layout:fragment="content">
         <link th:href="@{/css/admin/schedule/scheduleCategory.css}" rel="stylesheet" type="text/css">
         <section>
-	        <h1>일정 범주 관리</h1> 
+	        <h1>일정 카테고리 관리</h1> 
      		<div class="container">
-               <!-- 범주 목록 -->
-               <div class="scheduleCategory_list_box">
-				<div class="scheduleCategory_title">범주 목록</div>
-				<div class="scheduleCategory-list">
-				    <ul class="scheduleCategory_Lists">
-				        <li th:each="scheduleCategory : ${scheduleCategories}">
-				            <a href="#" th:text="${scheduleCategory.schedule_category_name}" 
-				               th:data-id="${scheduleCategory.schedule_category_no}" 
-				               onclick="fetchCategoryDetails(this)"></a> 
-				        </li>
-				    </ul> 
-				</div> 
-               </div> 
-               
-               <!-- 상세 정보 -->
-                <div class="details" th:if="${selectedCategory}">
-                    <div class="details-header">
-                        <h2>범주 정보</h2>
-                    </div>
-                    <div class="details-content">
-                        <p><strong>범주명</strong> <span class="th_text1" th:text="${selectedCategory.schedule_category_name}"></span></p>
-                        <p><strong>색상</strong> <span class="th_text2" th:text="${selectedCategory.schedule_category_color}"></span></p>
-                        <p><strong>관리자</strong> <span class="th_text3" th:text="${selectedCategory.schedule_category_admin}"></span></p>
-                    </div>
-				    <div class="info_btn">
-				    	<button id="editButton" th:data-category-id="${selectedCategory.schedule_category_no}">수정</button>
-				    	<button id="deleteButton" th:data-category-id="${selectedCategory.schedule_category_no}">삭제</button>  
-				    </div>
-                </div> 
-             </div>
+			    <!-- 카테고리 목록 -->
+			    <div class="scheduleCategory_list_box">
+			        <div class="scheduleCategory_title">카테고리 목록</div>
+			        <div class="scheduleCategory-list" th:if="${not #lists.isEmpty(scheduleCategories)}">
+			            <ul class="scheduleCategory_Lists">
+			                <li th:each="scheduleCategory : ${scheduleCategories}">
+			                    <a href="#" th:text="${scheduleCategory.schedule_category_name}" 
+			                       th:href="@{/schedule/category(id=${scheduleCategory.schedule_category_no})}"></a> 
+			                </li>
+			            </ul> 
+			        </div>
+			        <div th:if="${#lists.isEmpty(scheduleCategories)}">
+			            <p>등록된 카테고리가 없습니다.</p>
+			        </div>
+			    </div> 
+			   
+			    <!-- 상세 정보 --> 
+			    <div class="details" th:if="${selectedCategory}">
+			        <div class="details-header">
+			            <h2>카테고리 정보</h2>
+			        </div>
+			        <div class="details-content"> 
+			            <p><strong>카테고리명</strong> 
+			               <span class="th_text1" th:text="${selectedCategory.schedule_category_name}"></span>
+			            </p> 
+			            <p><strong>색상</strong> 
+			               <div class="color_box" th:style="'background-color: #' + ${selectedCategory.schedule_category_color}"></div> 
+			               <span class="th_text2" th:text="'#' + ${selectedCategory.schedule_category_color}"></span>
+			            </p>
+			            <p><strong>관리자 전용</strong>
+			               <input type="checkbox" disabled th:checked="${selectedCategory.schedule_category_admin == 1}"/>
+			            </p>
+			        </div>
+			        
+			        <div class="info_btn">
+			            <!-- 수정 버튼 -->
+			            <button class="editButton" th:data-category-id="${selectedCategory.schedule_category_no}">수정</button>
+
+			            <!-- 삭제 버튼 -->
+			            <button class="deleteButton" th:data-category-id="${selectedCategory.schedule_category_no}">삭제</button>  
+			        </div>
+			    </div>
+			</div>
+
         </section> 
+        
+        <!-- 수정 모달 --> 
+		<div id="editModal" class="modal">
+		  <div class="modal-content">
+		    <span class="close">&times;</span>
+		    <h2 class="modal-title">카테고리 수정</h2>
+		    <form id="editForm">
+		      <input type="hidden" id="editScheduleCategoryId" name="scheduleCategoryId"/>
+		      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		      
+		      <label for="editScheduleCategoryName">카테고리명</label>
+		      <input type="text" id="editScheduleCategoryName"name="scheduleCategoryName" required>
+		
+		      <label for="editScheduleCategoryColor">색상</label>
+		      <input type="color" id="editScheduleCategoryColor" name="scheduleCategoryColor">
+		
+		      <label for="editOnlyAdmin">관리자 전용</label>
+		      <input type="checkbox" id="editOnlyAdmin" name="onlyAdmin">
+		
+		      <button type="submit">수정</button>
+		    </form>
+		  </div>
+		</div>
         <script th:src="@{/js/admin/schedule/scheduleCategory.js}"></script>
     </th:block>
 </html>
