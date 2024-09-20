@@ -1,8 +1,13 @@
 package com.fiveLink.linkOffice.approval.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.approval.domain.Approval;
@@ -78,4 +83,75 @@ public class ApprovalService {
 
 		return approvalRepository.save(app);
 	}
+	
+	// 결재 진행함
+	public Page<ApprovalDto> getAllApproval(Long member_no, ApprovalDto searchdto, Pageable sortedPageable){
+		
+		Page<Approval> approvals = null;
+        List<ApprovalDto> approvalDtoList = new ArrayList<ApprovalDto>();
+			
+			List<Integer> statusList = Arrays.asList(0, 1); 
+			System.out.println(statusList);
+			String searchText = searchdto.getSearch_text();
+			if(searchText != null && "".equals(searchText) == false) {
+				int searchType = searchdto.getSearch_type();
+				
+				switch(searchType) {
+					case 1 : 
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusAndApprovalTitle(member_no, searchText, sortedPageable);
+						break;
+					case 2 :
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusInAndApprovalTitleContaining(member_no, statusList, searchText, sortedPageable);
+						break;
+					case 3 :
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatus(member_no,searchText ,sortedPageable);
+						break;						
+				}
+			}else {
+				approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusIn(member_no, statusList, sortedPageable);
+			}
+
+	        for(Approval app : approvals) {
+	        	System.out.println(app);
+	        	ApprovalDto dto = app.toDto();
+	        	approvalDtoList.add(dto);
+	        }
+        return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
+	}
+	
+	// 결재 반려함
+	public Page<ApprovalDto> getAllReject(Long member_no, ApprovalDto searchdto, Pageable sortedPageable){
+		
+		Page<Approval> approvals = null;
+        List<ApprovalDto> approvalDtoList = new ArrayList<ApprovalDto>();
+			
+			List<Integer> statusList = Arrays.asList(2, 3); 
+			System.out.println(statusList);
+			String searchText = searchdto.getSearch_text();
+			if(searchText != null && "".equals(searchText) == false) {
+				int searchType = searchdto.getSearch_type();
+				
+				switch(searchType) {
+					case 1 : 
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusAndApprovalTitleReject(member_no, searchText, sortedPageable);
+						break;
+					case 2 :
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusInAndApprovalTitleContaining(member_no, statusList, searchText, sortedPageable);
+						break;
+					case 3 :
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusReject(member_no,searchText ,sortedPageable);
+						break;	
+				}
+			}else {
+				approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusIn(member_no, statusList, sortedPageable);
+			}
+
+	        for(Approval app : approvals) {
+	        	System.out.println(app);
+	        	ApprovalDto dto = app.toDto();
+	        	approvalDtoList.add(dto);
+	        }
+        return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
+	}
+	
 }

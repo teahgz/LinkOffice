@@ -34,6 +34,9 @@ public class ApprovalDto {
 	
 	private String member_name;
 	
+	private int search_type;
+	private String search_text;
+	
 	private List<ApprovalFileDto> files;
 	private List<ApprovalFlowDto> flows;
 	
