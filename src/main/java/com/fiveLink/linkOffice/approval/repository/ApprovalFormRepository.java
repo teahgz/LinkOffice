@@ -1,5 +1,7 @@
 package com.fiveLink.linkOffice.approval.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +18,8 @@ public interface ApprovalFormRepository extends JpaRepository<ApprovalForm, Long
 
     @Query("SELECT af FROM ApprovalForm af WHERE af.approvalFormTitle LIKE %:searchText% AND af.approvalFormStatus <> :status")
     Page<ApprovalForm> findByaprovalFormTitleContaining(@Param("searchText") String searchText, Pageable pageable, @Param("status") Long approvalFormStatus);
+    
+    List<ApprovalForm> findAllByApprovalFormStatusNot(Long approvalFormStatus);
     
     ApprovalForm findByApprovalFormNo(Long formNo);
 }

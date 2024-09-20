@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.approval.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -71,6 +72,16 @@ public class ApprovalFormService {
     	ApprovalForm approvalform = dto.toEntity();
     	ApprovalForm result = approvalFormRepository.save(approvalform);
     	return result;
+    }
+    
+    // 양식 조회 (사용자 전자결재 등록 페이지) 
+    public List<ApprovalFormDto> findAllByApprovalStatusNot(Long approvalStatus) {
+    	
+        List<ApprovalForm> approvals = approvalFormRepository.findAllByApprovalFormStatusNot(approvalStatus);
+        
+        return approvals.stream()
+                        .map(ApprovalForm::toDto)
+                        .collect(Collectors.toList());
     }
     
 }
