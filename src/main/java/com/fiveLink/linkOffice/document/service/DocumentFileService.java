@@ -21,9 +21,9 @@ import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
 @Service
 public class DocumentFileService {
 	
-	private String fileDir = "C:\\linkoffice\\upload\\document\\";
+	// private String fileDir = "C:\\linkoffice\\upload\\document\\";
 	// [박혜선] mac 파일 저장 경로 
-	// private String fileDir = "/Users/parkhyeseon/Desktop/fiveLink/upload/";
+	private String fileDir = "/Users/parkhyeseon/Desktop/fiveLink/upload/";
 
 	private final DocumentFileRepository documentFileRepository;
 	private final DocumentFolderRepository documentFolderRepository;
