@@ -45,9 +45,34 @@ public class ChatMemberController {
     @GetMapping("/api/chat/roomType/{chatRoomNo}")
     @ResponseBody
     public int chatRoomType(@PathVariable Long chatRoomNo){
-        System.out.println("test : "+ chatRoomNo);
         System.out.println(chatMemberService.chatRoomType(chatRoomNo));
         return chatMemberService.chatRoomType(chatRoomNo);
 
+    }
+
+    @GetMapping("/api/chat/exist/{currentChatRoomNo}")
+    @ResponseBody
+    public List<Long> getChatRoomMemberNo(@PathVariable Long currentChatRoomNo) {
+        List<Long> memberNos = chatMemberService.chatRoomMemberNo(currentChatRoomNo);
+        return memberNos;
+    }
+
+    // 채팅방 이름 가져오기(2)
+    @GetMapping("/api/chat/room/name/{chatRoomNo}")
+    @ResponseBody
+    public String getMemberChatRoomName(@PathVariable Long chatRoomNo) {
+        try {
+            String chatRoomName = chatMemberService.selectMemberChatRoomName(chatRoomNo);
+
+            if (chatRoomName != null) {
+                return chatRoomName;
+            } else {
+                return "채팅방을 찾을 수 없습니다.";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "에러발생";
+        }
     }
 }
