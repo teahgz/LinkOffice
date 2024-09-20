@@ -146,7 +146,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             location.reload();
                         });
                     } else {
-                        Swal.fire('등록 실패', response.res_msg, 'error');
+						Swal.fire({ 
+						    text: response.res_msg,
+						    icon: 'error', 
+						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonText: '확인', 
+						}); 
                     }
                 },
                 error: function () {

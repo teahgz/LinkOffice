@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
 	var csrfToken = document.querySelector('input[name="_csrf"]').value;
     const editButtons = document.querySelectorAll('.editButton');
+    var createButtons = document.getElementById('openModal');
+    var createModal = document.getElementById("createModal");
     const deleteButtons = document.querySelectorAll('.deleteButton');  
+    var createForm = document.getElementById("createForm");
 
 	// 수정 모달
     editButtons.forEach(button => {
@@ -25,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-
-    
+ 
+ 	// 수정 모달 닫기
     document.querySelector('.close').addEventListener('click', function() {
 		Swal.fire({
 	            text: '작성한 내용이 저장되지 않습니다.',
@@ -38,7 +41,25 @@ document.addEventListener('DOMContentLoaded', function() {
 	            cancelButtonText: '취소',
 	        }).then((result) => {
 	            if (result.isConfirmed) {
-	                document.getElementById('editModal').style.display = 'none'; 
+	                document.getElementById('editModal').style.display = 'none';  
+	            }
+	        }); 
+    });
+    
+    // 등록 모달 닫기
+    document.querySelector('.create_close').addEventListener('click', function() {
+		Swal.fire({
+	            text: '작성한 내용이 저장되지 않습니다.',
+	            icon: 'warning',
+	            showCancelButton: true,
+	            confirmButtonColor: '#B1C2DD',
+	            cancelButtonColor: '#C0C0C0',
+	            confirmButtonText: '확인',
+	            cancelButtonText: '취소',
+	        }).then((result) => {
+	            if (result.isConfirmed) { 
+	                document.getElementById('createModal').style.display = 'none'; 
+	                createForm.reset();
 	            }
 	        }); 
     });
@@ -135,5 +156,65 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+    
+	// 등록 모달
+    if (createButtons) {
+        createButtons.onclick = function () {
+            createModal.style.display = "block";
+        };
+    }
+    
+    if (createForm) {
+	    createForm.onsubmit = function (event) {
+	        event.preventDefault();
+	        var scheduleCategoryName = document.getElementById("createScheduleCategoryName").value;
+	        var scheduleCategoryColor = document.getElementById("createScheduleCategoryColor").value.slice(1);
+	        var onlyAdmin = document.getElementById("createOnlyAdmin").checked;
+	        
+	        $.ajax({
+			    type: "POST",
+			    url: "/schedule/category/add",
+			    contentType: "application/json",
+			    data: JSON.stringify({
+			        scheduleCategoryName: scheduleCategoryName,
+			        scheduleCategoryColor: scheduleCategoryColor,
+			        onlyAdmin: onlyAdmin
+			    }),
+			    headers: {
+			        'X-CSRF-TOKEN': csrfToken
+			    },
+			    success: function (response) {
+			        if (response.res_code === "200") {
+			            Swal.fire({ 
+			                text: response.success,
+			                icon: 'success', 
+			                confirmButtonColor: '#B1C2DD', 
+			                confirmButtonText: '확인', 
+			            }).then(() => {
+			                location.reload();
+			            });
+			        } else {
+			            let errorMsg = "";
+			            if (response.name) {
+			                errorMsg += response.name;  
+			            } else if (response.color) {
+			                errorMsg += response.color; 
+			            }
+			            Swal.fire({ 
+						    text: errorMsg,
+						    icon: 'error', 
+						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonText: '확인', 
+						});
+			        }
+			    },
+			    error: function () {
+			        Swal.fire('서버 오류', '서버와의 통신에 문제가 발생했습니다.', 'error');
+			    }
+			}); 
+	    };
+	}
+
+ 
 
 });

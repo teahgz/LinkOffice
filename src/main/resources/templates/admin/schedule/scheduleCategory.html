@@ -8,8 +8,11 @@
 	        <h1>일정 카테고리 관리</h1> 
      		<div class="container">
 			    <!-- 카테고리 목록 -->
-			    <div class="scheduleCategory_list_box">
-			        <div class="scheduleCategory_title">카테고리 목록</div>
+			    <div class="scheduleCategory_list_box list">
+                    <div class="list-header">
+                       <h3 class="department_comment">카테고리를 선택하여 상세 정보를 확인하세요.</h3>
+                       <button class="createButton" id="openModal">카테고리 등록</button>
+                    </div>  
 			        <div class="scheduleCategory-list" th:if="${not #lists.isEmpty(scheduleCategories)}">
 			            <ul class="scheduleCategory_Lists">
 			                <li th:each="scheduleCategory : ${scheduleCategories}">
@@ -41,18 +44,36 @@
 			            </p>
 			        </div>
 			        
-			        <div class="info_btn">
-			            <!-- 수정 버튼 -->
+			        <div class="info_btn"> 
 			            <button class="editButton" th:data-category-id="${selectedCategory.schedule_category_no}">수정</button>
-
-			            <!-- 삭제 버튼 -->
 			            <button class="deleteButton" th:data-category-id="${selectedCategory.schedule_category_no}">삭제</button>  
 			        </div>
 			    </div>
-			</div>
-
-        </section> 
+			</div> 
+        </section>  
         
+        <!-- 등록 모달 --> 
+		<div id="createModal" class="modal">
+		  <div class="modal-content">
+		    <span class="create_close">&times;</span>
+		    <h2 class="modal-title">카테고리 등록</h2>
+		    <form id="createForm"> 
+		      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		      
+		      <label for="createScheduleCategoryName">카테고리명</label>
+		      <input type="text" id="createScheduleCategoryName" name="scheduleCategoryName">
+		
+		      <label for="createScheduleCategoryColor">색상</label>
+		      <input type="color" id="createScheduleCategoryColor" name="scheduleCategoryColor">
+		
+		      <label for="editOnlyAdmin">관리자 전용</label>
+		      <input type="checkbox" id="createOnlyAdmin" name="onlyAdmin">
+		
+		      <button type="submit">등록</button>
+		    </form>
+		  </div>
+		</div>
+		
         <!-- 수정 모달 --> 
 		<div id="editModal" class="modal">
 		  <div class="modal-content">
