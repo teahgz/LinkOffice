@@ -97,7 +97,13 @@
 						<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
 						    <strong>기안 취소 사유</strong>
 						    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
-						</div>						
+						</div>	
+						
+					<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
+						 <strong>반려 취소 사유</strong>
+						<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
+					</div>		
+											
 						
                         <hr class="section_separator"> 
                     </div>
