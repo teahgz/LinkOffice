@@ -13,6 +13,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
@@ -115,6 +117,13 @@ public class SurveyViewController {
 
         return "employee/survey/survey_ing_list";
     }
-
+    
+    @GetMapping("/employee/survey/detail/{survey_no}")
+    public String selectSurveyOne(Model model,
+    		@PathVariable("survey_no")Long survey_no) {
+    	SurveyDto dto = surveyService.selectSurveyOne(survey_no);
+    	model.addAttribute("dto",dto);
+    	return "employee/survey/survey_question_detail";
+    }
 
 }
