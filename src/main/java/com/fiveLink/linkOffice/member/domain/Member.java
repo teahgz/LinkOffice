@@ -6,6 +6,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fiveLink.linkOffice.approval.domain.Approval;
+import com.fiveLink.linkOffice.approval.domain.ApprovalFlow;
 import com.fiveLink.linkOffice.inventory.domain.Inventory;
 import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.organization.domain.Department;
@@ -130,11 +132,19 @@ public class Member {
 	@Column(name="member_vacation_date")
 	private String memberVacationDate;
 	
+	// [전주영] 휴가 결재
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<VacationApproval> vacationApprovals;
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<VacationApprovalFlow> vacationApprovalFlows;
+	
+	// [전주영] 전자 결재
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<Approval> approval;
+	
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<ApprovalFlow> approvalFlow;
 	
 	// [김민재] 공지사항 관리자 확인
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)

@@ -43,7 +43,7 @@
     background-position: center;
     background-repeat: no-repeat;
 } 
-.document_no_folder, .document_select_folder{
+.document_no_folder{
     display: flex;
     justify-content: center; 
     align-items: center; 

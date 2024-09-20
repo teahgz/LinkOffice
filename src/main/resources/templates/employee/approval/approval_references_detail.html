@@ -3,19 +3,19 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
-        <link th:href="@{/css/employee/vacationapproval/vacationapproval_detail.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/employee/approval/approval_references_detail.css}" rel="stylesheet" type="text/css">
         <section>
-            <h1>휴가 신청 조회</h1>
+            <h1>결재 참조 상세 조회</h1>
             <div class="container">
             	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
             	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
                 <div class="main_container">
                     <div class="details_section">
                         <div class="text_field">
-                            <div class="field">
-                                <strong>제목</strong>
-                                <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
-                            </div>
+						 <div class="field title_row">
+						        <strong>제목</strong>
+						        <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
+						    </div>
                             <div class="field">
                                 <strong>종류</strong>
                                 <div id="vacationapproval_type_name" th:text="${vacationapprovaldto.vacation_type_name}"></div>
@@ -30,6 +30,7 @@
                                 <div>일)</div>
                             </div>
                         </div>
+                        
                         
 						<div class="approval_line_section">
 						    <table class="approval_line_table">
@@ -48,33 +49,36 @@
 						            </tr>
 						        </thead>
 						        <tbody>
-						            <tr>
-						                <td>
-						                <div class="signature_box">
-						                <img th:if="${vacationapprovaldto.vacation_approval_status != 3 and vacationapprovaldto.digitalname != null}" th:src="@{'/linkOfficeImg/member/digital/'+${vacationapprovaldto.digitalname}}" alt="현재 서명" id="currentSignature">
-						                <span th:if="${vacationapprovaldto.vacation_approval_status != 3 and vacationapprovaldto.digitalname == null}" id="currentSignature" th:text="${vacationapprovaldto.member_name}"></span>
-						                <span th:if="${vacationapprovaldto.vacation_approval_status == 3}" id="approvalcancel">기안취소</span>
-						                </div>
-						                </td>
-						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-						                    <div class="signature_box">
-						                    <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
-									                 th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+									<tr>
+									    <td>
+									        <div class="signature_box">
+									            <img th:if="${vacationapprovaldto.vacation_approval_status != 3 and vacationapprovaldto.digitalname != null}" 
+									                 th:src="@{'/linkOfficeImg/member/digital/' + ${vacationapprovaldto.digitalname}}" 
 									                 alt="현재 서명" id="currentSignature">
-									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
-									                  id="currentSignature" th:text="${flow.member_name}"></span>
+									            <span th:if="${vacationapprovaldto.vacation_approval_status != 3 and vacationapprovaldto.digitalname == null}" 
+									                  id="currentSignature" th:text="${vacationapprovaldto.member_name}"></span>
+									            <span th:if="${vacationapprovaldto.vacation_approval_status == 3}" id="approvalcancel">기안취소</span>
+									        </div>
+									    </td>
+										<td th:each="flow, stat : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
+										    <div class="signature_box">
+										        <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
+										             th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+										             alt="현재 서명" class="currentSignature">
+										        <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
+										              class="currentSignature" th:text="${flow.member_name}"></span>
 										        <span th:if="${flow.vacation_approval_flow_status == 3}" 
-										              class="currentSignature" id="reject" th:text="반려"></span>									                  
-						                    </div>
-						                </td>
-						            </tr>
+										              class="currentSignature" id="reject" th:text="반려"></span>
+										    </div>
+										</td>
+									</tr>
 						            <tr>
 						                <td>
 						                    <div class="date_box" 
 						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status != 0 and flow.vacation_approval_flow_status != 1}"
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_complete_date != null}"
 						                         th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
 						                </td>
 						            </tr>
@@ -89,20 +93,21 @@
 						        </div>
 						    </div>
 						</div>
+						
+						<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
+						    <strong>기안 취소 사유</strong>
+						    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
+						</div>	
+						
+						<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
+							 <strong>반려 사유</strong>
+							<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
+						</div>		
+											
+						
+                        <hr class="section_separator"> 
                     </div>
 
-					<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
-					    <strong>기안 취소 사유</strong>
-					    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
-					</div>
-
-					<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
-						 <strong>반려 사유</strong>
-						<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
-					</div>	
-
-                        <hr class="section_separator"> 
-                        
                     <div class="content_section">
                         <div class="vacationapproval_content">
                             <div class="table_container" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>
@@ -132,29 +137,11 @@
                     </div>
 
                     <div class="button_container">
-                    	<button type="button" class="cancel_button" th:if="${vacationapprovaldto.vacation_approval_status == 0}">기안 취소</button>
-		                <a th:if="${#lists.size(vacationapprovaldto.flows) > 0 and vacationapprovaldto.flows[0].vacation_approval_flow_status == 1}" 
-		                   th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" 
-		                   class="edit_button">수정</a>
-                        <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
+                        <button type="button" class="list_button" onclick="location.href='/employee/approval/references'">목록</button>
                     </div>
-                    
-                    	<div id="myModal" class="modal" style=display:none;>
-							<div class="modal_content">
-								<h2>취소 사유를 입력하세요.</h2>
-								<span class="close">&times;</span>
-									<div class="cancel_reason_div">
-									    <textarea id="cancel_reason" name="cancel_reason"></textarea>
-									</div>
-									<div class="modal_button">
-										<button type="submit" id="confirm_cancel_button">확인</button>
-									</div>
-							</div>
-						</div>
                 </div>
             </div>
         </section>
 
-        <script th:src="@{/js/employee/vacationapproval/vacationapproval_detail.js}"></script>
     </th:block>
 </html>

@@ -6,7 +6,6 @@ $(function () {
 	let selectedFolderNo = null;
 	// 폴더 이름 변경 여부  
 	let isFolderNameChange = false;
-    let savedFolderNo = null;
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     var deptNo = document.getElementById("dept_no").textContent;
@@ -68,25 +67,22 @@ $(function () {
 	                        },
 	                        'plugins': ['wholerow', 'types']
 	                    }).on('ready.jstree', function() {
-	                        savedFolderNo = sessionStorage.getItem('selectedFolderNo');
-	                        if (savedFolderNo) {
-	                            $('#tree').jstree('select_node', savedFolderNo);
+	                        if (folderList.length > 0) {
+								selectedFolderNo = folderList[0].id;
+	                            $('#tree').jstree('select_node', selectedFolderNo);
 	                            if (isFolderNameChange) {
-	                                openFolderToNode(savedFolderNo);
-	                                updateFolderName(savedFolderNo);
-	                                loadFiles(savedFolderNo);
+	                                openFolderToNode(selectedFolderNo);
+	                                updateFolderName(selectedFolderNo);
+	                                loadFiles(selectedFolderNo);
 	                            }
 	                        } else {
-	                            $('.document_no_folder').show();
-	                            $('.document_select_folder').hide();
+	                            $('.document_no_folder').show();	                            
 	                        }
 	                        $('.document_no_folder').hide();
-	                        $('.document_select_folder').show();
 	                        $('.folder_buttons').show();
 	                        $('.box_size').show();
 	                        resolve(); 
 	                    });
-	
 	                    $('#tree').on('changed.jstree', function (e, data) {
 	                        // 현재페이지를 1페이지로 리셋 
 	                        currentPage = 0; 
@@ -95,8 +91,6 @@ $(function () {
 	                        updateFolderName(selectedFolderNo);
 	                        // 폴더 안에 든 파일을 불러올 함수  
 	                        loadFiles(selectedFolderNo); 
-	                        // 선택된 폴더 번호를 저장                      
-	                        sessionStorage.setItem('selectedFolderNo', selectedFolderNo);
 	                    });
 	                } else {
 						// 폴더가 없으면 폴더 생성 버튼 띄우기 
@@ -113,8 +107,8 @@ $(function () {
 	}
    
     // 선택된 폴더까지 열린 상태로 있게 하기 
-    function openFolderToNode(savedFolderNo) {
-        var node = $('#tree').jstree(true).get_node(savedFolderNo);
+    function openFolderToNode(folderNo) {
+        var node = $('#tree').jstree(true).get_node(folderNo);
         
         // 부모 폴더가 존재할 때까지 반복
         while (node && node.parent !== '#') {
@@ -162,119 +156,127 @@ $(function () {
         }
     }
 
-    // 선택된 폴더의 파일 목록을 불러오기
-    function loadFiles(folderNo) {
-        $.ajax({
-            type: 'GET',
-            url: '/folder/file',
-            data: {
-                folderNo: folderNo
-            },
-            dataType: 'json',
-            success: function(data) {
-                // 정렬 기준 가져오기
-                const sortOption = $('#sort_select').val();
-                const fileList = data;
-
-                // 정렬
-                if (sortOption === 'latest') {
-                    fileList.sort((a, b) => new Date(b.document_file_upload_date) - new Date(a.document_file_upload_date));
-                } else if (sortOption === 'oldest') {
-                    fileList.sort((a, b) => new Date(a.document_file_upload_date) - new Date(b.document_file_upload_date));
-                }
-                
-                // 몇 페이지인지 계산 
-                totalPages = Math.ceil(fileList.length / pageSize);
-                const fileTableBody = document.getElementById('file_table_body');
-                fileTableBody.innerHTML = '';
-
-                // 파일 목록이 존재할 때
-                if (fileList.length > 0) {
-                    $('.document_select_folder').hide();
-                    $('.document_file_list').show();
-
-                    // 한 페이지에 10개씩 추가 
-                    const start = currentPage * pageSize;
-                    const end = Math.min(start + pageSize, fileList.length);
-                    const paginatedFiles = fileList.slice(start, end);
-
-                    paginatedFiles.forEach(file => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                        	<td><input type="checkbox" class="file_checkbox"></td>
-                            <td>${file.document_ori_file_name}</td>
-                            <td>${formatDate(file.document_file_upload_date)}</td>
-                            <td>${file.document_ori_file_name.endsWith('.pdf') ? 
-					            '<input type="button" class="file_show_button" value="파일보기">' : ''}
-					        </td>
-                            <td>${file.document_file_size}</td>
-                            <td><input type="button" class="file_down_button" value="다운로드"></td>
-                            <td><input type="button" class="delete_button" value="삭제"
-                            	id="${file.document_file_no}">
-                            </td>
-                        `;
-                        fileTableBody.appendChild(row);
-                    });
-
-                    // 리스트가 10개가 안 된다면 빈 행 추가로 10개 만들기 
-                    const emptyRows = pageSize - paginatedFiles.length;
-                    for (let i = 0; i < emptyRows; i++) {
-                        const emptyRow = document.createElement('tr');
-                        emptyRow.innerHTML = `
-                        	<td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        `;
-                        fileTableBody.appendChild(emptyRow);
-                    }
-
-                    // 페이징 업데이트 
-                    updatePagination();
-                } else {
-                    $('.document_file_list').show();
-                    $('.document_select_folder').hide();
-                    fileTableBody.innerHTML = '<tr><td colspan="7">파일 목록이 존재하지 않습니다.</td></tr>';
-
-                    // 페이징 버튼 숨기기
-                    paginationDiv.innerHTML = '';
-                }               
-                // 파일 삭제
-                 $('.delete_button').on('click', function() {
+	// 선택된 폴더의 파일 목록을 불러오기
+	function loadFiles(folderNo) {
+	    $.ajax({
+	        type: 'GET',
+	        url: '/folder/file',
+	        data: { folderNo: folderNo },
+	        dataType: 'json',
+	        success: function(data) {
+	            // 정렬 기준 가져오기
+	            const sortOption = $('#sort_select').val();
+	            const fileList = data;
+	
+	            // 날짜 필터링
+	            const startDate = new Date(startDateInput.value);
+	            const endDate = new Date(endDateInput.value);
+				endDate.setHours(23, 59, 59, 999); 
+	            
+	            const filteredFiles = fileList.filter(file => {
+	                const fileDate = new Date(file.document_file_upload_date);
+	                return fileDate >= startDate && fileDate <= endDate;
+	            });
+	            // 정렬
+	            if (sortOption === 'latest') {
+	                filteredFiles.sort((a, b) => new Date(b.document_file_upload_date) - new Date(a.document_file_upload_date));
+	            } else if (sortOption === 'oldest') {
+	                filteredFiles.sort((a, b) => new Date(a.document_file_upload_date) - new Date(b.document_file_upload_date));
+	            }
+	
+	            // 몇 페이지인지 계산 
+	            totalPages = Math.ceil(filteredFiles.length / pageSize);
+	            const fileTableBody = document.getElementById('file_table_body');
+	            fileTableBody.innerHTML = '';
+	
+	            // 파일 목록이 존재할 때
+	            if (filteredFiles.length > 0) {
+	                $('.document_file_list').show();
+	
+	                // 한 페이지에 10개씩 추가 
+	                const start = currentPage * pageSize;
+	                const end = Math.min(start + pageSize, fileList.length);
+	                const paginatedFiles = fileList.slice(start, end);
+	
+	                paginatedFiles.forEach(file => {
+	                    const row = document.createElement('tr');
+	                    row.innerHTML = `
+	                        <td><input type="checkbox" class="file_checkbox"></td>
+	                        <td>${file.document_ori_file_name}</td>
+	                        <td>${formatDate(file.document_file_upload_date)}</td>
+	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
+	                            '<input type="button" class="file_show_button" value="파일보기">' : ''}
+	                        </td>
+	                        <td>${file.document_file_size}</td>
+	                        <td><input type="button" class="file_down_button" value="다운로드"></td>
+	                        <td><input type="button" class="delete_button" value="삭제"
+	                            id="${file.document_file_no}">
+	                        </td>
+	                    `;
+	                    fileTableBody.appendChild(row);
+	                });
+	
+	                // 리스트가 10개가 안 된다면 빈 행 추가로 10개 만들기 
+	                const emptyRows = pageSize - paginatedFiles.length;
+	                for (let i = 0; i < emptyRows; i++) {
+	                    const emptyRow = document.createElement('tr');
+	                    emptyRow.innerHTML = `
+	                        <td></td>
+	                        <td></td>
+	                        <td></td>
+	                        <td></td>
+	                        <td></td>
+	                        <td></td>
+	                        <td></td>
+	                    `;
+	                    fileTableBody.appendChild(emptyRow);
+	                }
+	
+	                // 페이징 업데이트 
+	                updatePagination();
+	            } else {
+	                $('.document_file_list').show();
+	                fileTableBody.innerHTML = '<tr><td colspan="7">파일 목록이 존재하지 않습니다.</td></tr>';
+	
+	                // 페이징 버튼 숨기기
+	                paginationDiv.innerHTML = '';
+	            }
+	
+	            // 파일 삭제
+	            $('.delete_button').on('click', function() {
 	                const fileNo = this.id;
 	                deleteFile(fileNo);
 	            });
+	
 	            // th 체크박스 클릭하면 전부 선택
-	             $('#select_all').on('change', function() {
-                	const isChecked = this.checked; // 상단 체크박스 상태
-                	$('.file_checkbox').prop('checked', isChecked); // 모든 파일 체크박스 상태 변경
-            	});
-            	// 파일 선택 삭제
-            	$('#select_delete').on('click', function() {
-				    const selectedFileNos = []; 
-				
-				    // 체크된 파일들의 fileNo 가져오기 
-				    $('.file_checkbox:checked').each(function() {
-				        const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
-				        selectedFileNos.push(fileNo); 
-				    });
-				    if (selectedFileNos.length > 0) {
-				        deleteSelectedFile(selectedFileNos);
-				    } else {
-				        Swal.fire({
-				            icon: 'warning',
-				            text: '삭제할 파일을 선택해 주세요.',
-				            confirmButtonText: '확인'
-				        });
-				    }
-				});
+	            $('#select_all').on('change', function() {
+	                const isChecked = this.checked; 
+	                $('.file_checkbox').prop('checked', isChecked); 
+	            });
+	
+	            // 파일 선택 삭제
+	            $('#select_delete').on('click', function() {
+	                const selectedFileNos = []; 
+	                
+	                // 체크된 파일들의 fileNo 가져오기 
+	                $('.file_checkbox:checked').each(function() {
+	                    const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+	                    selectedFileNos.push(fileNo); 
+	                });
+	                if (selectedFileNos.length > 0) {
+	                    deleteSelectedFile(selectedFileNos);
+	                } else {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: '삭제할 파일을 선택해 주세요.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });
+	        }
+	    });
+	}
 
-            }
-        });
-    }
 
 	// 페이징 버튼 업데이트 
     function updatePagination() {
@@ -361,17 +363,14 @@ $(function () {
     
     // 폴더가 없을 때 폴더 생성 버튼 
     $('#first_folder_add').on('click', function(event){
-		event.preventDefault();
-		
+		event.preventDefault();	
 		$('.modal_div').show();
 		$('.first_folder_add_modal').show();
 	});
 		
-	$('#first_folder_add_button').on('click', function(){
-		
+	$('#first_folder_add_button').on('click', function(){		
 		// 입력된 폴더 이름 
-		const folderName = $('#first_folder_name').val();
-		
+		const folderName = $('#first_folder_name').val();		
 		if(folderName.trim() === ''){
 			Swal.fire({
         		text: '폴더명을 입력해주세요 .',
@@ -393,23 +392,31 @@ $(function () {
             		'X-CSRF-TOKEN': csrfToken
         		},
                 success: function(response) {
-					if(response.res_code === '200'){
-						
+					if(response.res_code === '200'){					
 						Swal.fire({
-                    	icon: 'success',
-                    	text: response.res_msg,
-                    	confirmButtonText: '확인'
-                		});
-                		
-                        // 폴더 생성 성공 처리
-                        $('.modal_div').hide();
-                        // 폴더 리스트를 다시 가져오기 
-                        getFolders();			
-                        				
-                        $('.document_no_folder').hide();
-                    	$('.document_select_folder').show();
-                    	$('.folder_buttons').show();
-                    	$('.box_size').show();
+                     		icon: 'success',
+                    		text: response.res_msg,
+                    		confirmButtonText: '확인'
+                		}).then(() => {
+                        	// 새로 생성된 폴더 번호를 selectedFolderNo로 지정
+                       	 	const newFolderNo = response.folderNo; 
+                        	selectedFolderNo = newFolderNo;
+
+                        	// 폴더 생성 성공 처리
+                        	$('.modal_div').hide();
+                        	// 폴더 리스트를 다시 가져오기 
+                       		getFolders().then(() => {
+                            	// 새로 생성된 폴더를 열기
+                            	const tree = $('#tree').jstree(true);
+                            	tree.select_node(newFolderNo);
+                            	openFolderToNode(newFolderNo);
+                            	loadFiles(newFolderNo);
+                        	});			                     				
+                        	$('.document_no_folder').hide();
+                    		$('.document_select_folder').show();
+                    		$('.folder_buttons').show();
+                    		$('.box_size').show();
+                    	});
 					} else{
 						Swal.fire({
                         	icon: 'error',
@@ -478,8 +485,7 @@ $(function () {
 	                    });
 	
 	                    // 폴더 이름 변경 성공 처리
-	                    $('.modal_div').hide();
-	                    
+	                    $('.modal_div').hide();        
 	                    // 폴더 이름 업데이트
                         const updatedFolder = folderList.find(f => f.id == selectedFolderNo);
                         if (updatedFolder) {
@@ -565,16 +571,11 @@ $(function () {
 	                        if (prevSelectedNode) {
 	                            tree.deselect_node(prevSelectedNode);
 	                        }
-	                        // 새로 생성된 폴더를 세션에 저장 
-	                        savedFolderNo = response.folderNo;
-	                        sessionStorage.setItem('selectedFolderNo', savedFolderNo);
-	                        
 	                        // 새로 생성된 폴더를 선택하고 열기
-	                        tree.select_node(savedFolderNo);
-	                        openFolderToNode(savedFolderNo);
-	                        
-	                        // 새로 생성된 폴더의 파일 목록 불러오기
-	                        loadFiles(savedFolderNo);
+                            const newFolderId = response.folderNo;
+                            tree.select_node(newFolderId);
+                            openFolderToNode(newFolderId);
+                            loadFiles(newFolderId);
 	
 	                        $('.document_no_folder').hide();
 	                        $('.document_select_folder').show();
@@ -645,16 +646,11 @@ $(function () {
 						                        if (prevSelectedNode) {
 						                            tree.deselect_node(prevSelectedNode);
 						                        }
-						                        // 최상위 폴더를 세션에 저장 						                       
-						                        savedFolderNo = deleteResponse.parentNo;
-						                        sessionStorage.setItem('selectedFolderNo', savedFolderNo);
-						                        
 						                        // 최상위 폴더를 선택하고 열기
-						                        tree.select_node(savedFolderNo);
-						                        openFolderToNode(savedFolderNo);
-						                        
-						                        // 최상위 폴더의 파일 목록 불러오기
-						                        loadFiles(savedFolderNo);
+		                                        const parentFolderNo = deleteResponse.parentNo;
+		                                        tree.select_node(parentFolderNo);
+		                                        openFolderToNode(parentFolderNo);
+		                                        loadFiles(parentFolderNo);
 						
 						                        $('.document_no_folder').hide();
 						                        $('.document_select_folder').show();
@@ -704,7 +700,6 @@ $(function () {
 	                                    $('#tree').hide();
                                     	$('.document_no_folder').show();
                                     	$('.document_file_list').hide();
-                                 	   	$('.document_select_folder').hide();
                                    	 	$('.folder_buttons').hide();
                                    	 	$('.box_size').hide();
 	                                } else {
@@ -742,6 +737,7 @@ $(function () {
 	    }
 		if (fileInput.files.length > 0) {
 	        const file = fileInput.files[0]; 
+	        const allowedExtensions = /(\.pdf|\.hwp|\.doc|\.docx|\.ppt|\.pptx|\.xls|\.xlsx)$/i;
 	        const maxSizeBytes = 25 * 1024 * 1024; 
 			// 파일 용량 초과 
 	        if (file.size > maxSizeBytes) {
@@ -751,6 +747,13 @@ $(function () {
 	                confirmButtonText: '확인'
 	            });
 	            return; 
+	        } else if(!allowedExtensions.exec(file.name)){
+				Swal.fire({
+		            icon: 'warning',
+		            text: '허용된 파일 형식이 아닙니다.',
+		            confirmButtonText: '확인'
+		        });
+		        return;
 	        } else {
 				const formData = new FormData();
     			formData.append('file', file);
@@ -776,6 +779,7 @@ $(function () {
 				                  
 		                    $('.modal_div').hide();
 		                    $('#file_input').val('');
+		                    $('.file_upload_modal').hide();
 		                    loadFiles(selectedFolderNo);	
 		                    getAllFileSize();	                  						
 		                } else {
@@ -874,10 +878,46 @@ $(function () {
 	    });
 	}
 
+	// 날짜 검색 
+	var today = new Date();
+	const todayStr = formatDate(today);	
+	// 1년 전 날짜 계산
+	const oneYearAgo = new Date();
+	oneYearAgo.setFullYear(today.getFullYear() - 1);
+	const oneYearAgoStr = formatDate(oneYearAgo);
+	const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    // 시작 날짜를 끝나는 날보다 나중 날짜로 설정 못하게 하는 함수 
+    function startDateLimit() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        // endDate가 startDate보다 이전일 때 startDate를 endDate와 같게 설정
+	    if (endDate < startDate) {
+	        startDateInput.value = formatDate(endDate);
+	    }	    
+	    // startDate의 최대값을 endDate로 설정
+	    startDateInput.max = formatDate(endDate);
+    }
+    // startDate의 기본값을 오늘로부터 1년 전으로 설정
+	startDateInput.value = oneYearAgoStr;
+    // endDate의 기본 값을 오늘로 설정 
+    endDateInput.value = todayStr;
+	
+	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
+    startDateInput.max = todayStr;
+    endDateInput.max = todayStr;
+
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
-        getFolders();
-    	getAllFileSize();
+	    getFolders().then(() => {
+	        getAllFileSize();
+	
+	        // 파일 목록을 로드하는 함수 호출
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            loadFiles(selectedFolderNo);
+	        }
+	    });
         
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
@@ -886,5 +926,20 @@ $(function () {
             	loadFiles(selectedFolderNo);
         	}
         });
+        // 날짜가 변경될 때 파일 목록을 새로 로드
+	    startDateInput.addEventListener('change', function() {
+	        startDateLimit();
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            loadFiles(selectedFolderNo);
+	        }
+	    });
+	    endDateInput.addEventListener('change', function() {
+	        startDateLimit();
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            loadFiles(selectedFolderNo);
+	        }
+	    });
     });
 });
