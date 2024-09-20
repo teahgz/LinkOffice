@@ -138,4 +138,17 @@ public class SurveyService {
         List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent());
         return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
     }
+    
+    public SurveyDto selectSurveyOne(Long survey_no) {
+    	Survey survey = surveyRepository.findBysurveyNo(survey_no);
+    	SurveyDto dto = SurveyDto.builder()
+    			.survey_no(survey.getSurveyNo())
+                .survey_title(survey.getSurveyTitle())
+                .survey_start_date(survey.getSurveyStartDate())
+                .survey_end_date(survey.getSurveyEndDate())
+                .survey_status(survey.getSurveyStatus())
+                .member_name(survey.getMember().getMemberName())
+                .build();
+    	return dto;
+    }
 }

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>추석 행사 참여 의향 조사</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .header .info {
+      flex: 1;
+    }
+
+    .header table {
+      margin-left: 20px;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    .header table, .header th, .header td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    .question {
+      margin: 20px 0;
+    }
+
+    .radio-group {
+      margin: 10px 0;
+    }
+
+    .submit-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .submit-buttons button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .submit-buttons button.cancel {
+      background-color: #6c757d;
+    }
+
+    .submit-buttons button:hover {
+      opacity: 0.9;
+    }
+
+    .fixed-box {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+  </style>
+</head>
+<body>
+<h1>설문 상세</h1>
+<div class="container">
+  <div class="header">
+    <div class="info">
+      <h2 th:text="${survey.survey_title}"></h2>
+      <p th:text="${survey.member_name}"></p>
+      <p th:text="${survey.survey_create_date}"></p>
+      <p th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></p>
+    </div>
+    <table>
+      <tr>
+        <th>전체 참여자</th>
+        <th>참여 완료</th>
+        <th>미참여</th>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>2</td>
+        <td>2</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="question">
+    <p>1. 추석 행사에 참여할 의향이 있습니까?</p>
+    <div class="radio-group">
+      <input type="radio" id="participate1" name="q1" value="yes">
+      <label for="participate1">참여하겠습니다.</label><br>
+      <input type="radio" id="participate2" name="q1" value="no">
+      <label for="participate2">불참하겠습니다.</label>
+    </div>
+  </div>
+
+  <div class="question">
+    <p>2. 추석 행사에 참여할 의향이 있습니까?</p>
+    <input type="text" name="q2" placeholder="미참하겠습니다." style="width: 100%;">
+  </div>
+
+  <div class="submit-buttons">
+    <button type="button">설문 제출</button>
+    <button type="button" class="cancel">취소</button>
+  </div>
+</div>
+
+<!-- 고정된 답변 개수 상자 -->
+<div class="fixed-box">
+  <p>답변 개수</p>
+  <p><strong>1/2</strong></p>
+</div>
+
+</body>
+</html>
