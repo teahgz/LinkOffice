@@ -63,6 +63,8 @@
 									                 alt="현재 서명" id="currentSignature">
 									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
 									                  id="currentSignature" th:text="${flow.member_name}"></span>
+										        <span th:if="${flow.vacation_approval_flow_status == 3}" 
+										              class="currentSignature" id="reject" th:text="반려"></span>									                  
 						                    </div>
 						                </td>
 						            </tr>
@@ -72,7 +74,7 @@
 						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status == 2}"
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status != 0 and flow.vacation_approval_flow_status != 1}"
 						                         th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
 						                </td>
 						            </tr>
@@ -95,7 +97,7 @@
 					</div>
 
 					<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
-						 <strong>반려 취소 사유</strong>
+						 <strong>반려 사유</strong>
 						<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
 					</div>	
 
