@@ -69,7 +69,7 @@ select {
 }
 
 .search_button {
-    padding: 12px 25px;
+    padding: 10px 25px;
     background-color: #B1C2DD;
     border: none;
     border-radius: 6px;
@@ -87,7 +87,7 @@ select {
 }
 
 #sort {
-	margin-left:690px;
+	margin-left:430px;
 }
 
 .employee_table {
