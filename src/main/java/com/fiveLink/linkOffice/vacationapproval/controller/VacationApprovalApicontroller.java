@@ -292,4 +292,22 @@ public class VacationApprovalApicontroller {
 	    return response;
 	}
 	
+	// 사용자 휴가결재 기안취소 (업데이트)
+	@ResponseBody
+	@PutMapping("/employee/vacationapproval/approvecancel/{vacationapproval_no}")
+	public Map<String,String> employeeVacationApprovalFlowCancel(@PathVariable("vacationapproval_no") Long vacationApprovalNo){
+		Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg","승인 취소 중 오류가 발생하였습니다.");
+	   
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    
+	    if(vacationApprovalService.employeeVacationApprovalFlowApproveCancel(vacationApprovalNo, memberNo) != null) {
+	    	
+            response.put("res_code", "200");
+            response.put("res_msg", "승인 취소가 완료되었습니다."); 	    	
+	    }
+	    
+	    return response;
+	}
 }
