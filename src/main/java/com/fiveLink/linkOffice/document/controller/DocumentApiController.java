@@ -59,8 +59,8 @@ public class DocumentApiController {
    // 개인 첫 폴더 
    @PostMapping("/personal/first/folder")
    @ResponseBody
-   public Map<String, String> personalFirstFolder(@RequestBody Map<String, Object> payload){
-	  Map<String, String> resultMap = new HashMap<>();
+   public Map<String, Object> personalFirstFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, Object> resultMap = new HashMap<>();
 	  resultMap.put("res_code", "404");
 	  resultMap.put("res_msg", "경로 오류");
 	
@@ -73,6 +73,7 @@ public class DocumentApiController {
       Long folderLevel = 1L;
       Long docBoxType = 0L;
       Long folderStatus = 0L;
+      Long parentNo = null;
       
       Member member = memberRepository.findByMemberNo(memberNo);
       Department department = departmentRepository.findByDepartmentNo(deptNo);
@@ -87,10 +88,13 @@ public class DocumentApiController {
             .build();
 
       int result = documentFolderService.personalFirstFolder(documentFolder);
+      DocumentFolder documentFirstFolder = 
+    		  documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, parentNo, folderStatus);
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
     	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("folderNo", documentFirstFolder.getDocumentFolderNo());
       } 
       return resultMap;
    }	
@@ -143,8 +147,8 @@ public class DocumentApiController {
    // 부서 첫 폴더 
    @PostMapping("/department/first/folder")
    @ResponseBody
-   public Map<String, String> departmentFirstFolder(@RequestBody Map<String, Object> payload){
-	  Map<String, String> resultMap = new HashMap<>();
+   public Map<String, Object> departmentFirstFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, Object> resultMap = new HashMap<>();
 	  resultMap.put("res_code", "404");
 	  resultMap.put("res_msg", "경로 오류");
 	
@@ -157,6 +161,7 @@ public class DocumentApiController {
       Long folderLevel = 1L;
       Long docBoxType = 1L;
       Long folderStatus = 0L;
+      Long parentNo = null;
       
       Member member = memberRepository.findByMemberNo(memberNo);
       Department department = departmentRepository.findByDepartmentNo(deptNo);
@@ -171,11 +176,13 @@ public class DocumentApiController {
             .build();
 
       int result = documentFolderService.departmentFirstFolder(documentFolder);
-      System.out.println("Service result: " + result);
+      DocumentFolder documentFirstFolder = 
+    		  documentFolderRepository.findByDepartmentDepartmentNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(deptNo, docBoxType, parentNo, folderStatus);
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
     	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("folderNo", documentFirstFolder.getDocumentFolderNo());
       } 
       return resultMap;
    }	
@@ -229,8 +236,8 @@ public class DocumentApiController {
    // 사내 첫 폴더 
    @PostMapping("/company/first/folder")
    @ResponseBody
-   public Map<String, String> companyFirstFolder(@RequestBody Map<String, Object> payload){
-	  Map<String, String> resultMap = new HashMap<>();
+   public Map<String, Object> companyFirstFolder(@RequestBody Map<String, Object> payload){
+	  Map<String, Object> resultMap = new HashMap<>();
 	  resultMap.put("res_code", "404");
 	  resultMap.put("res_msg", "경로 오류");
 	
@@ -243,6 +250,7 @@ public class DocumentApiController {
       Long folderLevel = 1L;
       Long docBoxType = 2L;
       Long folderStatus = 0L;
+      Long parentNo = null;
       
       Member member = memberRepository.findByMemberNo(memberNo);
       Department department = departmentRepository.findByDepartmentNo(deptNo);
@@ -257,11 +265,13 @@ public class DocumentApiController {
             .build();
 
       int result = documentFolderService.departmentFirstFolder(documentFolder);
-      System.out.println("Service result: " + result);
+      DocumentFolder documentFirstFolder = 
+    		  documentFolderRepository.findByDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(docBoxType, parentNo, folderStatus);
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
     	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("folderNo", documentFirstFolder.getDocumentFolderNo());
       } 
       return resultMap;
    }
@@ -386,13 +396,14 @@ public class DocumentApiController {
    	   Long fileStatus = 0L;
    	   Long docBoxType = 0L;
    	   Long docParentNo = null;
+   	   Long folderStatus = 0L;
        
    	   // 현재 폴더 
        DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
        // 현재 폴더의 파일리스트 
        List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
        // 최상위 폴더 
-       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(memberNo, docBoxType, docParentNo);
+       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
        // 자식 폴더 
        List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
        
@@ -590,13 +601,15 @@ public class DocumentApiController {
    	   Long fileStatus = 0L;
    	   Long docBoxType = 1L;
    	   Long docParentNo = null;
+   	   Long folderStatus = 0L;
        
    	   // 현재 폴더 
        DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
        // 현재 폴더의 파일리스트 
        List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
        // 최상위 폴더 
-       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(memberNo, docBoxType, docParentNo);
+       DocumentFolder parentFolder 
+       		= documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
        // 자식 폴더 
        List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
        
@@ -697,13 +710,14 @@ public class DocumentApiController {
    	   Long fileStatus = 0L;
    	   Long docBoxType = 2L;
    	   Long docParentNo = null;
-       
+       Long folderStatus = 0L;
    	   // 현재 폴더 
        DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
        // 현재 폴더의 파일리스트 
        List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
        // 최상위 폴더 
-       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNo(memberNo, docBoxType, docParentNo);
+       DocumentFolder parentFolder 
+       		= documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
        // 자식 폴더 
        List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
        
