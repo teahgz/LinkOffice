@@ -232,6 +232,7 @@
     display: block;
     text-align: right;
     color: #666;
+    padding: 0 10px;
 }
 
 .other-message .message-ele {

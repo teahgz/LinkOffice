@@ -51,6 +51,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         } else if("chatRoomUpdate".equals(type)){
             //채팅방 이름 수정
             handleChatRoomUpdate(jsonMap, session, type);
+        } else if("chatRoomAdd".equals(type)){
+            System.out.println("test");
+            //그룹 채팅 추가
+            handleChatRoomAdd(jsonMap, session, type);
         } else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
@@ -163,6 +167,24 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             response.put("type", type);
             String jsonResponse = new ObjectMapper().writeValueAsString(response);
             session.sendMessage(new TextMessage(jsonResponse));
+        }
+
+    }
+
+    // 채팅방 생성 처리 메소드
+    private void handleChatRoomAdd(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+        String chatRoomName = (String) jsonMap.get("name"); // 방 이름 가져오기
+        Long currentChatRoomNo = Long.parseLong((String) jsonMap.get("currentChatRoomNo")); // 방 번호 가져오기
+        List<String> members = (List<String>) jsonMap.get("newMembers");
+
+        ChatMemberDto memberDto = new ChatMemberDto();
+        for(int i = 0; i< members.size(); i++){
+            memberDto.setMember_no(Long.valueOf(members.get(i))); //memberNo
+            memberDto.setChat_room_no(currentChatRoomNo);
+            memberDto.setChat_member_room_name(chatRoomName);
+            if(chatMemberService.createMemberRoomOne(memberDto)>0){
+                System.out.println("success");
+            }
         }
 
     }

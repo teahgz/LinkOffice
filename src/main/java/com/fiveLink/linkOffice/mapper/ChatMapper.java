@@ -25,4 +25,8 @@ public interface ChatMapper {
 
     //채팅방 타입 가져오기
     int chatRoomType(Long chatRooNo);
+    //같은 채팅방에 있는 사용자 번호
+    List<Long> chatRoomMemberNo(Long chatRoomNo);
+    //수정 채팅방 이름 가져오기
+    String selectMemberChatRoomName(Long chatRoomNo);
 }
