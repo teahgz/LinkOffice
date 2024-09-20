@@ -32,12 +32,7 @@ body {
     padding-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
 }
-
-.list-header h2, .details-header h2 {
-    margin: 0 0 10px 0;
-    color: #2c3e50;
-}
-
+ 
 .department_comment {
 	margin-bottom: 20px;	
 }
@@ -63,7 +58,7 @@ button:hover {
 .department_info {
     font-size: 17px;
     font-weight: bold;
-    margin-right: 10px; /* 제목과 리스트 사이의 간격 */
+    margin-right: 10px;  
 }
  
 
@@ -74,7 +69,7 @@ button:hover {
 }
 
 .department_li {
-    margin-bottom: 5px; /* 리스트 항목 사이의 간격 */
+    margin-bottom: 5px;  
 }
 
 .info_content_tag a {
@@ -86,8 +81,7 @@ button:hover {
 .info_content_tag a:hover {
     color: #163e65;
 }
-
-
+ 
 .container a, .details a {
     color: #2994da;
     text-decoration: none;
@@ -117,7 +111,7 @@ button:hover {
 .modal-content {
     background-color: #fefefe;
     margin: 10% auto;
-    padding: 30px;
+    padding: 30px 40px;
     border: 1px solid #888;
     width: 80%;
     max-width: 500px;
@@ -135,11 +129,7 @@ button:hover {
 
 .modal-content form button {
     align-self: flex-end;
-}
-
-.modal-content form label {
-    margin-bottom: 5px;  
-}
+} 
 
 .close {
     color: #aaa;
@@ -152,20 +142,7 @@ button:hover {
 
 .close:hover {
     color: #000;
-}
-
-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-form input[type="text"], form select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
+} 
  
 .details-actions {
     margin-top: 30px;
@@ -197,11 +174,11 @@ form input[type="text"], form select {
 .list_subdep {
 	font-size : 18px;
 	margin-left : 30px;
+	padding-left: 10px;
 }
 
 .list_pardep {
-	font-size : 20px; 
-	margin-bottom: 50px;
+	font-size : 20px;  
 	font-weight: bold;  
 }
 
@@ -217,9 +194,13 @@ form input[type="text"], form select {
 
 #deleteButton {
 	background-color: #EEB3B3;
+} 
+
+#deleteButton:hover {
+	background-color: #e07676;
 }
 
-#departmentName{
+#departmentName, #editDepartmentName{
 	width : 96%;
 	padding: 8px;
 	border: 1px solid #ddd;
@@ -227,12 +208,12 @@ form input[type="text"], form select {
     transition: border-color 0.3s;
 }
 
-#departmentName:focus{
+#departmentName:focus, #editDepartmentName:focus{
     outline: none;
     border-color: #B1C2DD;
 }
 
-#departmentHigh{
+#departmentHigh, #editDepartmentHigh{
 	width : 96%;
 	padding: 8px;
 	border: 1px solid #ddd;
@@ -240,18 +221,50 @@ form input[type="text"], form select {
     transition: border-color 0.3s;
 }
 
-#departmentHigh:focus{
+#departmentHigh:focus, #editDepartmentHigh:focus{
     outline: none;
     border-color: #B1C2DD;
 }
 
 .create_btn {
 	margin-top : 50px;
-}
-form label {
-	font-weight: bold;
-}
+} 
 
 #editDepartmentName {
 	width : 96%;
+}
+
+.selected {
+    background-color: #e9ecef;
+    color: #163e65;
+    text-decoration: none; 
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+p {
+	margin-bottom: 25px;
+}
+
+hr {
+	margin : -10px 0 40px 0;
+}
+
+.modal-content .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 35px;
+    justify-content: flex-start;
+}
+ 
+.modal-content label {
+    width: 200px;  
+    text-align: left;
+    font-weight: bold;
+}
+
+form input[type="text"], form select { 
+    padding-left: 10px;
 }

@@ -41,15 +41,35 @@ public class ScheduleCategoryService {
     }
     
     // 수정
-    public void updateScheduleCategory(Long categoryId, String categoryName, String categoryColor, Long onlyAdmin) {
-        ScheduleCategory category = scheduleCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("카테고리를 찾을 수 없습니다."));
+    @Transactional
+    public Map<String, String> updateScheduleCategory(Long categoryId, String categoryName, String categoryColor, Long onlyAdmin) {
+        Map<String, String> response = new HashMap<>();
         
-        category.setScheduleCategoryName(categoryName);
-        category.setScheduleCategoryColor(categoryColor);
-        category.setScheduleCategoryAdmin(onlyAdmin);
-        
-        scheduleCategoryRepository.save(category);
+        // 중복 카테고리명 
+        boolean isNameDuplicate = scheduleCategoryRepository.existsByScheduleCategoryNameAndScheduleCategoryStatusAndScheduleCategoryNoNot(categoryName, 0L, categoryId);
+        if (isNameDuplicate) {
+            response.put("name", "중복된 카테고리명이 존재합니다.");
+        }
+
+        // 중복 색상  
+        boolean isColorDuplicate = scheduleCategoryRepository.existsByScheduleCategoryColorAndScheduleCategoryStatusAndScheduleCategoryNoNot(categoryColor, 0L, categoryId);
+        if (isColorDuplicate) {
+            response.put("color", "중복된 색상이 존재합니다.");
+        }
+ 
+        if (!isNameDuplicate && !isColorDuplicate) {
+            ScheduleCategory scheduleCategory = scheduleCategoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new RuntimeException("카테고리가 존재하지 않습니다."));
+
+            scheduleCategory.setScheduleCategoryName(categoryName);
+            scheduleCategory.setScheduleCategoryColor(categoryColor);
+            scheduleCategory.setScheduleCategoryAdmin(onlyAdmin);
+
+            scheduleCategoryRepository.save(scheduleCategory);
+            response.put("success", "카테고리 정보가 수정되었습니다.");
+        }
+
+        return response;  
     }
     
     // 삭제

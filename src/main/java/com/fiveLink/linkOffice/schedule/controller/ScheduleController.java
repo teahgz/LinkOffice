@@ -64,24 +64,21 @@ public class ScheduleController {
 	@PostMapping("/schedule/category/update") 
 	@ResponseBody
 	public Map<String, String> updateScheduleCategory(@RequestBody Map<String, Object> payload) {
-	    Map<String, String> resultMap = new HashMap<>();
-	    resultMap.put("res_code", "404");
-	    resultMap.put("res_msg", "카테고리 수정 중 오류가 발생했습니다.");
-
-	    try {
-	        Long categoryId = Long.valueOf(payload.get("scheduleCategoryId").toString());
-	        String categoryName = (String) payload.get("scheduleCategoryName");
-	        String categoryColor = (String) payload.get("scheduleCategoryColor");
-	        Long onlyAdmin = (long) ((Boolean) payload.get("onlyAdmin") ? 1 : 0);
-	          
-	        scheduleCategoryService.updateScheduleCategory(categoryId, categoryName, categoryColor, onlyAdmin);
-	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "카테고리가 성공적으로 수정되었습니다.");
-	    } catch (Exception e) {
-	        resultMap.put("res_msg", e.getMessage());
+	    Long categoryId = Long.valueOf(payload.get("scheduleCategoryId").toString());
+	    String categoryName = (String) payload.get("scheduleCategoryName");
+	    String categoryColor = (String) payload.get("scheduleCategoryColor");
+	    Long onlyAdmin = (long) ((Boolean) payload.get("onlyAdmin") ? 1 : 0);
+ 
+	    Map<String, String> response = scheduleCategoryService.updateScheduleCategory(categoryId, categoryName, categoryColor, onlyAdmin);
+ 
+	    if (response.containsKey("success")) {
+	        response.put("res_code", "200"); 
+	    } else {
+	        response.put("res_code", "400"); 
 	    }
-	    return resultMap;
-	}
+
+	    return response;
+	} 
 
 	// 삭제
 	@PostMapping("/schedule/category/delete")
@@ -98,7 +95,7 @@ public class ScheduleController {
 
 	        if (deleteSuccess) {
 	            resultMap.put("res_code", "200");
-	            resultMap.put("res_msg", "카테고리가 성공적으로 삭제되었습니다.");
+	            resultMap.put("res_msg", "카테고리가 삭제되었습니다.");
 	        } else {
 	            resultMap.put("res_code", "400");
 	            resultMap.put("res_msg", "해당 카테고리로 등록된 일정이 있어 삭제가 불가능합니다.");
