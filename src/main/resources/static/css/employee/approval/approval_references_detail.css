@@ -254,3 +254,15 @@
     min-width: 100px; 
     text-align: center;
 }
+
+
+#vacationapproval_cancel_reason {
+    text-align: center; 
+    font-size: 20px;
+}
+
+#vacationapproval_cancel_reason div {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #333; 
+}
