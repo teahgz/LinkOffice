@@ -261,7 +261,6 @@ if (sendButton && messageInput) {
     socket.onmessage = function(event) {
       const message = JSON.parse(event.data);
       const chatContentDiv = document.getElementById("chatContent");
-
       // 메시지 타입에 따른 처리
       if (message.type === "chatRoomCreation") {
           if (message.chatRoomNo) {
@@ -295,7 +294,28 @@ if (sendButton && messageInput) {
           const chatRoomTitleElement = document.getElementById("chatRoomTitle");
           chatRoomTitleElement.textContent = updatedChatRoomName;
           document.getElementById('chatRoomNameInput').value = '';
-      } else {
+      }else if (message.type === "memberAdded") {
+        const chatRoomNo = message.chatRoomNo;
+        const chatRoomName = message.chatRoomName;
+
+        const chatRoomExists = document.querySelector(`input[value="${chatRoomNo}"]`);
+        if (!chatRoomExists) {
+
+            const newChatItem = document.createElement("div");
+            newChatItem.classList.add("chatItem");
+            newChatItem.setAttribute("onclick", `handleChatRoomClick(${chatRoomNo})`);
+
+            newChatItem.innerHTML = `
+                <h3><p>${chatRoomName}</p></h3>
+                <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
+                <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />
+            `;
+
+            const chatList = document.getElementById('chatList');
+            chatList.insertBefore(newChatItem, chatList.firstChild);
+        }
+    }
+      else {
           const messageElement = document.createElement("div");
           const now = new Date();
           const formattedTime = formatDateTime(now);
@@ -336,21 +356,39 @@ if (sendButton && messageInput) {
           if (!chatRoomExists) {
               createChatListIfNotExists(); // chatList가 없으면 생성
 
-              // 새로운 채팅 아이템 생성
-              const newChatItem = document.createElement("div");
-              newChatItem.classList.add("chatItem");
-              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chat_room_no})`);
+                 getChatRoomName(message.chat_room_no)
+                     .then(chatRoomName => {
+                         // 새로운 채팅 아이템 생성
+                         const newChatItem = document.createElement("div");
+                         newChatItem.classList.add("chatItem");
+                         newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chat_room_no})`);
 
-              newChatItem.innerHTML = `
-                  <h3><p>${message.names}</p></h3>
-                  <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
-                  <input type="hidden" id="chatRoomNo" value="${message.chat_room_no}" />
-              `;
+                         newChatItem.innerHTML = `
+                             <h3><p>${chatRoomName}</p></h3>
+                             <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
+                             <input type="hidden" id="chatRoomNo" value="${message.chat_room_no}" />
+                         `;
 
-              const chatList = document.getElementById('chatList');
-              chatList.insertBefore(newChatItem, chatList.firstChild);
+                         const chatList = document.getElementById('chatList');
+                         chatList.insertBefore(newChatItem, chatList.firstChild);
+                     });
           }
       }
+//    // 채팅방 번호로 채팅방 이름을 가져오는 함수
+//    function fetchChatRoomName(chatRoomNo) {
+//        return fetch(`api/chat/roomName/${chatRoomNo}/${memberNo}`)
+//            .then(response => {
+//                if (!response.ok) {
+//                    throw new Error('Network response was not ok');
+//                }
+//                return response.json();
+//            })
+//            .then(data => data.chatRoomName)
+//            .catch(error => {
+//                console.error('Fetch error:', error);
+//                return '채팅방 이름 없음';
+//            });
+//    }
 
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
@@ -373,6 +411,7 @@ if (sendButton && messageInput) {
         const chat_content = document.getElementById("messageInput").value;
         const chat_sender_name = document.getElementById("userName").value;
         const sendButton = document.getElementById("sendButton");
+
         if (currentChatRoomNo === null) {
             console.error("방이 선택되지 않음");
             return;
@@ -602,7 +641,7 @@ function formatDateTime(date) {
               });
     }
     function getChatRoomName(chatRoomNo) {
-        const memberNo = document.getElementById('memberNo').value;
+        const memberNo = document.getElementById('currentMember').value;
         return fetch(`/api/chat/roomName/${chatRoomNo}/${memberNo}`)
             .then(response => {
                 if (!response.ok) {
@@ -745,7 +784,6 @@ function formatDateTime(date) {
              }
          });
 
-         console.log("새로 추가된 멤버들:", newMembers);
          localStorage.setItem('selectedMembersAdd', JSON.stringify(newMembers));
      }
         function disableCheckedMembers(globalMemberNumbers) {

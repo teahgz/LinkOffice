@@ -52,9 +52,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             //채팅방 이름 수정
             handleChatRoomUpdate(jsonMap, session, type);
         } else if("chatRoomAdd".equals(type)){
-            System.out.println("test");
             //그룹 채팅 추가
+            System.out.println("checkcheck : "+ jsonMap);
             handleChatRoomAdd(jsonMap, session, type);
+            System.out.println("checkcheck : "+ jsonMap);
         } else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
@@ -171,10 +172,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     }
 
-    // 채팅방 생성 처리 메소드
+    // 채팅방 초대 처리 메소드
     private void handleChatRoomAdd(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         String chatRoomName = (String) jsonMap.get("name"); // 방 이름 가져오기
-        Long currentChatRoomNo = Long.parseLong((String) jsonMap.get("currentChatRoomNo")); // 방 번호 가져오기
+        Object currentChatRoomNoObj = jsonMap.get("currentChatRoomNo"); // Integer 또는 String일 수 있음
+
+        Long currentChatRoomNo;
+        if (currentChatRoomNoObj instanceof Integer) {
+            currentChatRoomNo = ((Integer) currentChatRoomNoObj).longValue();  // Integer를 Long으로 변환
+        } else if (currentChatRoomNoObj instanceof String) {
+            currentChatRoomNo = Long.parseLong((String) currentChatRoomNoObj);  // String을 Long으로 변환
+        } else {
+            throw new IllegalArgumentException("채팅방 번호의 오류");
+        }
+
         List<String> members = (List<String>) jsonMap.get("newMembers");
 
         ChatMemberDto memberDto = new ChatMemberDto();
@@ -183,7 +194,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             memberDto.setChat_room_no(currentChatRoomNo);
             memberDto.setChat_member_room_name(chatRoomName);
             if(chatMemberService.createMemberRoomOne(memberDto)>0){
-                System.out.println("success");
+
                 // 새 멤버 정보를 클라이언트에 전송
                 Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("type", "memberAdded");
