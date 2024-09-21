@@ -518,6 +518,7 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
+	                $('#file_name_input').val(''); 
 	            }
 	        });
 	    }
@@ -597,6 +598,7 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
+	                $('#file_name_input').val(''); 
 	            }
 	        });
 	    }
@@ -721,6 +723,7 @@ $(function () {
                         }
                     });
                 }
+                $('#file_name_input').val(''); 
             }
         });
 	});
