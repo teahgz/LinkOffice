@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 
 
 @Repository
@@ -22,11 +21,11 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
 	// 전체 조회
 	@Query("SELECT va FROM VacationApproval va " +
 			"WHERE va.member.memberNo = :memberNo " +
-			"AND ((:searchText = '진행중' AND va.vacationApprovalStatus = 0) " +
+			"AND ((:searchText = '진행중' OR :searchText = '진행' AND va.vacationApprovalStatus = 0) " +
 			"     OR (:searchText = '완료' AND va.vacationApprovalStatus = 1) " +
 			"     OR (:searchText = '반려' AND va.vacationApprovalStatus = 2) " +
-			"     OR (:searchText = '취소' AND va.vacationApprovalStatus = 3)"
-			+ "   OR (va.vacationApprovalTitle LIKE %:searchText%))")
+			"     OR (:searchText = '취소' AND va.vacationApprovalStatus = 3) " + 
+			"     OR (va.vacationApprovalTitle LIKE %:searchText%))")
 	Page<VacationApproval> findByMemberMemberNoAndVacationApprovalTitleAndApprovalStatus(@Param("memberNo") Long memberNo, @Param("searchText") String searchText, Pageable pageable);
 
 	// 제목으로 검색
@@ -35,7 +34,7 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
 	 // 상태로 검색
 	 @Query("SELECT va FROM VacationApproval va " +
 	           "WHERE va.member.memberNo = :memberNo " +
-	           "AND ((:searchText = '진행중' AND va.vacationApprovalStatus = 0) " +
+	           "AND ((:searchText = '진행중' OR :searchText = '진행' AND va.vacationApprovalStatus = 0) " +
 	           "     OR (:searchText = '완료' AND va.vacationApprovalStatus = 1) " +
 	           "     OR (:searchText = '반려' AND va.vacationApprovalStatus = 2) " +
 	           "     OR (:searchText = '취소' AND va.vacationApprovalStatus = 3))")
