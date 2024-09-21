@@ -12,8 +12,13 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleCategory;
 public interface ScheduleCategoryRepository extends JpaRepository<ScheduleCategory, Long>{
     List<ScheduleCategory> findAllByScheduleCategoryStatusOrderByScheduleCategoryNameAsc(Long scheduleCategoryStatus);
 
+    // 등록 중복 확인
     boolean existsByScheduleCategoryNameAndScheduleCategoryStatus(String scheduleCategoryName, Long scheduleCategoryStatus);
     
     boolean existsByScheduleCategoryColorAndScheduleCategoryStatus(String scheduleCategoryColor, Long scheduleCategoryStatus);
     
+    // 수정 중복 확인
+    boolean existsByScheduleCategoryNameAndScheduleCategoryStatusAndScheduleCategoryNoNot(String scheduleCategoryName, Long status, Long categoryNo);
+
+    boolean existsByScheduleCategoryColorAndScheduleCategoryStatusAndScheduleCategoryNoNot(String scheduleCategoryColor, Long status, Long categoryNo);
 }

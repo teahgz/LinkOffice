@@ -226,14 +226,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	createForm.addEventListener('submit', function (event) {
         event.preventDefault();
-        var meetingName = document.getElementById('meetingName').value;
+        var meetingName = document.getElementById('meetingName').value.trim();
         var meetingMax = document.getElementById('meetingMax').value;
         var meetingAvailableStart = document.getElementById('meetingAvailableStart').value;
         var meetingAvailableEnd = document.getElementById('meetingAvailableEnd').value;
-        var meetingComment = document.getElementById('meetingComment').value;
+        var meetingComment = document.getElementById('meetingComment').value.trim();
         var meetingImage = document.getElementById('meetingImage').files[0];
 
-        if (!meetingName) {
+        if (!meetingName || meetingName.length == 0) {
             Swal.fire({
 			    text: '회의실 이름을 입력해 주세요.',
 			    icon: 'warning',
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
             return;
         }
-        if (!meetingComment) {
+        if (!meetingComment || meetingComment.length == 0) {
 			Swal.fire({
 			    text: '설명을 입력해 주세요.',
 			    icon: 'warning',
@@ -350,14 +350,14 @@ document.addEventListener('DOMContentLoaded', function () {
     editForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        var meetingName = document.getElementById('modal-meeting-name').value;
+        var meetingName = document.getElementById('modal-meeting-name').value.trim();
         var meetingMax = document.getElementById('modal-meeting-max').value;
         var meetingAvailableStart = document.getElementById('modal-meeting-available-start').value;
         var meetingAvailableEnd = document.getElementById('modal-meeting-available-end').value;
-        var meetingComment = document.getElementById('modal-meeting-comment').value;
+        var meetingComment = document.getElementById('modal-meeting-comment').value.trim();
         var meetingImage = document.getElementById('edit_modal_image').files[0];
 
-        if (!meetingName) {
+        if (!meetingName || meetingName.length == 0) {
             Swal.fire({
 			    text: '회의실 이름을 입력해 주세요.',
 			    icon: 'warning',
@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
             return;
         }
-        if (!meetingComment) {
+        if (!meetingComment || meetingComment.length == 0) {
 			Swal.fire({
 			    text: '설명을 입력해 주세요.',
 			    icon: 'warning',

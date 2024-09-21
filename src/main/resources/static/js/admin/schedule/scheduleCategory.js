@@ -74,7 +74,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	        scheduleCategoryColor: document.getElementById("editScheduleCategoryColor").value.slice(1),  
 	        onlyAdmin: document.getElementById("editOnlyAdmin").checked
 	    };
-	
+	    
+	    var scheduleCategoryName = document.getElementById("editScheduleCategoryName").value.trim();
+	    
+	    if (!scheduleCategoryName || scheduleCategoryName.length == 0) {
+            Swal.fire({
+			    text: '카테고리명을 입력해 주세요.',
+			    icon: 'warning',
+			    confirmButtonColor: '#B1C2DD',
+			    confirmButtonText: '확인',
+			});
+            return;
+        }
+
 	    $.ajax({
 	        type: 'POST',
 	        url: '/schedule/category/update',  
@@ -83,26 +95,34 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(response) {
-	            if (response.res_code === '200') {
-					Swal.fire({ 
-					    text: response.res_msg,
-					    icon: 'success', 
-					    confirmButtonColor: '#B1C2DD', 
-					    confirmButtonText: '확인', 
-					}).then(() => {
-						document.getElementById('editModal').style.display = 'none';
-                        location.reload();
-                    }); 
-	            } else {
-                    Swal.fire({ 
-					    text: response.res_msg,
-					    icon: 'error', 
-					    confirmButtonColor: '#B1C2DD', 
-					  	confirmButtonText: '확인', 
-					});
-	            }
-	        }
+	        success: function (response) {
+			        if (response.res_code === "200") {
+			            Swal.fire({ 
+			                text: response.success,
+			                icon: 'success', 
+			                confirmButtonColor: '#B1C2DD', 
+			                confirmButtonText: '확인', 
+			            }).then(() => {
+			                location.reload();
+			            });
+			        } else {
+			            let errorMsg = "";
+			            if (response.name) {
+			                errorMsg += response.name;  
+			            } else if (response.color) {
+			                errorMsg += response.color; 
+			            }
+			            Swal.fire({ 
+						    text: errorMsg,
+						    icon: 'error', 
+						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonText: '확인', 
+						});
+			        }
+			    },
+			    error: function () {
+			        Swal.fire('서버 오류', '서버와의 통신에 문제가 발생했습니다.', 'error');
+			    } 
 	    });
 	});
 	
@@ -164,13 +184,24 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
+    // 등록
     if (createForm) {
 	    createForm.onsubmit = function (event) {
 	        event.preventDefault();
-	        var scheduleCategoryName = document.getElementById("createScheduleCategoryName").value;
+	        var scheduleCategoryName = document.getElementById("createScheduleCategoryName").value.trim();
 	        var scheduleCategoryColor = document.getElementById("createScheduleCategoryColor").value.slice(1);
-	        var onlyAdmin = document.getElementById("createOnlyAdmin").checked;
-	        
+	        var onlyAdmin = document.getElementById("createOnlyAdmin").checked; 
+
+	        if (!scheduleCategoryName || scheduleCategoryName.length == 0) {
+	            Swal.fire({
+				    text: '카테고리명을 입력해 주세요.',
+				    icon: 'warning',
+				    confirmButtonColor: '#B1C2DD',
+				    confirmButtonText: '확인',
+				});
+	            return;
+	        }
+        
 	        $.ajax({
 			    type: "POST",
 			    url: "/schedule/category/add",
@@ -214,7 +245,28 @@ document.addEventListener('DOMContentLoaded', function() {
 			}); 
 	    };
 	}
-
+	
+	const urlParams = new URLSearchParams(window.location.search);
+    const selectedCategoryId = urlParams.get('id');
  
-
+    if (selectedCategoryId) {
+        const selectedCategoryElement = document.querySelector(`li[data-category-id='${selectedCategoryId}']`);
+        if (selectedCategoryElement) {
+            selectedCategoryElement.classList.add('selected');
+        }
+    } else { 
+        const firstCategoryElement = document.querySelector('li[data-category-id]');
+        if (firstCategoryElement) {
+            firstCategoryElement.classList.add('selected');
+        }
+    }
+    
+    document.getElementById("createScheduleCategoryColor").addEventListener('input', function() {
+	    document.getElementById('colorCode').textContent = this.value; 
+	});
+	
+    document.getElementById("editScheduleCategoryColor").addEventListener('input', function() {
+	    document.getElementById('edit_colorCode').textContent = this.value; 
+	});
+	 
 });

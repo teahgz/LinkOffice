@@ -66,11 +66,13 @@ button:hover {
     font-size: 18px;
     transition: color 0.3s;
     font-style: bold;
+    padding-left: 10px; 
 }
 
 .container a:hover, .details a:hover {
     color: #163e65;
 } 
+
 .modal {
     display: none;
     position: fixed;
@@ -84,7 +86,7 @@ button:hover {
 .modal-content {
     background-color: #fefefe;
     margin: 11% auto;
-    padding: 30px;
+    padding: 30px 40px;
     border: 1px solid #888;
     width: 80%;
     max-width: 500px;
@@ -119,21 +121,19 @@ button:hover {
 }
 .close:hover {
     color: #000;
-}
-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+} 
 form input[type="text"], form select {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 60px;
+    padding: 8px; 
     border: 1px solid #ddd;
     border-radius: 4px;
 } 
 #deleteButton {
 	background-color: #EEB3B3;
+}
+
+#deleteButton:hover {
+	background-color: #e07676;
 }
 
 .details-actions {
@@ -142,7 +142,11 @@ form input[type="text"], form select {
 }
 
 .details-content {
-	margin-top : 20px;
+	margin-top : 20px; 
+}
+
+p {
+	margin-bottom: 25px;
 }
 
 .th_text1 {
@@ -152,28 +156,12 @@ form input[type="text"], form select {
 .th_text2 {
 	margin-left : 60px;
 } 
-
-#positionName{
-	width : 96%;
-	padding: 8px;
-	border: 1px solid #ddd;
-    border-radius: 6px;
-    transition: border-color 0.3s;
-}
-
+ 
 #positionName:focus{
     outline: none;
     border-color: #B1C2DD;
 }
-
-#positionHigh{
-	width : 96%;
-	padding: 8px;
-	border: 1px solid #ddd;
-    border-radius: 6px;
-    transition: border-color 0.3s;
-}
-
+ 
 #positionHigh:focus{
     outline: none;
     border-color: #B1C2DD;
@@ -190,4 +178,33 @@ input {
     transition: border-color 0.3s;
 } 
 
+.selected {
+    background-color: #e9ecef;
+    color: #163e65;
+    text-decoration: none; 
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+hr {
+	margin : -10px 0 40px 0;
+}
+
+.modal-content .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+    justify-content: flex-start;
+}
  
+.modal-content label {
+    width: 200px;  
+    text-align: left;
+    font-weight: bold;
+}
+
+form input[type="text"], form select { 
+    padding-left: 10px;
+}

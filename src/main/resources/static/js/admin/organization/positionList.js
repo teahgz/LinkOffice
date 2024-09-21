@@ -93,19 +93,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         };
-    });
-
-    window.onclick = function (event) {
-        if (event.target == createModal || event.target == editModal) {
-            closeModal();
-        }
-    };
+    }); 
 
     function closeModal() {
-        createModal.style.display = "none";
-        editModal.style.display = "none";
-        resetForm(createForm);
-        resetForm(editForm);
+		Swal.fire({
+            text: '작성한 내용이 저장되지 않습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#B1C2DD',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        }).then((result) => {
+            if (result.isConfirmed) {
+		        createModal.style.display = "none";
+		        editModal.style.display = "none";
+		        resetForm(createForm);
+		        resetForm(editForm);
+            }
+        });   
     }
 
     function resetForm(form) {
@@ -116,9 +122,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (createForm) {
         createForm.onsubmit = function (event) {
             event.preventDefault();
-            var positionName = document.getElementById("positionName").value;
+            var positionName = document.getElementById("positionName").value.trim(); 
             var positionHigh = document.getElementById("positionHigh").value;
-
+  
+		    if (!positionName || positionName.length == 0) {
+	            Swal.fire({
+				    text: '직위명을 입력해 주세요.',
+				    icon: 'warning',
+				    confirmButtonColor: '#B1C2DD',
+				    confirmButtonText: '확인',
+				});
+	            return;
+	        }
+        
             $.ajax({
                 type: "POST",
                 url: "/position/add",
@@ -192,4 +208,20 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         };
     }*/
+    
+    const positionLinks = document.querySelectorAll('.position_li a');  
+    const currentUrl = window.location.href;  
+ 
+    positionLinks.forEach(link => {
+        if (currentUrl.includes(link.getAttribute('href'))) {
+            link.classList.add('selected');
+        }
+    });
+ 
+    positionLinks.forEach(link => {
+        link.addEventListener('click', function(event) { 
+            positionLinks.forEach(l => l.classList.remove('selected')); 
+            link.classList.add('selected');
+        });
+    });
 });

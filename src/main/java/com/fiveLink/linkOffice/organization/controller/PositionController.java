@@ -74,7 +74,7 @@ public class PositionController {
 
             positionService.addPosition(positionName, positionHigh);
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "직위가 성공적으로 추가되었습니다.");
+            resultMap.put("res_msg", "직위 정보가 추가되었습니다.");
         } catch (NumberFormatException e) {
             resultMap.put("res_msg", "상위 직위를 찾을 수 없습니다. " + e.getMessage());
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class PositionController {
         
         if (success) {
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "직위가 성공적으로 삭제되었습니다.");
+            resultMap.put("res_msg", "직위 정보가 삭제되었습니다.");
         } else {
             resultMap.put("res_code", "404");
             resultMap.put("res_msg", "직위에 소속 사원이 존재하여 삭제가 불가능합니다.");

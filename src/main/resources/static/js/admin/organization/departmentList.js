@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	// 수정
     document.querySelectorAll("#editButton").forEach(function (editButton) {
         editButton.onclick = function () {
-            var departmentId = this.getAttribute("data-department-id");
+           var departmentId = this.getAttribute("data-department-id");
 
            $.ajax({
                 type: "GET",
@@ -97,17 +97,23 @@ document.addEventListener("DOMContentLoaded", function () {
         closeButton.onclick = closeModal;
     });
 
-    window.onclick = function (event) {
-        if (event.target == createModal || event.target == editModal) {
-            closeModal();
-        }
-    };
-
     function closeModal() {
-        createModal.style.display = "none";
-        editModal.style.display = "none";
-        resetForm(createForm);
-        resetForm(editForm);
+		Swal.fire({
+            text: '작성한 내용이 저장되지 않습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#B1C2DD',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                createModal.style.display = "none";
+		        editModal.style.display = "none";
+		        resetForm(createForm);
+		        resetForm(editForm);
+            }
+        });  
     }
 
     function resetForm(form) {
@@ -121,9 +127,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (createForm) {
         createForm.onsubmit = function (event) {
             event.preventDefault();
-            var departmentName = document.getElementById("departmentName").value;
+            var departmentName = document.getElementById("departmentName").value.trim();
             var departmentHigh = document.getElementById("departmentHigh").value; 
 
+		    if (!departmentName || departmentName.length == 0) {
+	            Swal.fire({
+				    text: '부서명을 입력해 주세요.',
+				    icon: 'warning',
+				    confirmButtonColor: '#B1C2DD',
+				    confirmButtonText: '확인',
+				});
+	            return;
+	        }
+	        
             $.ajax({
                 type: "POST",
                 url: "/department/add",
@@ -167,10 +183,20 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
 
             var departmentId = document.getElementById("editDepartmentId").value;
-            var departmentName = document.getElementById("editDepartmentName").value;
+            var departmentName = document.getElementById("editDepartmentName").value.trim();
             var departmentHigh = document.getElementById("editDepartmentHigh").value;
             var departmentHighInt = parseInt(departmentHigh, 10);
-
+ 
+		   if (!departmentName || departmentName.length == 0) {
+	            Swal.fire({
+				    text: '부서명을 입력해 주세요.',
+				    icon: 'warning',
+				    confirmButtonColor: '#B1C2DD',
+				    confirmButtonText: '확인',
+				});
+	            return;
+	        }
+	        
             $.ajax({
                 type: "POST",
                 url: "/department/update",
@@ -209,6 +235,33 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
     
+    const departmentLinks = document.querySelectorAll('.department_li > a');
+ 
+    function getDepartmentIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+ 
+    function clearSelectedClass() {
+        departmentLinks.forEach(link => {
+            link.classList.remove('selected');
+        });
+    }
+ 
+    departmentLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            clearSelectedClass();   
+            this.classList.add('selected');   
+        });
+    });
+ 
+    const selectedDepartmentId = getDepartmentIdFromURL();
+    if (selectedDepartmentId) {
+        const selectedLink = document.querySelector(`.department_li > a[href*="id=${selectedDepartmentId}"]`);
+        if (selectedLink) {
+            selectedLink.classList.add('selected');
+        }
+    }
     
 });
  
