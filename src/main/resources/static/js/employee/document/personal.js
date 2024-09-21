@@ -887,7 +887,6 @@ $(function () {
 	        }
 	    });
 	}
-
 	// 날짜 검색 
 	var today = new Date();
 	const todayStr = formatDate(today);	
