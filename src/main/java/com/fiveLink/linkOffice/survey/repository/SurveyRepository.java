@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.survey.domain.Survey;
 
 @Repository
@@ -88,5 +87,5 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Page<Survey> findAllOngoingSurveysForMember(@Param("memberNo") Long memberNo, Pageable pageable);
     
     Survey findBysurveyNo(Long survey_no);
-
+    
 }
