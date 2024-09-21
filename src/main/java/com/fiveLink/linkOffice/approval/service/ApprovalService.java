@@ -3,6 +3,7 @@ package com.fiveLink.linkOffice.approval.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,12 @@ import com.fiveLink.linkOffice.approval.repository.ApprovalFlowRepository;
 import com.fiveLink.linkOffice.approval.repository.ApprovalRepository;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFile;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 
 @Service
 public class ApprovalService {
@@ -153,6 +160,45 @@ public class ApprovalService {
 	        }
 	        
         return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
+	}
+	
+	// 상세 조회
+	public ApprovalDto selectApprovalOne(Long approvalNo) {
+	    Approval origin = approvalRepository.findByApprovalNo(approvalNo);
+	    
+	    ApprovalDto dto = origin.toDto();
+	    
+	    // 사원의 서명 정보를 dto에 추가
+	    if (origin.getMember() != null) {
+	        dto.setDigitalname(origin.getMember().getMemberNewDigitalImg());
+	    }
+
+	    List<ApprovalFile> files = approvalFileRepository.findByApproval(origin);
+	    List<ApprovalFlow> flows = approvalFlowRepository.findByApproval(origin);
+	    
+	    List<ApprovalFileDto> fileDtos = files.stream()
+	        .map(ApprovalFile::toDto)
+	        .collect(Collectors.toList());
+	    
+	    List<ApprovalFlowDto> flowsDtos = flows.stream()
+	        .map(ApprovalFlow::toDto)
+	        .collect(Collectors.toList());
+	    
+	    dto.setFiles(fileDtos);
+	    dto.setFlows(flowsDtos);
+	    
+	    return dto;
+	}
+	
+	// 전자 결재 기안 취소
+	public Approval cancelApproval(ApprovalDto dto) {
+		Member member = memberRepository.findByMemberNo(dto.getMember_no());
+		
+		Approval app = dto.toEntity(member);
+		
+		Approval result = approvalRepository.save(app);
+		
+		return result;
 	}
 	
 }

@@ -146,7 +146,7 @@ public class VacationApprovalApicontroller {
 	    dto.setVacation_approval_status(3L);
 	    dto.setVacation_approval_cancel_reason(vacationApprovalDto.getVacation_approval_cancel_reason());
 	    
-	    if(vacationApprovalService.deleteVacationApproval(dto) != null) {
+	    if(vacationApprovalService.cancelVacationApproval(dto) != null) {
 	    	response.put("res_code", "200");
 		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
 	    }

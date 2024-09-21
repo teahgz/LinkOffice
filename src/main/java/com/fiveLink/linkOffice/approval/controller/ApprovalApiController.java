@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import com.fiveLink.linkOffice.approval.service.ApprovalFileService;
 import com.fiveLink.linkOffice.approval.service.ApprovalFormService;
 import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 
 @Controller
 public class ApprovalApiController {
@@ -193,5 +195,25 @@ public class ApprovalApiController {
 	    
 	    return response;
 	}
-
+	
+	// 전자 결재 기안 취소 (업데이트) 
+	@ResponseBody
+	@PutMapping("/employee/approval/cancel/{approval_no}")
+	public Map<String,String> employeeApprovalDelete(@PathVariable("approval_no") Long aapNo,
+			@RequestBody ApprovalDto approvalDto){
+		Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "기안 취소 중 오류가 발생하였습니다.");
+	    
+	    ApprovalDto dto = approvalService.selectApprovalOne(aapNo);
+	    dto.setApproval_status(3L);
+	    dto.setApproval_cancel_reason(approvalDto.getApproval_cancel_reason());
+	    
+	    if(approvalService.cancelApproval(dto) != null) {
+	    	response.put("res_code", "200");
+		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
+	    }
+	    return response; 
+	} 
+	
 }

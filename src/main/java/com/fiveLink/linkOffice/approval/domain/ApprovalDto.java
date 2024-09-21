@@ -34,10 +34,12 @@ public class ApprovalDto {
 	
 	private String member_name;
 	
-	private int search_type;
+	private int search_type = 1;
 	private String search_text;
 	
 	private String format_approval_create_date;
+	private String digitalname;
+	
 	
 	private List<ApprovalFileDto> files;
 	private List<ApprovalFlowDto> flows;

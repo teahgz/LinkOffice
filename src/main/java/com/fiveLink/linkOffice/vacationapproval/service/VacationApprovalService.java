@@ -163,7 +163,7 @@ public class VacationApprovalService {
 	}
 	
 	// 휴가 결재 기안 취소
-	public VacationApproval deleteVacationApproval(VacationApprovalDto dto) {
+	public VacationApproval cancelVacationApproval(VacationApprovalDto dto) {
 		
 		Member member = memberRepository.findByMemberNo(dto.getMember_no());
 		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(dto.getVacation_type_no());
