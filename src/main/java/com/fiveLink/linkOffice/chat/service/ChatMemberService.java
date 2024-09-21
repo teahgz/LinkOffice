@@ -79,5 +79,4 @@ public class ChatMemberService {
         return chatMapper.selectMemberChatRoomName(chatRoomNo);
     }
 
-
 }
