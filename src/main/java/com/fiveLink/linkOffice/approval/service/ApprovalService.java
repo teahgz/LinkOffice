@@ -190,4 +190,15 @@ public class ApprovalService {
 	    return dto;
 	}
 	
+	// 전자 결재 기안 취소
+	public Approval cancelApproval(ApprovalDto dto) {
+		Member member = memberRepository.findByMemberNo(dto.getMember_no());
+		
+		Approval app = dto.toEntity(member);
+		
+		Approval result = approvalRepository.save(app);
+		
+		return result;
+	}
+	
 }
