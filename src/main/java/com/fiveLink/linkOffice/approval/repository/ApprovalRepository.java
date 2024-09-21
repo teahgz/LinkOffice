@@ -53,4 +53,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long>{
 			"     OR (:searchText = '기안취소' OR :searchText = '취소' AND app.approvalStatus = 3))")
 	Page<Approval> findByMemberMemberNoAndApprovalStatusReject(@Param("memberNo") Long memberNo, @Param("searchText") String searchText, Pageable sortedPageable);
 
+	// 진행함 상세 조회
+	Approval findByApprovalNo(Long ApprovalNo);
 }
