@@ -125,7 +125,7 @@
                     <div class="button_container">
                     	<button type="button" class="cancel_button" th:if="${approvaldto.approval_status == 0}">기안 취소</button>
 		                <a th:if="${#lists.size(approvaldto.flows) > 0 and approvaldto.flows[0].approval_flow_status == 1}" 
-		                   th:href="@{/employee/approval/edit/{no}(no=${approvaldto.approval_no})}" 
+		                   th:href="@{/employee/approval/approval_edit/{no}(no=${approvaldto.approval_no})}" 
 		                   class="edit_button">수정</a>
                         <button type="button" class="list_button" onclick="location.href='/employee/approval/progress'">목록</button>
                     </div>

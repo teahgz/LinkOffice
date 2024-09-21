@@ -438,11 +438,21 @@ public class ApprovalViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
 		List<ApprovalFormDto> formList = approvalFormService.findAllByApprovalStatusNot(1L);
-		System.out.println(formList);
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
 		
 		return "employee/approval/approval_create";
+	}
+	
+	// 사용자 전자결재 수정 페이지
+	@GetMapping("/employee/approval/approval_edit/{approval_no}")
+	public String approvalEdit(Model model) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		model.addAttribute("memberdto", memberdto);
+		
+		return "employee/approval/approval_edit";
 	}
 
 }
