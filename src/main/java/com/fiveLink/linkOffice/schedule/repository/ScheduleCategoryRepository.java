@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.fiveLink.linkOffice.meeting.domain.Meeting;
 import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategory;
 
@@ -21,4 +22,8 @@ public interface ScheduleCategoryRepository extends JpaRepository<ScheduleCatego
     boolean existsByScheduleCategoryNameAndScheduleCategoryStatusAndScheduleCategoryNoNot(String scheduleCategoryName, Long status, Long categoryNo);
 
     boolean existsByScheduleCategoryColorAndScheduleCategoryStatusAndScheduleCategoryNoNot(String scheduleCategoryColor, Long status, Long categoryNo);
+
+    // 관리자 - 일정 등록 카테고리
+    List<ScheduleCategory> findByScheduleCategoryStatusOrderByScheduleCategoryNameAsc(Long scheduleCategoryStatus);
+    
 }

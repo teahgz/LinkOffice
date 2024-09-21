@@ -22,6 +22,8 @@ public class ScheduleDto {
     private String schedule_comment;
     private String schedule_start_date;
     private String schedule_end_date;
+    private String schedule_start_time;
+    private String schedule_end_time;
     private Long schedule_allday;
     private Long schedule_category_no;
     private Long schedule_type;
@@ -30,8 +32,8 @@ public class ScheduleDto {
     private Long schedule_repeat;
     private LocalDateTime schedule_create_date;
     private LocalDateTime schedule_update_date;
-    private Long schedule_status;
-
+    private Long schedule_status; 
+    
     public Schedule toEntity() {
         return Schedule.builder()
                 .scheduleNo(schedule_no)
@@ -40,6 +42,8 @@ public class ScheduleDto {
                 .scheduleComment(schedule_comment)
                 .scheduleStartDate(schedule_start_date)
                 .scheduleEndDate(schedule_end_date)
+                .scheduleStartTime(schedule_start_time)
+                .scheduleEndTime(schedule_end_time)
                 .scheduleAllday(schedule_allday)
                 .scheduleCategoryNo(schedule_category_no)
                 .scheduleType(schedule_type)
@@ -60,6 +64,8 @@ public class ScheduleDto {
                 .schedule_comment(schedule.getScheduleComment())
                 .schedule_start_date(schedule.getScheduleStartDate())
                 .schedule_end_date(schedule.getScheduleEndDate())
+                .schedule_start_time(schedule.getScheduleStartTime())
+                .schedule_end_time(schedule.getScheduleEndTime())
                 .schedule_allday(schedule.getScheduleAllday())
                 .schedule_category_no(schedule.getScheduleCategoryNo())
                 .schedule_type(schedule.getScheduleType())

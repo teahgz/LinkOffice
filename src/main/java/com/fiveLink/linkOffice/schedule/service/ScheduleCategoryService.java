@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.schedule.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fiveLink.linkOffice.meeting.domain.Meeting;
+import com.fiveLink.linkOffice.meeting.domain.MeetingDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategory;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleCategoryRepository;
@@ -127,6 +130,17 @@ public class ScheduleCategoryService {
         return response;  
     }
 
+    // 관리자 - 일정 등록 카테고리
+	public List<ScheduleCategoryDto> getAlladminScheduleCategory() {
+	    List<ScheduleCategory> scheduleCategories= scheduleCategoryRepository.findByScheduleCategoryStatusOrderByScheduleCategoryNameAsc(0L);
+	    List<ScheduleCategoryDto> scheduleCategoryDtos = new ArrayList();
+
+	    for (ScheduleCategory scheduleCategory : scheduleCategories) {
+	    	ScheduleCategoryDto scheduleCategoryDto = ScheduleCategoryDto.toDto(scheduleCategory);
+	    	scheduleCategoryDtos.add(scheduleCategoryDto);
+	    } 
+	    return scheduleCategoryDtos;
+	} 
 
 
     
