@@ -266,13 +266,6 @@ public class VacationApprovalService {
 	        }
 	    }
 
-	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	        Long approverMemberNo = flowDto.getMember_no();
-	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
-	        VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
-	        vacationApprovalFlowRepository.save(vaf);
-	    }
-
 	    if (vaFiledto != null) {
 	        List<VacationApprovalFile> existingFiles = vacationApprovalFileRepository.findByVacationApproval(existingVapp);
 	        if (!existingFiles.isEmpty()) {
@@ -316,12 +309,6 @@ public class VacationApprovalService {
 	        }
 	    }
 		
-		for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-			Long approverMemberNo = flowDto.getMember_no();
-			Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
-			VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
-			vacationApprovalFlowRepository.save(vaf);
-		}
 		return existingVapp;
 	}
 	

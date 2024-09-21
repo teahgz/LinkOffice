@@ -23,11 +23,11 @@ import com.fiveLink.linkOffice.approval.repository.ApprovalRepository;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFile;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ApprovalService {
@@ -48,25 +48,25 @@ public class ApprovalService {
 	// 사용자 결재 신청 (파일 O)
 	public Approval createApprovalFile(ApprovalDto appdto, ApprovalFileDto filedto, List<ApprovalFlowDto> flowdto) {
 		Member member = memberRepository.findByMemberNo(appdto.getMember_no());
-		
 		Approval app = appdto.toEntity(member);
-			
-			Approval savedApp = approvalRepository.save(app);
-			for(ApprovalFlowDto appflowdto : flowdto) {
 
-		    	Long approverMemberNo = appflowdto.getMember_no();
-		        
-		        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
-		        
-		    	ApprovalFlow vaf = appflowdto.toEntity(savedApp, memberFlow);
-		    	
-		    	approvalFlowRepository.save(vaf);
-		    }
-		    
-			 if (filedto != null) {
-			       	ApprovalFile vaFile = filedto.toEntity(savedApp);
-			        approvalFileRepository.save(vaFile); 
+				Approval savedApp = approvalRepository.save(app);
+				for(ApprovalFlowDto appflowdto : flowdto) {
+
+			    	Long approverMemberNo = appflowdto.getMember_no();
+			        
+			        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+			        
+			    	ApprovalFlow vaf = appflowdto.toEntity(savedApp, memberFlow);
+			    	
+			    	approvalFlowRepository.save(vaf);
 			    }
+			    
+				 if (filedto != null) {
+				       	ApprovalFile vaFile = filedto.toEntity(savedApp);
+				        approvalFileRepository.save(vaFile); 
+				    }
+		
 		return approvalRepository.save(app);
 	}
 	
@@ -199,6 +199,71 @@ public class ApprovalService {
 		Approval result = approvalRepository.save(app);
 		
 		return result;
+	}
+	
+	// 전자 결재 수정 (파일 O)
+	@Transactional
+	public Approval updateApprovalFile(ApprovalDto appdto, ApprovalFileDto filedto, List<ApprovalFlowDto> flowdto) {
+		
+	    Approval existingVapp = approvalRepository.findByApprovalNo(appdto.getApproval_no());
+
+	    existingVapp.setApprovalTitle(appdto.getApproval_title());
+	    existingVapp.setApprovalContent(appdto.getApproval_content());
+	    existingVapp.setMember(memberRepository.findByMemberNo(appdto.getMember_no()));
+
+	    approvalRepository.save(existingVapp);
+	    
+	    if (!flowdto.isEmpty()) {
+	        approvalFlowRepository.deleteByApproval(existingVapp);
+
+	        for (ApprovalFlowDto flowDto : flowdto) {
+	            Long approverMemberNo = flowDto.getMember_no();
+	            Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	            ApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
+	            approvalFlowRepository.save(vaf);
+	        }
+	    }
+
+	    if (filedto != null) {
+	        List<ApprovalFile> existingFiles = approvalFileRepository.findByApproval(existingVapp);
+	        if (!existingFiles.isEmpty()) {
+	            for (ApprovalFile file : existingFiles) {
+	                approvalFileRepository.delete(file);
+	            }
+	        }
+	        ApprovalFile vaFile = filedto.toEntity(existingVapp);
+	        approvalFileRepository.save(vaFile);
+	    }
+
+	    return existingVapp;
+	    
+	}
+	
+	// 전자 결재 수정 (파일 O)
+	@Transactional
+	public Approval updateApproval(ApprovalDto appdto, List<ApprovalFlowDto> flowdto) {
+		
+	    Approval existingVapp = approvalRepository.findByApprovalNo(appdto.getApproval_no());
+
+	    existingVapp.setApprovalTitle(appdto.getApproval_title());
+	    existingVapp.setApprovalContent(appdto.getApproval_content());
+	    existingVapp.setMember(memberRepository.findByMemberNo(appdto.getMember_no()));
+
+	    approvalRepository.save(existingVapp);
+	    
+	    if (!flowdto.isEmpty()) {
+	        approvalFlowRepository.deleteByApproval(existingVapp);
+
+	        for (ApprovalFlowDto flowDto : flowdto) {
+	            Long approverMemberNo = flowDto.getMember_no();
+	            Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
+	            ApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
+	            approvalFlowRepository.save(vaf);
+	        }
+	    }
+
+	    return existingVapp;
+	    
 	}
 	
 }

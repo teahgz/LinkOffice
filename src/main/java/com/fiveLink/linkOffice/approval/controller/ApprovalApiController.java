@@ -160,8 +160,7 @@ public class ApprovalApiController {
 	        approvalFlowdto.add(flowDto);
 	    }
 	    
-	    System.out.println(approvalTitle);
-	    System.out.println(approvalContent);
+
 	    
 	    boolean isFileUploaded = false;
 	    
@@ -177,6 +176,8 @@ public class ApprovalApiController {
 	        	filedto.setApproval_file_size(file.getSize());
 
 	        	System.out.println(file.getOriginalFilename());
+	        	System.out.println(approvalTitle);
+	        	System.out.println(approvalContent);
 	            if (approvalService.createApprovalFile(appdto, filedto, approvalFlowdto) != null) {
 	                response.put("res_code", "200");
 	                response.put("res_msg", "결재 작성이 완료되었습니다.");
@@ -188,6 +189,8 @@ public class ApprovalApiController {
 	    // 파일이 없을 때
 	    if (!isFileUploaded) {
 	        if (approvalService.createApproval(appdto, approvalFlowdto) != null) {
+	    	    System.out.println(approvalTitle);
+	    	    System.out.println(approvalContent);
 	            response.put("res_code", "200");
 	            response.put("res_msg", "결재 작성이 완료되었습니다."); 
 	        }
@@ -215,5 +218,104 @@ public class ApprovalApiController {
 	    }
 	    return response; 
 	} 
+	
+	// 전자결재 수정 (업데이트)
+	@ResponseBody
+	@PutMapping("/employee/approval/edit/{approval_no}")
+	public Map<String,String> editApproval(@PathVariable("approval_no") Long aapNo,
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			@RequestParam("approvalTitle") String approvalTitle,
+			@RequestParam("approvalContent")String approvalContent,
+	        @RequestParam("approvers") List<Long> approvers,
+	        @RequestParam("references") List<Long> references,
+	        @RequestParam("reviewers") List<Long> reviewers){
+		
+	    Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "결재 수정 중 오류가 발생했습니다.");
+	    
+	    ApprovalDto appdto = approvalService.selectApprovalOne(aapNo);
+	    
+	    appdto.setApproval_title(approvalTitle);
+	    appdto.setApproval_content(approvalContent);
+	    
+	    List<ApprovalFlowDto> approvalFlowdto =  new ArrayList<>();
+	    
+	    int order = 1;
+	    
+	 // 1. 합의자 (flow_role = 1)
+	    for (Long referenceId : references) {
+	        ApprovalFlowDto flowDto = new ApprovalFlowDto();
+	        flowDto.setMember_no(referenceId);
+	        flowDto.setApproval_flow_role(1L); 
+	        flowDto.setApproval_flow_order((long) order++);
+	        flowDto.setApproval_flow_status(order == 2 ? 1L : 0L); 
+	        approvalFlowdto.add(flowDto);
+	    }
+
+	    // 2. 결재자 (flow_role = 2)
+	    for (Long approverId : approvers) {
+	        ApprovalFlowDto flowDto = new ApprovalFlowDto();
+	        flowDto.setMember_no(approverId);
+	        flowDto.setApproval_flow_role(2L); 
+	        flowDto.setApproval_flow_order((long) order++);
+	        flowDto.setApproval_flow_status(order == 2 && references.isEmpty() ? 1L : 0L); 
+	        approvalFlowdto.add(flowDto);
+	    }
+
+	    // 3. 참조자 (flow_role = 0)
+	    for (Long reviewerId : reviewers) {
+	        ApprovalFlowDto flowDto = new ApprovalFlowDto();
+	        flowDto.setMember_no(reviewerId);
+	        flowDto.setApproval_flow_role(0L); 
+	        flowDto.setApproval_flow_order(null); 
+	        flowDto.setApproval_flow_status(4L); 
+	        approvalFlowdto.add(flowDto);
+	    }
+	    
+
+	    
+	    boolean isFileUploaded = false;
+	    
+	    // 파일이 있을 떄 
+	    if (file != null && !file.isEmpty()) {
+	        ApprovalFileDto filedto = new ApprovalFileDto();
+	        
+	        String saveFileName = approvalFileService.upload(file);
+	        
+	        if (saveFileName != null) {
+	        	filedto.setApproval_file_ori_name(file.getOriginalFilename());
+	        	filedto.setApproval_file_new_name(saveFileName);
+	        	filedto.setApproval_file_size(file.getSize());
+	        	
+	            if (approvalFileService.existsFileForVacationApproval(aapNo)) {
+	                if (approvalFileService.delete(aapNo) > 0) {
+	                    response.put("res_msg", "기존 파일이 삭제 되었습니다.");
+	                } else {
+	                    response.put("res_msg", "기존 파일 삭제 중 오류가 발생하였습니다.");
+	                    return response;
+	                }
+	            }
+	        	
+	        	
+	            if (approvalService.updateApprovalFile(appdto, filedto, approvalFlowdto) != null) {
+	                response.put("res_code", "200");
+	                response.put("res_msg", "결재 수정이 완료되었습니다.");
+	                isFileUploaded = true;
+	            }
+	        } 
+	    }
+
+	    // 파일이 없을 때
+	    if (!isFileUploaded) {
+	        if (approvalService.updateApproval(appdto, approvalFlowdto) != null) {
+	            response.put("res_code", "200");
+	            response.put("res_msg", "결재 수정이 완료되었습니다."); 
+	        }
+	    }
+	    
+	    return response;
+	}
+	
 	
 }
