@@ -184,6 +184,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             memberDto.setChat_member_room_name(chatRoomName);
             if(chatMemberService.createMemberRoomOne(memberDto)>0){
                 System.out.println("success");
+                // 새 멤버 정보를 클라이언트에 전송
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("type", "memberAdded");
+                responseMap.put("chatRoomNo", currentChatRoomNo);
+                responseMap.put("chatRoomName", chatRoomName);
+                responseMap.put("member", Long.valueOf(members.get(i)));
+
+                for (WebSocketSession s : sessions.values()) {
+                    if (s.isOpen()) {
+                        String responseJson = new ObjectMapper().writeValueAsString(responseMap);
+                        s.sendMessage(new TextMessage(responseJson));
+                    }
+                }
             }
         }
 

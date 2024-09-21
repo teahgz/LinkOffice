@@ -9,6 +9,7 @@
 
 
     <section th:each="member : ${memberdto}">
+        <input type="hidden" id="currentMember" th:value="${member.member_no}"/>
         <div class="chatArea">
             <div class="chatContainer">
                 <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
