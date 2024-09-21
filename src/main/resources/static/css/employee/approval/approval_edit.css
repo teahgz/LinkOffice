@@ -14,18 +14,17 @@
 
 .editor-container {
     background-color: #f8f9fa;
-    border-radius: 12px; 
-    max-width: 800px; 
+    border-radius: 12px;
+    max-width: 800px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 60px 80px 30px;
-    margin-top: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-start; 
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     gap: 20px;
 }
-
 
 input, select {
     padding: 8px;
@@ -38,6 +37,8 @@ input:focus, select:focus {
     outline: none;
     border-color: #B1C2DD;
 }
+
+
 
 .ck.ck-editor {
     max-width: 800px;
@@ -124,12 +125,10 @@ input:focus, select:focus {
     position: relative;
 }
 
-
 .form-group div {
     gap: 10px;
 
 }
-
 
 .form-group strong {
     flex: 0 0 150px; 
@@ -143,17 +142,28 @@ input:focus, select:focus {
     max-width: 300px; 
 }
 
-
-.app_con {
+.approversDisplay, .referencesDisplay, .reviewersDisplay {
     width: 120px;
     height: 150px;
     border: 1px solid #000;
     display: flex;
     flex-direction: column;
+    overflow: visible;
 }
+
 .app_nav {
     width: 120px;
     height: 50px;
     border: 1px solid #000;
     flex-direction: column;
+}
+
+
+.file-list-container {
+    margin-bottom: 20px; 
+}
+
+.file-list-container span {
+    display: block; 
+    margin-bottom: 5px;
 }

@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('confirm_cancel_button').addEventListener('click', function() {
         const cancelReason = document.getElementById('cancel_reason').value;
-        const aapNo = document.querySelector('#approval_no').value;
+        const appNo = document.querySelector('#approval_no').value;
         const csrfToken = document.getElementById("csrf_token").value;
 
         if (!cancelReason) {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch('/employee/approval/cancel/' + aapNo, {
+        fetch('/employee/approval/cancel/' + appNo, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
                 }).then(() => {
-                    location.href = "/employee/approval/approval_progress_detail/"+aapNo;
+                    location.href = "/employee/approval/approval_progress_detail/"+appNo;
                 });
             } else {
                 Swal.fire({

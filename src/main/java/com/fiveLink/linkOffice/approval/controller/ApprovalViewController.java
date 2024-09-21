@@ -362,12 +362,12 @@ public class ApprovalViewController {
 	
 	// 사용자 결재 진행함 상세 페이지
 	@GetMapping("/employee/approval/approval_progress_detail/{approval_no}")
-	public String approvalProgressDetail(Model model, @PathVariable("approval_no") Long approvalNo) {
+	public String approvalProgressDetail(Model model, @PathVariable("approval_no") Long appNo) {
 
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 
-		ApprovalDto approvaldto = approvalService.selectApprovalOne(approvalNo);
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		if (approvaldto.getApproval_create_date() != null) {
@@ -397,12 +397,12 @@ public class ApprovalViewController {
 	
 	// 사용자 결재 반려함 상세 페이지
 	@GetMapping("/employee/approval/approval_reject_detail/{approval_no}")
-	public String approvalRejectDetail(Model model, @PathVariable("approval_no") Long approvalNo) {
+	public String approvalRejectDetail(Model model, @PathVariable("approval_no") Long appNo) {
 
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 
-		ApprovalDto approvaldto = approvalService.selectApprovalOne(approvalNo);
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		if (approvaldto.getApproval_create_date() != null) {
@@ -446,11 +446,14 @@ public class ApprovalViewController {
 	
 	// 사용자 전자결재 수정 페이지
 	@GetMapping("/employee/approval/approval_edit/{approval_no}")
-	public String approvalEdit(Model model) {
+	public String approvalEdit(Model model, @PathVariable("approval_no") Long appNo) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
+		
 		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("approvaldto", approvaldto);
 		
 		return "employee/approval/approval_edit";
 	}
