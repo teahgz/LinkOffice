@@ -11,22 +11,25 @@ document.addEventListener("DOMContentLoaded", function() {
     // 메시지 입력 필드와 전송 버튼 가져오기
   const messageInput = document.getElementById('messageInput');
   const sendButton = document.getElementById('sendButton');
+// sendButton과 messageInput이 정의된 위치에서
+if (sendButton && messageInput) {
+    // toggleSendButton을 if 블록 외부로 이동
+    function toggleSendButton() {
+        sendButton.disabled = messageInput.value.trim() === '';
+        if (messageInput.value.trim() !== '') {
+            sendButton.classList.remove("btn-disabled");
+        } else {
+            sendButton.classList.add("btn-disabled");
+        }
+    }
 
-  if (sendButton && messageInput) {
-      function toggleSendButton() {
-          sendButton.disabled = messageInput.value.trim() === '';
-          if (messageInput.value.trim() !== '') {
-              sendButton.classList.remove("btn-disabled");
-          } else {
-              sendButton.classList.add("btn-disabled");
-          }
-      }
+    // 이벤트 리스너 등록
+    messageInput.addEventListener('input', toggleSendButton);
+    toggleSendButton(); // 초기 상태 업데이트
+} else {
+    console.error("버튼 또는 입력 필드를 찾을 수 없습니다.");
+}
 
-      messageInput.addEventListener('input', toggleSendButton);
-      toggleSendButton(); // 초기 상태 업데이트
-  } else {
-      console.error("버튼 또는 입력 필드를 찾을 수 없습니다.");
-  }
     // 채팅방 자동완성 기능
     document.getElementById('searchInput').oninput = searchMem;
     function searchMem() {
@@ -256,91 +259,113 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     socket.onmessage = function(event) {
-        const message = JSON.parse(event.data);
-        const chatContentDiv = document.getElementById("chatContent");
+      const message = JSON.parse(event.data);
+      const chatContentDiv = document.getElementById("chatContent");
 
-        // 메시지 타입에 따른 처리
-        if (message.type === "chatRoomCreation") {
-            if (message.chatRoomNo) {
-                const newChatItem = document.createElement("div");
-                newChatItem.classList.add("chatItem");
-                newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
-                newChatItem.innerHTML = `
-                    <h3><p>${message.names}</p></h3>
-                    <input type="hidden" id="memberNo" value="${document.getElementById('memberNo').value}"/>
-                    <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
-                `;
-                const chatList = document.getElementById('chatList');
-                chatList.insertBefore(newChatItem, chatList.firstChild);
+      // 메시지 타입에 따른 처리
+      if (message.type === "chatRoomCreation") {
+          if (message.chatRoomNo) {
+              createChatListIfNotExists(); // chatList가 없으면 생성
 
-                resetSelectedMembers();
-                $('#organizationChartModal').modal('hide');
-            }
-        } else if(message.type === "chatRoomUpdate"){
-            const updatedChatRoomNo = message.roomNo;
-            const updatedChatRoomName = message.updatedChatRoomName;
-            const chatItem = document.querySelector(`input[value="${updatedChatRoomNo}"]`);
-            console.log(updatedChatRoomName);
-            if (chatItem) {
-                const chatItemDiv = chatItem.closest('.chatItem');
-                const chatNameElement = chatItemDiv.querySelector('h3 p');
-                chatNameElement.textContent = updatedChatRoomName;
-            }
-           const currentChatRoomNo = document.getElementById('chatRoomNo').value;
-           const chatRoomTitleElement = document.getElementById("chatRoomTitle");
-           chatRoomTitleElement.textContent = updatedChatRoomName;
+              // 새로운 채팅 아이템 생성
+              const newChatItem = document.createElement("div");
+              newChatItem.classList.add("chatItem");
+              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
+              newChatItem.innerHTML = `
+                  <h3><p>${message.names}</p></h3>
+                  <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}"/>
+                  <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
+              `;
 
-           document.getElementById('chatRoomNameInput').value = '';
-        } else {
-            const messageElement = document.createElement("div");
-            const now = new Date();
-            const formattedTime = formatDateTime(now);
+              const chatList = document.getElementById('chatList');
+              chatList.insertBefore(newChatItem, chatList.firstChild);
 
-            const memberNo = parseInt(document.getElementById("memberNo").value, 10);
-            const memberNoCheck = parseInt(message.chat_sender_no, 10);
+              resetSelectedMembers();
+              $('#organizationChartModal').modal('hide');
+          }
+      } else if (message.type === "chatRoomUpdate") {
+          const updatedChatRoomNo = message.roomNo;
+          const updatedChatRoomName = message.updatedChatRoomName;
+          const chatItem = document.querySelector(`input[value="${updatedChatRoomNo}"]`);
+          if (chatItem) {
+              const chatItemDiv = chatItem.closest('.chatItem');
+              const chatNameElement = chatItemDiv.querySelector('h3 p');
+              chatNameElement.textContent = updatedChatRoomName;
+          }
+          const chatRoomTitleElement = document.getElementById("chatRoomTitle");
+          chatRoomTitleElement.textContent = updatedChatRoomName;
+          document.getElementById('chatRoomNameInput').value = '';
+      } else {
+          const messageElement = document.createElement("div");
+          const now = new Date();
+          const formattedTime = formatDateTime(now);
 
-            if (memberNoCheck === memberNo) {
-                 messageElement.classList.add("my-message", "messageItem");
-                            messageElement.innerHTML = `
-                                <div class="message-ele">
-                                    <span class="message-time">${formattedTime}</span>
-                                    <div class="message-content">
-                                        <p>${message.chat_content}</p>
-                                    </div>
-                                </div>
-                            `;
-            } else {
-                messageElement.classList.add("other-message", "messageItem");
-                  messageElement.innerHTML = `
-                                <div class="message-sender">
-                                    <strong>${message.chat_sender_name}</strong>
-                                </div>
-                                <div class="message-ele">
-                                    <div class="message-content">
-                                        <p>${message.chat_content}</p>
-                                    </div>
-                                    <span class="message-time">${formattedTime}</span>
-                                </div>
-                            `;
-            }
+          const memberNo = parseInt(document.getElementById("currentMember").value, 10);
+          const memberNoCheck = parseInt(message.chat_sender_no, 10);
 
-            chatContentDiv.appendChild(messageElement);
-            chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
+          if (memberNoCheck === memberNo) {
+              messageElement.classList.add("my-message", "messageItem");
+              messageElement.innerHTML = `
+                  <div class="message-ele">
+                      <span class="message-time">${formattedTime}</span>
+                      <div class="message-content">
+                          <p>${message.chat_content}</p>
+                      </div>
+                  </div>
+              `;
+          } else {
+              messageElement.classList.add("other-message", "messageItem");
+              messageElement.innerHTML = `
+                  <div class="message-sender">
+                      <strong>${message.chat_sender_name}</strong>
+                  </div>
+                  <div class="message-ele">
+                      <div class="message-content">
+                          <p>${message.chat_content}</p>
+                      </div>
+                      <span class="message-time">${formattedTime}</span>
+                  </div>
+              `;
+          }
 
-            // 상대방 채팅방 목록에 채팅방이 없을 경우 자동 추가
-            const chatRoomExists = document.querySelector(`input[value="${message.chat_room_no}"]`);
-            if (!chatRoomExists) {
-                const newChatItem = document.createElement("div");
-                newChatItem.classList.add("chatItem");
-                newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chat_room_no})`);
-                newChatItem.innerHTML = `
-                    <h3><p>${message.names}</p></h3>
-                    <input type="hidden" value="${message.chat_room_no}" />
-                `;
-                const chatList = document.getElementById('chatList');
-                chatList.insertBefore(newChatItem, chatList.firstChild);
-            }
-        }
+          chatContentDiv.appendChild(messageElement);
+          chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
+
+          // 상대방 채팅방 목록에 채팅방이 없을 경우 자동 추가
+          const chatRoomExists = document.querySelector(`input[value="${message.chat_room_no}"]`);
+          if (!chatRoomExists) {
+              createChatListIfNotExists(); // chatList가 없으면 생성
+
+              // 새로운 채팅 아이템 생성
+              const newChatItem = document.createElement("div");
+              newChatItem.classList.add("chatItem");
+              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chat_room_no})`);
+
+              newChatItem.innerHTML = `
+                  <h3><p>${message.names}</p></h3>
+                  <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
+                  <input type="hidden" id="chatRoomNo" value="${message.chat_room_no}" />
+              `;
+
+              const chatList = document.getElementById('chatList');
+              chatList.insertBefore(newChatItem, chatList.firstChild);
+          }
+      }
+
+     // chatList가 없을 경우 생성하는 함수
+     function createChatListIfNotExists() {
+         let chatList = document.getElementById('chatList');
+         if (!chatList) {
+             chatList = document.createElement('div');
+             chatList.id = 'chatList';
+             chatList.classList.add('chatList');
+
+             // chatContainer 안에 chatList 추가
+             const chatContainer = document.querySelector('.chatContainer');
+             chatContainer.appendChild(chatList);
+         }
+     }
+
     };
 
     window.sendMessage = function() {
@@ -367,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
         socket.send(JSON.stringify(message));
         document.getElementById("messageInput").value = "";
-         toggleSendButton();
+
     };
 
     window.confirmButton = function() {
@@ -694,8 +719,7 @@ function formatDateTime(date) {
                  const memberNumber = memberId.replace('member_', '');
                  const memberElement = $('<div class="selected-member"></div>');
                  const memberName = $('<span></span>').text(node.text);
-                 console.log("가져온 넘버"+globalMemberNumbers);
-                 console.log("멤버넘버" + memberNumber);
+
 
                 let isExistingMember = globalMemberNumbers.includes(Number(memberNumber));
 
@@ -724,8 +748,6 @@ function formatDateTime(date) {
          console.log("새로 추가된 멤버들:", newMembers);
          localStorage.setItem('selectedMembersAdd', JSON.stringify(newMembers));
      }
-
-      // 등록된 사원 체크박스 비활성화
         function disableCheckedMembers(globalMemberNumbers) {
             var jstree = $('#organization-chart-add').jstree(true);
             if (jstree) {
@@ -766,8 +788,9 @@ function formatDateTime(date) {
                 }
 
         };
-        //여기서 부터 값을 넣어서 추가하는 코드 넣기
         function addChatRoom(currentChatRoomNo, newMembers, name) {
+            console.log(typeof(newMembers));
+
             const add = {
                 type: "chatRoomAdd",
                 currentChatRoomNo: currentChatRoomNo,
