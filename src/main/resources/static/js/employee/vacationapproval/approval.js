@@ -129,14 +129,12 @@ function moveToList(event,targetId, array, nameArray) {
 
     const selectedNodes = $('#organization-chart').jstree(true).get_selected(true);
 
-    // 결재자에 대해서만 6명 제한
     if (targetId === 'approver-list') {
         const currentApproverCount = array.length;
 
         if (currentApproverCount + selectedNodes.length > 6) {
             Swal.fire({
                 icon: 'warning',
-                title: '경고!',
                 text: '결재자는 최대 6명까지 선택할 수 있습니다.',
             });
             return;
@@ -195,31 +193,38 @@ function moveToList(event,targetId, array, nameArray) {
 function updateApproversDisplay() {
     const approverCells = $('#approvalLineTable td div');
 
-    if (approvers.length > 0 || references.length > 0 || reviewers.length > 0) {
+     if (approvers.length > 0 || references.length > 0 || reviewers.length > 0) {
         approvers.forEach(function (memberNumber, index) {
-            const memberName = approverNames[index];
-            const listItem = $('<span></span>').text(`${memberName}`);
-            approverCells.eq(index+1).append(listItem);
+            const fullName = approverNames[index];
+            const [name, position] = fullName.split(' '); 
+            const listItem = $('<span></span>').text(`${name}`); 
+            const positionItem = $('<span></span>').text(`${position}`); 
+            approverCells.eq(index + 1).append(positionItem);
+            
+            const targetRow = $('#approvalLineTable tr').eq(2); 
+
+            targetRow.find('td').eq(index+1).append(listItem);
+            
             $('<input type="hidden">').attr('id', 'approverNumbers').val(memberNumber).appendTo(approverCells.eq(index));
         });
-        
+
         references.forEach(function (memberNumber, index) {
-            const memberName = referenceNames[index];
-            const listItem = $('<span></span>').text(`${memberName} `);
+            const fullName = referenceNames[index];
+            const [name] = fullName.split(' '); 
+            const listItem = $('<span></span>').text(`${name} `);
             $('#referencestCell').append(listItem);
             $('<input type="hidden">').attr('id', 'referenceNumbers').val(memberNumber).appendTo('#referencestCell');
         });
-        
+
         reviewers.forEach(function (memberNumber, index) {
-            const memberName = reviewerNames[index];
-            const listItem = $('<span></span>').text(`${memberName} `);
+            const fullName = reviewerNames[index];
+            const [name] = fullName.split(' '); 
+            const listItem = $('<span></span>').text(`${name} `); 
             $('#referenceCell').append(listItem);
             $('<input type="hidden">').attr('id', 'reviewerNumbers').val(memberNumber).appendTo('#referenceCell');
         });
     }
 }
-
-
 
 
 $('#confirmButton').click(function (event) {
