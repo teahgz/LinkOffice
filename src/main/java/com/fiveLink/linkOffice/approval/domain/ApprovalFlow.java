@@ -67,6 +67,7 @@ public class ApprovalFlow {
 				.approval_no(approval.getApprovalNo())
 				.member_no(member.getMemberNo())
 				.member_name(member.getMemberName())
+				.member_position(member.getPosition().getPositionName())
 				.approval_flow_role(approvalFlowRole)
 				.approval_flow_order(approvalFlowOrder)
 				.approval_flow_status(approvalFlowStatus)

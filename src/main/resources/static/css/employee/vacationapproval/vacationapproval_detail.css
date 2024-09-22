@@ -13,7 +13,7 @@
     max-width: 800px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 60px 80px 30px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -206,77 +206,116 @@
     color: #6c757d;
 }
 
+
+
+.app_con {
+    width: 120px;
+    height: 150px;
+    border: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+}
+.app_nav {
+    width: 120px;
+    height: 50px;
+    border: 1px solid #000;
+    flex-direction: column;
+}
+
 .approval_line_section {
     margin-top: 20px;
 }
 
 .approval_line_table {
-    width: 90%;
+    width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
 
 .approval_line_table th, .approval_line_table td {
-    border: 1px solid #000;
+    border: 1px solid #ccc;
     padding: 10px;
     text-align: center;
+    vertical-align: middle;
+}
+.approval_line_table td {
+    min-height: 50px; 
+    width: 100px; 
+    vertical-align: top; 
+}
+.approval_line_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    width: 100px;
 }
 
-.approval_item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+.approval-member {
+    background-color: #e6f7ff; 
+    border: 1px solid #b3e0ff; 
+    border-radius: 5px; 
+    padding: 5px; 
+    margin: 5px 0; 
+    font-size: 14px; 
 }
-
 
 .signature_box {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 50px; 
-    box-sizing: border-box;
+    height: 60px;
 }
 
-.signature_box img {
-    max-width: 100%;
-    max-height: 100%;
+.signature_box img, .signature_box .currentSignature {
+    max-width: 70%;
+    max-height: 40px;
     display: block;
 }
 
-.signature_box span {
-    font-size: 14px;
-    color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .date_box {
-    font-size: 14px;
+    font-size: 12px;
+    color: #666;
 }
 
-.reference_section {
-    margin-top: 20px;
+.approval_status {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.approval_status.approved {
+    background-color: #e6f3e6;
+    color: #4CAF50;
+}
+
+.approved {
+    background-color: #e6f3e6;
+    color: #4CAF50;
+}
+
+.pending {
+    background-color: #fff8e1;
+    color: #FFC107;
+}
+
+.rejected {
+    background-color: #ffebee;
+    color: #F44336;
 }
 
 .reference_box {
     display: flex;
-    flex-wrap: wrap; 
-    gap: 10px; 
-    border: 1px solid #ddd;
-    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .reference_box > div {
-    min-width: 100px; 
-    text-align: center;
-}
-
-
-#approvalcancel{
-	font-size:17px;
-	color:#ff0000;
+    background-color: #f2f2f2;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
 }
 
 .modal {

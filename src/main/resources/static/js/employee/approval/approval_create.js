@@ -149,21 +149,28 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
-    .then(editor => {
-		
+     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
-			// 에디터
-            editor.setData(``);
+	
+			// 양식 불러오기
+			document.getElementById('approval_form').addEventListener('change', function() {
+			    const selectedFormContent = this.options[this.selectedIndex].getAttribute('data-content');
 			
-			// 등록  폼
-			const form = document.getElementById('vacAppCreateFrm');
+			    if (selectedFormContent) {
+			        editor.setData(selectedFormContent);
+			    } else {
+			        editor.setData('');
+			    }
+			});
+			
+			// 등록 폼
+			const form = document.getElementById('appCreateFrm');
 			form.addEventListener('submit', (e) => {
 	  		  e.preventDefault();
 	    
 		    const approvalTitle = document.querySelector('#approval_title').value;
 		    const editorData = editor.getData();
 		    const csrfToken = document.querySelector('#csrf_token').value;
-		    const memberNo = document.querySelector('#member_no').value;
 		    const file = document.querySelector('#approval_file').files[0];
 			const approvers = Array.from(document.querySelectorAll('input[id="approverNumbers"]')).map(input => input.value);
 			const references = Array.from(document.querySelectorAll('input[id="referenceNumbers"]')).map(input => input.value);
@@ -192,11 +199,9 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 });
             } else {
 				const payload = new FormData();
-			    payload.append('approvalContent', editorData);
 			    payload.append('approvalTitle', approvalTitle);
-			    payload.append('memberNo', memberNo);
-			    
-			    if (vacationFile) {
+			    payload.append('approvalContent', editorData);
+			    if (file) {
            			payload.append('file', file);
         		}
 			    payload.append('approvers', approvers);
@@ -219,8 +224,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			                confirmButtonColor: '#B1C2DD',
 			                confirmButtonText: "확인"
 			            }).then((result) => {
-							alert("성공");
-			             //    location.href = "/employee/approval";
+			            	location.href = "/employee/approval/progress";
 			            });
 			        } else {
 			            Swal.fire({

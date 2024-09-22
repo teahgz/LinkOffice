@@ -1,56 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{include/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
 <th:block layout:fragment="content">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link th:href="@{/css/admin/notice/notice_update.css}" rel="stylesheet" type="text/css">
-    
-    <section>
-        <h1>공지사항 수정</h1>
-        <div class="edit_notice">
-            <form id="noticeEditFrm" th:action="@{/notice/update/{notice_no}(notice_no=${dto.notice_no})}" th:object="${dto}" enctype="multipart/form-data" method="POST">
-                <!-- CSRF 토큰 -->
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken"/>
-                <input type="hidden" name="notice_no" th:value="${dto.notice_no}" />
+	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+		rel="stylesheet">
+	<link th:href="@{/css/admin/notice/notice_update.css}" rel="stylesheet"
+		type="text/css">
 
-                <!-- 제목 -->
-                <div class="header">
-                    <label id="titleLabel">제목 :</label>
-                    <span id="importantLabel" style="color: red; display: none;">&lt;중요&gt;</span>
-                    <input type="text" id="title" name="notice_title" th:field="*{notice_title}" required>
-                    <div class="important-box">
-                        <label>중요</label>
-                        <input type="checkbox" id="important" name="notice_important_checkbox" th:checked="${dto.notice_importance == 1}">
-                        <input type="hidden" id="notice_important" name="notice_importance" th:field="*{notice_importance}">
-                    </div>
-                </div>
+	<section>
+		<h1>공지사항 수정</h1>
+		<div class="edit_notice">
+			<form id="noticeEditFrm"
+				th:action="@{/notice/update/{notice_no}(notice_no=${dto.notice_no})}"
+				th:object="${dto}" enctype="multipart/form-data" method="POST">
+				<!-- CSRF 토큰 -->
+				<input type="hidden" name="_csrf" th:value="${_csrf.token}"
+					id="csrfToken" /> <input type="hidden" name="notice_no"
+					th:value="${dto.notice_no}" />
 
-                <div class="info">
-                    <label>작성일자 :</label>
-                    <input type="date" id="date" name="notice_update_date" th:field="*{notice_update_date}" required>
-                </div>
-                <label>현재 첨부파일 : </label>
-                <span id="currentFileName" th:text="${dto.notice_ori_img}"></span>
-                <button type="button" id="deleteFileButton">이미지 삭제</button> 
-                <input type="file" name="file" id="fileInput" accept="image/*">
-                <input type="hidden" name="existing_file" id="existingFile" th:value="${dto.notice_new_img}">
-                <input type="hidden" name="delete_file_flag" id="deleteFileFlag" value="false"> 
-                <!-- Quill 에디터 -->
-                <div id="editor" th:utext="${dto.notice_content}"></div>
-                <input type="hidden" id="noticeContent" name="notice_content">
+				<!-- 제목 -->
+				<div class="header">
+					<label id="titleLabel">제목 :</label> <span id="importantLabel"
+						style="color: red; display: none;">&lt;중요&gt;</span> <input
+						type="text" id="title" name="notice_title"
+						th:field="*{notice_title}" required>
+					<div class="important-box">
+						<label>중요</label> <input type="checkbox" id="important"
+							name="notice_important_checkbox"
+							th:checked="${dto.notice_importance == 1}"> <input
+							type="hidden" id="notice_important" name="notice_importance"
+							th:field="*{notice_importance}">
+					</div>
+				</div>
 
-                <div class="buttons">
-                    <button type="submit" class="confirm-btn">수정</button>
-                    <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
-                </div>
-            </form>
-        </div>
-    </section>
+				<div class="info" style="display: none;">
+					<label>작성일자 :</label> <input type="date" id="date"
+						name="notice_update_date" th:field="*{notice_update_date}"
+						required>
+				</div>
+				<label>현재 첨부파일 : </label> <span id="currentFileName"
+					th:text="${dto.notice_ori_img}"></span>
+				<button type="button" id="deleteFileButton">이미지 삭제</button>
+				<input type="file" name="file" id="fileInput" accept="image/*">
+				<input type="hidden" name="existing_file" id="existingFile"
+					th:value="${dto.notice_new_img}"> <input type="hidden"
+					name="delete_file_flag" id="deleteFileFlag" value="false">
+				<!-- Quill 에디터 -->
+				<div id="editor" th:utext="${dto.notice_content}"></div>
+				<input type="hidden" id="noticeContent" name="notice_content">
 
-    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
-    <script>
+				<div class="buttons">
+					<button type="submit" class="confirm-btn">수정</button>
+					<button type="button" class="cancel-btn"
+						onclick="window.history.back()">취소</button>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+	<script>
     document.addEventListener('DOMContentLoaded', function() {
         var today = new Date();
         var yyyy = today.getFullYear();
@@ -175,5 +186,5 @@
         });
     });
     </script>
-</th:block> 
+</th:block>
 </html>

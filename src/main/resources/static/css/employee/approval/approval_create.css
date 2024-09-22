@@ -39,24 +39,9 @@ input:focus, select:focus {
     border-color: #B1C2DD;
 }
 
-.editor-container {
-    background-color: #f8f9fa;
-    border-radius: 12px; 
-    max-width: 800px; 
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 80px 30px;
-    margin-top: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-start; 
-    gap: 20px;
-}
-
-
 .ck.ck-editor {
-    max-width: 100%;
-    min-width: 100%;
+    max-width: 800px;
+    min-width: 800px;
 }
 
 .ck-editor__editable {
@@ -159,16 +144,37 @@ input:focus, select:focus {
 }
 
 
-.app_con {
-    width: 120px;
-    height: 150px;
-    border: 1px solid #000;
+.approval_line_section {
+    margin-top: 20px;
+}
+
+.approval_line_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.approval_line_table th, .approval_line_table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+.approval_line_table td {
+    min-height: 50px; 
+    width: 100px; 
+    vertical-align: top; 
+}
+.approval_line_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    width: 100px;
+}
+
+.signature_box {
     display: flex;
     flex-direction: column;
-}
-.app_nav {
-    width: 120px;
-    height: 50px;
-    border: 1px solid #000;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
 }

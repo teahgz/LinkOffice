@@ -29,9 +29,10 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Page<Survey> findSurveyAll(@Param("memberNo") Long memberNo, Pageable pageable);
     
     
-    // 제목 또는 내용 검색 + 로그인한 사용자가 참여한 설문조사만 조회 (마감된 설문만)
+    // 제목 또는 내용 또는 작성자 검색 + 로그인한 사용자가 참여한 설문조사만 조회 (마감된 설문만)
     @Query("SELECT s FROM Survey s JOIN SurveyParticipant sp ON s.surveyNo = sp.survey.surveyNo " +
-           "WHERE (s.surveyTitle LIKE %:searchText% OR s.surveyDescription LIKE %:searchText%) " +
+           "JOIN Member m ON s.member.memberNo = m.memberNo " +  // Member 조인 추가
+           "WHERE (s.surveyTitle LIKE %:searchText% OR s.surveyDescription LIKE %:searchText% OR m.memberName LIKE %:searchText%) " + 
            "AND sp.member.memberNo = :memberNo AND s.surveyStatus = 1")
     Page<Survey> findSurveyByTitleOrContentForEndList(@Param("searchText") String searchText, @Param("memberNo") Long memberNo, Pageable pageable);
 
@@ -57,9 +58,10 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Page<Survey> findAllEndedSurveysForMember(@Param("memberNo") Long memberNo, Pageable pageable);
     
     
-    // 제목 또는 내용 검색 + 로그인한 사용자가 참여한 설문조사만 조회 (진행 중인 설문만)
+    // 제목 또는 내용 또는 작성자 검색 + 로그인한 사용자가 참여한 설문조사만 조회 (진행 중인 설문만)
     @Query("SELECT s FROM Survey s JOIN SurveyParticipant sp ON s.surveyNo = sp.survey.surveyNo " +
-           "WHERE (s.surveyTitle LIKE %:searchText% OR s.surveyDescription LIKE %:searchText%) " +
+           "JOIN Member m ON s.member.memberNo = m.memberNo " +  
+           "WHERE (s.surveyTitle LIKE %:searchText% OR s.surveyDescription LIKE %:searchText% OR m.memberName LIKE %:searchText%) " + 
            "AND sp.member.memberNo = :memberNo AND s.surveyStatus = 0")
     Page<Survey> findSurveyByTitleOrContentForIngList(@Param("searchText") String searchText, @Param("memberNo") Long memberNo, Pageable pageable);
 
@@ -83,5 +85,7 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     @Query("SELECT s FROM Survey s JOIN SurveyParticipant sp ON s.surveyNo = sp.survey.surveyNo " +
            "WHERE sp.member.memberNo = :memberNo AND s.surveyStatus = 0")
     Page<Survey> findAllOngoingSurveysForMember(@Param("memberNo") Long memberNo, Pageable pageable);
-
+    
+    Survey findBysurveyNo(Long survey_no);
+    
 }

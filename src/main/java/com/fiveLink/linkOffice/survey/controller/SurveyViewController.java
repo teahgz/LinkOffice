@@ -13,12 +13,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.notice.controller.NoticeViewController;
 import com.fiveLink.linkOffice.survey.domain.SurveyDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyQuestionDto;
 import com.fiveLink.linkOffice.survey.service.SurveyService;
 
 @Controller
@@ -115,6 +117,19 @@ public class SurveyViewController {
 
         return "employee/survey/survey_ing_list";
     }
+    
+    @GetMapping("/employee/survey/detail/{survey_no}")
+    public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
+        SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
 
+        // 질문 및 선택지, 주관식 답변 가져오기
+        List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+
+        // 모델에 추가
+        model.addAttribute("dto", dto);
+        model.addAttribute("questions", questions);
+
+        return "employee/survey/survey_question_detail";
+    }
 
 }

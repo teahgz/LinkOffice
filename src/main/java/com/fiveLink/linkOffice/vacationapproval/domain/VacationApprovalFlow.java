@@ -67,6 +67,7 @@ public class VacationApprovalFlow {
 				.vacation_approval_no(vacationApproval.getVacationApprovalNo())
 				.member_no(member.getMemberNo())
 				.member_name(member.getMemberName())
+				.member_position(member.getPosition().getPositionName())
 				.vacation_approval_flow_role(vacationApprovalFlowRole)
 				.vacation_approval_flow_order(vacationApprovalFlowOrder)
 				.vacation_approval_flow_status(vacationApprovalFlowStatus)

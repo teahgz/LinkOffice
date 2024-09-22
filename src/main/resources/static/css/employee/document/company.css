@@ -386,7 +386,7 @@
     background-position: left 3.5vw center;
     transition: border-color 0.3s;
 }
-#sort_select:focus{
+#sort_select:focus, #name_select:focus{
     outline: none;
     border-color: #B1C2DD;
 }
@@ -441,6 +441,7 @@
     transform: scale(0.98);
 }
 .file_down_button{
+	display: inline-block;
     padding: 0.5vh 0.5vw;
     background-color: #B1C2DD;
     border: none;
@@ -448,9 +449,11 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.7vw;
-    width: 3.5vw;
-    height: 3vh;
+    width: 2.6vw;
+    line-height: 2vh;
     text-align: center;
+    text-decoration: none;
+    color: black;
 }
 .file_down_button:hover{
     background-color: #adbad4;

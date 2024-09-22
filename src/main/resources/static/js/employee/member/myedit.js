@@ -36,9 +36,8 @@ pwform.addEventListener('submit', (e) => {
 });
 
 function goMypage(){
-	const memberNo = document.getElementById('member_no').value;
 	
-	location.href = `/employee/member/mypage/${memberNo}`;  
+	location.href = `/employee/member/mypage`;  
 }
 
 

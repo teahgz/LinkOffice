@@ -50,6 +50,9 @@ public class Approval {
 	@Column(name="approval_content")
 	private String approvalContent;
 	
+	@Column(name="approval_effective_date")
+	private String approvalEffectiveDate;
+	
 	@Column(name="approval_status")
 	private Long approvalStatus;
 	
@@ -75,8 +78,10 @@ public class Approval {
 				.approval_no(approvalNo)
 				.member_no(member.getMemberNo())
 				.member_name(member.getMemberName())
+				.member_position(member.getPosition().getPositionName())
 				.approval_title(approvalTitle)
 				.approval_content(approvalContent)
+				.approval_effective_date(approvalEffectiveDate)
 				.approval_status(approvalStatus)
 				.approval_cancel_reason(approvalCancelReason)
 				.approval_create_date(approvalCreateDate)

@@ -1,0 +1,299 @@
+@charset "UTF-8";
+
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.main_container {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+}
+
+.details_section,
+.content_section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.text_field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+.text_field .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.text_field strong {
+    font-size: 16px;
+    color: #333;
+}
+
+.button_container {
+	display: flex;
+    justify-content: flex-end; 	
+    gap: 20px;
+    position: relative;
+}
+
+.details_section {
+    position: relative;
+    padding: 20px; 
+}
+
+
+.list_button {
+    padding: 8px 15px;
+    background-color: #C0C0C0;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.list_button:hover {
+    opacity: 0.8;
+}
+
+.vacationapproval_content {
+    margin: 20px 0;
+}
+
+.table_container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.table_container th, 
+.table_container td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table_container th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.table_container input,
+.table_container textarea,
+.table_container select {
+    border: none;
+    cursor: not-allowed;
+}
+
+.table_container input:disabled,
+.table_container textarea:disabled,
+.table_container select:disabled {
+    color: #333;
+}
+
+.file_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.file_item strong {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.file_item .file_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file_item a {
+    background-color: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.file_item a:hover {
+    background-color: #d6d6d6;
+}
+
+.file_item p {
+    margin: 0;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.section_separator {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+.file_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.file_item strong {
+    font-size: 16px;
+    margin-right: 10px; 
+}
+
+.file_item .file_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file_item a {
+    background-color: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.file_item a:hover {
+    background-color: #d6d6d6;
+}
+
+.file_item p {
+    margin: 0;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.approval_line_section {
+    margin-top: 20px;
+}
+
+.approval_line_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.approval_line_table th, .approval_line_table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.approval_line_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    width: 100px;
+}
+
+.signature_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+}
+
+.signature_box img, .signature_box .currentSignature {
+    max-width: 70%;
+    max-height: 40px;
+    display: block;
+}
+
+.date_box {
+    font-size: 12px;
+    color: #666;
+}
+
+.approval_status.approved {
+    background-color: #e6f3e6;
+    color: #4CAF50;
+}
+
+.approval_status {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.approved {
+    background-color: #e6f3e6;
+    color: #4CAF50;
+}
+
+.pending {
+    background-color: #fff8e1;
+    color: #FFC107;
+}
+
+.rejected {
+    background-color: #ffebee;
+    color: #F44336;
+}
+
+.reference_box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reference_box > div {
+    background-color: #f2f2f2;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+
+#vacationapproval_cancel_reason {
+    text-align: center; 
+    font-size: 20px;
+}
+
+#vacationapproval_cancel_reason div {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #333; 
+}
+
+#vacationapproval_flow_reject_reason {
+    text-align: center; 
+    font-size: 20px;
+}
+
+#vacationapproval_flow_reject_reason div {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #333; 
+}
+
+#reject{
+	color: #ff8080;
+	font-size: 17px;
+}

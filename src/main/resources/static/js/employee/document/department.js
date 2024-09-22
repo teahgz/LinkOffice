@@ -157,7 +157,7 @@ $(function () {
     }
 
     // 선택된 폴더의 파일 목록을 불러오기
-    function loadFiles(folderNo) {
+    function loadFiles(folderNo, searchInput = '', searchOption = 'file_name') {
         $.ajax({
             type: 'GET',
             url: '/folder/file',
@@ -167,16 +167,26 @@ $(function () {
                 // 정렬 기준 가져오기
                 const sortOption = $('#sort_select').val();
                 const fileList = data;
+                const searchOption = $('#name_select').val();
 
-	            // 날짜 필터링
+	            // 날짜&검색 필터링
 	            const startDate = new Date(startDateInput.value);
-	            startDate.setHours(0, 0, 0, 0);
+				startDate.setHours(0, 0, 0, 0);
 	            const endDate = new Date(endDateInput.value);
-	            endDate.setHours(23, 59, 59, 999); 
+				endDate.setHours(23, 59, 59, 999); 
 	            
 	            const filteredFiles = fileList.filter(file => {
 	                const fileDate = new Date(file.document_file_upload_date);
-	                return fileDate >= startDate && fileDate <= endDate;
+	                const isDateInRange = fileDate >= startDate && fileDate <= endDate;
+	                const normalizedFileName = file.document_ori_file_name.normalize('NFC');
+	                let isSearchMatch = false;
+	                if(searchOption === 'file_name'){
+						isSearchMatch = normalizedFileName.includes(searchInput.toLowerCase().trim());					
+					} else{
+						isSearchMatch = file.member_name.toLowerCase().includes(searchInput.toLowerCase().trim());
+					}
+					
+				    return isDateInRange && isSearchMatch;
 	            });
 	            
 	            // 정렬
@@ -212,7 +222,9 @@ $(function () {
 					            '<input type="button" class="file_show_button" value="파일보기">' : ''}
 					        </td>
                             <td>${file.document_file_size}</td>
-                            <td><input type="button" class="file_down_button" value="다운로드"></td>
+                            <td>
+							    <a href="/document/file/download/${file.document_file_no}" class="file_down_button">다운로드</a>
+							</td>
                             <td>
 					            ${file.member_no == memberNo ? 
 					                `<input type="button" class="delete_button" value="삭제" id="${file.document_file_no}">` : ''}
@@ -531,6 +543,7 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
+	                $('#file_name_input').val(''); 
 	            }
 	        });
 	    }
@@ -610,6 +623,7 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
+	                $('#file_name_input').val(''); 
 	            }
 	        });
 	    }
@@ -734,6 +748,7 @@ $(function () {
                         }
                     });
                 }
+                $('#file_name_input').val(''); 
             }
         });
 	});
@@ -809,6 +824,7 @@ $(function () {
 		                        confirmButtonText: '확인'
 		                    });
 		                }
+		                $('#file_name_input').val(''); 
 		            }
 		        });
 			}
@@ -850,6 +866,7 @@ $(function () {
 		                        confirmButtonText: '확인'
 		                    });
 	                    }
+	                    $('#file_name_input').val(''); 
 					}
 				});
 			}
@@ -892,6 +909,7 @@ $(function () {
 	                            confirmButtonText: '확인'
 	                        });
 	                    }
+	                    $('#file_name_input').val(''); 
 	                }
 	            });
 	        }
@@ -926,8 +944,16 @@ $(function () {
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
 
+    // 파일 검색 
+   $('#search_button').on('click', function(){
+		const searchInput = $('#file_name_input').val();
+		loadFiles(selectedFolderNo, searchInput);
+   });
+
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
+		let previousFolderNo = null;
+		let searchInputValue = '';
 	    getFolders().then(() => {
 	        getAllFileSize();
 	
@@ -935,30 +961,60 @@ $(function () {
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
 	            loadFiles(selectedFolderNo);
+	            previousFolderNo = selectedFolderNo;
+	        }
+	    });       
+        // 폴더 선택 변경 함수 
+	    $('#tree').on('select_node.jstree', function(e, data) {
+	        const selectedFolderNo = data.selected[0];
+	        if (selectedFolderNo !== previousFolderNo) {
+	            $('#file_name_input').val(''); 
+	            searchInputValue = '';
+	            loadFiles(selectedFolderNo, searchInputValue = '');
+	            previousFolderNo = selectedFolderNo; 
+	            startDateInput.value = oneYearAgoStr;
+	            endDateInput.value = todayStr;
 	        }
 	    });
-        
-        // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
-        $('#sort_select').on('change', function() {
-            const selectedFolderNo = $('#tree').jstree('get_selected')[0];
-            if (selectedFolderNo) {
-            	loadFiles(selectedFolderNo);
-        	}
-        });
-        // 날짜가 변경될 때 파일 목록을 새로 로드
+	    // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
+	    $('#sort_select').on('change', function() {
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            const searchInput = $('#file_name_input').val(); 
+	            const searchOption = $('#name_select').val(); 
+	            loadFiles(selectedFolderNo, searchInput, searchOption); 
+	        }
+	    });
+	
+	    // 날짜가 변경될 때 파일 목록을 새로 로드
 	    startDateInput.addEventListener('change', function() {
 	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
-	            loadFiles(selectedFolderNo);
+	            const searchInput = $('#file_name_input').val(); 
+	            const searchOption = $('#name_select').val(); 
+	            loadFiles(selectedFolderNo, searchInput, searchOption); 
 	        }
 	    });
+	    
 	    endDateInput.addEventListener('change', function() {
 	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
-	            loadFiles(selectedFolderNo);
+	            const searchInput = $('#file_name_input').val(); 
+	            const searchOption = $('#name_select').val(); 
+	            loadFiles(selectedFolderNo, searchInput, searchOption); 
 	        }
 	    });
-    });
+	
+	    // 검색 옵션이 변경될 때 입력된 검색어를 사용하여 파일 목록을 다시 로드
+	    $('#name_select').on('change', function() {
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            const searchInput = $('#file_name_input').val(); 
+	            const searchOption = $('#name_select').val(); 
+	            loadFiles(selectedFolderNo, searchInput, searchOption);
+	        }
+	    });
+	});
 });
