@@ -159,6 +159,7 @@ public class SurveyService {
                 .survey_start_date(survey.getSurveyStartDate())
                 .survey_end_date(survey.getSurveyEndDate())
                 .survey_status(survey.getSurveyStatus())
+                .survey_description(survey.getSurveyDescription())
                 .member_name(survey.getMember().getMemberName())
                 .build();
     	return dto;
@@ -167,14 +168,24 @@ public class SurveyService {
     public List<SurveyQuestionDto> getSurveyQuestions(Long surveyNo) {
         List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
         return questions.stream().map(question -> {
+            // 선택지 번호 가져오기
             List<Long> optionNo = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(SurveyOption::getSurveyOptionNo)
                     .collect(Collectors.toList());
+
+            // 선택지 답변 가져오기
+            List<String> optionAnswers = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
+                    .stream()
+                    .map(SurveyOption::getSurveyOptionAnswer) 
+                    .collect(Collectors.toList());
+
+            // 주관식 텍스트 번호 가져오기
             List<Long> textNo = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(SurveyText::getSurveyTextNo)
                     .collect(Collectors.toList());
+
             return SurveyQuestionDto.builder()
                     .survey_question_no(question.getSurveyQuestionNo())
                     .survey_no(question.getSurvey().getSurveyNo())
@@ -182,9 +193,11 @@ public class SurveyService {
                     .survey_question_type(question.getSurveyQuestionType())
                     .survey_question_essential(question.getSurveyQuestionEssential())
                     .survey_option_no(optionNo)
+                    .survey_option_answer(optionAnswers) 
                     .survey_text_no(textNo)
                     .build();
         }).collect(Collectors.toList());
     }
+
 
 }
