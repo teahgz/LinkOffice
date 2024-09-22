@@ -31,6 +31,7 @@ public class ApprovalFlowDto {
 		private String member_name;
 		private String format_approval_flow_complete_date;
 		private String digital_name;
+		private String member_position;
 		
 		public ApprovalFlow toEntity(Approval approval, Member member) {
 			return ApprovalFlow.builder()
