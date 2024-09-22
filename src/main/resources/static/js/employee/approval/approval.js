@@ -109,8 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (index > -1) {
             array.splice(index, 1);
         }
-
-        // 이름 배열에서 제거
         const nameIndex = nameArray.indexOf(memberElement.find('span').text());
         if (nameIndex > -1) {
             nameArray.splice(nameIndex, 1);
@@ -136,7 +134,6 @@ function moveToList(event,targetId, array, nameArray) {
         if (currentApproverCount + selectedNodes.length > 6) {
             Swal.fire({
                 icon: 'warning',
-                title: '경고!',
                 text: '결재자는 최대 6명까지 선택할 수 있습니다.',
             });
             return;
