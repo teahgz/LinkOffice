@@ -309,11 +309,10 @@ if (sendButton && messageInput) {
           }
       }else if (message.type === "groupChatCreate") {
          if (message.chatRoomNo){
-
                       createChatListIfNotExists();
 
                       message.members.forEach(member => {
-                           console.log(member)
+
                           // 멤버 번호가 현재 로그인된 사용자 번호와 같을 때만 목록 추가
                           if (member === currentMember) {
                               const newChatItem = document.createElement("div");
