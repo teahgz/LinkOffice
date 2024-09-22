@@ -121,11 +121,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     // JSON으로 변환
                     ObjectMapper objectMapper = new ObjectMapper();
                     String responseJson = objectMapper.writeValueAsString(responseMap);
-                    System.out.println("testResponse:"+responseJson);
 
                     for (WebSocketSession s : sessions.values()) {
                         if (s.isOpen()) {
-                            System.out.println(s);
+
                             s.sendMessage(new TextMessage(responseJson));
                         }
                     }
@@ -154,17 +153,26 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             currentMemberDto.setChat_member_room_name(groupChatName);
             chatMemberService.createMemberRoomOne(currentMemberDto);
 
+            if (!members.contains(currentMemberNo)) {
+                members.add(String.valueOf(currentMemberNo));
+            }
+
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("chatRoomNo", chatRoomNo);
             responseMap.put("members", members);
-            responseMap.put("currentMemberNo", currentMemberNo);
-            responseMap.put("type", type);
+            //responseMap.put("currentMemberNo", currentMemberNo);
+            responseMap.put("type", "groupChatCreate");
             responseMap.put("names", groupChatName);
+            System.out.println(members);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String responseJson = objectMapper.writeValueAsString(responseMap);
 
-            session.sendMessage(new TextMessage(responseJson));
+            for (WebSocketSession s : sessions.values()) {
+                if (s.isOpen()) {
+                    s.sendMessage(new TextMessage(responseJson));
+                }
+            }
 
         }
 

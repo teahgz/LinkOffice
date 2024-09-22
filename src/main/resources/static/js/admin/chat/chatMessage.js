@@ -307,6 +307,35 @@ if (sendButton && messageInput) {
               resetSelectedMembers();
               $('#organizationChartModal').modal('hide');
           }
+      }else if (message.type === "groupChatCreate") {
+         if (message.chatRoomNo){
+
+                      createChatListIfNotExists();
+
+                      message.members.forEach(member => {
+                           console.log(member)
+                          // 멤버 번호가 현재 로그인된 사용자 번호와 같을 때만 목록 추가
+                          if (member === currentMember) {
+                              const newChatItem = document.createElement("div");
+                              newChatItem.classList.add("chatItem");
+                              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
+
+                              // 그룹 채팅의 경우 그룹 이름을 사용
+                              newChatItem.innerHTML = `
+                                  <h3><p>${message.names}</p></h3>
+                                 <input type="hidden" id="memberNo" value="${currentMember}"/>
+                                  <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
+                              `;
+
+                              const chatList = document.getElementById('chatList');
+                              chatList.insertBefore(newChatItem, chatList.firstChild);
+                          }
+                      });
+
+
+              resetSelectedMembers();
+              $('#organizationChartModal').modal('hide');
+         }
       } else if (message.type === "chatRoomUpdate") {
            const updatedChatRoomNo = message.roomNo;
            const updatedChatRoomName = message.updatedChatRoomName;
