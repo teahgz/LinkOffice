@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
+import com.fiveLink.linkOffice.approval.domain.ApprovalFlowDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFormDto;
 import com.fiveLink.linkOffice.approval.service.ApprovalFormService;
+import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
@@ -31,13 +33,15 @@ public class ApprovalViewController {
 	private final MemberService memberService;
 	private final ApprovalFormService approvalFormService;
 	private final VacationApprovalService vacationApprovalService;
+	private final ApprovalService approvalService;
 
 	@Autowired
 	public ApprovalViewController(MemberService memberService, ApprovalFormService approvalFormService,
-			VacationApprovalService vacationApprovalService) {
+			VacationApprovalService vacationApprovalService, ApprovalService approvalService) {
 		this.memberService = memberService;
 		this.approvalFormService = approvalFormService;
 		this.vacationApprovalService = vacationApprovalService;
+		this.approvalService = approvalService;
 	}
 
 	// 관리자 전자결재 양식 등록 페이지
@@ -163,8 +167,6 @@ public class ApprovalViewController {
 				vapp.setFormat_vacation_approval_create_date(formattedCreateDate);
 			}
 		});
-		System.out.println(vacationApprovalDtoPage.getContent());
-
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationApprovalDtoList", vacationApprovalDtoPage.getContent());
 		model.addAttribute("page", vacationApprovalDtoPage);
@@ -214,23 +216,75 @@ public class ApprovalViewController {
 		return "employee/approval/approval_references_list";
 	}
 
+	private Sort getSortApproval(String sort) {
+		if ("latest".equals(sort)) {
+			return Sort.by(Sort.Order.desc("approvalCreateDate"));
+		} else if ("oldest".equals(sort)) {
+			return Sort.by(Sort.Order.asc("approvalCreateDate"));
+		}
+		return Sort.by(Sort.Order.desc("approvalCreateDate"));
+	}
+
+	
 	// 사용자 결재 진행함 페이지
 	@GetMapping("/employee/approval/progress")
-	public String approvalProgress(Model model) {
+	public String approvalProgress(Model model, ApprovalDto searchdto,
+			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
+		
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		Sort sortOption = getSortApproval(sort);
+		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
+		Page<ApprovalDto> ApprovalDtoPage = approvalService.getAllApproval(member_no, searchdto, sortedPageable);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		ApprovalDtoPage.getContent().forEach(vapp -> {
+		    if (vapp.getApproval_create_date() != null) {  
+		        String formattedCreateDate = vapp.getApproval_create_date().format(formatter); 
+		        vapp.setFormat_approval_create_date(formattedCreateDate); 
+		    }
+		});
+		
 		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("approvalDtoList", ApprovalDtoPage.getContent());
+		model.addAttribute("page", ApprovalDtoPage);
+		model.addAttribute("searchDto", searchdto);
+		model.addAttribute("currentSort", sort);
 
 		return "employee/approval/approval_progress_list";
 	}
 
 	// 사용자 결재 반려함 페이지
 	@GetMapping("/employee/approval/reject")
-	public String approvalReject(Model model) {
+	public String approvalReject(Model model, ApprovalDto searchdto,
+			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		Sort sortOption = getSortApproval(sort);
+		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
+		Page<ApprovalDto> ApprovalDtoPage = approvalService.getAllReject(member_no, searchdto, sortedPageable);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		ApprovalDtoPage.getContent().forEach(vapp -> {
+		    if (vapp.getApproval_create_date() != null) {  
+		        String formattedCreateDate = vapp.getApproval_create_date().format(formatter); 
+		        vapp.setFormat_approval_create_date(formattedCreateDate); 
+		    }
+		});
+		
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("approvalDtoList", ApprovalDtoPage.getContent());
+		model.addAttribute("page", ApprovalDtoPage);
+		model.addAttribute("searchDto", searchdto);
+		model.addAttribute("currentSort", sort);
 		model.addAttribute("memberdto", memberdto);
 
 		return "employee/approval/approval_reject_list";
@@ -269,6 +323,139 @@ public class ApprovalViewController {
 		model.addAttribute("currentUserMemberNo", member_no);
 
 		return "employee/approval/approval_history_detail";
+	}
+	
+	// 사용자 결재 참조함 상세 페이지
+	@GetMapping("/employee/approval/approval_references_detail/{vacationapproval_no}")
+	public String approvalReferencesDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
+
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+
+		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		if (vacationapprovaldto.getVacation_approval_create_date() != null) {
+			String formattedCreateDate = vacationapprovaldto.getVacation_approval_create_date().format(formatter);
+			vacationapprovaldto.setFormat_vacation_approval_create_date(formattedCreateDate);
+		}
+
+		if (vacationapprovaldto.getFlows() != null) {
+			for (VacationApprovalFlowDto flow : vacationapprovaldto.getFlows()) {
+				if (flow.getVacation_approval_flow_complete_date() != null) {
+					String formattedCompleteDate = flow.getVacation_approval_flow_complete_date().format(formatter);
+					flow.setFormat_vacation_approval_flow_complete_date(formattedCompleteDate);
+				}
+
+				MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+				flow.setDigital_name(currentMember.getMember_new_digital_img());
+
+			}
+		}
+
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
+		model.addAttribute("currentUserMemberNo", member_no);
+
+		return "employee/approval/approval_references_detail";
+	}
+	
+	// 사용자 결재 진행함 상세 페이지
+	@GetMapping("/employee/approval/approval_progress_detail/{approval_no}")
+	public String approvalProgressDetail(Model model, @PathVariable("approval_no") Long appNo) {
+
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		if (approvaldto.getApproval_create_date() != null) {
+			String formattedCreateDate = approvaldto.getApproval_create_date().format(formatter);
+			approvaldto.setFormat_approval_create_date(formattedCreateDate);
+		}
+
+		if (approvaldto.getFlows() != null) {
+			for (ApprovalFlowDto flow : approvaldto.getFlows()) {
+				if (flow.getApproval_flow_complete_date() != null) {
+					String formattedCompleteDate = flow.getApproval_flow_complete_date().format(formatter);
+					flow.setFormat_approval_flow_complete_date(formattedCompleteDate);
+				}
+
+				MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+				flow.setDigital_name(currentMember.getMember_new_digital_img());
+
+			}
+		}
+
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("approvaldto", approvaldto);
+		model.addAttribute("currentUserMemberNo", member_no);
+
+		return "employee/approval/approval_progress_detail";
+	}
+	
+	// 사용자 결재 반려함 상세 페이지
+	@GetMapping("/employee/approval/approval_reject_detail/{approval_no}")
+	public String approvalRejectDetail(Model model, @PathVariable("approval_no") Long appNo) {
+
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		if (approvaldto.getApproval_create_date() != null) {
+			String formattedCreateDate = approvaldto.getApproval_create_date().format(formatter);
+			approvaldto.setFormat_approval_create_date(formattedCreateDate);
+		}
+
+		if (approvaldto.getFlows() != null) {
+			for (ApprovalFlowDto flow : approvaldto.getFlows()) {
+				if (flow.getApproval_flow_complete_date() != null) {
+					String formattedCompleteDate = flow.getApproval_flow_complete_date().format(formatter);
+					flow.setFormat_approval_flow_complete_date(formattedCompleteDate);
+				}
+
+				MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+				flow.setDigital_name(currentMember.getMember_new_digital_img());
+
+			}
+		}
+
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("approvaldto", approvaldto);
+		model.addAttribute("currentUserMemberNo", member_no);
+
+		return "employee/approval/approval_reject_detail";
+	}
+	
+	// 사용자 전자결재 작성 페이지 
+	@GetMapping("/employee/approval/create")
+	public String approvalCreate(Model model) {
+		
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		List<ApprovalFormDto> formList = approvalFormService.findAllByApprovalStatusNot(1L);
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("formList", formList);
+		
+		return "employee/approval/approval_create";
+	}
+	
+	// 사용자 전자결재 수정 페이지
+	@GetMapping("/employee/approval/approval_edit/{approval_no}")
+	public String approvalEdit(Model model, @PathVariable("approval_no") Long appNo) {
+		Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
+		
+		model.addAttribute("memberdto", memberdto);
+		model.addAttribute("approvaldto", approvaldto);
+		
+		return "employee/approval/approval_edit";
 	}
 
 }

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+    <th:block layout:fragment="content">
+        <link th:href="@{/css/employee/approval/approval_reject_detail.css}" rel="stylesheet" type="text/css">
+        <section>
+            <h1>결재 반려 상세 조회</h1>
+            <div class="container">
+            	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
+            	<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}" >
+                <div class="main_container">
+                    <div class="details_section">
+                        <div class="text_field">
+						 <div class="field title_row">
+						        <strong>제목</strong>
+						        <div id="approval_title" th:text="${approvaldto.approval_title}"></div>
+						    </div>
+                        </div>
+                        
+                        
+						<div class="approval_line_section">
+						    <table class="approval_line_table">
+						        <thead>
+						            <tr>
+						            
+						                <th>
+						                    기안자 (<span th:text="${approvaldto.member_name}"></span>)
+						                </th>
+						                <th th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 1}">
+						                    합의자 (<span th:text="${flow.member_name}"></span>)
+						                </th>
+						                <th th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 2}">
+						                    결재자 (<span th:text="${flow.member_name}"></span>)
+						                </th>
+						            </tr>
+						        </thead>
+						        <tbody>
+									<tr>
+									    <td>
+									        <div class="signature_box">
+									            <img th:if="${approvaldto.approval_status != 3 and approvaldto.digitalname != null}" 
+									                 th:src="@{'/linkOfficeImg/member/digital/' + ${approvaldto.digitalname}}" 
+									                 alt="현재 서명" id="currentSignature">
+									            <span th:if="${approvaldto.approval_status != 3 and approvaldto.digitalname == null}" 
+									                  id="currentSignature" th:text="${approvaldto.member_name}"></span>
+									            <span th:if="${approvaldto.approval_status == 3}" id="approvalcancel">기안취소</span>
+									        </div>
+									    </td>
+										<td th:each="flow, stat : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 2 || flow.approval_flow_role == 1}">
+										    <div class="signature_box">
+										        <img th:if="${flow.approval_flow_status == 2 and flow.digital_name != null}" 
+										             th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
+										             alt="현재 서명" class="currentSignature">
+										        <span th:if="${flow.approval_flow_status == 2 and flow.digital_name == null}" 
+										              class="currentSignature" th:text="${flow.member_name}"></span>
+										        <span th:if="${flow.approval_flow_status == 3}" 
+										              class="currentSignature" id="reject" th:text="반려"></span>
+										    </div>
+										</td>
+									</tr>
+						            <tr>
+						                <td>
+						                    <div class="date_box" 
+						                         th:text="${approvaldto.format_approval_create_date}"></div>
+						                </td>
+						                <td th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 2 || flow.approval_flow_role == 1}">
+						                    <div class="date_box" th:if="${flow.approval_flow_complete_date != null}"
+						                         th:text="${flow.format_approval_flow_complete_date}"></div>
+						                </td>
+						            </tr>
+						        </tbody>
+						    </table>
+						
+						    <div class="reference_section">
+						        <strong>참조자</strong>
+						        <div class="reference_box">
+						            <div th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 0}"
+						                 th:text="${flow.member_name}"></div>
+						        </div>
+						    </div>
+						</div>
+						
+						<div th:if="${approvaldto.approval_cancel_reason != null}" id="approval_cancel_reason">
+						    <strong>기안 취소 사유</strong>
+						    <div th:text="${approvaldto.approval_cancel_reason}"></div>
+						</div>
+
+						<div th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_reject_reason != null}" id="approval_flow_reject_reason">
+							 <strong>반려 사유</strong>
+							<div th:text="${flow.approval_flow_reject_reason}"></div>
+						</div>	
+											
+                        <hr class="section_separator"> 
+                    </div>
+
+                    <div class="content_section">
+                        <div class="approval_content">
+                            <div class="table_container" th:utext="${approvaldto.approval_content}"></div>
+                        </div>
+                        <hr class="section_separator"> 
+                        <div class="field">
+                            <div th:if="${approvaldto != null and !#lists.isEmpty(approvaldto.files)}">
+                                <div th:each="file : ${approvaldto.files}" class="file_item">
+                                    <strong> 등록 파일 </strong>
+                                    <div th:if="${file.approval_file_ori_name != null and !file.approval_file_ori_name.isEmpty() and 
+                                                  (file.approval_file_ori_name.endsWith('.pdf') or 
+                                                   file.approval_file_ori_name.endsWith('.xls') or 
+                                                   file.approval_file_ori_name.endsWith('.xlsx') or
+                                                   file.approval_file_ori_name.endsWith('.png') or 
+                                                   file.approval_file_ori_name.endsWith('.jpg') or 
+                                                   file.approval_file_ori_name.endsWith('.jpeg'))}" class="file_info">
+                                        <a th:href="@{'/linkOfficeImg/approval/approval/' + ${file.approval_file_new_name}}" 
+                                           th:text="${file.approval_file_ori_name}"></a>
+                                        <p th:text="${'파일 크기: ' + file.approval_file_size + ' bytes'}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${approvaldto == null or #lists.isEmpty(approvaldto.files)}">
+                                <p>등록된 파일이 없습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button_container">
+                        <button type="button" class="list_button" onclick="location.href='/employee/approval/reject'">목록</button>
+                    </div>
+                </div>
+            </div>
+              
+        </section>
+
+        <script th:src="@{/js/employee/approval/approval_reject_detail.js}"></script>
+    </th:block>
+</html>

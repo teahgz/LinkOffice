@@ -31,7 +31,6 @@
                             </div>
                         </div>
                         
-                        
 						<div class="approval_line_section">
 						    <table class="approval_line_table">
 						        <thead>
@@ -64,6 +63,8 @@
 									                 alt="현재 서명" id="currentSignature">
 									            <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
 									                  id="currentSignature" th:text="${flow.member_name}"></span>
+										        <span th:if="${flow.vacation_approval_flow_status == 3}" 
+										              class="currentSignature" id="reject" th:text="반려"></span>									                  
 						                    </div>
 						                </td>
 						            </tr>
@@ -73,7 +74,7 @@
 						                         th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
 						                </td>
 						                <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2 || flow.vacation_approval_flow_role == 1}">
-						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status == 2}"
+						                    <div class="date_box" th:if="${flow.vacation_approval_flow_status != 0 and flow.vacation_approval_flow_status != 1}"
 						                         th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
 						                </td>
 						            </tr>
@@ -88,9 +89,20 @@
 						        </div>
 						    </div>
 						</div>
-                        <hr class="section_separator"> 
                     </div>
 
+					<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
+					    <strong>기안 취소 사유</strong>
+					    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
+					</div>
+
+					<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
+						 <strong>반려 사유</strong>
+						<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
+					</div>	
+
+                        <hr class="section_separator"> 
+                        
                     <div class="content_section">
                         <div class="vacationapproval_content">
                             <div class="table_container" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>
@@ -126,6 +138,19 @@
 		                   class="edit_button">수정</a>
                         <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
                     </div>
+                    
+                    	<div id="myModal" class="modal" style=display:none;>
+							<div class="modal_content">
+								<h2>취소 사유를 입력하세요.</h2>
+								<span class="close">&times;</span>
+									<div class="cancel_reason_div">
+									    <textarea id="cancel_reason" name="cancel_reason"></textarea>
+									</div>
+									<div class="modal_button">
+										<button type="submit" id="confirm_cancel_button">확인</button>
+									</div>
+							</div>
+						</div>
                 </div>
             </div>
         </section>

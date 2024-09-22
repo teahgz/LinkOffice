@@ -10,15 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalFileService;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
@@ -136,16 +135,18 @@ public class VacationApprovalApicontroller {
 	
 	// 휴가 결재 기안 취소 (업데이트)
 	@ResponseBody
-	@PutMapping("/employee/vacationapproval/delete/{vacationapproval_no}")
-	public Map<String,String> employeeVacationApprovalDelete(@PathVariable("vacationapproval_no") Long vapNo){
+	@PutMapping("/employee/vacationapproval/cancel/{vacationapproval_no}")
+	public Map<String,String> employeeVacationApprovalDelete(@PathVariable("vacationapproval_no") Long vapNo,
+			@RequestBody VacationApprovalDto vacationApprovalDto){
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "기안 취소 중 오류가 발생하였습니다.");
 	    
 	    VacationApprovalDto dto = vacationApprovalService.selectVacationApprovalOne(vapNo);
 	    dto.setVacation_approval_status(3L);
+	    dto.setVacation_approval_cancel_reason(vacationApprovalDto.getVacation_approval_cancel_reason());
 	    
-	    if(vacationApprovalService.deleteVacationApproval(dto) != null) {
+	    if(vacationApprovalService.cancelVacationApproval(dto) != null) {
 	    	response.put("res_code", "200");
 		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
 	    }
@@ -276,14 +277,17 @@ public class VacationApprovalApicontroller {
 	// 사용자 휴가결재 반려 (업데이트)
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/reject/{vacationapproval_no}")
-	public Map<String,String> employeeVacationApprovalFlowReject(@PathVariable("vacationapproval_no") Long vacationApprovalNo){
+	public Map<String,String> employeeVacationApprovalFlowReject(@PathVariable("vacationapproval_no") Long vacationApprovalNo,
+			@RequestBody VacationApprovalFlowDto vacationApprovalFlowDto){
 		Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "반려 중 오류가 발생하였습니다.");
 	    
 	    Long memberNo = memberService.getLoggedInMemberNo();
 	    
-	    if(vacationApprovalService.employeeVacationApprovalFlowReject(vacationApprovalNo, memberNo) != null) {
+	    vacationApprovalFlowDto.setVacation_approval_no(vacationApprovalNo);
+	    
+	    if(vacationApprovalService.employeeVacationApprovalFlowReject(vacationApprovalFlowDto, memberNo) != null) {
 	    	
             response.put("res_code", "200");
             response.put("res_msg", "반려가 완료되었습니다."); 	    	
@@ -292,7 +296,7 @@ public class VacationApprovalApicontroller {
 	    return response;
 	}
 	
-	// 사용자 휴가결재 기안취소 (업데이트)
+	// 사용자 휴가결재 승인취소 (업데이트)
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/approvecancel/{vacationapproval_no}")
 	public Map<String,String> employeeVacationApprovalFlowCancel(@PathVariable("vacationapproval_no") Long vacationApprovalNo){

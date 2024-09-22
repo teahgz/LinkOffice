@@ -60,7 +60,7 @@ public class DepartmentController {
 
             departmentService.addDepartment(departmentName, departmentHigh);
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "부서가 성공적으로 추가되었습니다.");
+            resultMap.put("res_msg", "부서 정보가 추가되었습니다.");
         } catch (NumberFormatException e) {
             resultMap.put("res_msg", "상위 부서를 찾을 수 없습니다. " + e.getMessage());
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class DepartmentController {
 
             departmentService.updateDepartment(departmentId, departmentName, departmentHigh);
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "부서가 성공적으로 수정되었습니다.");
+            resultMap.put("res_msg", "부서 정보가 수정되었습니다.");
         } catch (Exception e) {
             resultMap.put("res_msg", e.getMessage());
         }
@@ -124,7 +124,7 @@ public class DepartmentController {
         
         if (success) {
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "부서가 성공적으로 삭제되었습니다.");
+            resultMap.put("res_msg", "부서 정보가 삭제되었습니다.");
         } else {
             resultMap.put("res_code", "404");
             resultMap.put("res_msg", "부서에 소속 사원이 존재하여 삭제가 불가능합니다.");

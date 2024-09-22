@@ -50,7 +50,7 @@
 					<a href="#">전자결재</a>
 					<div class="dropdown">
 						<ul >
-							<li><a href="#">결재 작성하기</a></li>
+							<li><a th:href="@{/employee/approval/create}">결재 작성</a></li>
 							<li>
 								<a href="#">결재 상신함</a>
 								<div class="dropdown">
@@ -135,7 +135,7 @@
 					<div class="dropdown">
 						<ul>
 							<li><a href="#">사내 일정 목록</a></li>
-							<li><a href="#">월간 사내 일정</a></li>
+							<li><a th:href="@{/schedule/company}">월간 사내 일정</a></li>
 							<li><a th:href="@{/schedule/category}">일정 범주 관리</a></li>
 						</ul>
 					</div>

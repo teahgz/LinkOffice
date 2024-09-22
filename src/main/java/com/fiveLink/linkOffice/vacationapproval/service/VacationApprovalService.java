@@ -163,7 +163,7 @@ public class VacationApprovalService {
 	}
 	
 	// 휴가 결재 기안 취소
-	public VacationApproval deleteVacationApproval(VacationApprovalDto dto) {
+	public VacationApproval cancelVacationApproval(VacationApprovalDto dto) {
 		
 		Member member = memberRepository.findByMemberNo(dto.getMember_no());
 		VacationType vacationType = vacationTypeRepository.findByvacationTypeNo(dto.getVacation_type_no());
@@ -266,13 +266,6 @@ public class VacationApprovalService {
 	        }
 	    }
 
-	    for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-	        Long approverMemberNo = flowDto.getMember_no();
-	        Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
-	        VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
-	        vacationApprovalFlowRepository.save(vaf);
-	    }
-
 	    if (vaFiledto != null) {
 	        List<VacationApprovalFile> existingFiles = vacationApprovalFileRepository.findByVacationApproval(existingVapp);
 	        if (!existingFiles.isEmpty()) {
@@ -316,12 +309,6 @@ public class VacationApprovalService {
 	        }
 	    }
 		
-		for (VacationApprovalFlowDto flowDto : approvalFlowDtos) {
-			Long approverMemberNo = flowDto.getMember_no();
-			Member memberFlow = memberRepository.findByMemberNo(approverMemberNo);
-			VacationApprovalFlow vaf = flowDto.toEntity(existingVapp, memberFlow);
-			vacationApprovalFlowRepository.save(vaf);
-		}
 		return existingVapp;
 	}
 	
@@ -359,11 +346,11 @@ public class VacationApprovalService {
 	 
 	 // 휴가 결재 반려
 	 @Transactional
-	    public VacationApproval employeeVacationApprovalFlowReject(Long vacationApprovalNo, Long memberNo) {
-	        VacationApproval vacationApproval = vacationApprovalRepository.findById(vacationApprovalNo).orElse(null);
+	    public VacationApproval employeeVacationApprovalFlowReject(VacationApprovalFlowDto vacationApprovalFlowDto, Long memberNo) {
+	        VacationApproval vacationApproval = vacationApprovalRepository.findById(vacationApprovalFlowDto.getVacation_approval_no()).orElse(null);
 
 	        List<VacationApprovalFlow> approvalFlows = vacationApprovalFlowRepository.findByVacationApproval(vacationApproval);
-
+	        
 	        VacationApprovalFlow currentFlow = approvalFlows.stream()
 	            .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
 	            .findFirst()
@@ -371,6 +358,7 @@ public class VacationApprovalService {
 
 	        if (currentFlow != null) {
 	            currentFlow.setVacationApprovalFlowStatus(3L);
+	            currentFlow.setVacationApprovalFlowRejectReason(vacationApprovalFlowDto.getVacation_approval_flow_reject_reason()); 
 	            vacationApprovalFlowRepository.save(currentFlow); 
 	        }
 

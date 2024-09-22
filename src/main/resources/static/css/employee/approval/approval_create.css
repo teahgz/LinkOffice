@@ -1,0 +1,159 @@
+@charset "UTF-8";
+
+.main_container {
+    font-size: 14px;
+}
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+
+.editor-container {
+    background-color: #f8f9fa;
+    border-radius: 12px; 
+    max-width: 800px; 
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 60px 80px 30px;
+    margin-top: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    gap: 20px;
+}
+
+
+input, select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #B1C2DD;
+}
+
+.ck.ck-editor {
+    max-width: 800px;
+    min-width: 800px;
+}
+
+.ck-editor__editable {
+    min-height: 500px;
+    max-height: 500px;
+}
+
+
+.approve_container {
+    position: absolute; 
+    top: 0; 
+    right: 0;
+    display: flex; 
+    align-items: flex-start; 
+    gap: 10px; 
+}
+
+
+.app_member {
+    display: flex;
+    gap: 10px; 
+    justify-content: flex-start; 
+    width: 100%; 
+}
+.app_navbar {
+    display: flex;
+    gap: 10px; 
+    justify-content: flex-start;
+    width: 100%; 
+}
+.approve_button {
+    padding: 8px 15px;
+    background-color: #B3C7EE;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    color: #000000;
+}
+
+.approve_button:hover {
+    opacity: 0.8;
+}
+
+
+.button_container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-right: 30px;
+    gap: 20px; 
+}
+
+
+.submit_button {
+    padding: 8px 15px;
+    background-color: #B3C7EE; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; 
+    font-size: 14px;
+    color: #000000;
+}
+
+
+.cancel_button {
+    padding: 8px 15px;
+    background-color: #C0C0C0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    position: relative;
+}
+
+
+.form-group div {
+    gap: 10px;
+
+}
+
+
+.form-group strong {
+    flex: 0 0 150px; 
+    text-align: right;
+    margin-right: 10px;
+}
+
+.form-group input, 
+.form-group select {
+    flex: 1; 
+    max-width: 300px; 
+}
+
+
+.app_con {
+    width: 120px;
+    height: 150px;
+    border: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+}
+.app_nav {
+    width: 120px;
+    height: 50px;
+    border: 1px solid #000;
+    flex-direction: column;
+}
