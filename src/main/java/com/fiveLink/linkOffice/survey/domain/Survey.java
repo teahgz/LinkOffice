@@ -64,4 +64,8 @@ public class Survey {
 	// [김민재] 설문 참여자 확인
 	@OneToMany(mappedBy = "survey", fetch = FetchType.LAZY)
 	private List<SurveyParticipant> surveyParticipant;
+	
+	// [김민재] 설문 질문
+	@OneToMany(mappedBy = "survey", fetch = FetchType.LAZY)
+	private List<SurveyQuestion> surveyQuestion;
 }

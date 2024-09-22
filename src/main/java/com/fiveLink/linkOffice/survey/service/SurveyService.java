@@ -15,20 +15,32 @@ import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.notice.controller.NoticeApiController;
 import com.fiveLink.linkOffice.survey.domain.Survey;
 import com.fiveLink.linkOffice.survey.domain.SurveyDto;
-import com.fiveLink.linkOffice.survey.domain.SurveyParticipant;
-import com.fiveLink.linkOffice.survey.domain.SurveyParticipantDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyOption;
+import com.fiveLink.linkOffice.survey.domain.SurveyQuestion;
+import com.fiveLink.linkOffice.survey.domain.SurveyQuestionDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyText;
+import com.fiveLink.linkOffice.survey.repository.SurveyOptionRepository;
+import com.fiveLink.linkOffice.survey.repository.SurveyQuestionRepository;
 import com.fiveLink.linkOffice.survey.repository.SurveyRepository;
+import com.fiveLink.linkOffice.survey.repository.SurveyTextRepository;
 
 @Service
 public class SurveyService {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeApiController.class);
     private final SurveyRepository surveyRepository;
     private final MemberRepository memberRepository;
+    private final SurveyOptionRepository surveyOptionRepository;
+    private final SurveyQuestionRepository surveyQuestionRepository;
+    private final SurveyTextRepository surveyTextRepository;
     
     @Autowired
-    public SurveyService(SurveyRepository surveyRepository, MemberRepository memberRepository) {
+    public SurveyService(SurveyRepository surveyRepository, MemberRepository memberRepository, SurveyOptionRepository surveyOptionRepository,
+    		SurveyQuestionRepository surveyQuestionRepository, SurveyTextRepository surveyTextRepository) {
         this.surveyRepository = surveyRepository;
         this.memberRepository = memberRepository;
+        this.surveyOptionRepository = surveyOptionRepository;
+        this.surveyQuestionRepository = surveyQuestionRepository;
+        this.surveyTextRepository = surveyTextRepository;
     }
     
     private List<SurveyDto> convertToDtoList(List<Survey> surveys) {
@@ -151,4 +163,28 @@ public class SurveyService {
                 .build();
     	return dto;
     }
+    
+    public List<SurveyQuestionDto> getSurveyQuestions(Long surveyNo) {
+        List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
+        return questions.stream().map(question -> {
+            List<Long> optionNo = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
+                    .stream()
+                    .map(SurveyOption::getSurveyOptionNo)
+                    .collect(Collectors.toList());
+            List<Long> textNo = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
+                    .stream()
+                    .map(SurveyText::getSurveyTextNo)
+                    .collect(Collectors.toList());
+            return SurveyQuestionDto.builder()
+                    .survey_question_no(question.getSurveyQuestionNo())
+                    .survey_no(question.getSurvey().getSurveyNo())
+                    .survey_question_text(question.getSurveyQuestionText())
+                    .survey_question_type(question.getSurveyQuestionType())
+                    .survey_question_essential(question.getSurveyQuestionEssential())
+                    .survey_option_no(optionNo)
+                    .survey_text_no(textNo)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.fiveLink.linkOffice.survey.domain;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,8 @@ public class SurveyQuestionDto {
 	private String survey_question_text;
 	private Integer survey_question_type;
 	private Integer survey_question_essential;
+	private List<Long> survey_option_no;
+    private List<Long> survey_text_no;
 	
 	public SurveyQuestion toEntity() {
 		return SurveyQuestion.builder()
