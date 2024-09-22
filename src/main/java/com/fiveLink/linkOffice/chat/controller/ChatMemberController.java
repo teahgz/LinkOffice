@@ -8,6 +8,8 @@ import com.fiveLink.linkOffice.chat.service.ChatRoomService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -75,6 +77,16 @@ public class ChatMemberController {
             return "에러발생";
         }
     }
-
+    // 채팅방 멤버번호 가져오기
+    public ResponseEntity<?> checkChatRoomExists(@PathVariable Long chatRoomNo) {
+        try {
+            List<Long> members = chatMemberService.getMemberInfo(chatRoomNo);
+            System.out.println("members: "+members);
+            return ResponseEntity.ok(members); // 성공적으로 멤버 리스트 반환
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("에러발생"); // 에러 발생 시 적절한 응답 반환
+        }
+    }
 
 }
