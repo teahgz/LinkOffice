@@ -407,8 +407,6 @@ if (sendButton && messageInput) {
        }
    };
 
-
-
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
          let chatList = document.getElementById('chatList');
@@ -478,6 +476,9 @@ if (sendButton && messageInput) {
         };
 
         socket.send(JSON.stringify(message));
+            if (groupChatName) {
+                document.getElementById('groupChatNameInput').value = '';
+            }
         $('#groupChatNameModal').modal('hide');
     }
 
@@ -508,8 +509,6 @@ if (sendButton && messageInput) {
    //채팅방 나가기
    document.getElementById('leaveChatItem').addEventListener('click', function(event) {
          event.preventDefault();
-         console.log("방번호:"+currentChatRoomNo);
-         console.log("번호:"+currentMember);
          const csrfToken = document.querySelector('input[name="_csrf"]').value;
          Swal.fire({
                 text: "채팅방에서 나가시겠습니까?",
