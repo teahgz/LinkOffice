@@ -222,7 +222,9 @@ $(function () {
 					            '<input type="button" class="file_show_button" value="파일보기">' : ''}
 					        </td>
                             <td>${file.document_file_size}</td>
-                            <td><input type="button" class="file_down_button" value="다운로드"></td>
+                            <td>
+							    <a href="/document/file/download/${file.document_file_no}" class="file_down_button">다운로드</a>
+							</td>
                             <td>
 					            ${file.member_no == memberNo ? 
 					                `<input type="button" class="delete_button" value="삭제" id="${file.document_file_no}">` : ''}
