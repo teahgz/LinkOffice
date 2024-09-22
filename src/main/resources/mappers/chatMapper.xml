@@ -8,6 +8,7 @@
         SELECT *
         FROM fl_chat_member
         WHERE member_no = #{memberNo}
+        AND chat_member_par = 0
         ORDER BY chat_member_join_date DESC
     </select>
 <!-- 채팅 내용 가져오기   -->
@@ -81,4 +82,13 @@
         FROM fl_chat_member
         WHERE chat_room_no = #{chatRoomNo}
     </select>
+
+    <!-- 채팅방 나가기   -->
+    <update id="chatRoomOut">
+        UPDATE fl_chat_member SET
+        chat_member_par = 1
+        WHERE  chat_room_no = #{chatRoomNo}
+        AND member_no = #{memberNo}
+
+    </update>
 </mapper>
