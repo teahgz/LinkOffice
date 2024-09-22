@@ -95,3 +95,20 @@ hr {
 	color : red;
 	margin-top : -10px;
 }
+
+#closeScheduleModalBtn { 
+	color: #aaa; 
+    font-size: 28px;
+    font-weight: bold; 
+}
+
+#closeScheduleModalBtn:hover,
+#closeScheduleModalBtn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-schedule-button {
+	float: right;
+}

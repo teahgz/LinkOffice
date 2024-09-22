@@ -86,6 +86,30 @@
 	        </form>
 	    </div>
 	</div>
+	
+	<!-- 상세보기 -->
+	<div id="eventViewModal" class="modal" style="display: none;">
+	    <div class="modal-content"> 
+		    <div class="modal-schedule-button">
+	            <button id="editEventBtn">수정</button>
+	            <button id="deleteEventBtn">삭제</button>
+	            <span class="schedule_close" id="closeScheduleModalBtn">&times;</span>
+	        </div>
+	        <div class="modal-header">
+	        	<div>
+		            <div id="eventViewCategory"></div>
+		            <div id="eventViewTitle"></div>	        	
+	        	</div>
+	            <div id="eventViewDateRange"></div>
+	        </div>
+	        <div class="modal-body">
+	            <hr>
+	            <div id="eventViewComment"></div>
+	            <div id="eventViewCreatedDate"></div>
+	            <div id="eventViewRepeatInfo"></div>
+	        </div> 
+	    </div>
+	</div>
 
 	<script th:src="@{/js/admin/schedule/companySchedule.js}"></script>
 </th:block>

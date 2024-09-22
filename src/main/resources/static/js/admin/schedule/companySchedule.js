@@ -6,129 +6,100 @@ document.addEventListener('DOMContentLoaded', function() {
     
     var calendarEl = document.getElementById('calendar');
 	var calendar;
+	var categoryColors = {};
+	var categoryNames = {};
 	
 	$.ajax({
-	    url: '/api/company/schedules',
-	    method: 'GET',
-	    contentType: 'application/json',
-	    headers: {
-	        'X-CSRF-TOKEN': csrfToken
-	    }
-	})
-	.done(function(schedules) {
+        url: '/categories',
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(categories) {
+            categories.forEach(function(category) {
+                categoryColors[category.schedule_category_no] = '#' + category.schedule_category_color;
+                categoryNames[category.schedule_category_no] = category.schedule_category_name;
+            });
+            fetchSchedules();
+        }
+    });
+    
+    function fetchSchedules() {
 	    $.ajax({
-	        url: '/api/repeat/schedules',
+	        url: '/api/company/schedules',
 	        method: 'GET',
 	        contentType: 'application/json',
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        }
 	    })
-	    .done(function(repeats) {
-	        var events = [];
+	    .done(function(schedules) {
+	        $.ajax({
+	            url: '/api/repeat/schedules',
+	            method: 'GET',
+	            contentType: 'application/json',
+	            headers: {
+	                'X-CSRF-TOKEN': csrfToken
+	            }
+	        })
+	        .done(function(repeats) {
+	            var events = [];
 	
-	        schedules.forEach(function(schedule) {
-	            if (schedule.schedule_repeat === 0) { 
-	                events.push(createEvent(schedule));
-	            } else {
-	                // 반복 일정
-	                var repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
-	                if (repeatInfo) {
-	                    var startDate = new Date(schedule.schedule_start_date);
-	                    var endDate = repeatInfo.schedule_repeat_end_date ? new Date(repeatInfo.schedule_repeat_end_date) : new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
-	                    var currentDate = new Date(startDate);
+	            schedules.forEach(function(schedule) {
+	                if (schedule.schedule_repeat === 0) { 
+	                    events.push(createEvent(schedule));
+	                } else {
+	                    // 반복 일정
+	                    var repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
+	                    if (repeatInfo) {
+	                        var startDate = new Date(schedule.schedule_start_date);
+	                        var endDate = repeatInfo.schedule_repeat_end_date ? new Date(repeatInfo.schedule_repeat_end_date) : new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
+	                        var currentDate = new Date(startDate);
 	
-	                    while (currentDate <= endDate) {
-	                        events.push(createEvent(schedule, currentDate));
-	 
-	                        switch (repeatInfo.schedule_repeat_type) {
-	                            case 1: // 매일
-	                                currentDate.setDate(currentDate.getDate() + 1);
-	                                break;
-	                            case 2: // 매주 n요일
-	                                currentDate.setDate(currentDate.getDate() + 7);
-	                                break;
-	                            case 3: // 매월 n일
-	                                currentDate.setMonth(currentDate.getMonth() + 1); 
-	                                while (currentDate.getDate() !== repeatInfo.schedule_repeat_date) {
-	                                    if (currentDate.getDate() > repeatInfo.schedule_repeat_date) {
-	                                        currentDate.setDate(1);
-	                                        currentDate.setMonth(currentDate.getMonth() + 1);
-	                                    } else {
-	                                        currentDate.setDate(currentDate.getDate() + 1);
-	                                    }
-	                                }
-	                                break;
-	                            case 4: // 매월 n번째 n요일
-	                                do {
+	                        while (currentDate <= endDate) {
+	                            events.push(createEvent(schedule, currentDate, repeatInfo)); 
+	                            
+	                            switch (repeatInfo.schedule_repeat_type) {
+	                                case 1: // 매일
 	                                    currentDate.setDate(currentDate.getDate() + 1);
-	                                } while (
-	                                    currentDate.getDay() !== repeatInfo.schedule_repeat_day ||
-	                                    Math.floor((currentDate.getDate() - 1) / 7) + 1 !== repeatInfo.schedule_repeat_week
-	                                );
-	                                break;
-	                            case 5: // 매년
-	                                currentDate.setFullYear(currentDate.getFullYear() + 1);
-	                                break;
+	                                    break;
+	                                case 2: // 매주 n요일
+	                                    currentDate.setDate(currentDate.getDate() + 7);
+	                                    break;
+	                                case 3: // 매월 n일
+	                                    currentDate.setMonth(currentDate.getMonth() + 1); 
+	                                    while (currentDate.getDate() !== repeatInfo.schedule_repeat_date) {
+	                                        if (currentDate.getDate() > repeatInfo.schedule_repeat_date) {
+	                                            currentDate.setDate(1);
+	                                            currentDate.setMonth(currentDate.getMonth() + 1);
+	                                        } else {
+	                                            currentDate.setDate(currentDate.getDate() + 1);
+	                                        }
+	                                    }
+	                                    break;
+	                                case 4: // 매월 n번째 n요일
+	                                    do {
+	                                        currentDate.setDate(currentDate.getDate() + 1);
+	                                    } while (
+	                                        currentDate.getDay() !== repeatInfo.schedule_repeat_day ||
+	                                        Math.floor((currentDate.getDate() - 1) / 7) + 1 !== repeatInfo.schedule_repeat_week
+	                                    );
+	                                    break;
+	                                case 5: // 매년
+	                                    currentDate.setFullYear(currentDate.getFullYear() + 1);
+	                                    break;
+	                            }
 	                        }
 	                    }
 	                }
-	            }
-	        });
-	 
-	        calendar = new FullCalendar.Calendar(calendarEl, {
-	            initialView: 'dayGridMonth',
-	            locale: 'ko',
-	            headerToolbar: {
-	                left: 'prev,next today',
-	                center: 'title',
-	                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-	            },
-	            events: events,
-	            eventClick: function(info) {
-	                info.jsEvent.preventDefault();
-	            },
-	            googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
-	            eventSources: [
-	                {
-	                    googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
-	                    color: 'transparent',
-	                    textColor: 'red' 
-	                }
-	            ], 
-	            buttonText: {
-					today: '오늘',
-					month: '월',
-					week: '주',
-					day: '일'
-				},
-				dayCellContent: function(info) {
-					var number = document.createElement("a");
-					number.classList.add("fc-daygrid-day-number");
-					number.innerHTML = info.dayNumberText.replace("일", '').replace("日", "");
-					if (info.view.type === "dayGridMonth") {
-						return {
-							html: number.outerHTML
-						};
-					}
-					return {
-						domNodes: []
-					};
-				}
-	        });
+	            }); 
+	            initializeCalendar(events);
+	        }) 
+	    }) 
+	}
 	
-	        calendar.render();
-	    })
-	    .fail(function(jqXHR, textStatus, errorThrown) {
-	        console.error('Error fetching repeat schedules:', textStatus, errorThrown);
-	    });
-	})
-	.fail(function(jqXHR, textStatus, errorThrown) {
-	    console.error('Error fetching schedules:', textStatus, errorThrown);
-	});
-	
-	// 반복 일정 생성
-	function createEvent(schedule, currentDate) {
+	// DB 일정 생성
+	function createEvent(schedule, currentDate, repeatInfo) { 
 	    var eventStart = currentDate || new Date(schedule.schedule_start_date);
 	    var eventEnd = schedule.schedule_end_date ? 
 	        new Date(new Date(schedule.schedule_end_date).getTime() + 24 * 60 * 60 * 1000) :  
@@ -146,18 +117,158 @@ document.addEventListener('DOMContentLoaded', function() {
 	        title: schedule.schedule_title,
 	        start: formatDate(eventStart) + (schedule.schedule_start_time ? 'T' + schedule.schedule_start_time : ''),
 	        end: eventEnd ? formatDate(eventEnd) + (schedule.schedule_end_time ? 'T' + schedule.schedule_end_time : '') : null,
-	        allDay: schedule.schedule_allday === 1
+	        allDay: schedule.schedule_allday === 1,
+	        backgroundColor: categoryColors[schedule.schedule_category_no] || '#3788d8',  
+	        borderColor: categoryColors[schedule.schedule_category_no] || '#3788d8',
+	        extendedProps: {
+	            categoryName: categoryNames[schedule.schedule_category_no],
+	            comment: schedule.schedule_comment,
+	            repeatOption: schedule.schedule_repeat,
+	            createDate: schedule.schedule_create_date,
+	            startDate: eventStart ? schedule.schedule_start_date : null,
+	            endDate: eventEnd ? schedule.schedule_end_date : null,  
+	            startTime: schedule.schedule_allday === 0 ? schedule.schedule_start_time : null,
+	            endTime: schedule.schedule_allday === 0 ? schedule.schedule_end_time : null,  
+	            repeatType: repeatInfo ? repeatInfo.schedule_repeat_type : null,
+	            repeatDay : repeatInfo ? repeatInfo.schedule_repeat_day : null,
+	            repeatWeek: repeatInfo ? repeatInfo.schedule_repeat_week : null,
+	            repeatDate : repeatInfo ? repeatInfo.schedule_repeat_date : null,
+	            repeatMonth: repeatInfo ? repeatInfo.schedule_repeat_month : null,
+	        } 
 	    };
 	}
+	
+	function initializeCalendar(events) {
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: events,
+            eventClick: function(info) {
+                // google calendar 연결 막기
+                // info.jsEvent.preventDefault();
+                
+                const eventId = info.event.id; 
+            	showEventModalById(calendar, eventId); 
+            },
+            googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
+            eventSources: [
+                {
+                    googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+                    color: 'transparent',
+                    textColor: 'red' 
+                }
+            ],
+            buttonText: {
+                today: '오늘',
+                month: '월',
+                week: '주',
+                day: '일'
+            },
+            dayCellContent: function(info) {
+                var number = document.createElement("a");
+                number.classList.add("fc-daygrid-day-number");
+                number.innerHTML = info.dayNumberText.replace("일", '').replace("日", "");
+                if (info.view.type === "dayGridMonth") {
+                    return {
+                        html: number.outerHTML
+                    };
+                }
+                return {
+                    domNodes: []
+                };
+            }
+        });
+
+        calendar.render();
+    }
+    
+    function showEventModalById(calendar, eventId) {
+	    const event = calendar.getEventById(eventId);  
+		console.log("extendedProps 전체: ", event.extendedProps);
+	    if (!event) {
+	        console.error("해당 ID로 이벤트를 찾을 수 없습니다.");
+	        return;
+	    }
+	
+	    // 모달 요소
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle');
+	    const dateRange = document.getElementById('eventViewDateRange');
+	    const category = document.getElementById('eventViewCategory');
+	    const comment = document.getElementById('eventViewComment');
+	    const createdDate = document.getElementById('eventViewCreatedDate');
+	    const repeatInfo = document.getElementById('eventViewRepeatInfo'); 
+ 
+	    title.textContent = event.title;
+	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
 	 
+	    const startDate = event.extendedProps.startDate;
+	    const endDate = event.extendedProps.endDate;
+	    const startTime = event.extendedProps.startTime;
+	    const endTime = event.extendedProps.endTime;
+	    if(startDate === endDate) {
+	    	dateRange.textContent = `${startDate}`; 
+		} else if(endDate == null) {
+			dateRange.textContent = `${startDate} ${startTime} ~ ${endTime}`;
+		} else {
+			dateRange.textContent = `${startDate} ~ ${endDate}`; 
+		}
+	 
+	    comment.textContent = event.extendedProps.comment; 
+	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
+	    repeatInfo.textContent = getRepeatInfoText(event.extendedProps.repeatType, event.extendedProps.repeatDay, event.extendedProps.repeatWeek , event.extendedProps.repeatDate , event.extendedProps.repeatMonth);
+	    modal.style.display = 'block';
+	} 
+	
+	function getRepeatInfoText(repeatType, repeatDay, repeatWeek, repeatDate, repeatMonth) { 
+	    let info_type = '';
+	    let info_day = ''; 
+	
+	    switch(repeatType) {
+	        case 1:  
+	            info_type = '매일 반복';
+	            break;
+	        case 2:  
+	            info_type = '매주';
+	            info_day = getDayInformation(repeatDay);  
+	            break;
+	        case 3:  
+	            info_type = `매월 ${repeatDate}일 반복`;
+	            break;
+	        case 4:  
+	            info_type = `매월 ${repeatWeek}번째 ${getDayInformation(repeatDay)} 반복`;
+	            break;
+	        case 5: 
+	            info_type = `매년 ${repeatMonth}월 ${repeatDate}일 반복`;
+	            break;
+	        default:
+	            info_type = '';
+	            break;
+	    }
+	    
+	    return info_type + (info_day ? ' ' + info_day + ' 반복' : '');
+	}
+	 
+	function getDayInformation(day) {
+	    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+	    return days[day];
+	}
+ 
+    document.getElementById('closeScheduleModalBtn').addEventListener('click', function() {
+        document.getElementById('eventViewModal').style.display = 'none';
+    });
+ 	
 	function formatDate(date) {
 	    return date.getFullYear() + '-' + 
 	           String(date.getMonth() + 1).padStart(2, '0') + '-' + 
 	           String(date.getDate()).padStart(2, '0');
 	}
-
-
-	
+ 
     function roundToNearest30Minutes(timeStr) {
         const [hours, minutes] = timeStr.split(':').map(Number);
         const roundedMinutes = Math.round(minutes / 30) * 30;
