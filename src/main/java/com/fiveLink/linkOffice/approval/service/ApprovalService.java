@@ -239,7 +239,7 @@ public class ApprovalService {
 	    
 	}
 	
-	// 전자 결재 수정 (파일 O)
+	// 전자 결재 수정 (파일 X)
 	@Transactional
 	public Approval updateApproval(ApprovalDto appdto, List<ApprovalFlowDto> flowdto) {
 		
