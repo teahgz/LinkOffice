@@ -275,19 +275,13 @@ if (sendButton && messageInput) {
    socket.onmessage = function(event) {
        const message = JSON.parse(event.data);
        const chatContentDiv = document.getElementById("chatContent");
-       console.log(currentMember);
        // 메시지 타입에 따른 처리
       if (message.type === "chatRoomCreation") {
           if (message.chatRoomNo && message.memberInfoList) {
-
-              // 현재 사용자의 memberNo를 가져오기
               const currentMemberNo = parseInt(document.getElementById('currentMember').value, 10);
-
-              // memberInfoList에서 현재 사용자의 이름 찾기
               const memberInfo = message.memberInfoList.find(info => info.memberNo === currentMemberNo);
 
               if (memberInfo) {
-                  // 조건에 따라 새로운 채팅방을 모든 사용자에게 표시
                   createChatListIfNotExists(); // chatList가 없으면 생성
 
                   const newChatItem = document.createElement("div");
@@ -309,11 +303,10 @@ if (sendButton && messageInput) {
           }
       }else if (message.type === "groupChatCreate") {
          if (message.chatRoomNo){
-
                       createChatListIfNotExists();
 
                       message.members.forEach(member => {
-                           console.log(member)
+
                           // 멤버 번호가 현재 로그인된 사용자 번호와 같을 때만 목록 추가
                           if (member === currentMember) {
                               const newChatItem = document.createElement("div");
@@ -413,23 +406,8 @@ if (sendButton && messageInput) {
 
        }
    };
-   function checkChatRoomExists(chatRoomNo) {
-       return fetch(`/api/chatrooms/${chatRoomNo}`)
-           .then(response => {
-               if (!response.ok) {
-                   throw new Error('Network response was not ok');
-               }
-               return response.json();
-           })
-           .then(data => {
-               // data가 배열이면 채팅방이 존재하는 것으로 간주
-               return Array.isArray(data) && data.length > 0; // 멤버 리스트가 비어있지 않으면 존재
-           })
-           .catch(error => {
-               console.error('Error checking chat room existence:', error);
-               return false; // 오류가 발생하면 존재하지 않는 것으로 간주
-           });
-   }
+
+
 
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
@@ -503,30 +481,71 @@ if (sendButton && messageInput) {
         $('#groupChatNameModal').modal('hide');
     }
 
-    document.getElementById('confirmButton').addEventListener('click', function(event) {
-        event.preventDefault();
-        window.confirmButton();
+   document.getElementById('confirmButton').addEventListener('click', function(event) {
+      event.preventDefault();
+      window.confirmButton();
+   });
+   document.getElementById('addButton').addEventListener('click', function(event) {
+      event.preventDefault();
+      window.addButton();
+   });
+
+   document.getElementById('confirmGroupChatName').addEventListener('click', function(event) {
+      event.preventDefault();
+      createChatRoom(document.getElementById("currentMemberNo").value, document.getElementById("currentMemberName").value, document.querySelector('input[name="_csrf"]').value);
+   });
+
+   document.getElementById('editChatRoomButton').addEventListener('click', function(event) {
+       event.preventDefault();
+       $('#editChatRoomModal').modal('show');
     });
-    document.getElementById('addButton').addEventListener('click', function(event) {
-            event.preventDefault();
-            window.addButton();
-        });
 
-    document.getElementById('confirmGroupChatName').addEventListener('click', function(event) {
-        event.preventDefault();
-        createChatRoom(document.getElementById("currentMemberNo").value, document.getElementById("currentMemberName").value, document.querySelector('input[name="_csrf"]').value);
-    });
-
-    document.getElementById('editChatRoomButton').addEventListener('click', function(event) {
-            event.preventDefault();
-            $('#editChatRoomModal').modal('show');
-        });
-
-    document.getElementById('openDrop').addEventListener('click', function(event) {
+   document.getElementById('openDrop').addEventListener('click', function(event) {
         event.preventDefault();
         const dropdownMenu = document.getElementById('chatDropdownMenu');
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-    });
+   });
+   //채팅방 나가기
+   document.getElementById('leaveChatItem').addEventListener('click', function(event) {
+         event.preventDefault();
+         console.log("방번호:"+currentChatRoomNo);
+         console.log("번호:"+currentMember);
+         const csrfToken = document.querySelector('input[name="_csrf"]').value;
+         Swal.fire({
+                text: "채팅방에서 나가시겠습니까?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "나가기",
+                cancelButtonText: "취소",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 사용자가 나가기를 원하면 서버에 요청 보내기
+                    fetch(`/api/chat/out/${currentChatRoomNo}`, {
+                        method: 'POST',
+                        headers: {
+                           'Content-Type': 'application/json',
+                           'X-CSRF-Token': csrfToken
+                        },
+                        body: JSON.stringify({ currentMember: currentMember }) // 사용자 ID를 서버에 보냄
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 성공적으로 처리된 경우, 페이지 리로드
+                            window.location.reload();
+                        } else {
+                            // 실패 시 경고 메시지
+                            Swal.fire("실패", "채팅방 나가기에 실패했습니다.", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('오류 발생:', error);
+                        Swal.fire("오류", "서버와의 통신 중 오류가 발생했습니다.", "error");
+                    });
+                }
+            });
+      });
 
     // 채팅방 이름 수정 함수
     document.getElementById('confirmEditButton').addEventListener('click', function(event) {

@@ -38,5 +38,18 @@ public class ChatRoomService {
         ChatRoom savedRoom = chatRoomRepository.save(room);
         return savedRoom.getChatRoomNo();
     }
+    //채팅방 나가기
+    public int chatRoomOut(Long chatRoomNo, Long memberNo){
+        int result = -1;
+        try{
+            chatMapper.chatRoomOut(chatRoomNo, memberNo);
+            result = 1;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+
+    }
 
 }

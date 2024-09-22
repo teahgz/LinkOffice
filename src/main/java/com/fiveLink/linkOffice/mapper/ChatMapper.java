@@ -31,7 +31,11 @@ public interface ChatMapper {
     String selectMemberChatRoomName(Long chatRoomNo);
     //채팅방 멤버 가져오기
     List<Long> getMemberInfo(Long chatRoomNo);
+
     //개인 채팅방 정보 가져오기
     List<ChatMemberDto> getMembersByChatRoomNo(Long chatRoomNo);
+
+    //채팅방 나가기
+    int chatRoomOut(Long chatRoomNo, Long memberNo);
     
 }

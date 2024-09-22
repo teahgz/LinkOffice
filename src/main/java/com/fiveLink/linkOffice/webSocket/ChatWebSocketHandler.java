@@ -163,7 +163,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             //responseMap.put("currentMemberNo", currentMemberNo);
             responseMap.put("type", "groupChatCreate");
             responseMap.put("names", groupChatName);
-            System.out.println(members);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String responseJson = objectMapper.writeValueAsString(responseMap);
