@@ -84,7 +84,7 @@
 						        </tr>
 						        <tr>
 						            <th>합의</th>
-						            <td colspan="4">
+						            <td th:colspan="${#lists.size(vacationapprovaldto.flows)+1}">
 						                <div class="reference_box">
 						                    <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 1}">
 						                        <span th:text="${flow.member_name}"></span>
@@ -96,7 +96,7 @@
 						        </tr>
 						        <tr>
 						            <th>참조</th>
-						            <td colspan="4">
+						            <td th:colspan="${#lists.size(vacationapprovaldto.flows)+1}">
 						                <div class="reference_box">
 						                    <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 0}"
 						                         th:text="${flow.member_name}"></div>
@@ -104,6 +104,7 @@
 						            </td>
 						        </tr>
 						    </table>
+						</div>
 						</div>
 
 					<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
