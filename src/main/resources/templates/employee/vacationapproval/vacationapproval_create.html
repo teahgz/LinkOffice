@@ -40,16 +40,119 @@
                                 	<button type="button" id="openChart" class="btn btn-primary approve_button">결재선 지정</button>
                             	</div>
                             </div>
-                            <div class="app_navbar">
-								<div class="app_nav" >결재자</div>
-								<div class="app_nav">합의자</div>
-								<div class="app_nav">참조자</div>    
-                            </div>
-						<div class="app_member">
-							<div class="app_con" id="approversDisplay"></div>
-							<div class="app_con" id="referencesDisplay" ></div>
-							<div class="app_con" id="reviewersDisplay" ></div>    
-						</div>                 	
+                            
+							<table id="approvalLineTable" class="approval_line_table">
+						        <tr>
+						            <th rowspan="3">결재</th>
+						            <td>
+						                <div >
+						                    <span th:text="${member.position_name}"></span>
+						                </div>
+						            </td>
+						            <td >
+						                <div id="approve">
+						                    <span ></span>
+						                </div>
+						            </td>
+						            <td >
+						                <div >
+						                    <span ></span>
+						                </div>
+						            </td>						            
+						            <td >
+						                <div >
+						                    <span ></span>
+						                </div>
+						            </td>						            
+						            <td >
+						                <div >
+						                    <span ></span>
+						                </div>
+						            </td>						            
+						            <td >
+						                <div >
+						                    <span ></span>
+						                </div>
+						            </td>						            
+						            <td >
+						                <div >
+						                    <span ></span>
+						                </div>
+						            </td>						            
+					            
+						        </tr>
+						          <tr>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>
+						            </td>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>			            				
+						            </td>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>			            
+						            </td>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>			            
+						            </td>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>			            
+						            </td>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>			            
+						            </td>
+						            <td>
+						                <div class="signature_box">
+						            
+						                </div>			            
+						            </td>
+						        </tr>
+						        <tr>
+						            <td>
+						                <div th:text="${member.member_name}"></div>
+						               
+						            </td>
+						            <td  >
+						                <div></div>
+						            </td>
+						            <td  >
+						                <div></div>
+						            </td>
+						            <td  >
+						                <div></div>
+						            </td>
+						            <td  >
+						                <div></div>
+						            </td>
+						            <td  >
+						                <div></div>
+						            </td>
+						            <td  >
+						                <div></div>
+						            </td>
+						        </tr>
+
+    <tr id="agreementRow">
+        <th>합의</th>
+        <td colspan="7" id="referencestCell"></td>
+    </tr>
+    <tr id="referenceRow">
+        <th>참조</th>
+        <td colspan="7" id="referenceCell"></td>
+    </tr>
+</table>
+
                             <div class="editor-container__editor" id="editor"></div>
                             <div>
                                 <input type="file" id="vacationapproval_file" name="vacationapproval_file">

@@ -89,6 +89,7 @@ public class VacationApproval {
 				.vacation_approval_no(vacationApprovalNo)
 				.member_no(member.getMemberNo())
 				.member_name(member.getMemberName())
+				.member_position(member.getPosition().getPositionName())
 				.vacation_approval_title(vacationApprovalTitle)
 				.vacation_type_no(vacationType.getVacationTypeNo())
 				.vacation_type_name(vacationType.getVacationTypeName())

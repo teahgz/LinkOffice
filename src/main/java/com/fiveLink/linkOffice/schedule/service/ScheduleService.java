@@ -1,5 +1,8 @@
 package com.fiveLink.linkOffice.schedule.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +76,7 @@ public class ScheduleService {
 	}
 
 	private Long determineRepeatDate(long repeatOption, Long date) {
-	    // 3 (매월 일), 5 (매년 )- 일  
+	    // 3 (매월 일), 5 (매년)- 일  
 	    if ((repeatOption == 3 || repeatOption == 5) && date != null) {
 	        return date;  
 	    }
@@ -88,4 +91,15 @@ public class ScheduleService {
 	    return null;  
 	}
  
+	// 관리자 - 월간 일정 출력
+	public List<Schedule> getAllSchedules() { 
+	    return scheduleRepository.findByScheduleTypeAndScheduleStatus(3L, 0L);
+	}
+	
+	// 관리자 - 반복 일정  
+	public List<ScheduleRepeat> getAllRepeatSchedules() { 
+        return scheduleRepeatRepository.findAllScheduleRepeats();
+    }
+
+
 }

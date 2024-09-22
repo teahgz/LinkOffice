@@ -144,16 +144,37 @@ input:focus, select:focus {
 }
 
 
-.app_con {
-    width: 120px;
-    height: 150px;
-    border: 1px solid #000;
+.approval_line_section {
+    margin-top: 20px;
+}
+
+.approval_line_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.approval_line_table th, .approval_line_table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+.approval_line_table td {
+    min-height: 50px; 
+    width: 100px; 
+    vertical-align: top; 
+}
+.approval_line_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    width: 100px;
+}
+
+.signature_box {
     display: flex;
     flex-direction: column;
-}
-.app_nav {
-    width: 120px;
-    height: 50px;
-    border: 1px solid #000;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
 }

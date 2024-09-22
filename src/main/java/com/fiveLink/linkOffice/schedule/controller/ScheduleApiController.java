@@ -1,8 +1,10 @@
 package com.fiveLink.linkOffice.schedule.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
 import com.fiveLink.linkOffice.schedule.service.ScheduleService;
@@ -170,8 +174,37 @@ public class ScheduleApiController {
         return "success";  
     }
 
+    // 관리자 - 월간 일정 
+    @ResponseBody
+    @GetMapping("/api/company/schedules")
+    public List<ScheduleDto> getSchedules() {
+        List<Schedule> schedules = scheduleService.getAllSchedules(); 
+        
+        List<ScheduleDto> scheduleDtos = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            ScheduleDto dto = ScheduleDto.toDto(schedule);
+            scheduleDtos.add(dto);
+        }
 
-    
-	 
+        System.out.println("scheduleDtos : " + scheduleDtos);
+        return scheduleDtos;
+    }
+
+    // 관리자 - 반복 일정  
+    @ResponseBody
+    @GetMapping("/api/repeat/schedules")
+    public List<ScheduleRepeatDto> getRepeatSchedules() {
+        List<ScheduleRepeat> scheduleRepeats = scheduleService.getAllRepeatSchedules(); 
+        
+        List<ScheduleRepeatDto> scheduleRepeatDtos = new ArrayList<>();
+        for (ScheduleRepeat scheduleRepeat : scheduleRepeats) {
+        	ScheduleRepeatDto dto = ScheduleRepeatDto.toDto(scheduleRepeat);
+        	scheduleRepeatDtos.add(dto);
+        }
+
+        System.out.println("scheduleRepeatDtos : " + scheduleRepeatDtos);
+        return scheduleRepeatDtos;
+    }
+ 
 
 }

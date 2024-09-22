@@ -39,6 +39,7 @@ public class ApprovalDto {
 	
 	private String format_approval_create_date;
 	private String digitalname;
+	private String member_position;
 	
 	
 	private List<ApprovalFileDto> files;
