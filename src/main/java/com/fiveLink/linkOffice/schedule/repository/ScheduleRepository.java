@@ -7,5 +7,5 @@ import com.fiveLink.linkOffice.schedule.domain.Schedule;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-
+	long countByScheduleCategoryNoAndScheduleStatus(Long scheduleCategoryNo, Long scheduleStatus);
 }

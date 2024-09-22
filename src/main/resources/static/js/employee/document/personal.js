@@ -157,28 +157,33 @@ $(function () {
     }
 
 	// 선택된 폴더의 파일 목록을 불러오기
-	function loadFiles(folderNo) {
+	function loadFiles(folderNo, searchInput = '') {
 	    $.ajax({
 	        type: 'GET',
 	        url: '/folder/file',
-	        data: {
-	            folderNo: folderNo
-	        },
+	        data: { folderNo: folderNo },
 	        dataType: 'json',
 	        success: function(data) {
 	            // 정렬 기준 가져오기
 	            const sortOption = $('#sort_select').val();
 	            const fileList = data;
 	
-	            // 날짜 필터링
+	            // 날짜&검색 필터링
 	            const startDate = new Date(startDateInput.value);
+				startDate.setHours(0, 0, 0, 0);
 	            const endDate = new Date(endDateInput.value);
-	            
+				endDate.setHours(23, 59, 59, 999); 
+
 	            const filteredFiles = fileList.filter(file => {
 	                const fileDate = new Date(file.document_file_upload_date);
-	                return fileDate >= startDate && fileDate <= endDate;
+	                const isDateInRange = fileDate >= startDate && fileDate <= endDate;
+	             	const normalizedFileName = file.document_ori_file_name.normalize('NFC');
+    				const normalizedSearchInput = searchInput.trim().normalize('NFC');
+
+				    // 검색어가 파일 이름에 포함되는지 체크
+				    const isSearchMatch = normalizedFileName.includes(normalizedSearchInput);
+				    return isDateInRange && isSearchMatch;				
 	            });
-	
 	            // 정렬
 	            if (sortOption === 'latest') {
 	                filteredFiles.sort((a, b) => new Date(b.document_file_upload_date) - new Date(a.document_file_upload_date));
@@ -513,6 +518,7 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
+	                $('#file_name_input').val(''); 
 	            }
 	        });
 	    }
@@ -592,6 +598,7 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
+	                $('#file_name_input').val(''); 
 	            }
 	        });
 	    }
@@ -716,6 +723,7 @@ $(function () {
                         }
                     });
                 }
+                $('#file_name_input').val(''); 
             }
         });
 	});
@@ -739,6 +747,7 @@ $(function () {
 	    }
 		if (fileInput.files.length > 0) {
 	        const file = fileInput.files[0]; 
+	        const allowedExtensions = /(\.pdf|\.hwp|\.doc|\.docx|\.ppt|\.pptx|\.xls|\.xlsx)$/i;
 	        const maxSizeBytes = 25 * 1024 * 1024; 
 			// 파일 용량 초과 
 	        if (file.size > maxSizeBytes) {
@@ -748,6 +757,13 @@ $(function () {
 	                confirmButtonText: '확인'
 	            });
 	            return; 
+	        } else if(!allowedExtensions.exec(file.name)){
+				Swal.fire({
+		            icon: 'warning',
+		            text: '허용된 파일 형식이 아닙니다.',
+		            confirmButtonText: '확인'
+		        });
+		        return;
 	        } else {
 				const formData = new FormData();
     			formData.append('file', file);
@@ -783,6 +799,7 @@ $(function () {
 		                        confirmButtonText: '확인'
 		                    });
 		                }
+		                 $('#file_name_input').val(''); 
 		            }
 		        });
 			}
@@ -824,6 +841,7 @@ $(function () {
 		                        confirmButtonText: '확인'
 		                    });
 	                    }
+	                     $('#file_name_input').val(''); 
 					}
 				});
 			}
@@ -866,12 +884,12 @@ $(function () {
 	                            confirmButtonText: '확인'
 	                        });
 	                    }
+	                     $('#file_name_input').val(''); 
 	                }
 	            });
 	        }
 	    });
 	}
-
 	// 날짜 검색 
 	var today = new Date();
 	const todayStr = formatDate(today);	
@@ -885,10 +903,12 @@ $(function () {
     function startDateLimit() {
         const startDate = new Date(startDateInput.value);
         const endDate = new Date(endDateInput.value);
-        if (endDate < startDate) {
-            endDateInput.value = formatDate(startDate);
-        }
-        startDateInput.max = formatDate(endDate);
+        // endDate가 startDate보다 이전일 때 startDate를 endDate와 같게 설정
+	    if (endDate < startDate) {
+	        startDateInput.value = formatDate(endDate);
+	    }	    
+	    // startDate의 최대값을 endDate로 설정
+	    startDateInput.max = formatDate(endDate);
     }
     // startDate의 기본값을 오늘로부터 1년 전으로 설정
 	startDateInput.value = oneYearAgoStr;
@@ -898,37 +918,68 @@ $(function () {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
+    
+    // 파일 검색 
+   $('#search_button').on('click', function(){
+		const searchInput = $('#file_name_input').val();
+		loadFiles(selectedFolderNo, searchInput);
+   });
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
+		let previousFolderNo = null;
+		let searchInputValue = '';
 	    getFolders().then(() => {
 	        getAllFileSize();
 	
 	        // 파일 목록을 로드하는 함수 호출
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
-	        if (selectedFolderNo) {
-	            loadFiles(selectedFolderNo);
+	        if (selectedFolderNo) {            
+	             loadFiles(selectedFolderNo, searchInputValue);
+	             previousFolderNo = selectedFolderNo;
+	        }
+	    });       
+        // 폴더 선택 변경 함수 
+	    $('#tree').on('select_node.jstree', function(e, data) {
+	        const selectedFolderNo = data.selected[0];
+	        if (selectedFolderNo !== previousFolderNo) {
+	            $('#file_name_input').val(''); 
+	            searchInputValue = '';
+	            loadFiles(selectedFolderNo, searchInputValue = '');
+	            previousFolderNo = selectedFolderNo; 
+	            startDateInput.value = oneYearAgoStr;
+	            endDateInput.value = todayStr;
 	        }
 	    });
-        
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
             const selectedFolderNo = $('#tree').jstree('get_selected')[0];
             if (selectedFolderNo) {
-            	loadFiles(selectedFolderNo);
+            	loadFiles(selectedFolderNo, searchInputValue);
         	}
         });
         // 날짜가 변경될 때 파일 목록을 새로 로드
 	    startDateInput.addEventListener('change', function() {
+	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
-	            loadFiles(selectedFolderNo);
+	            loadFiles(selectedFolderNo, searchInputValue);
 	        }
 	    });
 	    endDateInput.addEventListener('change', function() {
+	        startDateLimit();
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
-	            loadFiles(selectedFolderNo);
+				$('#file_name_input').val('');
+	            loadFiles(selectedFolderNo, searchInputValue);
+	        }
+	    });
+	    // 검색 버튼 클릭 시 파일 목록을 다시 로드
+	    $('#search_button').on('click', function() {
+	        searchInputValue = $('#file_name_input').val(); // 검색어 저장
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            loadFiles(selectedFolderNo, searchInputValue);
 	        }
 	    });
     });

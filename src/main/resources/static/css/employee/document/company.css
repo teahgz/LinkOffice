@@ -386,7 +386,7 @@
     background-position: left 3.5vw center;
     transition: border-color 0.3s;
 }
-#sort_select:focus{
+#sort_select:focus, #name_select:focus{
     outline: none;
     border-color: #B1C2DD;
 }

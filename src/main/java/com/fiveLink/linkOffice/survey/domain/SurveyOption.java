@@ -1,9 +1,6 @@
 package com.fiveLink.linkOffice.survey.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
-import com.fiveLink.linkOffice.member.domain.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,35 +19,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "SurveyParticipant")
-@Table(name="fl_survey_participant")
+@Entity(name = "SurveyOption")
+@Table(name="fl_survey_option")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
 @Builder
-public class SurveyParticipant {
+public class SurveyOption {
 	@Id
-	@Column(name="survey_participant_no")
+	@Column(name="survey_option_no")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long surveyParticipantNo;
+	private Long surveyOptionNo;
 	
 	@ManyToOne
-    @JoinColumn(name = "survey_no")
-    private Survey survey;
+    @JoinColumn(name = "survey_question_no")
+    private SurveyQuestion surveyQuestion;
 	
-	@ManyToOne
-    @JoinColumn(name = "member_no")
-    private Member member;
+	@Column(name="survey_option_answer")
+	private String surveyOptionAnswer;
 	
-	@Column(name="survey_participant_status")
-	private Integer surveyParticipantStatus;
-	
-	// [김민재] 설문 선택형 참여자
-	@OneToMany(mappedBy = "surveyParticipant", fetch = FetchType.LAZY)
+	// [김민재] 설문 선택형 답변
+	@OneToMany(mappedBy = "surveyOption", fetch = FetchType.LAZY)
 	private List<SurveyAnswerOption> surveyAnswerOption;
-	
-	// [김민재] 설문 텍스트형 참여자
-	@OneToMany(mappedBy = "surveyParticipant", fetch = FetchType.LAZY)
-	private List<SurveyText> surveyText;
 }

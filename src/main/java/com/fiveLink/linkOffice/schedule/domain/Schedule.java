@@ -46,6 +46,12 @@ public class Schedule {
     @Column(name = "schedule_end_date")
     private String scheduleEndDate;
     
+    @Column(name = "schedule_start_time")
+    private String scheduleStartTime;
+
+    @Column(name = "schedule_end_time")
+    private String scheduleEndTime;
+    
     @Column(name = "schedule_allday")
     private Long scheduleAllday;
     

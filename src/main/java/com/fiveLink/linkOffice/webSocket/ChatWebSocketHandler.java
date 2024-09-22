@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.webSocket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +53,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             //채팅방 이름 수정
             handleChatRoomUpdate(jsonMap, session, type);
         } else if("chatRoomAdd".equals(type)){
-            System.out.println("test");
             //그룹 채팅 추가
+            System.out.println("checkcheck : "+ jsonMap);
             handleChatRoomAdd(jsonMap, session, type);
+            System.out.println("checkcheck : "+ jsonMap);
         } else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
@@ -62,6 +64,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             for (WebSocketSession s : sessions.values()) {
                 if (s.isOpen()) {
+                    System.out.println(s);
                     s.sendMessage(new TextMessage(payload));
                 }
             }
@@ -97,21 +100,34 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 memberDto2.setChat_member_room_name(names.get(0));
 
                 if(chatMemberService.createMemberRoomOne(memberDto2)>0){
+                    // 채팅방 번호로 해당 채팅방에 속한 멤버들 정보 조회
+                    List<ChatMemberDto> chatMembers = chatMemberService.getMembersByChatRoomNo(chatRoomNo);
+                    List<Map<String, Object>> memberInfoList = new ArrayList<>();
+
+                    for(ChatMemberDto member : chatMembers){
+                        Map<String, Object> memberInfo = new HashMap<>();
+                        memberInfo.put("memberNo", member.getMember_no());
+                        memberInfo.put("roomName", member.getChat_member_room_name());
+                        memberInfoList.add(memberInfo);
+                    }
                     // 클라이언트로 보낼 데이터를 준비
                     Map<String, Object> responseMap = new HashMap<>();
                     responseMap.put("chatRoomNo", chatRoomNo);
-                    responseMap.put("members", members);
                     responseMap.put("currentMemberNo", currentMemberNo);
                     responseMap.put("type", type);
-                    responseMap.put("names", names);
+                    responseMap.put("memberInfoList", memberInfoList);
+
 
                     // JSON으로 변환
                     ObjectMapper objectMapper = new ObjectMapper();
                     String responseJson = objectMapper.writeValueAsString(responseMap);
-                    System.out.println("testResponse:"+responseJson);
 
-                    // 웹소켓 세션을 통해 클라이언트에 메시지 전송
-                    session.sendMessage(new TextMessage(responseJson));
+                    for (WebSocketSession s : sessions.values()) {
+                        if (s.isOpen()) {
+
+                            s.sendMessage(new TextMessage(responseJson));
+                        }
+                    }
                 }
             }
 
@@ -137,17 +153,26 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             currentMemberDto.setChat_member_room_name(groupChatName);
             chatMemberService.createMemberRoomOne(currentMemberDto);
 
+            if (!members.contains(currentMemberNo)) {
+                members.add(String.valueOf(currentMemberNo));
+            }
+
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("chatRoomNo", chatRoomNo);
             responseMap.put("members", members);
-            responseMap.put("currentMemberNo", currentMemberNo);
-            responseMap.put("type", type);
+            //responseMap.put("currentMemberNo", currentMemberNo);
+            responseMap.put("type", "groupChatCreate");
             responseMap.put("names", groupChatName);
+            System.out.println(members);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String responseJson = objectMapper.writeValueAsString(responseMap);
 
-            session.sendMessage(new TextMessage(responseJson));
+            for (WebSocketSession s : sessions.values()) {
+                if (s.isOpen()) {
+                    s.sendMessage(new TextMessage(responseJson));
+                }
+            }
 
         }
 
@@ -171,10 +196,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     }
 
-    // 채팅방 생성 처리 메소드
+    // 채팅방 초대 처리 메소드
     private void handleChatRoomAdd(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         String chatRoomName = (String) jsonMap.get("name"); // 방 이름 가져오기
-        Long currentChatRoomNo = Long.parseLong((String) jsonMap.get("currentChatRoomNo")); // 방 번호 가져오기
+        Object currentChatRoomNoObj = jsonMap.get("currentChatRoomNo"); // Integer 또는 String일 수 있음
+
+        Long currentChatRoomNo;
+        if (currentChatRoomNoObj instanceof Integer) {
+            currentChatRoomNo = ((Integer) currentChatRoomNoObj).longValue();  // Integer를 Long으로 변환
+        } else if (currentChatRoomNoObj instanceof String) {
+            currentChatRoomNo = Long.parseLong((String) currentChatRoomNoObj);  // String을 Long으로 변환
+        } else {
+            throw new IllegalArgumentException("채팅방 번호의 오류");
+        }
+
         List<String> members = (List<String>) jsonMap.get("newMembers");
 
         ChatMemberDto memberDto = new ChatMemberDto();
@@ -183,7 +218,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             memberDto.setChat_room_no(currentChatRoomNo);
             memberDto.setChat_member_room_name(chatRoomName);
             if(chatMemberService.createMemberRoomOne(memberDto)>0){
-                System.out.println("success");
+
+                // 새 멤버 정보를 클라이언트에 전송
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("type", "memberAdded");
+                responseMap.put("chatRoomNo", currentChatRoomNo);
+                responseMap.put("chatRoomName", chatRoomName);
+                responseMap.put("member", Long.valueOf(members.get(i)));
+
+                for (WebSocketSession s : sessions.values()) {
+                    if (s.isOpen()) {
+                        String responseJson = new ObjectMapper().writeValueAsString(responseMap);
+                        s.sendMessage(new TextMessage(responseJson));
+                    }
+                }
             }
         }
 
