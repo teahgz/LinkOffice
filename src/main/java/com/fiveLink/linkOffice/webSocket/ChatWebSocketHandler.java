@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.webSocket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             for (WebSocketSession s : sessions.values()) {
                 if (s.isOpen()) {
+                    System.out.println(s);
                     s.sendMessage(new TextMessage(payload));
                 }
             }
@@ -98,21 +100,35 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 memberDto2.setChat_member_room_name(names.get(0));
 
                 if(chatMemberService.createMemberRoomOne(memberDto2)>0){
+                    // 채팅방 번호로 해당 채팅방에 속한 멤버들 정보 조회
+                    List<ChatMemberDto> chatMembers = chatMemberService.getMembersByChatRoomNo(chatRoomNo);
+                    List<Map<String, Object>> memberInfoList = new ArrayList<>();
+
+                    for(ChatMemberDto member : chatMembers){
+                        Map<String, Object> memberInfo = new HashMap<>();
+                        memberInfo.put("memberNo", member.getMember_no());
+                        memberInfo.put("roomName", member.getChat_member_room_name());
+                        memberInfoList.add(memberInfo);
+                    }
                     // 클라이언트로 보낼 데이터를 준비
                     Map<String, Object> responseMap = new HashMap<>();
                     responseMap.put("chatRoomNo", chatRoomNo);
-                    responseMap.put("members", members);
                     responseMap.put("currentMemberNo", currentMemberNo);
                     responseMap.put("type", type);
-                    responseMap.put("names", names);
+                    responseMap.put("memberInfoList", memberInfoList);
+
 
                     // JSON으로 변환
                     ObjectMapper objectMapper = new ObjectMapper();
                     String responseJson = objectMapper.writeValueAsString(responseMap);
                     System.out.println("testResponse:"+responseJson);
 
-                    // 웹소켓 세션을 통해 클라이언트에 메시지 전송
-                    session.sendMessage(new TextMessage(responseJson));
+                    for (WebSocketSession s : sessions.values()) {
+                        if (s.isOpen()) {
+                            System.out.println(s);
+                            s.sendMessage(new TextMessage(responseJson));
+                        }
+                    }
                 }
             }
 

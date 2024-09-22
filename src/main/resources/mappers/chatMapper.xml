@@ -69,4 +69,16 @@
         FROM fl_chat_room
         WHERE chat_room_no = #{chatRoomNo}
     </select>
+
+    <select id="getMemberInfo" resultType="Long" parameterType="java.lang.Long">
+        SELECT member_no
+        FROM fl_chat_member WHERE
+        chat_room_no = #{chatRoomNo}
+    </select>
+
+    <select id="getMembersByChatRoomNo" parameterType="java.lang.Long" resultType="com.fiveLink.linkOffice.chat.domain.ChatMemberDto">
+        SELECT *
+        FROM fl_chat_member
+        WHERE chat_room_no = #{chatRoomNo}
+    </select>
 </mapper>
