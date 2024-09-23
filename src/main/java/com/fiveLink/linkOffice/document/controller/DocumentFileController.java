@@ -139,6 +139,7 @@ public class DocumentFileController {
 		
         DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
         file.setDocumentFileStatus(1L);
+        file.setDocumentFileUpdateDate(LocalDateTime.now());
         int result = documentFileService.saveFile(file);
     	if(result > 0) {
     		resultMap.put("res_code", "200");
@@ -186,5 +187,55 @@ public class DocumentFileController {
 	public ResponseEntity<Object> documentFileView(
 			@PathVariable("no") Long fileNo){
 		return documentFileService.fileView(fileNo);
+	}
+	
+	// 파일 영구 삭제  
+	@PostMapping("/document/file/permanent/delete")
+	@ResponseBody
+	public Map<String, Object> deleteFilePermanent(@RequestParam("fileNo") Long fileNo){
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "파일을 영구 삭제하지 못했습니다.");
+		
+        DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
+        file.setDocumentFileStatus(2L);
+        file.setDocumentFileUpdateDate(LocalDateTime.now());
+        int dbResult = documentFileService.saveFile(file);
+        int fileResult = documentFileService.documentFilePermanentDelete(fileNo);
+        
+    	if(dbResult > 0 && fileResult > 0) {
+    		resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "영구 삭제 완료되었습니다.");
+    	}
+		return resultMap;
+	}
+	// 파일 선택 영구 삭제 
+	@PostMapping("/document/fileList/permanent/delete")
+	@ResponseBody
+	public Map<String, Object> deleteFilespermanent(@RequestBody Map<String, List<Long>> payload) {
+		List<Long> fileNos = payload.get("fileNos");
+		Map<String, Object> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "파일을 영구 삭제하지 못했습니다.");
+	    
+	    int deletedCount = 0;
+
+	    // 리스트로 가져온 파일들을 하나씩 삭제 
+	    for (Long fileNo : fileNos) {
+	        DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
+	        file.setDocumentFileStatus(2L);
+	        file.setDocumentFileUpdateDate(LocalDateTime.now());
+	        int dbResult = documentFileService.saveFile(file);
+	        int fileResult = documentFileService.documentFilePermanentDelete(fileNo);
+	        
+	    	if(dbResult > 0 && fileResult > 0) {
+	    	    deletedCount++;
+	    	}
+	    }	    
+	    if (deletedCount == fileNos.size()) {
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "영구 삭제 완료되었습니다.");
+	    } 
+	    return resultMap;
 	}
 }

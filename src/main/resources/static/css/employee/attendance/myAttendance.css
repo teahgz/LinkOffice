@@ -200,8 +200,8 @@
 }
 .count_div{
 	display: flex;
-	margin-top: 20px;
-	margin-left: 20px;
+	margin-top: 1.3vw;
+	margin-left: 2.3vw;
 	width: 100%;
 	height: 4.2vh;
 	align-items: center;
@@ -230,7 +230,7 @@
 .search{
 	display: flex;
 	margin-top: 1.5vh;
-	margin-left: 1.5vw;
+	margin-left: 2vw;
 }
 .attendance_list{
 	width: 95%;

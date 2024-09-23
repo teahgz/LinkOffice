@@ -57,15 +57,16 @@ public class DocumentFileService {
 	                .document_ori_file_name(documentFile.getDocumentOriFileName())
 	                .document_new_file_name(documentFile.getDocumentNewFileName())
 	                .document_folder_no(documentFile.getDocumentFolder().getDocumentFolderNo())
+	                .document_box_type(documentFile.getDocumentFolder().getDocumentBoxType())
 	                .document_file_size(documentFile.getDocumentFileSize())
 	                .document_file_upload_date(documentFile.getDocumentFileUploadDate())
 	                .document_file_update_date(documentFile.getDocumentFileUpdateDate())
 	                .document_file_status(documentFile.getDocumentFileStatus())
 	                .member_no(documentFile.getMember().getMemberNo())
 	                .member_name(documentFile.getMember().getMemberName()) 
-	                .department_no(documentFile.getMember().getDepartment().getDepartmentNo()) // 부서 번호를 수정
+	                .department_no(documentFile.getMember().getDepartment().getDepartmentNo())
 	                .department_name(documentFile.getMember().getDepartment().getDepartmentName())                
-	                .position_no(documentFile.getMember().getPosition().getPositionNo()) // 직책 번호
+	                .position_no(documentFile.getMember().getPosition().getPositionNo()) 
 	                .position_name(documentFile.getMember().getPosition().getPositionName())
 	                .build();
 	    }).collect(Collectors.toList());
@@ -79,7 +80,6 @@ public class DocumentFileService {
 				documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderId, fileStatus);		
 		return changedToDocumentFile(fileList);
 	}
-	
 	// 개인 폴더 모든 파일 용량 
 	public double getPersonalFileSize(Long memberNo) {
 		double formatTotalSize = 0;
@@ -208,6 +208,31 @@ public class DocumentFileService {
 		
 		return formatTotalSize;
 	}
+	// 휴지통 파일 용량 
+	public double getBinFileSize(Long memberNo) {
+		double formatTotalSize = 0;
+		Long fileStatus = 1L;
+        // 모든 파일 목록 가져오기
+        List<DocumentFile> files = new ArrayList<>();
+        files = documentFileRepository.findByMemberMemberNoAndDocumentFileStatus(memberNo, fileStatus);
+
+        // 모든 파일 사이즈를 합산
+        double totalSize = 0;
+        if (!files.isEmpty()) {
+            for (DocumentFile file : files) {
+                String fileSizeStr = file.getDocumentFileSize();
+                if (fileSizeStr != null && !fileSizeStr.isEmpty()) {
+                    double fileSize = Double.parseDouble(fileSizeStr.replaceAll("[^0-9.]", ""));
+                    totalSize += fileSize;
+                }
+            }
+            // KB에서 GB로 변환
+            double totalSizeGB = totalSize / (1024*1024); 
+            formatTotalSize = Math.ceil(totalSizeGB * 100) / 100.0;
+        }
+		return formatTotalSize;
+	}
+	
 	// 휴지통 
 	public List<DocumentFileDto> documentBinList(Long member_no){
 		// 파일 상태 = 1
@@ -215,12 +240,7 @@ public class DocumentFileService {
 		// repository에 memberNo, file_Status를 넘겨줌 
 		List<DocumentFile> documentFileList = 
 				documentFileRepository.findByMemberMemberNoAndDocumentFileStatus(member_no, document_file_status);
-		List<DocumentFileDto> documentFileDtoList = new ArrayList<DocumentFileDto>();
-		for(DocumentFile d : documentFileList) {
-			DocumentFileDto fileDto = d.toDto();
-			documentFileDtoList.add(fileDto);
-		}		
-		return documentFileDtoList;
+		return changedToDocumentFile(documentFileList);
 	}
 	// 폴더에 파일 저장  
 	public String fileUpload(MultipartFile file, Long folderNo) {
@@ -308,5 +328,24 @@ public class DocumentFileService {
 			return new ResponseEntity<Object>(null,HttpStatus.CONFLICT);
 		}
 	}
-	
+	// 파일 영구 삭제 
+	public int documentFilePermanentDelete(Long fileNo){
+		int result = -1;	
+		try {
+			DocumentFile documentFile = documentFileRepository.findByDocumentFileNo(fileNo);
+			String newFileName = documentFile.getDocumentNewFileName();	
+			String resultDir = 
+					fileDir + documentFile.getDocumentFolder().getDocumentFolderNo() + "\\" + newFileName;
+			if(resultDir != null && resultDir.isEmpty() == false) {
+				File file = new File(resultDir);
+				if(file.exists()) {
+					file.delete();
+					result = 1;
+				}	
+			}	
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}	
 }
