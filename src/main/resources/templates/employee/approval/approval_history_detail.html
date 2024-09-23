@@ -96,13 +96,20 @@
 						            <th>합의</th>
 						            <td th:colspan="${#lists.size(approvaldto.flows)+1}">
 						                <div class="reference_box" >
-						                    <div th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 1}">
+						                    <div th:each="flow ,stat: ${approvaldto.flows}" th:if="${flow.approval_flow_role == 1}">
 						                        <span th:text="${flow.member_name}"></span>
 						                        <span th:if="${flow.approval_flow_status == 2}" class="approved">(승인)</span>
 						                        <span th:if="${flow.approval_flow_status == 3}" class="rejected">(반려)</span>
 										    <button th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
 										            type="button" class="reapproval_button" 
-										            onclick="approveRequest()">승인</button>						                    
+										            onclick="approveRequest()">승인</button>
+										    <button th:if="${flow.approval_flow_status == 2 
+										                    and approvaldto.approval_status == 0 
+										                    and flow.member_no == currentUserMemberNo 
+										                    and stat.index + 1 < approvaldto.flows.size() 
+										                    and approvaldto.flows[stat.index + 1].approval_flow_status == 1}" 
+										            type="button" class="recancel_button"
+										            onclick="cancelApproval()">X</button>										    					                    
 						                    </div>
 				                        
 						                </div>
