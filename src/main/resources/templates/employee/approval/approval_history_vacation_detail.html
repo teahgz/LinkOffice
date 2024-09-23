@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
-        <link th:href="@{/css/employee/approval/approval_history_detail.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/employee/approval/approval_history_vacation_detail.css}" rel="stylesheet" type="text/css">
         <section>
             <h1>결재 내역 상세 조회</h1>
             <div class="container">
@@ -108,12 +108,16 @@
 						        <tr>
 						            <th>합의</th>
 						            <td th:colspan="${#lists.size(vacationapprovaldto.flows)+1}">
-						                <div class="reference_box">
+						                <div class="reference_box" >
 						                    <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 1}">
 						                        <span th:text="${flow.member_name}"></span>
 						                        <span th:if="${flow.vacation_approval_flow_status == 2}" class="approved">(승인)</span>
 						                        <span th:if="${flow.vacation_approval_flow_status == 3}" class="rejected">(반려)</span>
+										    <button th:if="${flow.vacation_approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
+										            type="button" class="reapproval_button" 
+										            onclick="approveRequest()">승인</button>						                    
 						                    </div>
+				                        
 						                </div>
 						            </td>
 						        </tr>

@@ -41,6 +41,9 @@ public class ApprovalDto {
 	private String digitalname;
 	private String member_position;
 	
+	private Long approval_flow_role;
+	private String approvalType;
+	
 	
 	private List<ApprovalFileDto> files;
 	private List<ApprovalFlowDto> flows;

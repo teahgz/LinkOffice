@@ -44,27 +44,6 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
 	 // 사원 휴가 신청 상세 조회 
 	 VacationApproval findByVacationApprovalNo(Long VacatioApprovalNo);
 	 
-	 // 문서 번호로 조회
-	 Page<VacationApproval> findByVacationApprovalNoIn(List<Long> vacationApprovalNos, Pageable pageable);
-	 
-	 // 제목으로 검색
-	 Page<VacationApproval> findByVacationApprovalTitleContainingAndVacationApprovalNoIn(String title, List<Long> vacationApprovalNos, Pageable pageable);
-	
-	 // 기안자로 검색
-	 Page<VacationApproval> findByMemberMemberNameContainingAndVacationApprovalNoIn(String name, List<Long> vacationApprovalNos, Pageable pageable);
-	 
-	 // 전체 조회
-	 @Query("SELECT va FROM VacationApproval va WHERE va.vacationApprovalNo IN :vacationApprovalNos AND (va.vacationApprovalTitle LIKE %:searchText% OR va.member.memberName LIKE %:searchText%)")
-	 Page<VacationApproval> findByTitleOrNameContainingAndVacationApprovalNoIn( @Param("searchText") String searchText, @Param("vacationApprovalNos") List<Long> vacationApprovalNos,Pageable pageable);
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
 	 
 	// [박혜선] 사원 휴가 신청 조회(근태 조회)
 	 List<VacationApproval> findByMemberMemberNo(Long memberNo);

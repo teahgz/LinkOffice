@@ -18,7 +18,7 @@ function approveRequest(){
 			    confirmButtonColor: '#B1C2DD',
 			    confirmButtonText: "확인"
 			}).then((result) => {
-				location.href = "/employee/approval/approval_history_detail/" + vacationapprovalNo;
+				location.href = "/employee/approval/approval_history_vacation_detail/" + vacationapprovalNo;
 			});
 		}else{
 			Swal.fire({
