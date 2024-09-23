@@ -79,6 +79,18 @@ public class ChatRoomService {
         return result;
 
     }
+    //참여자 수
+    public int countParicipant(Long chatRoomNo){
+        int result = 0;
+        try{
+            result = chatMapper.countParicipant(chatRoomNo);
 
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+
+    }
 
 }

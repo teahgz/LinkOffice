@@ -108,4 +108,13 @@
         WHERE chat_room_no = #{chatRoomNo}
         AND member_no = #{memberNo}
     </select>
+
+    <!-- 채팅방 참여자 수 -->
+    <select id="countParicipant" parameterType="java.lang.Long" resultType="int">
+        SELECT count(*)
+        FROM fl_chat_member
+        WHERE chat_room_no = #{chatRoomNo}
+        AND chat_member_par = 0
+        <!--   채팅방 참여자는 상태값 0     -->
+    </select>
 </mapper>
