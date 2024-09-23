@@ -20,6 +20,7 @@ public class ChatMemberDto {
     private int chat_member_par;
     private int chat_member_nofication;
     private int chat_member_pin;
+    private LocalDateTime chat_member_pin_time;
 
 
     public ChatMember toEntity() {
@@ -32,6 +33,7 @@ public class ChatMemberDto {
                 .chatMemberPar(chat_member_par)
                 .chatMemberNofication(chat_member_nofication)
                 .chatMemberPin(chat_member_pin)
+                .chatMemberPinTime(chat_member_pin_time)
                 .build();
     }
     public ChatMemberDto toDto(ChatMember chatMember){
@@ -44,6 +46,7 @@ public class ChatMemberDto {
                 .chat_member_par(chatMember.getChatMemberPar())
                 .chat_member_nofication(chatMember.getChatMemberNofication())
                 .chat_member_pin(chatMember.getChatMemberPin())
+                .chat_member_pin_time(chatMember.getChatMemberPinTime())
                 .build();
     }
 
