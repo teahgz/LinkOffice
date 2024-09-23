@@ -123,7 +123,7 @@
                                                    file.approval_file_ori_name.endsWith('.png') or 
                                                    file.approval_file_ori_name.endsWith('.jpg') or 
                                                    file.approval_file_ori_name.endsWith('.jpeg'))}" class="file_info">
-                                        <a th:href="@{'/linkOfficeImg/approval/approval/' + ${file.approval_file_new_name}}" 
+                                        <a th:href="@{/download_file/{no}(no=${approvaldto.approval_no})}" 
                                            th:text="${file.approval_file_ori_name}"></a>
                                         <p th:text="${'파일 크기: ' + file.approval_file_size + ' bytes'}"></p>
                                     </div>

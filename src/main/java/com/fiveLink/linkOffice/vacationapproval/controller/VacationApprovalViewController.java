@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
+import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalFileService;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 @Controller
@@ -29,12 +31,14 @@ public class VacationApprovalViewController {
 	private final MemberService memberService;
     private final VacationService vacationService;
     private final VacationApprovalService vacationApprovalService;
+    private final VacationApprovalFileService vacationApprovalFileService;
 	
     @Autowired
-    public VacationApprovalViewController(MemberService memberService, VacationService vacationService, VacationApprovalService vacationApprovalService) {
+    public VacationApprovalViewController(MemberService memberService, VacationService vacationService, VacationApprovalService vacationApprovalService, VacationApprovalFileService vacationApprovalFileService) {
         this.memberService = memberService;
         this.vacationService = vacationService;
         this.vacationApprovalService = vacationApprovalService;
+        this.vacationApprovalFileService = vacationApprovalFileService;
     }
     
  // 사용자 휴가 결재 등록 페이지
@@ -138,5 +142,11 @@ public class VacationApprovalViewController {
  		
  		return "employee/vacationapproval/vacationapproval_edit";
  	}
+ 	
+	// 전자결재 파일 다운로드 
+	@GetMapping("/download_vacation_file/{vacation_approval_no}")
+	public ResponseEntity<Object> noticeImgDownload(@PathVariable("vacation_approval_no")Long vacationApprovalNo){
+		return vacationApprovalFileService.download(vacationApprovalNo);
+	}
  	
 }
