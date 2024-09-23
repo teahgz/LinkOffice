@@ -50,13 +50,8 @@ public class DocumentFileService {
 	}
 	
 	// 파일 리스트 DocumentFileDto로 바꾸는 메소드 
-	private List<DocumentFileDto> changedToDocumentFile(List<Object[]> resultList) {
-	    return resultList.stream().map(result -> {
-	        DocumentFile documentFile = (DocumentFile) result[0];
-	        String memberName = (String) result[1];
-	        String departmentName = (String) result[2];
-	        String positionName = (String) result[3];
-
+	private List<DocumentFileDto> changedToDocumentFile(List<DocumentFile> resultList) {
+	    return resultList.stream().map(documentFile -> {
 	        return DocumentFileDto.builder()
 	                .document_file_no(documentFile.getDocumentFileNo()) 
 	                .document_ori_file_name(documentFile.getDocumentOriFileName())
@@ -67,11 +62,11 @@ public class DocumentFileService {
 	                .document_file_update_date(documentFile.getDocumentFileUpdateDate())
 	                .document_file_status(documentFile.getDocumentFileStatus())
 	                .member_no(documentFile.getMember().getMemberNo())
-	                .member_name(memberName) 
+	                .member_name(documentFile.getMember().getMemberName()) 
 	                .department_no(documentFile.getMember().getDepartment().getDepartmentNo()) // 부서 번호를 수정
-	                .department_name(departmentName)
+	                .department_name(documentFile.getMember().getDepartment().getDepartmentName())                
 	                .position_no(documentFile.getMember().getPosition().getPositionNo()) // 직책 번호
-	                .position_name(positionName)
+	                .position_name(documentFile.getMember().getPosition().getPositionName())
 	                .build();
 	    }).collect(Collectors.toList());
 	}
@@ -80,9 +75,8 @@ public class DocumentFileService {
 	public List<DocumentFileDto> selectfileList(Long folderId){
 		// 파일 상태 = 0
 		Long fileStatus = 0L;
-		List<Object[]> fileList = 
-				documentFileRepository.findDocumentFileWithMemberDepartmentAndPosition(folderId, fileStatus);		
-		
+		List<DocumentFile> fileList = 
+				documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderId, fileStatus);		
 		return changedToDocumentFile(fileList);
 	}
 	
@@ -314,4 +308,5 @@ public class DocumentFileService {
 			return new ResponseEntity<Object>(null,HttpStatus.CONFLICT);
 		}
 	}
+	
 }
