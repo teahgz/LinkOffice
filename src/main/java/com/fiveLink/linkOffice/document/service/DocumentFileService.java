@@ -1,8 +1,6 @@
 package com.fiveLink.linkOffice.document.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +32,9 @@ import com.fiveLink.linkOffice.document.repository.DocumentFolderRepository;
 @Service
 public class DocumentFileService {
 	
-	//private String fileDir = "C:\\linkoffice\\upload\\document\\";
+	private String fileDir = "C:\\linkoffice\\upload\\document\\";
 	// [박혜선] mac 파일 저장 경로 
-	 private String fileDir = "/Users/parkhyeseon/Desktop/fiveLink/upload/";
+	// private String fileDir = "/Users/parkhyeseon/Desktop/fiveLink/upload/";
 
 	private final DocumentFileRepository documentFileRepository;
 	private final DocumentFolderRepository documentFolderRepository;
