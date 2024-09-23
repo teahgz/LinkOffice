@@ -41,4 +41,7 @@ public class ChatMember {
     @Column(name="chat_member_pin")
     private int chatMemberPin;
 
+    @Column(name="chat_member_pin_time")
+    private LocalDateTime chatMemberPinTime;
+
 }

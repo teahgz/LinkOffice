@@ -407,8 +407,6 @@ if (sendButton && messageInput) {
        }
    };
 
-
-
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
          let chatList = document.getElementById('chatList');
@@ -478,6 +476,9 @@ if (sendButton && messageInput) {
         };
 
         socket.send(JSON.stringify(message));
+            if (groupChatName) {
+                document.getElementById('groupChatNameInput').value = '';
+            }
         $('#groupChatNameModal').modal('hide');
     }
 
@@ -508,8 +509,6 @@ if (sendButton && messageInput) {
    //채팅방 나가기
    document.getElementById('leaveChatItem').addEventListener('click', function(event) {
          event.preventDefault();
-         console.log("방번호:"+currentChatRoomNo);
-         console.log("번호:"+currentMember);
          const csrfToken = document.querySelector('input[name="_csrf"]').value;
          Swal.fire({
                 text: "채팅방에서 나가시겠습니까?",
@@ -546,23 +545,77 @@ if (sendButton && messageInput) {
                 }
             });
       });
+      // 채팅방 이름 수정 함수
+      document.getElementById('confirmEditButton').addEventListener('click', function(event) {
+         event.preventDefault();
 
-    // 채팅방 이름 수정 함수
-    document.getElementById('confirmEditButton').addEventListener('click', function(event) {
+         const currentMemberNo = document.getElementById("currentMemberNo").value;
+         const csrfToken = document.querySelector('input[name="_csrf"]').value;
+         const chatRoomName = document.getElementById('chatRoomNameInput').value;
+
+          if (!chatRoomName.trim()) {
+              alert("채팅방 이름을 입력하세요.");
+              return;
+          }
+
+          // 채팅방 수정 함수 호출
+          updateChatRoom(currentMemberNo, currentChatRoomNo, csrfToken, chatRoomName);
+      });
+      //채팅방 고정
+      document.getElementById('pinChatItem').addEventListener('click', function() {
         event.preventDefault();
+        updatePinStatus(true);
+      });
+      //채팅방 고정 해제
+      document.getElementById('pinDeleteChatItem').addEventListener('click', function() {
+        event.preventDefault();
+        updatePinStatus(false);
+      });
 
-        const currentMemberNo = document.getElementById("currentMemberNo").value;
-        const csrfToken = document.querySelector('input[name="_csrf"]').value;
-        const chatRoomName = document.getElementById('chatRoomNameInput').value;
+      function updatePinStatus(status){
+         const csrfToken = document.querySelector('input[name="_csrf"]').value;
+         let statusValue = 0;
 
-        if (!chatRoomName.trim()) {
-            alert("채팅방 이름을 입력하세요.");
-            return;
-        }
+         if (status === true) {
+             statusValue = 1;
+         }
+         Swal.fire({
+            text: "채팅방이 상단에 고정됩니다.",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            cancelButtonText: "취소",
+            dangerMode: true
+         }).then((result) => {
+            if (result.isConfirmed) {
+            // 채팅방 상단 고정요청
+            fetch(`/api/chat/pin/${currentChatRoomNo}`, {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-Token': csrfToken
+               },
+                  body: JSON.stringify({
+                  currentMember: currentMember,
+                  statusValue: statusValue,
+                  updatedAt: new Date().toISOString()}) // 사용자 ID를 서버에 보냄
+               })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     window.location.reload();
+                  } else {
+                     Swal.fire("실패", "고정에 실패했습니다.", "error");
+                  }
+               })
+               .catch(error => {
+                  console.error('오류 발생:', error);
+                   Swal.fire("오류", "서버와의 통신 중 오류가 발생했습니다.", "error");
+               });
+            }
+         });
+      }
 
-        // 채팅방 수정 함수 호출
-        updateChatRoom(currentMemberNo, currentChatRoomNo, csrfToken, chatRoomName);
-    });
 
        function updateChatRoom(currentMemberNo, roomNo, csrfToken, chatRoomName) {
 
@@ -623,6 +676,25 @@ function formatDateTime(date) {
                 console.error("error", error);
                 return null;
             });
+    }
+    //채팅방 고정 확인
+    function checkPinStatus(chatRoomNo) {
+    console.log(chatRoomNo);
+    console.log(currentMember);
+        return fetch(`/api/chat/pin/status/${chatRoomNo}/${currentMember}`)
+              .then(response => {
+                          if (!response.ok) {
+                              throw new Error("채팅방 타입을 찾을 수 없습니다.");
+                          }
+                          return response.json(); // JSON으로 변환
+                      })
+                      .then(data => {
+                          return data.isPinned; // 고정 상태 반환
+                      })
+                      .catch(error => {
+                          console.error("error", error);
+                          return null;
+                      });
     }
     function displayChatMessages(messages) {
         const chatContentDiv = document.getElementById("chatContent");
@@ -701,6 +773,22 @@ function formatDateTime(date) {
               }).catch(error => {
                     console.error('error', error);
               });
+
+              // 고정 상태 확인
+                checkPinStatus(element).then(isPinned => {
+                    const pinChatItem = document.getElementById('pinChatItem');
+                    const pinDeleteChatItem = document.getElementById('pinDeleteChatItem');
+
+                    if (isPinned) {
+                        pinChatItem.style.display = 'none'; // 고정 버튼 숨기기
+                        pinDeleteChatItem.style.display = 'block'; // 고정 해제 버튼 보이기
+                    } else {
+                        pinChatItem.style.display = 'block'; // 고정 버튼 보이기
+                        pinDeleteChatItem.style.display = 'none'; // 고정 해제 버튼 숨기기
+                    }
+                }).catch(error => {
+                    console.error('고정 상태 확인 중 오류 발생:', error);
+                });
     }
     function getChatRoomName(chatRoomNo) {
         const memberNo = document.getElementById('currentMember').value;
