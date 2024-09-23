@@ -212,7 +212,7 @@ $(function () {
 	                        <td>${file.document_ori_file_name}</td>
 	                        <td>${formatDate(file.document_file_upload_date)}</td>
 	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
-	                            '<input type="button" class="file_show_button" value="파일보기">' : ''}
+	                            `<a href="/document/file/view/${file.document_file_no}" class="file_show_button" target="_blank">미리보기</a>` : ''}
 	                        </td>
 	                        <td>${file.document_file_size}</td>
 							<td>
@@ -285,7 +285,6 @@ $(function () {
 	        }
 	    });
 	}
-
 
 	// 페이징 버튼 업데이트 
     function updatePagination() {
