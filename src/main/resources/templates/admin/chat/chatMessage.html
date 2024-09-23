@@ -38,6 +38,9 @@
                     <!-- 채팅 목록 항목 -->
                     <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${chat.chat_room_no} + ')'">
                         <h3><p th:text="${chat.chat_member_room_name}"></p></h3>
+                        <div class="pin">
+                            <i class="fa-solid fa-thumbtack" th:if="${chat.chat_member_pin == 1}" ></i>
+                        </div>
                         <input type="hidden" id="memberNo" th:value="${member.member_no}"/>
                         <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
                     </div>
@@ -60,13 +63,13 @@
                                     <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">고정</span>
                                 </a>
                                 <a href="#" id="pinDeleteChatItem" class="chat-dropdown-item" style="display:none;">
-                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">고정 해제</span>
+                                    <i class="fa-solid fa-thumbtack-slash"></i> <span class="menu-text">고정해제</span>
                                 </a>
                                 <a href="#" id="notifyChatItem" class="chat-dropdown-item">
-                                    <i class="fa-regular fa-bell"></i> <span class="menu-text">알림 끄기</span>
+                                    <i class="fa-solid fa-bell-slash"></i> <span class="menu-text">알림끄기</span>
                                 </a>
                                 <a href="#" id="notifyOnChatItem" class="chat-dropdown-item" style="display:none;">
-                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">알림 켜기</span>
+                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">알림켜기</span>
                                 </a>
                                 <a href="#" id="addChatItem" class="chat-dropdown-item">
                                     <i class="fa-solid fa-plus"></i> <span class="menu-text">추가</span>
