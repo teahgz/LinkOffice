@@ -46,5 +46,8 @@ public interface ChatMapper {
     //참여자 수
     int countParicipant(Long chatRoomNo);
 
-    
+    //채팅방 별 안읽은 메시지 읽기
+    List<Long> markMessagesAsReadForChatRoom(Long memberNo, Long chatRoomNo);
+    //채팅방 별 안읽은 메시지 개수
+    List<Map<String, Object>> getUnreadCounts(Long memberNo);
 }

@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
     // 페이지 로드 시 첫 번째 채팅방 자동 클릭
-    const firstChatRoom = document.querySelector('.chatItem');
-    if (firstChatRoom) {
-         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
-        if (chatRoomNo) {
-            handleChatRoomClick(chatRoomNo);
-        }
-    }
+//    const firstChatRoom = document.querySelector('.chatItem');
+//    if (firstChatRoom) {
+//         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
+//        if (chatRoomNo) {
+//            handleChatRoomClick(chatRoomNo);
+//        }
+//    }
 
     // 메시지 입력 필드와 전송 버튼 가져오기
   const messageInput = document.getElementById('messageInput');
@@ -104,24 +104,17 @@ if (sendButton && messageInput) {
 
     socket.onopen = function() {
         console.log("웹소켓이 연결되었습니다.");
+        console.log("값 :" +currentMember);
+        const initialRequest = {
+            type: 'getUnreadCounts',
+            currentMember: currentMember
+        };
+        socket.send(JSON.stringify(initialRequest));
     };
 
     socket.onclose = function(event) {
         console.log("웹소켓 연결이 해제되었습니다.", event);
 
-    };
-
-    socket.onerror = function(error) {
-        console.error("에러 발생", error);
-    };
-
-
-    socket.onopen = function() {
-        console.log("웹소켓이 연결되었습니다.");
-    };
-
-    socket.onclose = function(event) {
-        console.log("웹소켓 연결이 해제되었습니다.", event);
     };
 
     socket.onerror = function(error) {
@@ -276,7 +269,40 @@ if (sendButton && messageInput) {
        const message = JSON.parse(event.data);
        const chatContentDiv = document.getElementById("chatContent");
        // 메시지 타입에 따른 처리
-      if (message.type === "chatRoomCreation") {
+
+           if (message.type === "unreadCounts") {
+
+                // 서버에서 보내온 읽지 않은 메시지 개수
+                   message.data.forEach(item => { // message.data로 변경
+                         const chatRoomNo = item.chatRoomNo;  // 채팅방 번호
+                              const unreadCount = item.unreadCount; // 읽지 않은 메시지 개수
+
+                              // 해당 채팅방의 안 읽은 메시지 수를 업데이트
+                              const inputElement = document.querySelector(`input[value="${chatRoomNo}"]`);
+
+                              // inputElement가 존재하는지 확인
+                              if (inputElement) {
+                                  const chatItem = inputElement.closest('.chatItem');
+                                  if (chatItem) {
+                                      let unreadCountElement = chatItem.querySelector('.unread-count');
+
+                                      if (unreadCountElement) {
+                                          // 읽지 않은 개수 업데이트
+                                          unreadCountElement.innerText = unreadCount;
+                                      } else {
+                                          // unread-count 요소가 없으면 추가
+                                          unreadCountElement = document.createElement('div');
+                                          unreadCountElement.classList.add('unread-count');
+                                          unreadCountElement.innerText = unreadCount;
+                                          chatItem.appendChild(unreadCountElement);
+                                      }
+                                  }
+                              } else {
+                                  console.error(`채팅방 번호 ${chatRoomNo}에 해당하는 요소를 찾을 수 없습니다.`);
+                              }
+                   });
+       }
+      else if (message.type === "chatRoomCreation") {
           if (message.chatRoomNo && message.memberInfoList) {
               const currentMemberNo = parseInt(document.getElementById('currentMember').value, 10);
               const memberInfo = message.memberInfoList.find(info => info.memberNo === currentMemberNo);
@@ -363,7 +389,19 @@ if (sendButton && messageInput) {
                    const chatList = document.getElementById('chatList');
                    chatList.insertBefore(newChatItem, chatList.firstChild);
                }
-       }else {
+
+       }else if(message.type === "updateUnreadCount") {
+                const chatRoomNo = message.chatRoomNo;
+                const unreadCount = message.unreadCount;
+                const chatItem = document.querySelector(`input[value="${chatRoomNo}"]`).closest('.chatItem');
+                 if (chatItem) {
+                    const unreadCountElement = chatItem.querySelector('.unread-count');
+                    if (unreadCountElement) {
+                       unreadCountElement.innerText = unreadCount;
+                    }
+                 }
+       }
+       else {
            if (message.chat_room_no === currentChatRoomNo) { // 메시지가 현재 채팅방에 속하는지 확인
                const messageElement = document.createElement("div");
                const now = new Date();
@@ -798,6 +836,10 @@ function formatDateTime(date) {
                  }).catch(error => {
                      console.error('참여자 수를 가져오는 중 오류 발생:', error);
                  });
+
+                // 읽음 처리
+                markAllMessagesAsRead(element);
+
     }
 
     // 참여자 수 가져오는 함수
@@ -827,7 +869,15 @@ function formatDateTime(date) {
                 return null;
             });
     }
-
+    // 읽음 처리
+    function markAllMessagesAsRead(chatRoomNo) {
+        const message = {
+            type: 'markAsRead',
+            chatRoomNo: chatRoomNo,
+            currentMember: currentMember // 현재 사용자 ID
+        };
+        socket.send(JSON.stringify(message));
+    }
 
     function resetSelectedMembers() {
         selectedMembers = [];

@@ -41,6 +41,10 @@
                         <div class="pin">
                             <i class="fa-solid fa-thumbtack" th:if="${chat.chat_member_pin == 1}" ></i>
                         </div>
+                        <!-- 읽지 않은 메시지 개수 표시 -->
+                        <div class="unread-count-container">
+                            <span class="unread-count"></span>
+                        </div>
                         <input type="hidden" id="memberNo" th:value="${member.member_no}"/>
                         <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
                     </div>
@@ -50,7 +54,7 @@
             <div class="chatElement">
                 <div class="chatHeader">
                     <div class="chatInfo">
-                        <h4 id="chatRoomTitle">채팅방 이름</h4>
+                        <h4 id="chatRoomTitle">채팅방을 선택해주세요</h4>
                         <div class ="countParticipant">
                             <i class="fa-solid fa-user"></i>
                             <span>0</span>
