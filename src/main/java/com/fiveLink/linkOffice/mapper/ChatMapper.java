@@ -43,5 +43,8 @@ public interface ChatMapper {
     int chatRoomPin(Long chatRoomNo, Long memberNo, int status, LocalDateTime updateTime);
     int selectChatPin(Long chatRoomNo, Long memberNo);
 
+    //참여자 수
+    int countParicipant(Long chatRoomNo);
+
     
 }

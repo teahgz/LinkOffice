@@ -109,5 +109,14 @@ public class ChatRoomController {
         response.put("isPinned", status);
         return ResponseEntity.ok(response);
     }
+    //참여자 수
+    @GetMapping("/api/chat/participants/count/{chatRoomNo}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> countParicipant(@PathVariable Long chatRoomNo) {
+        int status =  chatRoomService.countParicipant(chatRoomNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("count", status);
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -790,6 +790,28 @@ function formatDateTime(date) {
                 }).catch(error => {
                     console.error('고정 상태 확인 중 오류 발생:', error);
                 });
+
+             // 참여자 수 가져오기
+                 getParticipantCount(element).then(count => {
+                     const participantCountElement = document.querySelector('.countParticipant span');
+                     participantCountElement.innerText = count; // 참여자 수 업데이트
+                 }).catch(error => {
+                     console.error('참여자 수를 가져오는 중 오류 발생:', error);
+                 });
+    }
+
+    // 참여자 수 가져오는 함수
+    function getParticipantCount(chatRoomNo) {
+        return fetch(`/api/chat/participants/count/${chatRoomNo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('참여자 수를 가져올 수 없습니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data.count; // 참여자 수 반환
+            });
     }
     function getChatRoomName(chatRoomNo) {
         const memberNo = document.getElementById('currentMember').value;
