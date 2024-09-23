@@ -1,6 +1,8 @@
 package com.fiveLink.linkOffice.survey.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,11 +17,11 @@ import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.notice.controller.NoticeApiController;
 import com.fiveLink.linkOffice.survey.domain.Survey;
 import com.fiveLink.linkOffice.survey.domain.SurveyDto;
-import com.fiveLink.linkOffice.survey.domain.SurveyOption;
+import com.fiveLink.linkOffice.survey.domain.SurveyParticipant;
 import com.fiveLink.linkOffice.survey.domain.SurveyQuestion;
 import com.fiveLink.linkOffice.survey.domain.SurveyQuestionDto;
-import com.fiveLink.linkOffice.survey.domain.SurveyText;
 import com.fiveLink.linkOffice.survey.repository.SurveyOptionRepository;
+import com.fiveLink.linkOffice.survey.repository.SurveyParticipantRepository;
 import com.fiveLink.linkOffice.survey.repository.SurveyQuestionRepository;
 import com.fiveLink.linkOffice.survey.repository.SurveyRepository;
 import com.fiveLink.linkOffice.survey.repository.SurveyTextRepository;
@@ -32,22 +34,23 @@ public class SurveyService {
     private final SurveyOptionRepository surveyOptionRepository;
     private final SurveyQuestionRepository surveyQuestionRepository;
     private final SurveyTextRepository surveyTextRepository;
-    
+    private final SurveyParticipantRepository surveyParticipantRepository;
     @Autowired
     public SurveyService(SurveyRepository surveyRepository, MemberRepository memberRepository, SurveyOptionRepository surveyOptionRepository,
-    		SurveyQuestionRepository surveyQuestionRepository, SurveyTextRepository surveyTextRepository) {
+    		SurveyQuestionRepository surveyQuestionRepository, SurveyTextRepository surveyTextRepository, SurveyParticipantRepository surveyParticipantRepository) {
         this.surveyRepository = surveyRepository;
         this.memberRepository = memberRepository;
         this.surveyOptionRepository = surveyOptionRepository;
         this.surveyQuestionRepository = surveyQuestionRepository;
         this.surveyTextRepository = surveyTextRepository;
+        this.surveyParticipantRepository = surveyParticipantRepository;
     }
     
-    private List<SurveyDto> convertToDtoList(List<Survey> surveys) {
-        return surveys.stream().map(survey -> {
-            Integer participantStatus = survey.getSurveyParticipant().isEmpty() ? null
-                    : survey.getSurveyParticipant().get(0).getSurveyParticipantStatus();
-            
+    private List<SurveyDto> convertToDtoList(List<Object[]> surveys) {
+        return surveys.stream().map(objects -> {
+            Survey survey = (Survey) objects[0]; // 첫 번째 요소는 Survey 객체
+            Integer participantStatus = (Integer) objects[1]; // 두 번째 요소는 참여 상태 (surveyParticipantStatus)
+
             return SurveyDto.builder()
                     .survey_no(survey.getSurveyNo())
                     .survey_title(survey.getSurveyTitle())
@@ -55,14 +58,14 @@ public class SurveyService {
                     .survey_end_date(survey.getSurveyEndDate())
                     .survey_status(survey.getSurveyStatus())
                     .member_name(survey.getMember().getMemberName())
-                    .survey_participant_status(participantStatus) 
+                    .survey_participant_status(participantStatus) // 설문 참여 상태 추가
                     .build();
         }).collect(Collectors.toList());
     }
 
     
     public Page<SurveyDto> getAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
-        Page<Survey> results = null;
+        Page<Object[]> results = null;  // Survey와 surveyParticipantStatus를 함께 받음
 
         String searchText = searchDto.getSearch_text();
         if (searchText != null && !searchText.isEmpty()) {
@@ -82,20 +85,28 @@ public class SurveyService {
                     break;
             }
         } else {
-            results = surveyRepository.findSurveyAll(memberNo, pageable);
+            results = surveyRepository.findSurveyAll(memberNo, pageable);  // 전체 조회
         }
-        List<Survey> filteredResults = results.getContent().stream()
-            .filter(survey -> survey.getSurveyStatus() == 0 || survey.getSurveyStatus() == 1)
+
+        // filter에서는 survey의 상태를 확인해야 하므로 Object[]에서 Survey로 변환
+        List<Object[]> filteredResults = results.getContent().stream()
+            .filter(objArr -> {
+                Survey survey = (Survey) objArr[0];  // 첫 번째 값은 Survey 객체로 캐스팅
+                return survey.getSurveyStatus() == 0 || survey.getSurveyStatus() == 1;  // 상태 필터링
+            })
             .collect(Collectors.toList());
 
+        // SurveyDto로 변환하는 단계
         List<SurveyDto> surveyDtoList = convertToDtoList(filteredResults); 
-        return new PageImpl<>(surveyDtoList, pageable, filteredResults.size());
+        return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
     }
+
     
     
     // 마감된 설문조사 목록을 가져오는 메서드
+ // 마감된 설문조사 목록을 가져오는 메서드
     public Page<SurveyDto> getEndAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
-        Page<Survey> results = null;
+        Page<Object[]> results = null;  // Object[] 타입으로 변경
 
         String searchText = searchDto.getSearch_text();
         if (searchText != null && !searchText.isEmpty()) {
@@ -122,11 +133,12 @@ public class SurveyService {
         return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
     }
     
-    // 진행중인 설문조사 목록을 가져오는 메서드
+ // 진행중인 설문조사 목록을 가져오는 메서드
     public Page<SurveyDto> getIngAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
-        Page<Survey> results = null;
-
+        Page<Object[]> results = null; // Page<Object[]>로 변경
         String searchText = searchDto.getSearch_text();
+        System.out.println(memberNo);
+        
         if (searchText != null && !searchText.isEmpty()) {
             int searchType = searchDto.getSearch_type();
             switch (searchType) {
@@ -147,44 +159,65 @@ public class SurveyService {
             results = surveyRepository.findAllOngoingSurveysForMember(memberNo, pageable);
         }
 
-        List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent());
+        List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent()); 
         return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
     }
     
-    public SurveyDto selectSurveyOne(Long survey_no) {
-    	Survey survey = surveyRepository.findBysurveyNo(survey_no);
-    	SurveyDto dto = SurveyDto.builder()
-    			.survey_no(survey.getSurveyNo())
-                .survey_title(survey.getSurveyTitle())
-                .survey_start_date(survey.getSurveyStartDate())
-                .survey_end_date(survey.getSurveyEndDate())
-                .survey_status(survey.getSurveyStatus())
-                .member_name(survey.getMember().getMemberName())
-                .build();
-    	return dto;
-    }
-    
-    public List<SurveyQuestionDto> getSurveyQuestions(Long surveyNo) {
-        List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
-        return questions.stream().map(question -> {
-            List<Long> optionNo = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
-                    .stream()
-                    .map(SurveyOption::getSurveyOptionNo)
-                    .collect(Collectors.toList());
-            List<Long> textNo = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
-                    .stream()
-                    .map(SurveyText::getSurveyTextNo)
-                    .collect(Collectors.toList());
-            return SurveyQuestionDto.builder()
-                    .survey_question_no(question.getSurveyQuestionNo())
-                    .survey_no(question.getSurvey().getSurveyNo())
-                    .survey_question_text(question.getSurveyQuestionText())
-                    .survey_question_type(question.getSurveyQuestionType())
-                    .survey_question_essential(question.getSurveyQuestionEssential())
-                    .survey_option_no(optionNo)
-                    .survey_text_no(textNo)
-                    .build();
-        }).collect(Collectors.toList());
+    public SurveyDto selectSurveyOne(Long surveyNo) {
+        Survey survey = surveyRepository.findBysurveyNo(surveyNo);
+        return SurveyDto.builder()
+            .survey_no(survey.getSurveyNo())
+            .survey_title(survey.getSurveyTitle())
+            .survey_create_date(survey.getSurveyCreateDate())
+            .survey_start_date(survey.getSurveyStartDate())
+            .survey_end_date(survey.getSurveyEndDate())
+            .survey_status(survey.getSurveyStatus())
+            .survey_description(survey.getSurveyDescription())
+            .member_name(survey.getMember().getMemberName())
+            .build();
     }
 
+    public List<SurveyQuestionDto> getSurveyQuestions(Long surveyNo) {
+        List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
+        return questions.stream().map(question -> SurveyQuestionDto.builder()
+            .survey_question_no(question.getSurveyQuestionNo())
+            .survey_no(question.getSurvey().getSurveyNo())
+            .survey_question_text(question.getSurveyQuestionText())
+            .survey_question_type(question.getSurveyQuestionType())
+            .survey_question_essential(question.getSurveyQuestionEssential())
+            .build()).collect(Collectors.toList());
+    }
+
+    public boolean hasUserParticipated(Long surveyNo, Long memberNo) {
+        SurveyParticipant participant = surveyParticipantRepository.findBySurveyNoAndMemberNo(surveyNo, memberNo);
+        return participant != null && participant.getSurveyParticipantStatus() == 1;
+    }
+
+    // 설문 전체 참여자 수
+    public int getTotalParticipants(Long surveyNo) {
+        return surveyParticipantRepository.countBySurveyNo(surveyNo);
+    }
+
+    // 설문 참여 완료자 수
+    public int getCompletedParticipants(Long surveyNo) {
+        return surveyParticipantRepository.countCompletedBySurveyNo(surveyNo);
+    }
+
+    // 질문별 참여자 수 계산
+    public int getParticipantsByQuestion(Long questionNo) {
+        return surveyParticipantRepository.countByQuestionAndStatus(questionNo);
+    }
+
+    // 설문 질문 및 통계 데이터를 처리하는 메소드
+    public Map<Long, Integer> calculateParticipationRates(List<SurveyQuestionDto> questions, int totalParticipants) {
+        Map<Long, Integer> participationRates = new HashMap<>();
+
+        for (SurveyQuestionDto question : questions) {
+            int participantsForQuestion = getParticipantsByQuestion(question.getSurvey_question_no());
+            int participationRate = (int) ((participantsForQuestion / (double) totalParticipants) * 100);
+            participationRates.put(question.getSurvey_question_no(), participationRate);
+        }
+
+        return participationRates;
+    }
 }

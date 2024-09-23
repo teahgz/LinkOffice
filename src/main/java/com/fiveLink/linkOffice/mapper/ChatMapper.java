@@ -5,6 +5,7 @@ import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,19 @@ public interface ChatMapper {
     String selectMemberChatRoomName(Long chatRoomNo);
     //채팅방 멤버 가져오기
     List<Long> getMemberInfo(Long chatRoomNo);
+
     //개인 채팅방 정보 가져오기
     List<ChatMemberDto> getMembersByChatRoomNo(Long chatRoomNo);
+
+    //채팅방 나가기
+    int chatRoomOut(Long chatRoomNo, Long memberNo);
+
+    //채팅방 고정
+    int chatRoomPin(Long chatRoomNo, Long memberNo, int status, LocalDateTime updateTime);
+    int selectChatPin(Long chatRoomNo, Long memberNo);
+
+    //참여자 수
+    int countParicipant(Long chatRoomNo);
+
     
 }

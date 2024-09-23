@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.document.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -410,19 +411,10 @@ public class DocumentApiController {
        Long parentFolderNo = parentFolder.getDocumentFolderNo();
        if (documentFileList != null && !documentFileList.isEmpty()) {
            for (DocumentFile file : documentFileList) {
-               DocumentFile newFile = new DocumentFile();
-               newFile.setDocumentFileNo(file.getDocumentFileNo());
-               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-               newFile.setDocumentFolder(parentFolder); 
-               newFile.setMember(file.getMember()); 
-               newFile.setDocumentFileSize(file.getDocumentFileSize());
-               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-               newFile.setDocumentFileStatus(file.getDocumentFileStatus());
-               
-               // 새 파일 저장
-               documentFileRepository.save(newFile);
+               file.setDocumentFolder(parentFolder);
+               file.setDocumentFileUpdateDate(LocalDateTime.now());              
+               // 파일 저장
+               documentFileRepository.save(file);
            }
        }
        // 자식 폴더가 존재하는 경우
@@ -434,52 +426,23 @@ public class DocumentApiController {
                // 자식 폴더의 파일을 최상위 폴더로 옮김
                if (childFileList != null && !childFileList.isEmpty()) {
                    for (DocumentFile file : childFileList) {
-                       DocumentFile newFile = new DocumentFile();
-                       newFile.setDocumentFileNo(file.getDocumentFileNo());
-                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-                       newFile.setDocumentFolder(parentFolder); 
-                       newFile.setMember(file.getMember()); 
-                       newFile.setDocumentFileSize(file.getDocumentFileSize());
-                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-                       newFile.setDocumentFileStatus(file.getDocumentFileStatus());
-
-                       // 새 파일 저장
-                       documentFileRepository.save(newFile);
+                	   file.setDocumentFolder(parentFolder);
+                	   file.setDocumentFileUpdateDate(LocalDateTime.now());              
+                       // 파일 저장
+                       documentFileRepository.save(file);
                    }
                }
                // 자식 폴더도 삭제
-               DocumentFolder updatedChildFolder = DocumentFolder.builder()
-                       .documentFolderNo(childFolder.getDocumentFolderNo())
-                       .documentFolderName(childFolder.getDocumentFolderName())
-                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
-                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
-                       .department(childFolder.getDepartment())
-                       .documentBoxType(childFolder.getDocumentBoxType())
-                       .member(childFolder.getMember())
-                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
-                       .documentFolderUpdateDate(LocalDateTime.now())
-                       .documentFolderStatus(1L)
-                       .build();
+               childFolder.setDocumentFolderStatus(1L);
+               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
                
                // 자식 폴더 저장
-               documentFolderRepository.save(updatedChildFolder);
+               documentFolderRepository.save(childFolder);
            }
        }
-       DocumentFolder newDocumentFolder = DocumentFolder.builder()
-	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
-	            .documentFolderName(documentfolder.getDocumentFolderName())
-	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
-	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
-	            .department(documentfolder.getDepartment())
-	            .documentBoxType(documentfolder.getDocumentBoxType())
-	            .member(documentfolder.getMember())
-	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
-	            .documentFolderUpdateDate(LocalDateTime.now())
-	            .documentFolderStatus(1L)
-	            .build();
-       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+       documentfolder.setDocumentFolderStatus(1L);
+       documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+       if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
     	   resultMap.put("res_msg", "삭제 완료되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);
@@ -506,19 +469,10 @@ public class DocumentApiController {
        // 파일리스트를 휴지통으로 옮김 
        if (documentFileList != null && !documentFileList.isEmpty()) {
            for (DocumentFile file : documentFileList) {
-               DocumentFile newFile = new DocumentFile();
-               newFile.setDocumentFileNo(file.getDocumentFileNo());
-               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-               newFile.setDocumentFolder(file.getDocumentFolder()); 
-               newFile.setMember(file.getMember()); 
-               newFile.setDocumentFileSize(file.getDocumentFileSize());
-               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-               newFile.setDocumentFileStatus(1L);
-               
+        	   file.setDocumentFileUpdateDate(LocalDateTime.now());
+        	   file.setDocumentFileStatus(1L);
                // 새 파일 저장
-               documentFileRepository.save(newFile);
+               documentFileRepository.save(file);
            }
        }
        // 자식 폴더 조회
@@ -531,53 +485,24 @@ public class DocumentApiController {
                
                if (childFileList != null && !childFileList.isEmpty()) {
                    for (DocumentFile file : childFileList) {
-                       DocumentFile newFile = new DocumentFile();
-                       newFile.setDocumentFileNo(file.getDocumentFileNo());
-                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-                       newFile.setDocumentFolder(file.getDocumentFolder()); 
-                       newFile.setMember(file.getMember()); 
-                       newFile.setDocumentFileSize(file.getDocumentFileSize());
-                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-                       newFile.setDocumentFileStatus(1L);
+                	   file.setDocumentFileStatus(1L);
+                	   file.setDocumentFileUpdateDate(LocalDateTime.now());
                        
                        // 새 파일 저장
-                       documentFileRepository.save(newFile);
+                       documentFileRepository.save(file);
                    }
                }
                // 자식 폴더도 삭제
-               DocumentFolder updatedChildFolder = DocumentFolder.builder()
-                       .documentFolderNo(childFolder.getDocumentFolderNo())
-                       .documentFolderName(childFolder.getDocumentFolderName())
-                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
-                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
-                       .department(childFolder.getDepartment())
-                       .documentBoxType(childFolder.getDocumentBoxType())
-                       .member(childFolder.getMember())
-                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
-                       .documentFolderUpdateDate(LocalDateTime.now())
-                       .documentFolderStatus(1L)
-                       .build();
+               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+               childFolder.setDocumentFolderStatus(1L);
                
                // 자식 폴더 저장
-               documentFolderRepository.save(updatedChildFolder);
+               documentFolderRepository.save(childFolder);
            }
        }
-       DocumentFolder newDocumentFolder = DocumentFolder.builder()
-	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
-	            .documentFolderName(documentfolder.getDocumentFolderName())
-	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
-	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
-	            .department(documentfolder.getDepartment())
-	            .documentBoxType(documentfolder.getDocumentBoxType())
-	            .member(documentfolder.getMember())
-	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
-	            .documentFolderUpdateDate(LocalDateTime.now())
-	            .documentFolderStatus(1L)
-	            .build();
-       
-       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+       documentfolder.setDocumentFolderStatus(1L);
+       documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+       if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
     	   resultMap.put("res_msg", "삭제 완료되었습니다.");
        }
@@ -616,19 +541,9 @@ public class DocumentApiController {
        Long parentFolderNo = parentFolder.getDocumentFolderNo();
        if (documentFileList != null && !documentFileList.isEmpty()) {
            for (DocumentFile file : documentFileList) {
-               DocumentFile newFile = new DocumentFile();
-               newFile.setDocumentFileNo(file.getDocumentFileNo());
-               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-               newFile.setDocumentFolder(parentFolder); 
-               newFile.setMember(file.getMember()); 
-               newFile.setDocumentFileSize(file.getDocumentFileSize());
-               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-               newFile.setDocumentFileStatus(file.getDocumentFileStatus());
-               
+        	   file.setDocumentFolder(parentFolder);
                // 새 파일 저장
-               documentFileRepository.save(newFile);
+               documentFileRepository.save(file);
            }
        }
        // 자식 폴더가 존재하는 경우
@@ -640,52 +555,22 @@ public class DocumentApiController {
                // 자식 폴더의 파일을 최상위 폴더로 옮김
                if (childFileList != null && !childFileList.isEmpty()) {
                    for (DocumentFile file : childFileList) {
-                       DocumentFile newFile = new DocumentFile();
-                       newFile.setDocumentFileNo(file.getDocumentFileNo());
-                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-                       newFile.setDocumentFolder(parentFolder); 
-                       newFile.setMember(file.getMember()); 
-                       newFile.setDocumentFileSize(file.getDocumentFileSize());
-                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-                       newFile.setDocumentFileStatus(file.getDocumentFileStatus());
+                	   file.setDocumentFolder(parentFolder);
 
                        // 새 파일 저장
-                       documentFileRepository.save(newFile);
+                       documentFileRepository.save(file);
                    }
                }
                // 자식 폴더도 삭제
-               DocumentFolder updatedChildFolder = DocumentFolder.builder()
-                       .documentFolderNo(childFolder.getDocumentFolderNo())
-                       .documentFolderName(childFolder.getDocumentFolderName())
-                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
-                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
-                       .department(childFolder.getDepartment())
-                       .documentBoxType(childFolder.getDocumentBoxType())
-                       .member(childFolder.getMember())
-                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
-                       .documentFolderUpdateDate(LocalDateTime.now())
-                       .documentFolderStatus(1L)
-                       .build();
-               
+               childFolder.setDocumentFolderStatus(1L);
+               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
                // 자식 폴더 저장
-               documentFolderRepository.save(updatedChildFolder);
+               documentFolderRepository.save(childFolder);
            }
        }
-       DocumentFolder newDocumentFolder = DocumentFolder.builder()
-	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
-	            .documentFolderName(documentfolder.getDocumentFolderName())
-	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
-	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
-	            .department(documentfolder.getDepartment())
-	            .documentBoxType(documentfolder.getDocumentBoxType())
-	            .member(documentfolder.getMember())
-	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
-	            .documentFolderUpdateDate(LocalDateTime.now())
-	            .documentFolderStatus(1L)
-	            .build();
-       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+       documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+       documentfolder.setDocumentFolderStatus(1L);
+       if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
     	   resultMap.put("res_msg", "삭제 완료되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);
@@ -724,19 +609,10 @@ public class DocumentApiController {
        Long parentFolderNo = parentFolder.getDocumentFolderNo();
        if (documentFileList != null && !documentFileList.isEmpty()) {
            for (DocumentFile file : documentFileList) {
-               DocumentFile newFile = new DocumentFile();
-               newFile.setDocumentFileNo(file.getDocumentFileNo());
-               newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-               newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-               newFile.setDocumentFolder(parentFolder); 
-               newFile.setMember(file.getMember()); 
-               newFile.setDocumentFileSize(file.getDocumentFileSize());
-               newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-               newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-               newFile.setDocumentFileStatus(file.getDocumentFileStatus());
-               
+        	   file.setDocumentFolder(parentFolder);
+        	   
                // 새 파일 저장
-               documentFileRepository.save(newFile);
+               documentFileRepository.save(file);
            }
        }
        // 자식 폴더가 존재하는 경우
@@ -748,52 +624,22 @@ public class DocumentApiController {
                // 자식 폴더의 파일을 최상위 폴더로 옮김
                if (childFileList != null && !childFileList.isEmpty()) {
                    for (DocumentFile file : childFileList) {
-                       DocumentFile newFile = new DocumentFile();
-                       newFile.setDocumentFileNo(file.getDocumentFileNo());
-                       newFile.setDocumentOriFileName(file.getDocumentOriFileName());
-                       newFile.setDocumentNewFileName(file.getDocumentNewFileName());
-                       newFile.setDocumentFolder(parentFolder); 
-                       newFile.setMember(file.getMember()); 
-                       newFile.setDocumentFileSize(file.getDocumentFileSize());
-                       newFile.setDocumentFileUploadDate(file.getDocumentFileUploadDate());
-                       newFile.setDocumentFileUpdateDate(file.getDocumentFileUpdateDate());
-                       newFile.setDocumentFileStatus(file.getDocumentFileStatus());
-
+                	   file.setDocumentFolder(parentFolder);
                        // 새 파일 저장
-                       documentFileRepository.save(newFile);
+                       documentFileRepository.save(file);
                    }
                }
                // 자식 폴더도 삭제
-               DocumentFolder updatedChildFolder = DocumentFolder.builder()
-                       .documentFolderNo(childFolder.getDocumentFolderNo())
-                       .documentFolderName(childFolder.getDocumentFolderName())
-                       .documentFolderParentNo(childFolder.getDocumentFolderParentNo())
-                       .documentFolderLevel(childFolder.getDocumentFolderLevel())
-                       .department(childFolder.getDepartment())
-                       .documentBoxType(childFolder.getDocumentBoxType())
-                       .member(childFolder.getMember())
-                       .documentFolderCreateDate(childFolder.getDocumentFolderCreateDate())
-                       .documentFolderUpdateDate(LocalDateTime.now())
-                       .documentFolderStatus(1L)
-                       .build();
-               
+               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+               childFolder.setDocumentFolderStatus(1L);
+
                // 자식 폴더 저장
-               documentFolderRepository.save(updatedChildFolder);
+               documentFolderRepository.save(childFolder);
            }
        }
-       DocumentFolder newDocumentFolder = DocumentFolder.builder()
-	    		.documentFolderNo(documentfolder.getDocumentFolderNo())
-	            .documentFolderName(documentfolder.getDocumentFolderName())
-	            .documentFolderParentNo(documentfolder.getDocumentFolderParentNo())
-	            .documentFolderLevel(documentfolder.getDocumentFolderLevel())
-	            .department(documentfolder.getDepartment())
-	            .documentBoxType(documentfolder.getDocumentBoxType())
-	            .member(documentfolder.getMember())
-	            .documentFolderCreateDate(documentfolder.getDocumentFolderCreateDate())
-	            .documentFolderUpdateDate(LocalDateTime.now())
-	            .documentFolderStatus(1L)
-	            .build();
-       if(documentFolderService.deleteFolder(newDocumentFolder) > 0) {
+       documentfolder.setDocumentFolderStatus(1L);
+       documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+       if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
     	   resultMap.put("res_msg", "삭제 완료되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);

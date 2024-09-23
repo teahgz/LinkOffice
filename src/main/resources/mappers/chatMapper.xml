@@ -8,7 +8,8 @@
         SELECT *
         FROM fl_chat_member
         WHERE member_no = #{memberNo}
-        ORDER BY chat_member_join_date DESC
+        AND chat_member_par = 0
+        ORDER BY chat_member_pin DESC, chat_member_pin_time DESC, chat_member_join_date DESC
     </select>
 <!-- 채팅 내용 가져오기   -->
     <select id="getChatMessages" parameterType="java.lang.Long" resultType="java.util.HashMap">
@@ -80,5 +81,40 @@
         SELECT *
         FROM fl_chat_member
         WHERE chat_room_no = #{chatRoomNo}
+    </select>
+
+    <!-- 채팅방 나가기   -->
+    <update id="chatRoomOut">
+        UPDATE fl_chat_member SET
+        chat_member_par = 1
+        WHERE  chat_room_no = #{chatRoomNo}
+        AND member_no = #{memberNo}
+
+    </update>
+
+    <!-- 채팅방 고정   -->
+    <update id="chatRoomPin">
+        UPDATE fl_chat_member SET
+        chat_member_pin = #{status},
+        chat_member_pin_time = #{updateTime}
+        WHERE chat_room_no = #{chatRoomNo}
+        AND member_no = #{memberNo}
+
+    </update>
+<!-- 채팅방 고정 여부 -->
+    <select id="selectChatPin" parameterType="java.lang.Long" resultType="int">
+        SELECT chat_member_pin
+        FROM fl_chat_member
+        WHERE chat_room_no = #{chatRoomNo}
+        AND member_no = #{memberNo}
+    </select>
+
+    <!-- 채팅방 참여자 수 -->
+    <select id="countParicipant" parameterType="java.lang.Long" resultType="int">
+        SELECT count(*)
+        FROM fl_chat_member
+        WHERE chat_room_no = #{chatRoomNo}
+        AND chat_member_par = 0
+        <!--   채팅방 참여자는 상태값 0     -->
     </select>
 </mapper>

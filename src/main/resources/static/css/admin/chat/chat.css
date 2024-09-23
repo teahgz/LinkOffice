@@ -105,8 +105,11 @@
 }
 
 .chatItem {
+    gap:10px;
     padding: 10px;
     cursor: pointer;
+    display:flex;
+    flex-direction:row;
 }
 
 .chatItem:hover {
@@ -127,7 +130,23 @@
     height: 60px;
     box-sizing: border-box;
 }
+.pin{
+    display:flex;
+    align-items:center;
+}
 
+.countParticipant {
+    color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+}
+.chatInfo {
+    display:flex;
+    gap:10px;
+    flex-direction:row;
+}
 .message-input {
     flex-grow: 1;
     border: 1px solid #ccc;
@@ -359,7 +378,7 @@
     right: 0;
     border-radius: 5px;
     background-color: white;
-    min-width: 120px;
+    min-width: 140px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }

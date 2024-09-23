@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
 function fetchAndRenderHolidays(today, attendanceDates) {
     // 연도와 월 추출
     var year = today.getFullYear();
-    var month = String(today.getMonth() + 1).padStart(2, '0'); // 1-based month, pad with zero
+    var month = String(today.getMonth() + 1).padStart(2, '0'); 
     
     // API 호출
     fetch(`/holidays?year=${year}&month=${month}`)

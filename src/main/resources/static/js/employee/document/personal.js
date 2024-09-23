@@ -195,10 +195,14 @@ $(function () {
 	            totalPages = Math.ceil(filteredFiles.length / pageSize);
 	            const fileTableBody = document.getElementById('file_table_body');
 	            fileTableBody.innerHTML = '';
-	
+	            // 체크박스 초기화 
+				$('#select_all').off('change');
+				$('#select_all').prop('checked', false);
 	            // 파일 목록이 존재할 때
 	            if (filteredFiles.length > 0) {
 	                $('.document_file_list').show();
+	                // 체크박스 활성화 
+	                $('#select_all').prop('disabled', false).prop('checked', false);
 	
 	                // 한 페이지에 10개씩 추가 
 	                const start = currentPage * pageSize;
@@ -212,10 +216,12 @@ $(function () {
 	                        <td>${file.document_ori_file_name}</td>
 	                        <td>${formatDate(file.document_file_upload_date)}</td>
 	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
-	                            '<input type="button" class="file_show_button" value="파일보기">' : ''}
+	                            `<a href="/document/file/view/${file.document_file_no}" class="file_show_button" target="_blank">미리보기</a>` : ''}
 	                        </td>
 	                        <td>${file.document_file_size}</td>
-	                        <td><input type="button" class="file_down_button" value="다운로드"></td>
+							<td>
+							    <a href="/document/file/download/${file.document_file_no}" class="file_down_button">다운로드</a>
+							</td>
 	                        <td><input type="button" class="delete_button" value="삭제"
 	                            id="${file.document_file_no}">
 	                        </td>
@@ -247,6 +253,8 @@ $(function () {
 	
 	                // 페이징 버튼 숨기기
 	                paginationDiv.innerHTML = '';
+	                // 체크박스 비활성화 
+	                $('#select_all').prop('disabled', true);
 	            }
 	
 	            // 파일 삭제
@@ -280,10 +288,33 @@ $(function () {
 	                    });
 	                }
 	            });
+				// 파일 선택 다운
+				$('#select_down').off('click').on('click', function() {
+				    const selectedFileNos = [];				
+				    $('.file_checkbox:checked').each(function() {
+				        const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+				        selectedFileNos.push(fileNo);
+				    });
+				    if (selectedFileNos.length > 0) {
+				        selectedFileNos.forEach(fileNo => {
+				            const downloadLink = document.createElement('a');
+				            downloadLink.href = `/document/file/download/${fileNo}`;
+				            downloadLink.download = '';
+				            document.body.appendChild(downloadLink);
+				            downloadLink.click();
+				            document.body.removeChild(downloadLink);
+				        });
+				    } else {
+				        Swal.fire({
+				            icon: 'warning',
+				            text: '다운할 파일을 선택해 주세요.',
+				            confirmButtonText: '확인'
+				        });
+				    }
+				});
 	        }
 	    });
 	}
-
 
 	// 페이징 버튼 업데이트 
     function updatePagination() {
@@ -976,7 +1007,7 @@ $(function () {
 	    });
 	    // 검색 버튼 클릭 시 파일 목록을 다시 로드
 	    $('#search_button').on('click', function() {
-	        searchInputValue = $('#file_name_input').val(); // 검색어 저장
+	        searchInputValue = $('#file_name_input').val(); 
 	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
 	        if (selectedFolderNo) {
 	            loadFiles(selectedFolderNo, searchInputValue);

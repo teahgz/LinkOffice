@@ -1,8 +1,10 @@
 package com.fiveLink.linkOffice.schedule.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
 import com.fiveLink.linkOffice.schedule.service.ScheduleService;
@@ -170,8 +174,150 @@ public class ScheduleApiController {
         return "success";  
     }
 
+    // 관리자 - 월간 일정 
+    @ResponseBody
+    @GetMapping("/api/company/schedules")
+    public List<ScheduleDto> getSchedules() {
+        List<Schedule> schedules = scheduleService.getAllSchedules(); 
+        
+        List<ScheduleDto> scheduleDtos = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            ScheduleDto dto = ScheduleDto.toDto(schedule);
+            scheduleDtos.add(dto);
+        }
+
+        System.out.println("scheduleDtos : " + scheduleDtos);
+        return scheduleDtos;
+    }
+
+    // 관리자 - 반복 일정  
+    @ResponseBody
+    @GetMapping("/api/repeat/schedules")
+    public List<ScheduleRepeatDto> getRepeatSchedules() {
+        List<ScheduleRepeat> scheduleRepeats = scheduleService.getAllRepeatSchedules(); 
+        
+        List<ScheduleRepeatDto> scheduleRepeatDtos = new ArrayList<>();
+        for (ScheduleRepeat scheduleRepeat : scheduleRepeats) {
+        	ScheduleRepeatDto dto = ScheduleRepeatDto.toDto(scheduleRepeat);
+        	scheduleRepeatDtos.add(dto);
+        }
+
+        System.out.println("scheduleRepeatDtos : " + scheduleRepeatDtos);
+        return scheduleRepeatDtos;
+    }
+ 
+    // 관리자 - 일정 수정
+    @ResponseBody
+    @GetMapping("/schedule/edit/{eventNo}")
+    public Map<String, Object> getScheduleById(@PathVariable("eventNo") Long eventNo) {
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            ScheduleDto scheduleDto = scheduleService.getScheduleById(eventNo);
+            ScheduleRepeatDto scheduleRepeatDto = scheduleService.getScheduleRepeatById(eventNo); // 반복 일정 정보 가져오기
+            
+            if (scheduleDto != null) {
+                resultMap.put("res_code", "200");
+                resultMap.put("schedule", scheduleDto);
+                resultMap.put("scheduleRepeat", scheduleRepeatDto);  
+            } else {
+                resultMap.put("res_code", "404");
+                resultMap.put("res_msg", "일정을 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            resultMap.put("res_code", "500");
+            resultMap.put("res_msg", "서버 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+        return resultMap;
+    } 
 
     
-	 
+ // 관리자 - 반복 일정 수정  
+ 	/*
+ 	 * @ResponseBody
+ 	 * 
+ 	 * @PostMapping("/company/schedule/edit/recurring/{eventId}") public Map<String,
+ 	 * String> editRecurringEvent(
+ 	 * 
+ 	 * @PathVariable Long eventId,
+ 	 * 
+ 	 * @RequestBody ScheduleDto scheduleDto,
+ 	 * 
+ 	 * @RequestParam("editOption") String editOption) {
+ 	 * 
+ 	 * Map<String, String> resultMap = new HashMap<>(); resultMap.put("res_code",
+ 	 * "404"); resultMap.put("res_msg", "일정 수정 중 오류가 발생했습니다.");
+ 	 * 
+ 	 * try { // 선택한 수정 옵션에 따라 다른 서비스 메서드를 호출 switch (editOption) { case "single": //
+ 	 * 이 일정만 수정 scheduleService.updateSingleEvent(eventId, scheduleDto);
+ 	 * resultMap.put("res_code", "200"); resultMap.put("res_msg",
+ 	 * "일정이 성공적으로 수정되었습니다."); break;
+ 	 * 
+ 	 * case "future": // 이 일정 및 향후 일정 수정 scheduleService.updateFutureEvents(eventId,
+ 	 * scheduleDto); resultMap.put("res_code", "200"); resultMap.put("res_msg",
+ 	 * "일정이 성공적으로 수정되었습니다."); break;
+ 	 * 
+ 	 * case "all": // 모든 일정 수정 scheduleService.updateAllEvents(eventId,
+ 	 * scheduleDto); resultMap.put("res_code", "200"); resultMap.put("res_msg",
+ 	 * "일정이 성공적으로 수정되었습니다."); break;
+ 	 * 
+ 	 * default: resultMap.put("res_code", "400"); resultMap.put("res_msg",
+ 	 * "유효하지 않은 수정 옵션입니다."); break; } } catch (Exception e) {
+ 	 * resultMap.put("res_msg", e.getMessage()); }
+ 	 * 
+ 	 * return resultMap; }
+ 	 */
 
-}
+    // 일반 수정
+    @PostMapping("/company/schedule/edit/{eventId}")
+    @ResponseBody
+    public String editSchedule(@PathVariable("eventId") Long eventId, @RequestBody Map<String, Object> request) {
+        System.out.println("Received data: " + request);
+
+        ScheduleDto scheduleDto = new ScheduleDto();
+        ScheduleRepeatDto scheduleRepeatDto = new ScheduleRepeatDto();
+ 
+        scheduleDto.setSchedule_no(eventId);
+        scheduleDto.setSchedule_title((String) request.get("title"));
+        scheduleDto.setSchedule_comment((String) request.get("description"));
+        scheduleDto.setSchedule_start_date((String) request.get("startDate"));
+        scheduleDto.setSchedule_end_date((String) request.get("endDate"));
+        scheduleDto.setSchedule_allday(Boolean.TRUE.equals(request.get("allDay")) ? 1L : 0L);
+        scheduleDto.setSchedule_start_time((String) request.get("startTime"));
+        scheduleDto.setSchedule_end_time((String) request.get("endTime"));
+        scheduleDto.setSchedule_category_no(getLongValue(request.get("category")));
+        scheduleDto.setSchedule_type(3L);
+ 
+        Long repeatValue = getLongValue(request.get("repeat"));
+        scheduleDto.setSchedule_repeat(repeatValue != null && repeatValue != 0 ? 1L : 0L);
+
+        if (repeatValue != null && repeatValue != 0) {
+            scheduleRepeatDto.setSchedule_repeat_type(repeatValue);
+            scheduleRepeatDto.setSchedule_repeat_day(getLongValue(request.get("schedule_day_of_week")));
+            scheduleRepeatDto.setSchedule_repeat_week(getLongValue(request.get("schedule_week")));
+            scheduleRepeatDto.setSchedule_repeat_date(getLongValue(request.get("schedule_date")));
+            scheduleRepeatDto.setSchedule_repeat_month(getLongValue(request.get("schedule_month")));
+            scheduleRepeatDto.setSchedule_repeat_end_date((String) request.get("repeatEndDate"));
+        } 
+
+        scheduleService.updateCompanySchedule(eventId, scheduleDto, scheduleRepeatDto);
+
+        return "success";
+    }
+
+    private Long getLongValue(Object value) {
+        if (value == null) return null;
+        if (value instanceof Integer) return ((Integer) value).longValue();
+        if (value instanceof Long) return (Long) value;
+        if (value instanceof String) {
+            try {
+                return Long.parseLong((String) value);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+
+ }

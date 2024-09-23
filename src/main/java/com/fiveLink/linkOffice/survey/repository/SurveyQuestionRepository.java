@@ -11,5 +11,5 @@ import java.util.List;
 public interface SurveyQuestionRepository extends JpaRepository<SurveyQuestion, Long> {
 
     @Query("SELECT q FROM SurveyQuestion q WHERE q.survey.surveyNo = :surveyNo")
-    List<SurveyQuestion> findBySurveyNo(@Param("surveyNo") Long surveyNo); // @Param 추가
+    List<SurveyQuestion> findBySurveyNo(@Param("surveyNo") Long surveyNo); 
 }

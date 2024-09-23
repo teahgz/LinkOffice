@@ -1,136 +1,94 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>추석 행사 참여 의향 조사</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    .container {
-      max-width: 800px;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .header .info {
-      flex: 1;
-    }
-
-    .header table {
-      margin-left: 20px;
-      border-collapse: collapse;
-      text-align: center;
-    }
-
-    .header table, .header th, .header td {
-      border: 1px solid #ccc;
-      padding: 8px;
-    }
-
-    .question {
-      margin: 20px 0;
-    }
-
-    .radio-group {
-      margin: 10px 0;
-    }
-
-    .submit-buttons {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .submit-buttons button {
-      margin: 0 10px;
-      padding: 10px 20px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .submit-buttons button.cancel {
-      background-color: #6c757d;
-    }
-
-    .submit-buttons button:hover {
-      opacity: 0.9;
-    }
-
-    .fixed-box {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      padding: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-  </style>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<th:block layout:fragment="content">
+    <link th:href="@{/css/employee/survey/survey_question_detail.css}" rel="stylesheet" type="text/css">
+<section>
 <h1>설문 상세</h1>
 <div class="container">
   <div class="header">
     <div th:if="${dto != null}">
-      <h1 th:text="${dto.survey_title}"></h1>
-    <p>작성자: <span th:text="${dto.member_name}"></span></p>
-    <p>설문 기간: <span th:text="${dto.survey_start_date} + ' ~ ' + ${dto.survey_end_date}"></span></p>
-    <p>설문 상태: <span th:text="${dto.survey_status == 0 ? '진행 중' : '종료'}"></span></p>
+      <h1 th:text="${dto.survey_title}"></h1><br>
+      <h3 th:text="${dto.survey_description}"></h3><br>
+      <p>작성자: <span th:text="${dto.member_name}"></span></p>
+      <p>설문 기간: <span th:text="|${dto.survey_start_date} ~ ${dto.survey_end_date}|"></span></p>
+      <p>설문 상태: <span th:text="${dto.survey_status == 0 ? '진행 중' : '종료'}"></span></p>
     </div>
-    <table>
-      <tr>
-        <th>전체 참여자</th>
-        <th>참여 완료</th>
-        <th>미참여</th>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>2</td>
-        <td>2</td>
-      </tr>
-    </table>
-  </div>
+  </div><br>
 
-  <div th:each="question : ${questions}">
-    <!-- 질문 텍스트 출력 -->
-    <p th:text="${question.survey_question_text}">질문 내용</p>
-    
-    <!-- 객관식 질문일 경우 (questionType이 0일 때) -->
+ <div class="container">
+  <!-- 질문 출력 -->
+  <div th:each="question, iterStat : ${questions}">
+    <!-- 질문 번호 및 질문 텍스트 -->
+    <p><strong th:text="${iterStat.count + '.'}">1.</strong> <span th:text="${question.survey_question_text}">질문 텍스트</span></p>
+
+    <!-- 객관식 질문일 경우 -->
     <div th:if="${question.survey_question_type == 0}">
-        <div th:each="option : ${question.survey_option_no}">
-            <input type="radio" th:id="${'option' + option}" th:name="${'question' + question.survey_question_no}"
-                   th:value="${option}">
-            <label th:for="${'option' + option}" th:text="${option}"></label>
-        </div>
+      <div th:each="option, iterOpt : ${question.survey_option_answer}">
+        <input type="radio" th:id="${'option' + iterOpt.index}" th:name="${'question' + question.survey_question_no}"
+               th:value="${option}" class="survey-option" />
+        <label th:for="${'option' + iterOpt.index}" th:text="${option}">옵션 텍스트</label>
+      </div>
     </div>
 
-    <!-- 주관식 질문일 경우 (questionType이 1일 때) -->
+    <!-- 주관식 질문일 경우 -->
     <div th:if="${question.survey_question_type == 1}">
-        <textarea th:name="${'question' + question.survey_question_no}" rows="4" style="width: 100%;"></textarea>
+      <input type="text" th:name="${'question' + question.survey_question_no}" class="survey-text" />
     </div>
+  </div>
 </div>
 
-<!-- 고정된 답변 개수 상자 -->
-<div class="fixed-box">
-  <p>답변 개수</p>
-  <p><strong>1/2</strong></p>
-</div>
 
-</body>
+  <!-- 고정된 답변 개수 상자 -->
+  <div class="fixed-box">
+    <p>답변 개수</p>
+    <p><strong id="answered-count">0</strong>/<span id="total-count">0</span></p>
+  </div>
+</div>
+</section>
+
+<script>
+  function updateAnswerCount() {
+      let answeredCount = 0;
+
+      const radioGroups = new Set();
+      document.querySelectorAll('.survey-option:checked').forEach(radio => {
+          radioGroups.add(radio.name);  
+      });
+
+      document.querySelectorAll('.survey-text').forEach(input => {
+          if (input.value.trim() !== '') {
+              answeredCount++;
+          }
+      });
+      answeredCount += radioGroups.size;
+
+      document.getElementById('answered-count').textContent = answeredCount;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+      const totalQuestions = document.querySelectorAll('.container > .question').length;
+      document.getElementById('total-count').textContent = totalQuestions;
+  });
+  
+  // 라디오 버튼 체크 해제 기능 구현
+  document.addEventListener("DOMContentLoaded", function () {
+      let lastCheckedRadio = null;
+
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+          radio.addEventListener('click', function () {
+              if (this === lastCheckedRadio) {
+                  this.checked = false;
+                  lastCheckedRadio = null;  
+              } else {
+                  lastCheckedRadio = this;  
+              }
+
+              updateAnswerCount();  
+          });
+      });
+  });
+</script>
+
+</th:block>
 </html>
