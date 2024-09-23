@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	var categoryColors = {};
 	var categoryNames = {};
 	
+	let selectedDate = null;
+	
 	$.ajax({
         url: '/categories',
         method: 'GET',
@@ -164,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	                info.el.style.cursor = 'pointer';  
 	            } else {
 	                info.el.style.cursor = 'default'; 
-	            }
+	            }  
 	        },
             googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
             eventSources: [
@@ -201,7 +203,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 return { domNodes: [] };
             }, 
-            dayMaxEvents: 3
+            dayMaxEvents: 3,
+            dateClick: function(info) {
+			    selectedDate = info.dateStr;  
+			    console.log(selectedDate);
+			    $('#eventDate').val(selectedDate);   
+			    $('#eventDate').change();
+    
+			    document.getElementById('eventModal').style.display = 'block';
+		    }
         });
 
         calendar.render();
@@ -222,6 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const comment = document.getElementById('eventViewComment');
 	    const createdDate = document.getElementById('eventViewCreatedDate');
 	    const repeatInfo = document.getElementById('eventViewRepeatInfo'); 
+	    const hiddenEventId = document.getElementById('eventId'); 
  
 	    title.textContent = event.title;
 	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
@@ -233,11 +244,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	    if(startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
 		} else if(endDate == null) {
-			dateRange.textContent = `${startDate} ${startTime} ~ ${endTime}`;
+			if(startTime === endTime) {
+				dateRange.textContent = `${startDate} ${startTime}`;				
+			} 
+			else {
+				dateRange.textContent = `${startDate} ${startTime} ~ ${endTime}`;	
+			}
 		} else {
 			dateRange.textContent = `${startDate} ~ ${endDate}`; 
 		}
-	 
+		
+	 	hiddenEventId.value = eventId;
 	    comment.textContent = event.extendedProps.comment; 
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
 	    repeatInfo.textContent = getRepeatInfoText(event.extendedProps.repeatType, event.extendedProps.repeatDay, event.extendedProps.repeatWeek , event.extendedProps.repeatDate , event.extendedProps.repeatMonth);
@@ -331,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (result.isConfirmed) {
 				document.getElementById('eventModal').style.display = 'none';
 				resetForm(createCompanyScheduleForm);
+				document.getElementById('eventRepeatModal').style.display = 'none';
 			}
 		});
 	});
@@ -422,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 일정 등록 
 	document.getElementById('eventForm').addEventListener('submit', function(event) {
+		console.log("등록 function");
 	    event.preventDefault();
 	 
 	    const title = document.getElementById('eventTitle').value.trim();
@@ -461,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            return;
 	        }
 	
-	        if (endTime <= startTime) {
+	        if (endTime < startTime) {
 	            showAlert('종료 시간은 시작 시간 이후로 설정해 주세요.');
 	            return;
 	        }
@@ -579,5 +598,184 @@ document.addEventListener('DOMContentLoaded', function() {
 	    `;
 	});
 	
+	// 일정 수정
+	document.getElementById('editEventBtn').addEventListener('click', function() { 
+	    const eventNo = document.getElementById('eventId').value;  
+	    openScheduleEditModal(eventNo);  
+	});
+	
+	// 수정 모달
+	function openScheduleEditModal(eventNo) {
+	    var modal = document.getElementById('eventModal');
+	    modal.style.display = 'block';
+	    document.getElementById('eventViewModal').style.display = 'none';
+		
+		const submitButton = document.getElementById('create_modal_submit');
+   		submitButton.textContent = '수정';
+    
+	    $.ajax({
+	        url: '/schedule/edit/' + eventNo,
+	        type: 'GET',
+	        dataType: 'json',
+	        success: function(data) {
+				console.log("scheduleDto : ", data.schedule);  
+        		console.log("scheduleRepeat : ", data.scheduleRepeat);
+				
+	            $('#eventId').val(data.schedule.schedule_no);  
+	            $('#isRecurring').val(data.schedule.schedule_repeat);  
+	            $('#category').val(data.schedule.schedule_category_no);
+	            $('#eventTitle').val(data.schedule.schedule_title);
+	            $('#eventDate').val(data.schedule.schedule_start_date);
+	            document.getElementById('eventDate').dispatchEvent(new Event('change'));
+	            
+	            if (data.schedule.schedule_allday === 1) {
+	                $('#allDay').prop('checked', true);
+	                document.getElementById('allDay').dispatchEvent(new Event('change'));
+	
+	                $('#endDate').val(data.schedule.schedule_end_date);
+	            } else {
+	                $('#allDay').prop('checked', false);
+	               document.getElementById('allDay').dispatchEvent(new Event('change')); 
+	                $('#startTime').val(data.schedule.schedule_start_time);
+	                $('#endTime').val(data.schedule.schedule_end_time);
+	            }
+	
+	            $('#description').val(data.schedule.schedule_comment);
+	             
+	            if (data.schedule.schedule_repeat === 1) {
+		            $('#repeatOption').val(data.scheduleRepeat.schedule_repeat_type);
+	                $('#repeatEndDate').val(data.scheduleRepeat.schedule_repeat_end_date);
+	            } 		             
+		        },
+	        error: function(xhr, status, error) {
+	            console.log("일정 정보를 불러오는 중 오류 발생: " + error);
+	        }
+	    });
+	}
+	
+	document.getElementById('create_modal_submit').addEventListener('click', function() {  
+	    event.preventDefault();
+	    
+	    const isRecurring = document.getElementById('isRecurring').value;  
+	    const eventId = document.getElementById('eventId').value;
+	    console.log("isRecurring : " + isRecurring);
+	    console.log("eventId : " + eventId);
+	    
+	    if (isRecurring === "1") { 
+			console.log("isRecurring"); 
+	        openEventRepeatModal();
+	    } else { 
+	        submitEventUpdate(); 
+	    }
+	});
+	
+	// 반복 일정 수정 모달 
+	function openEventRepeatModal() {
+		console.log("openEventRepeatModal"); 
+	    var repeatModal = document.getElementById('eventRepeatModal');
+	    repeatModal.style.display = 'block';
+	}
+	
+	document.getElementById('event_repeat_modal_btn').addEventListener('click', function() {
+	    const eventId = document.getElementById('eventId').value;
+	    const repeatEditOption = document.querySelector('input[name="repeatEditOption"]:checked').value;
 	 
+	    handleRecurringEventUpdate(eventId, repeatEditOption);
+	 
+	    document.getElementById('eventRepeatModal').style.display = 'none';
+	}); 
+	
+	// 반복 일정 수정  
+/*	function handleRecurringEventUpdate(eventId, repeatEditOption) {
+	    const eventData = getEventFormData();
+	    eventData.editOption = repeatEditOption;   
+	 
+	    $.ajax({
+	        type: "POST",
+	        url: '/company/schedule/edit/recurring/' + eventId,
+	        contentType: 'application/json',
+	        data: JSON.stringify(eventData),
+	        headers: {
+	            'X-CSRF-TOKEN': csrfToken,
+	        },
+	        success: function(response) {
+	            Swal.fire({
+	                text: '반복 일정이 수정되었습니다.',
+	                icon: 'success',
+	                confirmButtonText: '확인',
+	                confirmButtonColor: '#B1C2DD',
+	            }).then(function() {
+	                window.location.reload();
+	            });
+	        },
+	        error: function(xhr, status, error) {
+	            console.error('반복 일정 수정 오류: ', error);
+	        }
+	    });
+	}*/
+
+	// 일반 일정 수정
+	function submitEventUpdate() {
+	    const eventData = getEventFormData();
+	
+	    console.log(eventData);
+	    $.ajax({
+	        type: "POST",
+	        url: '/company/schedule/edit/' + document.getElementById('eventId').value,
+	        contentType: 'application/json',
+	        data: JSON.stringify(eventData),
+	        headers: {
+	            'X-CSRF-TOKEN': csrfToken,
+	        },
+	        success: function(response) {
+	            Swal.fire({
+	                text: '일정이 수정되었습니다.',
+	                icon: 'success',
+	                confirmButtonText: '확인',
+	                confirmButtonColor: '#B1C2DD',
+	            }).then(function() {
+	                window.location.reload();
+	            });
+	        },
+	        error: function(xhr, status, error) {
+	            console.error('일정 수정 오류: ', error);
+	        }
+	    });
+	}
+	
+	function getEventFormData() {
+	    const title = document.getElementById('eventTitle').value.trim();
+	    const category = document.getElementById('category').value;
+	    const startDate = document.getElementById('eventDate').value;
+	    const endDate = document.getElementById('endDate').value;
+	    const description = document.getElementById('description').value.trim();
+	    const allDay = document.getElementById('allDay').checked;
+	    const startTime = document.getElementById('startTime').value;
+	    const endTime = document.getElementById('endTime').value;
+	    const repeatOption = document.getElementById('repeatOption').value;
+	    const repeatEndDate = document.getElementById('repeatEndDate').value;
+	
+	    const repeatDayOfWeek = repeatOption === "2" || repeatOption === "4" ? getDayOfWeek() : null; // 요일
+	    const repeatWeek = repeatOption === "4" ? getWeekNumber() : null; // 주차
+	    const repeatDate = repeatOption === "3" || repeatOption === "5" ? new Date(repeat_insert_date).getDate() : null; // 특정 일
+	    const repeatMonth = repeatOption === "5" ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
+	
+	    return {
+	        title: title,
+	        category: category,
+	        startDate: startDate,
+	        endDate: allDay ? endDate : null,
+	        startTime: allDay ? null : startTime,
+	        endTime: allDay ? null : endTime,
+	        allDay: allDay,
+	        repeat: repeatOption,
+	        description: description,
+	        repeatEndDate: repeatEndDate,
+	        schedule_day_of_week: repeatDayOfWeek,
+	        schedule_week: repeatWeek,
+	        schedule_date: repeatDate,
+	        schedule_month: repeatMonth
+	    };
+	}
+ 
 });
