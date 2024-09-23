@@ -778,13 +778,14 @@ function formatDateTime(date) {
                 checkPinStatus(element).then(isPinned => {
                     const pinChatItem = document.getElementById('pinChatItem');
                     const pinDeleteChatItem = document.getElementById('pinDeleteChatItem');
-
+                    const pin = document.getElementById('pin');
                     if (isPinned) {
                         pinChatItem.style.display = 'none'; // 고정 버튼 숨기기
                         pinDeleteChatItem.style.display = 'block'; // 고정 해제 버튼 보이기
                     } else {
                         pinChatItem.style.display = 'block'; // 고정 버튼 보이기
                         pinDeleteChatItem.style.display = 'none'; // 고정 해제 버튼 숨기기
+
                     }
                 }).catch(error => {
                     console.error('고정 상태 확인 중 오류 발생:', error);
