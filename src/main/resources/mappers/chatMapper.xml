@@ -117,4 +117,22 @@
         AND chat_member_par = 0
         <!--   채팅방 참여자는 상태값 0     -->
     </select>
+
+    <!-- 채팅방 별 안읽은 메시지 -->
+    <select id="markMessagesAsReadForChatRoom" parameterType="java.lang.Long" resultType="Long">
+        SELECT cm.chat_message_no
+        FROM fl_chat_message cm
+        LEFT JOIN fl_chat_read_status cr ON cm.chat_message_no = cr.chat_message_no AND cr.member_no = #{memberNo}
+        WHERE cm.chat_room_no = #{chatRoomNo}
+        AND cr.chat_read_no IS NULL;
+    </select>
+
+    <!-- 채팅방 별 안읽은 개수-->
+    <select id="getUnreadCounts" parameterType="java.lang.Long" resultType="java.util.Map">
+        SELECT COUNT(cm.chat_message_no) AS unread_count, cm.chat_room_no
+        FROM fl_chat_message cm
+        LEFT JOIN fl_chat_read_status cr ON cm.chat_message_no = cr.chat_message_no AND cr.member_no = #{memberNo}
+        WHERE cr.chat_read_no IS NULL AND cm.chat_room_no IS NOT NULL
+        GROUP BY cm.chat_room_no;
+    </select>
 </mapper>
