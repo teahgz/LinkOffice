@@ -68,15 +68,16 @@ public class ChatRoomController {
             // updatedAt 값을 String으로 받고 LocalDateTime으로 변환
             String updatedAtStr = requestBody.get("updatedAt").toString();
             LocalDateTime updateTime = null;
-
-            if (updatedAtStr != null && !updatedAtStr.isEmpty()) {
-                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-                updateTime = LocalDateTime.parse(updatedAtStr, formatter);
+            if (status == 1) {
+                if(updatedAtStr != null && !updatedAtStr.isEmpty()) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+                    updateTime = LocalDateTime.parse(updatedAtStr, formatter);
+                }
+            }
+            else if (status == 0) {
+                updateTime = null;
             }
 
-            System.out.println("currentMember: " + currentMember);
-            System.out.println("status: " + status);
-            System.out.println("updateTime: " + updateTime);
             
             // 현재 사용자가 채팅방에서 나가는 로직 처리
             int result = chatRoomService.chatRoomPin(currentChatRoomNo, currentMember, status, updateTime);
