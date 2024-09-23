@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -279,6 +280,32 @@ public class DocumentFileService {
 			
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentDisposition(ContentDisposition.builder("attachment").filename(oriFileName).build());
+			
+			return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(null,HttpStatus.CONFLICT);
+		}
+	}
+	// 파일 미리보기 
+	public ResponseEntity<Object> fileView(Long fileNo){
+		try {
+			DocumentFile documentFile = documentFileRepository.findByDocumentFileNo(fileNo);
+			
+			String newFileName = documentFile.getDocumentNewFileName();
+			String oriFileName = URLEncoder.encode(documentFile.getDocumentOriFileName(),"UTF-8");
+			String downDir = 
+					fileDir + documentFile.getDocumentFolder().getDocumentFolderNo() + "\\" + newFileName;
+			
+			Path filePath = Paths.get(downDir);
+			Resource resource = new InputStreamResource(Files.newInputStream(filePath));
+			
+			HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_PDF); 
+	        headers.setContentDisposition(ContentDisposition.builder("inline")
+	                .filename(oriFileName)
+	                .build());
 			
 			return new ResponseEntity<Object>(resource, headers, HttpStatus.OK);
 			

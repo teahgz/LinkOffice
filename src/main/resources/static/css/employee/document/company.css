@@ -421,18 +421,6 @@
 	border-top: solid 2px gray;
 	height: 4.5vh; 
 }
-.file_show_button{
-    padding: 0.5vh 0.5vw;
-    background-color: #B1C2DD;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
-    width: 3.5vw;
-    height: 3vh;
-    text-align: center;
-}
 .file_show_button:hover{
     background-color: #adbad4;
 }
@@ -440,7 +428,7 @@
 .file_show_button:active{
     transform: scale(0.98);
 }
-.file_down_button{
+.file_down_button, .file_show_button{
 	display: inline-block;
     padding: 0.5vh 0.5vw;
     background-color: #B1C2DD;

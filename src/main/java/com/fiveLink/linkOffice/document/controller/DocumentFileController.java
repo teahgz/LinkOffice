@@ -8,6 +8,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -178,10 +181,13 @@ public class DocumentFileController {
 	@GetMapping("/document/file/download/{no}")
 	public ResponseEntity<Object> documentFileDownload(
 			@PathVariable("no") Long fileNo){
-		System.out.println(fileNo);
 		return documentFileService.fileDownload(fileNo);
 	}
 	
-	
-	
+	// 파일 미리보기
+	@GetMapping("/document/file/view/{no}")
+	public ResponseEntity<Object> documentFileView(
+			@PathVariable("no") Long fileNo){
+		return documentFileService.fileView(fileNo);
+	}
 }

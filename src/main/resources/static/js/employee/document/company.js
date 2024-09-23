@@ -217,7 +217,7 @@ $(function () {
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + file.position_name + "(" + file.department_name + ")")}</td>
                             <td>${formatDate(file.document_file_upload_date)}</td>
                             <td>${file.document_ori_file_name.endsWith('.pdf') ? 
-					            '<input type="button" class="file_show_button" value="파일보기">' : ''}
+					            `<a href="/document/file/view/${file.document_file_no}" class="file_show_button" target="_blank">미리보기</a>` : ''}
 					        </td>
                             <td>${file.document_file_size}</td>
                             <td>
@@ -303,7 +303,30 @@ $(function () {
 				        });
 				    }
 				});
-
+				// 파일 선택 다운
+				$('#select_down').off('click').on('click', function() {
+				    const selectedFileNos = [];				
+				    $('.file_checkbox:checked').each(function() {
+				        const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+				        selectedFileNos.push(fileNo);
+				    });
+				    if (selectedFileNos.length > 0) {
+				        selectedFileNos.forEach(fileNo => {
+				            const downloadLink = document.createElement('a');
+				            downloadLink.href = `/document/file/download/${fileNo}`;
+				            downloadLink.download = '';
+				            document.body.appendChild(downloadLink);
+				            downloadLink.click();
+				            document.body.removeChild(downloadLink);
+				        });
+				    } else {
+				        Swal.fire({
+				            icon: 'warning',
+				            text: '다운할 파일을 선택해 주세요.',
+				            confirmButtonText: '확인'
+				        });
+				    }
+				});
             }
         });
     }
