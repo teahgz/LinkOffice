@@ -83,17 +83,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 반려 버튼 업데이트
 	document.getElementById('confirm_reject_button').addEventListener('click', function( ){
 		const csrfToken = document.querySelector('#csrf_token').value;
-		const vacationapprovalNo = document.querySelector('#vacationapproval_no').value;
-		 const rejectReason = document.getElementById('reject_reason').value;
+		const approvalNo = document.querySelector('#approval_no').value;
+		const rejectReason = document.getElementById('reject_reason').value;
 		 
-		fetch('/employee/vacationapproval/reject/'+vacationapprovalNo,{
+		fetch('/employee/approval/reject/'+approvalNo,{
 			method: 'put',
 			headers: {
 				'Content-Type': 'application/json',
 				 'X-CSRF-TOKEN': csrfToken
 			},
 			body: JSON.stringify({
-                vacation_approval_flow_reject_reason: rejectReason
+                approval_flow_reject_reason: rejectReason
             })
 		})
 		.then(reponse => reponse.json())
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				    confirmButtonColor: '#B1C2DD',
 				    confirmButtonText: "확인"
 				}).then((result) => {
-					location.href = "/employee/approval/approval_history_detail/" + vacationapprovalNo;
+					location.href = "/employee/approval/approval_history_detail/" + approvalNo;
 				});
 			}else{
 				Swal.fire({

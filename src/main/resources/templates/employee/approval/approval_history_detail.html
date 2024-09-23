@@ -60,7 +60,7 @@
 										                    and flow.member_no == currentUserMemberNo 
 										                    and stat.index + 1 < approvaldto.flows.size() 
 										                    and approvaldto.flows[stat.index + 1].approval_flow_status == 1}" 
-										            type="button" class="cancel_button" 
+										            type="button" class="close-button" 
 										            onclick="cancelApproval()">X</button>
 										
 										    <img th:if="${flow.approval_flow_status == 2 and flow.digital_name != null}" 
