@@ -305,6 +305,30 @@ $(function () {
 				        });
 				    }
 				});
+				// 파일 선택 다운
+				$('#select_down').off('click').on('click', function() {
+				    const selectedFileNos = [];				
+				    $('.file_checkbox:checked').each(function() {
+				        const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+				        selectedFileNos.push(fileNo);
+				    });
+				    if (selectedFileNos.length > 0) {
+				        selectedFileNos.forEach(fileNo => {
+				            const downloadLink = document.createElement('a');
+				            downloadLink.href = `/document/file/download/${fileNo}`;
+				            downloadLink.download = '';
+				            document.body.appendChild(downloadLink);
+				            downloadLink.click();
+				            document.body.removeChild(downloadLink);
+				        });
+				    } else {
+				        Swal.fire({
+				            icon: 'warning',
+				            text: '다운할 파일을 선택해 주세요.',
+				            confirmButtonText: '확인'
+				        });
+				    }
+				});
             }
         });
     }
