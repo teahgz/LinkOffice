@@ -139,6 +139,7 @@ public class DocumentFileController {
 		
         DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
         file.setDocumentFileStatus(1L);
+        file.setDocumentFileUpdateDate(LocalDateTime.now());
         int result = documentFileService.saveFile(file);
     	if(result > 0) {
     		resultMap.put("res_code", "200");

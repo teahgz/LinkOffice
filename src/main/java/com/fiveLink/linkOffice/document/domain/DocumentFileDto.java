@@ -21,7 +21,8 @@ public class DocumentFileDto {
 	private Long document_file_no;         
     private String document_ori_file_name;  
     private String document_new_file_name;  
-    private Long document_folder_no;      
+    private Long document_folder_no;  
+    private Long document_box_type;
     private Long member_no;
     private String member_name;
     private String document_file_size;
