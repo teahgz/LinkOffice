@@ -28,7 +28,7 @@
     align-items: center;
 }
 
-.modal-content {
+.modal-content { 
     background-color: #fefefe;
     margin: auto;
     padding: 20px 40px;
@@ -181,7 +181,8 @@ textarea {
     padding: 0;
     justify-content: center;
     align-items: center;
-} */
+} 
+*/
 
 .event_modal-content {
 	z-index:999; 
@@ -205,10 +206,12 @@ textarea {
 
 .fc {
     width: 1250px; 
-    height: 800px;  
+    height: 850px;  
 }
  
 #calendar {
 	margin:auto;
-}
-
+} 
+.fc-daygrid-day {
+    height: 150px;  
+} 
