@@ -111,7 +111,7 @@ $(function () {
                             </td>
                             <td>${formatDate(file.document_file_update_date)}</td>
                             <td>${file.document_file_size}</td>
-                            <td><input type="button" value="복구"  class="file_down_button"></td>
+                            <td><input type="button" value="복구" class="file_update_button"></td>
                             <td><input type="button" class="delete_button" value="영구 삭제" id="${file.document_file_no}"></td>
                         `;
                         fileTableBody.appendChild(row);
@@ -171,7 +171,12 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
-	            });               
+	            });      
+	            // 파일 복구 
+				$('.file_update_button').on('click', function() {
+	                const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+	                updateFile(fileNo);
+	            });     
             }
         });
     }
@@ -337,6 +342,40 @@ $(function () {
 	            });
 	        }
 	    });
+	}	
+	// 파일 복구 
+	function updateFile(fileNo){
+		$.ajax({
+			type: 'POST',
+			url: '/document/file/update',
+			data: JSON.stringify({ fileNo: fileNo }),
+			contentType: 'application/json',
+			headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
+            },
+			success: function(response){
+				if (response.res_code === '200') {
+	                    Swal.fire({
+	                        icon: 'success',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	            	loadFiles();
+	            	getAllFileSize();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.res_msg,
+                        confirmButtonText: '확인'
+                    });
+                }
+                 $('#file_name_input').val(''); 
+			},
+			error: function(xhr){
+				console.error(xhr.responseText);
+			}
+		});
 	}	
 	// 날짜 검색 
 	var today = new Date();

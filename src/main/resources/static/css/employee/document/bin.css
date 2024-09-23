@@ -272,7 +272,7 @@
 .file_show_button:active{
     transform: scale(0.98);
 }
-.file_down_button, .file_show_button{
+.file_update_button, .file_show_button{
 	display: inline-block;
     padding: 0.5vh 0.5vw;
     background-color: #B1C2DD;
@@ -287,11 +287,10 @@
     text-decoration: none;
     color: black;
 }
-.file_down_button:hover{
+.file_update_button:hover{
     background-color: #adbad4;
 }
-
-.file_down_button:active{
+.file_update_button:active{
     transform: scale(0.98);
 }
 .delete_button{
