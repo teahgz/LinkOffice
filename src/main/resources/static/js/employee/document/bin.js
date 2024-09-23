@@ -85,11 +85,15 @@ $(function () {
                 totalPages = Math.ceil(filteredFiles.length / pageSize);
                 const fileTableBody = document.getElementById('file_table_body');
                 fileTableBody.innerHTML = '';
-
+	            // 체크박스 초기화 
+				$('#select_all').off('change');
+				$('#select_all').prop('checked', false);
                 // 파일 목록이 존재할 때
                 if (filteredFiles.length > 0) {
                     $('.document_file_list').show();
-                    $('.box_size').show();
+                    $('.box_size').show();	                
+                    // 체크박스 활성화 
+	                $('#select_all').prop('disabled', false).prop('checked', false);                 
                     // 한 페이지에 10개씩 추가 
                     const start = currentPage * pageSize;
                     const end = Math.min(start + pageSize, filteredFiles.length);
@@ -136,6 +140,8 @@ $(function () {
                     fileTableBody.innerHTML = '<tr><td colspan="7">파일 목록이 존재하지 않습니다.</td></tr>';
                     // 페이징 버튼 숨기기
                     paginationDiv.innerHTML = '';
+ 	                // 체크박스 비활성화 
+	                $('#select_all').prop('disabled', true);                   
                 }
 
                 // th 체크박스 클릭하면 전부 선택
