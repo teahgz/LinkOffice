@@ -122,7 +122,7 @@ public class ApprovalViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 
 		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
-
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
 
@@ -443,7 +443,6 @@ public class ApprovalViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
 		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
-		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("approvaldto", approvaldto);
 		
