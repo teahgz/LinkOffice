@@ -22,7 +22,7 @@
 	    <div class="modal-content">
 	        <span class="add_close close" id="closeModalBtn">&times;</span>
 	        <h2 class="modal-title">사내 일정 등록</h2>
-	        <hr>
+	        <hr class="create_hr">
 	        <form id="eventForm">
 	            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	            <div class="form-group">
@@ -88,25 +88,27 @@
 	</div>
 	
 	<!-- 상세보기 -->
-	<div id="eventViewModal" class="modal" style="display: none;">
-	    <div class="modal-content"> 
+	<div id="eventViewModal" class="event_view_modal" style="display: none;">
+	    <div class="event_modal-content"> 
 		    <div class="modal-schedule-button">
-	            <button id="editEventBtn">수정</button>
-	            <button id="deleteEventBtn">삭제</button>
+		    	<span class="modal-schedule-button-two">
+		            <button id="editEventBtn"><i class="fa-solid fa-pencil"></i></button> 
+		            <button id="deleteEventBtn"><i class="fa-regular fa-trash-can"></i></button> 
+	            </span>
 	            <span class="schedule_close" id="closeScheduleModalBtn">&times;</span>
 	        </div>
-	        <div class="modal-header">
-	        	<div>
+	        <div>
+	        	<div class="modal-header">
 		            <div id="eventViewCategory"></div>
 		            <div id="eventViewTitle"></div>	        	
 	        	</div>
 	            <div id="eventViewDateRange"></div>
+	            <div id="eventViewComment"></div>
 	        </div>
 	        <div class="modal-body">
-	            <hr>
-	            <div id="eventViewComment"></div>
-	            <div id="eventViewCreatedDate"></div>
+	            <hr class="event_view_hr"> 
 	            <div id="eventViewRepeatInfo"></div>
+	            <div id="eventViewCreatedDate"></div> 
 	        </div> 
 	    </div>
 	</div>

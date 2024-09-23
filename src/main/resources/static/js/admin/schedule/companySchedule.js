@@ -112,7 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	        }
 	    }
 	
-	    return {
+	    return { 
+			order:1,
+			className: 'db-event',
 	        id: schedule.schedule_no,
 	        title: schedule.schedule_title,
 	        start: formatDate(eventStart) + (schedule.schedule_start_time ? 'T' + schedule.schedule_start_time : ''),
@@ -120,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        allDay: schedule.schedule_allday === 1,
 	        backgroundColor: categoryColors[schedule.schedule_category_no] || '#3788d8',  
 	        borderColor: categoryColors[schedule.schedule_category_no] || '#3788d8',
+	        textColor : '#000000',
 	        extendedProps: {
 	            categoryName: categoryNames[schedule.schedule_category_no],
 	            comment: schedule.schedule_comment,
@@ -134,35 +137,50 @@ document.addEventListener('DOMContentLoaded', function() {
 	            repeatWeek: repeatInfo ? repeatInfo.schedule_repeat_week : null,
 	            repeatDate : repeatInfo ? repeatInfo.schedule_repeat_date : null,
 	            repeatMonth: repeatInfo ? repeatInfo.schedule_repeat_month : null,
+	            createData: true
 	        } 
 	    };
 	}
 	
 	function initializeCalendar(events) {
-        calendar = new FullCalendar.Calendar(calendarEl, {
+        calendar = new FullCalendar.Calendar(calendarEl, { 
             initialView: 'dayGridMonth',
             locale: 'ko',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            events: events,
+            }, 
             eventClick: function(info) {
-                // google calendar 연결 막기
-                // info.jsEvent.preventDefault();
-                
-                const eventId = info.event.id; 
-            	showEventModalById(calendar, eventId); 
+                if (info.event.extendedProps.createData) { 
+	                const eventId = info.event.id; 
+	                showEventModalById(calendar, eventId); 
+	            } else { 
+	                info.jsEvent.preventDefault(); 
+	            }
             },
+            eventDidMount: function(info) { 
+	            if (info.event.extendedProps.createData) {
+	                info.el.style.cursor = 'pointer';  
+	            } else {
+	                info.el.style.cursor = 'default'; 
+	            }
+	        },
             googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
             eventSources: [
-                {
+                {	 
                     googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
                     color: 'transparent',
-                    textColor: 'red' 
-                }
+                    textColor: 'red',
+                    className: 'google-holiday',
+                    allDay:true,
+                    order:-1 
+                },
+                { 
+		            events: events 
+		        }
             ],
+            eventOrder: '-order,-allDay, start',
             buttonText: {
                 today: '오늘',
                 month: '월',
@@ -173,23 +191,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 var number = document.createElement("a");
                 number.classList.add("fc-daygrid-day-number");
                 number.innerHTML = info.dayNumberText.replace("일", '').replace("日", "");
+                
+                var wrapper = document.createElement("div");
+                wrapper.classList.add("fc-daygrid-day-top");
+                wrapper.appendChild(number);
+                
                 if (info.view.type === "dayGridMonth") {
-                    return {
-                        html: number.outerHTML
-                    };
+                    return { domNodes: [wrapper] };
                 }
-                return {
-                    domNodes: []
-                };
-            }
+                return { domNodes: [] };
+            }, 
+            dayMaxEvents: 3
         });
 
         calendar.render();
     }
     
     function showEventModalById(calendar, eventId) {
-	    const event = calendar.getEventById(eventId);  
-		console.log("extendedProps 전체: ", event.extendedProps);
+	    const event = calendar.getEventById(eventId);   
 	    if (!event) {
 	        console.error("해당 ID로 이벤트를 찾을 수 없습니다.");
 	        return;
@@ -222,7 +241,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    comment.textContent = event.extendedProps.comment; 
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
 	    repeatInfo.textContent = getRepeatInfoText(event.extendedProps.repeatType, event.extendedProps.repeatDay, event.extendedProps.repeatWeek , event.extendedProps.repeatDate , event.extendedProps.repeatMonth);
-	    modal.style.display = 'block';
+	    modal.style.display = 'block'; 
+	    modal.style.position = 'absolute';  
 	} 
 	
 	function getRepeatInfoText(repeatType, repeatDay, repeatWeek, repeatDate, repeatMonth) { 
@@ -257,8 +277,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	function getDayInformation(day) {
 	    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 	    return days[day];
-	}
- 
+	} 
+	    
     document.getElementById('closeScheduleModalBtn').addEventListener('click', function() {
         document.getElementById('eventViewModal').style.display = 'none';
     });
@@ -558,7 +578,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	        <option value="5">매년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일</option>
 	    `;
 	});
-
-
-
+	
+	 
 });
