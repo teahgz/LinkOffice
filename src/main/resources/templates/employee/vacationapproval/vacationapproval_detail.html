@@ -149,7 +149,7 @@
 
                     <div class="button_container">
                     	<button type="button" class="cancel_button" th:if="${vacationapprovaldto.vacation_approval_status == 0}">기안 취소</button>
-		                <a th:if="${#lists.size(vacationapprovaldto.flows) > 0 and vacationapprovaldto.flows[0].vacation_approval_flow_status == 1}" 
+		                <a th:if="${#lists.size(vacationapprovaldto.flows) > 0 and vacationapprovaldto.flows[0].vacation_approval_flow_status == 1 and vacationapprovaldto.vacation_approval_status == 0}" 
 		                   th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" 
 		                   class="edit_button">수정</a>
                         <button type="button" class="list_button" onclick="location.href='/employee/vacationapproval/list'">목록</button>
