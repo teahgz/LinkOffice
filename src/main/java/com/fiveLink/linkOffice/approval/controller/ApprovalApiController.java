@@ -23,7 +23,6 @@ import com.fiveLink.linkOffice.approval.service.ApprovalFileService;
 import com.fiveLink.linkOffice.approval.service.ApprovalFormService;
 import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 
 @Controller
 public class ApprovalApiController {
@@ -312,6 +311,44 @@ public class ApprovalApiController {
 	            response.put("res_code", "200");
 	            response.put("res_msg", "결재 수정이 완료되었습니다."); 
 	        }
+	    }
+	    
+	    return response;
+	}
+	
+	// 전자결재 내역함 - 승인
+	@ResponseBody
+	@PutMapping("/employee/approval/approve/{approval_no}")
+	public Map<String,String> employeeApprovalFlowUpdate(@PathVariable("approval_no") Long aapNo){
+		Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "승인 중 오류가 발생하였습니다.");
+	    
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    
+	    if(approvalService.employeeApprovalFlowUpdate(aapNo, memberNo) != null) {
+	    	
+            response.put("res_code", "200");
+            response.put("res_msg", "승인이 완료되었습니다."); 	    	
+	    }
+	    
+	    return response;
+	}
+	
+	// 전자결재 내역함 - 승인 취소
+	@ResponseBody
+	@PutMapping("/employee/approval/approvecancel/{approval_no}")
+	public Map<String,String> employeeApprovalFlowCancel(@PathVariable("approval_no") Long aapNo){
+		Map<String, String> response = new HashMap<>();
+	    response.put("res_code", "404");
+	    response.put("res_msg", "승인 취소 중 오류가 발생하였습니다.");
+	    
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    
+	    if(approvalService.employeeApprovalFlowApproveCancel(aapNo, memberNo) != null) {
+	    	
+            response.put("res_code", "200");
+            response.put("res_msg", "승인 취소가 완료되었습니다."); 	    	
 	    }
 	    
 	    return response;

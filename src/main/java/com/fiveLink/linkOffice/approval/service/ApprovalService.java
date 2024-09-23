@@ -24,6 +24,8 @@ import com.fiveLink.linkOffice.approval.repository.ApprovalFlowRepository;
 import com.fiveLink.linkOffice.approval.repository.ApprovalRepository;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
 
 import jakarta.transaction.Transactional;
@@ -350,6 +352,66 @@ public class ApprovalService {
 		   return flowDtoList;
 		}
 
+	// 전자 결재 승인
+	@Transactional  
+	 public Approval employeeApprovalFlowUpdate(Long approvalNo, Long memberNo) {
+        Approval approval = approvalRepository.findById(approvalNo).orElse(null);
 
+        List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApproval(approval);
+
+        ApprovalFlow currentFlow = approvalFlows.stream()
+            .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
+            .findFirst()
+            .orElse(null);
+
+        currentFlow.setApprovalFlowStatus(2L); 
+        approvalFlowRepository.save(currentFlow);
+
+        ApprovalFlow nextFlow = approvalFlows.stream()
+            .filter(flow -> flow.getApprovalFlowOrder() != null)
+            .filter(flow -> flow.getApprovalFlowOrder() > currentFlow.getApprovalFlowOrder())
+            .findFirst()
+            .orElse(null);
+
+        if (nextFlow != null) {
+            nextFlow.setApprovalFlowStatus(1L);
+            approvalFlowRepository.save(nextFlow);
+        } else {
+        	approval.setApprovalStatus(1L);
+            approvalRepository.save(approval);
+        }
+
+        return approval;
+    }
+	
+	// 전자결재 승인 취소
+	@Transactional 
+	 public Approval employeeApprovalFlowApproveCancel(Long approvalNo, Long memberNo) {
+		 
+		 Approval approval = approvalRepository.findById(approvalNo).orElse(null);
+
+	        List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApproval(approval);
+
+	        ApprovalFlow currentFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
+	            .findFirst()
+	            .orElse(null);
+
+	        currentFlow.setApprovalFlowStatus(1L); 
+	        approvalFlowRepository.save(currentFlow);
+
+	        ApprovalFlow nextFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getApprovalFlowOrder() != null)
+	            .filter(flow -> flow.getApprovalFlowOrder() > currentFlow.getApprovalFlowOrder())
+	            .findFirst()
+	            .orElse(null);
+
+	        if (nextFlow != null) {
+	            nextFlow.setApprovalFlowStatus(0L);
+	            approvalFlowRepository.save(nextFlow);
+	        } 
+
+	        return approval;
+	 }
 
 }

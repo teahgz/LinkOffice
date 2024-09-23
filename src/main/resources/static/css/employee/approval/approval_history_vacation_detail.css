@@ -405,3 +405,29 @@
 .reapproval_button:hover {
     opacity: 0.8;
 }
+
+.cancel_button {
+    position: absolute; 
+    top: 200px; 
+    right: 250px;
+    border: none;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 550;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: transparent;
+    color: #ff0000;
+}
+
+.recancel_button {
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: transparent;
+    color: #ff0000;
+}
