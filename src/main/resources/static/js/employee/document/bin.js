@@ -143,12 +143,35 @@ $(function () {
  	                // 체크박스 비활성화 
 	                $('#select_all').prop('disabled', true);                   
                 }
-
+                // 파일 영구 삭제 
+				$('.delete_button').on('click', function() {
+	                const fileNo = this.id;
+	                deleteFile(fileNo);
+	            });
                 // th 체크박스 클릭하면 전부 선택
                 $('#select_all').on('change', function() {
                     const isChecked = this.checked; 
                     $('.file_checkbox').prop('checked', isChecked); 
                 });
+ 	            // 파일 선택 삭제
+	            $('#select_delete').on('click', function() {
+	                const selectedFileNos = []; 
+	                
+	                // 체크된 파일들의 fileNo 가져오기 
+	                $('.file_checkbox:checked').each(function() {
+	                    const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+	                    selectedFileNos.push(fileNo); 
+	                });
+	                if (selectedFileNos.length > 0) {
+	                    deleteSelectedFile(selectedFileNos);
+	                } else {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: '삭제할 파일을 선택해 주세요.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            });               
             }
         });
     }
@@ -230,7 +253,91 @@ $(function () {
         }
     }
 
-	
+	// 파일 영구 삭제
+	function deleteFile(fileNo){
+		Swal.fire({
+			icon: 'warning',
+		    text: '정말 영구 삭제하시겠습니까?',
+		    showCancelButton: true,
+		    confirmButtonText: '확인',
+		    cancelButtonText: '취소'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					type: 'POST',
+					url: '/document/file/permanent/delete',
+					data: {
+						fileNo: fileNo
+					},
+					headers: {
+	                    'X-Requested-With': 'XMLHttpRequest',
+	                    'X-CSRF-TOKEN': csrfToken
+	                },
+					success: function(response){
+						if (response.res_code === '200') {
+			                    Swal.fire({
+			                        icon: 'success',
+			                        text: response.res_msg,
+			                        confirmButtonText: '확인'
+			                    });
+			            	loadFiles();
+			            	getAllFileSize();
+	                    } else {
+	                        Swal.fire({
+		                        icon: 'error',
+		                        text: response.res_msg,
+		                        confirmButtonText: '확인'
+		                    });
+	                    }
+	                     $('#file_name_input').val(''); 
+					}
+				});
+			}
+		})
+	}
+	// 파일 선택 영구 삭제
+	function deleteSelectedFile(fileNos) {
+	    Swal.fire({
+	        icon: 'warning',
+	        text: '정말 삭제하시겠습니까?',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            $.ajax({
+	                type: 'POST',
+	                url: '/document/fileList/permanent/delete',  
+	                contentType: 'application/json',
+	                data: JSON.stringify({ 
+						fileNos: fileNos 
+					}), 
+	                headers: {
+	                    'X-Requested-With': 'XMLHttpRequest',
+	                    'X-CSRF-TOKEN': csrfToken
+	                },
+	                success: function(response) {
+	                    if (response.res_code === '200') {
+	                        Swal.fire({
+	                            icon: 'success',
+	                            text: response.res_msg,
+	                            confirmButtonText: '확인'
+	                        });
+	                        loadFiles(); 
+	                        getAllFileSize();
+	                    } else {
+	                        Swal.fire({
+	                            icon: 'error',
+	                            text: response.res_msg,
+	                            confirmButtonText: '확인'
+	                        });
+	                    }
+	                     $('#file_name_input').val(''); 
+	                }
+	            });
+	        }
+	    });
+	}	
 	// 날짜 검색 
 	var today = new Date();
 	const todayStr = formatDate(today);	

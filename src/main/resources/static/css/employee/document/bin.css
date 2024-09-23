@@ -18,8 +18,8 @@
     overflow-y: auto;
 }
 .box_size{
-	padding-top: 520px;
-	height: 100%;
+	margin-top: 520px;
+	height: 10%;
 	margin-left: 1vw;
 	font-size: 1vw;
 }

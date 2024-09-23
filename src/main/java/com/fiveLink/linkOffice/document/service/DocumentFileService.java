@@ -328,5 +328,24 @@ public class DocumentFileService {
 			return new ResponseEntity<Object>(null,HttpStatus.CONFLICT);
 		}
 	}
-	
+	// 파일 영구 삭제 
+	public int documentFilePermanentDelete(Long fileNo){
+		int result = -1;	
+		try {
+			DocumentFile documentFile = documentFileRepository.findByDocumentFileNo(fileNo);
+			String newFileName = documentFile.getDocumentNewFileName();	
+			String resultDir = 
+					fileDir + documentFile.getDocumentFolder().getDocumentFolderNo() + "\\" + newFileName;
+			if(resultDir != null && resultDir.isEmpty() == false) {
+				File file = new File(resultDir);
+				if(file.exists()) {
+					file.delete();
+					result = 1;
+				}	
+			}	
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}	
 }
