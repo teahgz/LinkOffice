@@ -26,6 +26,7 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
 
 import jakarta.transaction.Transactional;
@@ -413,5 +414,29 @@ public class ApprovalService {
 
 	        return approval;
 	 }
+	
+	
+	 // 전자 결재 반려
+	 @Transactional
+	    public Approval employeeApprovalFlowReject(ApprovalFlowDto approvalFlowDto, Long memberNo) {
+	        Approval approval = approvalRepository.findById(approvalFlowDto.getApproval_no()).orElse(null);
 
+	        List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApproval(approval);
+	        
+	        ApprovalFlow currentFlow = approvalFlows.stream()
+	            .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
+	            .findFirst()
+	            .orElse(null);
+
+	        if (currentFlow != null) {
+	            currentFlow.setApprovalFlowStatus(3L);
+	            currentFlow.setApprovalFlowRejectReason(approvalFlowDto.getApproval_flow_reject_reason()); 
+	            approvalFlowRepository.save(currentFlow); 
+	        }
+
+	        approval.setApprovalStatus(2L); 
+	        approvalRepository.save(approval); 
+
+	        return approval;
+	    }
 }
