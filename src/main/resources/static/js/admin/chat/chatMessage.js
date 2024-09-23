@@ -579,9 +579,11 @@ if (sendButton && messageInput) {
          if (status === true) {
              statusValue = 1;
          }
+          // 상태에 따른 메시지 설정
+         const messageText = statusValue === 1 ? "채팅방이 상단에 고정됩니다." : "채팅방 고정을 해제합니다.";
          Swal.fire({
-            text: "채팅방이 상단에 고정됩니다.",
-            icon: "success",
+            text: messageText,
+            icon: "warning",
             showCancelButton: true,
             confirmButtonText: "확인",
             cancelButtonText: "취소",
@@ -679,17 +681,15 @@ function formatDateTime(date) {
     }
     //채팅방 고정 확인
     function checkPinStatus(chatRoomNo) {
-    console.log(chatRoomNo);
-    console.log(currentMember);
         return fetch(`/api/chat/pin/status/${chatRoomNo}/${currentMember}`)
               .then(response => {
                           if (!response.ok) {
-                              throw new Error("채팅방 타입을 찾을 수 없습니다.");
+                              throw new Error("고정에 실패했습니다.");
                           }
-                          return response.json(); // JSON으로 변환
+                          return response.json();
                       })
                       .then(data => {
-                          return data.isPinned; // 고정 상태 반환
+                          return data.isPinned;
                       })
                       .catch(error => {
                           console.error("error", error);
