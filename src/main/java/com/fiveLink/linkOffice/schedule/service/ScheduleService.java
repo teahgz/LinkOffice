@@ -8,22 +8,28 @@ import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleException;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
+import com.fiveLink.linkOffice.schedule.repository.ScheduleExceptionRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleRepeatRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ScheduleService { 
     private final ScheduleRepository scheduleRepository; 
     private final ScheduleRepeatRepository scheduleRepeatRepository;
-
+    private final ScheduleExceptionRepository scheduleExceptionRepository;
+    
 	@Autowired
-	public ScheduleService(ScheduleRepository scheduleRepository, ScheduleRepeatRepository scheduleRepeatRepository) { 
+	public ScheduleService(ScheduleRepository scheduleRepository, ScheduleRepeatRepository scheduleRepeatRepository, ScheduleExceptionRepository scheduleExceptionRepositor, ScheduleExceptionRepository scheduleExceptionRepository) { 
 	    this.scheduleRepository = scheduleRepository; 
-	    this.scheduleRepeatRepository = scheduleRepeatRepository;  
+	    this.scheduleRepeatRepository = scheduleRepeatRepository; 
+	    this.scheduleExceptionRepository = scheduleExceptionRepository; 
 	} 
-
+ 
 	
 	public void saveCompanySchedule(ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {
 	    Schedule schedule = Schedule.builder()
@@ -179,7 +185,89 @@ public class ScheduleService {
 	        scheduleRepeatRepository.save(repeat);
 	    }
     }
+    
+    
+    // 관리자 - 반복 일정 수정
+    // 이 일정만 수정
+    public void updateSingleEvent(Long eventId, ScheduleDto scheduleDto) {
+        Schedule schedule = scheduleRepository.findById(eventId)
+            .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
+        
+        // 일정 정보 수정
+        schedule.setScheduleTitle(scheduleDto.getSchedule_title());
+        schedule.setScheduleComment(scheduleDto.getSchedule_comment());
+        schedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
+        schedule.setScheduleEndDate(scheduleDto.getSchedule_end_date());
+        schedule.setScheduleAllday(scheduleDto.getSchedule_allday());
+        schedule.setScheduleCategoryNo(scheduleDto.getSchedule_category_no());
+        schedule.setScheduleStartTime(scheduleDto.getSchedule_start_time());
+        schedule.setScheduleEndTime(scheduleDto.getSchedule_end_time());
+        schedule.setScheduleRepeat(scheduleDto.getSchedule_repeat());
+        scheduleRepository.save(schedule);
+        
+        // 필요시 예외 일정 추가
+        createScheduleException(schedule, scheduleDto, 0);
+    }
 
+    // 이 일정 및 향후 일정 수정
+    public void updateFutureEvents(Long eventId, ScheduleDto scheduleDto) {
+        Schedule schedule = scheduleRepository.findById(eventId)
+            .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
+        
+        // 현재 일정 수정
+        updateSingleEvent(eventId, scheduleDto);
 
-	
+        // 반복 일정을 수정
+        List<ScheduleRepeat> repeats = scheduleRepeatRepository.findByScheduleNo(eventId);
+        for (ScheduleRepeat repeat : repeats) {
+            // 반복 일정 수정 로직 추가
+            // 예를 들어, 반복 기간을 수정할 수 있습니다.
+            if (repeat.getScheduleRepeatEndDate().compareTo(scheduleDto.getSchedule_end_date()) > 0) {
+                repeat.setScheduleRepeatEndDate(scheduleDto.getSchedule_end_date());
+            }
+            // 기타 필요한 수정 사항 반영
+            scheduleRepeatRepository.save(repeat);
+        }
+    }
+
+    // 모든 일정 수정
+    public void updateAllEvents(Long eventId, ScheduleDto scheduleDto) {
+        // 모든 반복 일정 가져오기
+        List<ScheduleRepeat> repeats = scheduleRepeatRepository.findByScheduleNo(eventId);
+        
+        // 모든 일정 수정
+        for (ScheduleRepeat repeat : repeats) {
+            Schedule schedule = scheduleRepository.findById(repeat.getScheduleNo())
+                .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
+            
+            // 일정 수정
+            schedule.setScheduleTitle(scheduleDto.getSchedule_title());
+            schedule.setScheduleComment(scheduleDto.getSchedule_comment());
+            schedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
+            schedule.setScheduleEndDate(scheduleDto.getSchedule_end_date());
+            schedule.setScheduleAllday(scheduleDto.getSchedule_allday());
+            schedule.setScheduleCategoryNo(scheduleDto.getSchedule_category_no());
+            schedule.setScheduleStartTime(scheduleDto.getSchedule_start_time());
+            schedule.setScheduleEndTime(scheduleDto.getSchedule_end_time());
+            schedule.setScheduleRepeat(scheduleDto.getSchedule_repeat());
+            scheduleRepository.save(schedule);
+            
+            // 예외 일정 추가
+            createScheduleException(schedule, scheduleDto, 2L);
+        }
+    }
+
+    // 예외 일정 생성
+    private void createScheduleException(Schedule schedule, ScheduleDto scheduleDto, long exceptionType) {
+    	ScheduleException exception = ScheduleException.builder()
+    		    .scheduleNo(schedule.getScheduleNo())
+    		    .scheduleExceptionType(exceptionType)
+    		    .scheduleExceptionTitle(scheduleDto.getSchedule_title())
+    		    .scheduleExceptionComment(scheduleDto.getSchedule_comment())
+    		    .scheduleExceptionStartDate(scheduleDto.getSchedule_start_date())
+    		    .scheduleExceptionEndDate(scheduleDto.getSchedule_end_date())
+    		    .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no())
+    		    .build();
+
+    }
 }

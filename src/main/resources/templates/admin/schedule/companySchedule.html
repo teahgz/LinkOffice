@@ -119,16 +119,22 @@
 	
 	<!-- 반복 일정 -->
 	<div id="eventRepeatModal" class="event_repeat_modal" style="display: none;">
-	    <input type="radio" id="editThisEvent" name="repeatEditOption" value="single" checked>
-	    <label for="editThisEvent">이 일정</label>
-	    
-	    <input type="radio" id="editFutureEvents" name="repeatEditOption" value="future">
-	    <label for="editFutureEvents">이 일정 및 향후 일정</label>
-	
-	    <input type="radio" id="editAllEvents" name="repeatEditOption" value="all">
-	    <label for="editAllEvents">모든 일정</label>
-	    
-	    <button id="event_repeat_modal_btn">확인</button>
+	    <div class="event_repeat-content"> 
+		    <div>
+			    <input type="radio" id="editThisEvent" name="repeatEditOption" value="single">
+			    <label for="editThisEvent">이 일정</label>
+		    </div>
+		    <div>
+			    <input type="radio" id="editFutureEvents" name="repeatEditOption" value="future">
+			    <label for="editFutureEvents">이 일정 및 향후 일정</label>
+			</div>
+			<div>
+			    <input type="radio" id="editAllEvents" name="repeatEditOption" value="all">
+			    <label for="editAllEvents">모든 일정</label>
+		    </div>
+		    <button id="event_repeat_modal_btn">확인</button>
+		    <button id="event_repeat_close_btn">취소</button>
+	    </div>
 	</div>
 
 	<script th:src="@{/js/admin/schedule/companySchedule.js}"></script>

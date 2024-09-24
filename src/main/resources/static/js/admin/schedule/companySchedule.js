@@ -686,9 +686,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	}); 
 	
 	// 반복 일정 수정  
-/*	function handleRecurringEventUpdate(eventId, repeatEditOption) {
+	function handleRecurringEventUpdate(eventId, repeatEditOption) {
 	    const eventData = getEventFormData();
 	    eventData.editOption = repeatEditOption;   
+	    
+	    console.log("eventData : " + eventData);
 	 
 	    $.ajax({
 	        type: "POST",
@@ -712,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            console.error('반복 일정 수정 오류: ', error);
 	        }
 	    });
-	}*/
+	} 
 
 	// 일반 일정 수정
 	function submitEventUpdate() {
@@ -755,6 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const repeatOption = document.getElementById('repeatOption').value;
 	    const repeatEndDate = document.getElementById('repeatEndDate').value;
 	
+		const repeat_insert_date = document.getElementById('eventDate').value;
 	    const repeatDayOfWeek = repeatOption === "2" || repeatOption === "4" ? getDayOfWeek() : null; // 요일
 	    const repeatWeek = repeatOption === "4" ? getWeekNumber() : null; // 주차
 	    const repeatDate = repeatOption === "3" || repeatOption === "5" ? new Date(repeat_insert_date).getDate() : null; // 특정 일
