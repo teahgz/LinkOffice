@@ -162,10 +162,10 @@ public class ApprovalViewController {
 	
 	// 사용자 전자결재 참조함 (수정중)
 	@GetMapping("/employee/approval/references")
-	public String approvalReferences(Model model,ApprovalDto searchdto) {
+	public String approvalReferences(Model model,ApprovalDto searchdto,@RequestParam(value = "sort", defaultValue = "latest") String sort) {
 	    Long memberNo = memberService.getLoggedInMemberNo();
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    List<ApprovalDto> approvals = approvalService.getAllApprovalReferences(memberNo, searchdto);
+	    List<ApprovalDto> approvals = approvalService.getAllApprovalReferences(memberNo, searchdto,sort);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		approvals.forEach(vapp -> {
@@ -178,6 +178,8 @@ public class ApprovalViewController {
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);
+	    model.addAttribute("currentSort", sort);
+	    System.out.println(sort);
 	    return "employee/approval/approval_references_list";
 	}
 	
