@@ -1,11 +1,18 @@
 document.addEventListener('DOMContentLoaded', function(){
-	const memberRows = document.querySelectorAll('.vacationapproval_row');
+	const memberRows = document.querySelectorAll('.approval_row');
 	
 	memberRows.forEach(row => {
 		row.addEventListener('click',function(){
-			const vacationApprovalNo = this.getAttribute('data_vacationapproval_no');
-			
-			window.location.href = '/employee/approval/approval_references_detail/'+vacationApprovalNo;
+			const approvalNo = this.getAttribute('data-approval_no');
+			const approvalType = this.getAttribute('data-type');
+			console.log(approvalNo);
+			console.log(approvalType);
+		 if (approvalType === 'VACATION') {
+                window.location.href = '/employee/approval/approval_references_vacation_detail/'+approvalNo;
+            } else {
+                window.location.href = '/employee/approval/approval_references_detail/'+approvalNo;
+            }
+		
 		});
 	});
 });

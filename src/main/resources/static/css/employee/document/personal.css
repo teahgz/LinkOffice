@@ -18,7 +18,7 @@
     overflow-y: auto;
 }
 #tree{
-	font-size: 1vw;
+	font-size: 13px;
 	display: block;
 	height: 80%;
 }
@@ -238,7 +238,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 1vw;
+    font-size: 12px;
     width: 3.8vw;
     height: 3.8vh;
     text-align: center;
@@ -267,7 +267,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
+    font-size: 10px;
     width: 4vw;
     height: 3vh;
     text-align: center;
@@ -296,7 +296,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
+    font-size: 10px;
     width: 4vw;
     height: 3vh;
     text-align: center;
@@ -316,7 +316,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
+    font-size: 10px;
     width: 4vw;
     height: 3vh;
     text-align: center;
@@ -343,7 +343,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
+    font-size: 10px;
     width: 3vw;
     height: 3vh;
     text-align: center;
@@ -396,10 +396,12 @@
 	padding: 0.8vh;
     text-align: center;
     border-bottom: 2px solid gray;
+    font-size: 13px;
 }
 .file_table tbody tr {
     height: 4.5vh; 
     vertical-align: middle; 
+    font-size: 11px;
 }
 
 #table_foot{
@@ -421,7 +423,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
+    font-size: 10px;
     width: 2.6vw;
     line-height: 2vh;
     text-align: center;
@@ -442,7 +444,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 0.7vw;
+    font-size: 10px;
     width: 2.7vw;
     height: 3vh;
     text-align: center;
