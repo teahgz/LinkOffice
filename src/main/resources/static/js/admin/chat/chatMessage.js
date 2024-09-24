@@ -501,7 +501,16 @@ if (sendButton && messageInput) {
             }
         $('#groupChatNameModal').modal('hide');
     }
+    document.getElementById('groupChatNameInput').addEventListener('input', function() {
+        const groupChatNameInput = document.getElementById('groupChatNameInput');
+        const confirmButton = document.getElementById('confirmGroupChatName');
 
+        if (groupChatNameInput.value.trim() !== '') {
+            confirmButton.disabled = false;
+        } else {
+            confirmButton.disabled = true;
+        }
+    });
    document.getElementById('confirmButton').addEventListener('click', function(event) {
       event.preventDefault();
       window.confirmButton();
@@ -620,7 +629,7 @@ if (sendButton && messageInput) {
                   body: JSON.stringify({
                   currentMember: currentMember,
                   statusValue: statusValue,
-                  updatedAt: new Date().toISOString()}) // 사용자 ID를 서버에 보냄
+                  updatedAt: new Date().toISOString()})
                })
                .then(response => response.json())
                .then(data => {
@@ -760,15 +769,19 @@ function formatDateTime(date) {
             console.log(currentChatRoomNo);
 
 
-                let chatItems = document.getElementsByClassName('chatItem');
-                for (let i = 0; i < chatItems.length; i++) {
-                    chatItems[i].classList.remove('selected');
-                }
+            let chatItems = document.getElementsByClassName('chatItem');
+            for (let i = 0; i < chatItems.length; i++) {
+                chatItems[i].classList.remove('selected');
+            }
+            let selectedChatItem = document.querySelector(`input[value="${element}"]`).closest('.chatItem');
+            if (selectedChatItem) {
+                selectedChatItem.classList.add('selected');
+            }
+            const dropdownMenu = document.getElementById('chatHeader-buttons');
+            dropdownMenu.style.display = 'block';
 
-                let selectedChatItem = document.querySelector(`input[value="${element}"]`).closest('.chatItem');
-                if (selectedChatItem) {
-                    selectedChatItem.classList.add('selected');
-                }
+            const countParticipant = document.getElementById('countParticipant');
+            countParticipant.style.display = 'block';
 
             getChatRoomName(element).then(chatRoomName => {
                 if (chatRoomName) {
