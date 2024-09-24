@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.survey.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +103,7 @@ public class SurveyViewController {
 
         Long memberNo = memberService.getLoggedInMemberNo();
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-
+        
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("currentSort", sort);
 
@@ -120,16 +121,33 @@ public class SurveyViewController {
     
     @GetMapping("/employee/survey/detail/{survey_no}")
     public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
+        Long memberNo = memberService.getLoggedInMemberNo();
         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
-
-        // 질문 및 선택지, 주관식 답변 가져오기
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
 
-        // 모델에 추가
+        boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
+
         model.addAttribute("dto", dto);
         model.addAttribute("questions", questions);
 
-        return "employee/survey/survey_question_detail";
+        if (hasParticipated) {
+            int totalParticipants = surveyService.getTotalParticipants(surveyNo);
+            int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
+            int notParticipatedParticipants = totalParticipants - completedParticipants;
+
+            // 설문 참여율 계산 및 추가
+            Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
+            model.addAttribute("participationRates", participationRates);
+
+            model.addAttribute("totalParticipants", totalParticipants);
+            model.addAttribute("completedParticipants", completedParticipants);
+            model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
+
+            return "employee/survey/survey_question_result"; 
+        } else {
+            return "employee/survey/survey_question_detail";
+        }
     }
+
 
 }

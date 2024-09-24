@@ -1,8 +1,8 @@
 package com.fiveLink.linkOffice.chat.service;
 
-import com.fiveLink.linkOffice.chat.domain.ChatMessage;
-import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
+import com.fiveLink.linkOffice.chat.domain.*;
 import com.fiveLink.linkOffice.chat.repository.ChatMessageRepository;
+import com.fiveLink.linkOffice.chat.repository.ChatReadRepository;
 import com.fiveLink.linkOffice.mapper.ChatMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,13 @@ import java.util.Map;
 @Service
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatReadRepository chatReadRepository;
     private final ChatMapper chatMapper;
 
     @Autowired
-    public ChatMessageService(ChatMessageRepository chatMessageRepository, ChatMapper chatMapper){
+    public ChatMessageService(ChatMessageRepository chatMessageRepository, ChatMapper chatMapper, ChatReadRepository chatReadRepository){
         this.chatMessageRepository =chatMessageRepository;
+        this.chatReadRepository = chatReadRepository;
         this.chatMapper = chatMapper;
     }
     // 채팅 메시지를 저장하는 메서드
@@ -28,6 +30,20 @@ public class ChatMessageService {
     }
     public List<Map<String, Object>> getChatMessages(Long roomNo) {
         return chatMapper.getChatMessages(roomNo);
+    }
+    public List<Long> markMessagesAsReadForChatRoom(Long memberNo, Long chatRoomNo){
+        return chatMapper.markMessagesAsReadForChatRoom(memberNo, chatRoomNo);
+    }
+
+    public void insertReadStatus(ChatReadDto chatReadDto) {
+
+        ChatRead chat = chatReadDto.toEntity();
+        chatReadRepository.save(chat);
+
+    }
+
+    public List<Map<String, Object>> getUnreadCounts(Long memberNo) {
+        return chatMapper.getUnreadCounts(memberNo);
     }
 
 }

@@ -8,6 +8,8 @@ import com.fiveLink.linkOffice.vacation.domain.VacationStandard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
@@ -44,6 +46,45 @@ public class ChatRoomService {
         try{
             chatMapper.chatRoomOut(chatRoomNo, memberNo);
             result = 1;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+    //채팅방 고정
+    public int chatRoomPin(Long chatRoomNo, Long memberNo, int status, LocalDateTime updateTime){
+        int result = -1;
+        try{
+            chatMapper.chatRoomPin(chatRoomNo, memberNo, status, updateTime);
+            result = 1;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+    //채팅방 고정 확인
+    public int selectChatPin(Long chatRoomNo, Long memberNo){
+        int result = 0;
+        try{
+            result = chatMapper.selectChatPin(chatRoomNo, memberNo);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+    //참여자 수
+    public int countParicipant(Long chatRoomNo){
+        int result = 0;
+        try{
+            result = chatMapper.countParicipant(chatRoomNo);
+
 
         }catch (Exception e){
             e.printStackTrace();

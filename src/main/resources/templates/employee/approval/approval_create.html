@@ -37,45 +37,39 @@
 							<table id="approvalLineTable" class="approval_line_table">
 						        <tr>
 						            <th rowspan="3">결재</th>
-						            <td>
+						            <td id="approve">
 						                <div >
 						                    <span th:text="${member.position_name}"></span>
 						                </div>
 						            </td>
 						            <td >
-						                <div id="approve">
-						                    <span ></span>
+						                <div>
 						                </div>
 						            </td>
 						            <td >
 						                <div >
-						                    <span ></span>
 						                </div>
 						            </td>						            
 						            <td >
 						                <div >
-						                    <span ></span>
 						                </div>
 						            </td>						            
 						            <td >
 						                <div >
-						                    <span ></span>
 						                </div>
 						            </td>						            
 						            <td >
 						                <div >
-						                    <span ></span>
 						                </div>
 						            </td>						            
 						            <td >
 						                <div >
-						                    <span ></span>
 						                </div>
 						            </td>						            
 					            
 						        </tr>
 						          <tr>
-						            <td>
+						            <td id="approve">
 						                <div class="signature_box">
 						            
 						                </div>
@@ -112,37 +106,30 @@
 						            </td>
 						        </tr>
 						        <tr>
-						            <td>
-						                <div th:text="${member.member_name}"></div>
-						               
+						            <td id="approve">
+						                <span th:text="${member.member_name}"></span>
 						            </td>
 						            <td  >
-						                <div></div>
 						            </td>
 						            <td  >
-						                <div></div>
 						            </td>
 						            <td  >
-						                <div></div>
 						            </td>
 						            <td  >
-						                <div></div>
 						            </td>
 						            <td  >
-						                <div></div>
 						            </td>
 						            <td  >
-						                <div></div>
 						            </td>
 						        </tr>
 
-							    <tr id="agreementRow">
-							        <th>합의</th>
+							    <tr id="referenceRow">
+							        <td id="strong"><strong>합의</strong></td>
 							        <td colspan="7" id="referencestCell"></td>
 							    </tr>
 							    <tr id="referenceRow">
-							        <th>참조</th>
-							        <td colspan="7" id="referenceCell"></td>
+							        <td id="strong"><strong>참조</strong></td>
+							        <td colspan="7" id="reviewerCell"></td>
 							    </tr>
 							</table>
 						

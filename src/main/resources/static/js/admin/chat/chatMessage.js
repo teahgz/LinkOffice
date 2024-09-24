@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
     // 페이지 로드 시 첫 번째 채팅방 자동 클릭
-    const firstChatRoom = document.querySelector('.chatItem');
-    if (firstChatRoom) {
-         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
-        if (chatRoomNo) {
-            handleChatRoomClick(chatRoomNo);
-        }
-    }
+//    const firstChatRoom = document.querySelector('.chatItem');
+//    if (firstChatRoom) {
+//         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
+//        if (chatRoomNo) {
+//            handleChatRoomClick(chatRoomNo);
+//        }
+//    }
 
     // 메시지 입력 필드와 전송 버튼 가져오기
   const messageInput = document.getElementById('messageInput');
@@ -104,24 +104,17 @@ if (sendButton && messageInput) {
 
     socket.onopen = function() {
         console.log("웹소켓이 연결되었습니다.");
+        console.log("값 :" +currentMember);
+        const initialRequest = {
+            type: 'getUnreadCounts',
+            currentMember: currentMember
+        };
+        socket.send(JSON.stringify(initialRequest));
     };
 
     socket.onclose = function(event) {
         console.log("웹소켓 연결이 해제되었습니다.", event);
 
-    };
-
-    socket.onerror = function(error) {
-        console.error("에러 발생", error);
-    };
-
-
-    socket.onopen = function() {
-        console.log("웹소켓이 연결되었습니다.");
-    };
-
-    socket.onclose = function(event) {
-        console.log("웹소켓 연결이 해제되었습니다.", event);
     };
 
     socket.onerror = function(error) {
@@ -276,7 +269,40 @@ if (sendButton && messageInput) {
        const message = JSON.parse(event.data);
        const chatContentDiv = document.getElementById("chatContent");
        // 메시지 타입에 따른 처리
-      if (message.type === "chatRoomCreation") {
+
+           if (message.type === "unreadCounts") {
+
+                // 서버에서 보내온 읽지 않은 메시지 개수
+                   message.data.forEach(item => { // message.data로 변경
+                         const chatRoomNo = item.chatRoomNo;  // 채팅방 번호
+                              const unreadCount = item.unreadCount; // 읽지 않은 메시지 개수
+
+                              // 해당 채팅방의 안 읽은 메시지 수를 업데이트
+                              const inputElement = document.querySelector(`input[value="${chatRoomNo}"]`);
+
+                              // inputElement가 존재하는지 확인
+                              if (inputElement) {
+                                  const chatItem = inputElement.closest('.chatItem');
+                                  if (chatItem) {
+                                      let unreadCountElement = chatItem.querySelector('.unread-count');
+
+                                      if (unreadCountElement) {
+                                          // 읽지 않은 개수 업데이트
+                                          unreadCountElement.innerText = unreadCount;
+                                      } else {
+                                          // unread-count 요소가 없으면 추가
+                                          unreadCountElement = document.createElement('div');
+                                          unreadCountElement.classList.add('unread-count');
+                                          unreadCountElement.innerText = unreadCount;
+                                          chatItem.appendChild(unreadCountElement);
+                                      }
+                                  }
+                              } else {
+                                  console.error(`채팅방 번호 ${chatRoomNo}에 해당하는 요소를 찾을 수 없습니다.`);
+                              }
+                   });
+       }
+      else if (message.type === "chatRoomCreation") {
           if (message.chatRoomNo && message.memberInfoList) {
               const currentMemberNo = parseInt(document.getElementById('currentMember').value, 10);
               const memberInfo = message.memberInfoList.find(info => info.memberNo === currentMemberNo);
@@ -363,7 +389,19 @@ if (sendButton && messageInput) {
                    const chatList = document.getElementById('chatList');
                    chatList.insertBefore(newChatItem, chatList.firstChild);
                }
-       }else {
+
+       }else if(message.type === "updateUnreadCount") {
+                const chatRoomNo = message.chatRoomNo;
+                const unreadCount = message.unreadCount;
+                const chatItem = document.querySelector(`input[value="${chatRoomNo}"]`).closest('.chatItem');
+                 if (chatItem) {
+                    const unreadCountElement = chatItem.querySelector('.unread-count');
+                    if (unreadCountElement) {
+                       unreadCountElement.innerText = unreadCount;
+                    }
+                 }
+       }
+       else {
            if (message.chat_room_no === currentChatRoomNo) { // 메시지가 현재 채팅방에 속하는지 확인
                const messageElement = document.createElement("div");
                const now = new Date();
@@ -406,8 +444,6 @@ if (sendButton && messageInput) {
 
        }
    };
-
-
 
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
@@ -478,6 +514,9 @@ if (sendButton && messageInput) {
         };
 
         socket.send(JSON.stringify(message));
+            if (groupChatName) {
+                document.getElementById('groupChatNameInput').value = '';
+            }
         $('#groupChatNameModal').modal('hide');
     }
 
@@ -508,8 +547,6 @@ if (sendButton && messageInput) {
    //채팅방 나가기
    document.getElementById('leaveChatItem').addEventListener('click', function(event) {
          event.preventDefault();
-         console.log("방번호:"+currentChatRoomNo);
-         console.log("번호:"+currentMember);
          const csrfToken = document.querySelector('input[name="_csrf"]').value;
          Swal.fire({
                 text: "채팅방에서 나가시겠습니까?",
@@ -546,23 +583,79 @@ if (sendButton && messageInput) {
                 }
             });
       });
+      // 채팅방 이름 수정 함수
+      document.getElementById('confirmEditButton').addEventListener('click', function(event) {
+         event.preventDefault();
 
-    // 채팅방 이름 수정 함수
-    document.getElementById('confirmEditButton').addEventListener('click', function(event) {
+         const currentMemberNo = document.getElementById("currentMemberNo").value;
+         const csrfToken = document.querySelector('input[name="_csrf"]').value;
+         const chatRoomName = document.getElementById('chatRoomNameInput').value;
+
+          if (!chatRoomName.trim()) {
+              alert("채팅방 이름을 입력하세요.");
+              return;
+          }
+
+          // 채팅방 수정 함수 호출
+          updateChatRoom(currentMemberNo, currentChatRoomNo, csrfToken, chatRoomName);
+      });
+      //채팅방 고정
+      document.getElementById('pinChatItem').addEventListener('click', function() {
         event.preventDefault();
+        updatePinStatus(true);
+      });
+      //채팅방 고정 해제
+      document.getElementById('pinDeleteChatItem').addEventListener('click', function() {
+        event.preventDefault();
+        updatePinStatus(false);
+      });
 
-        const currentMemberNo = document.getElementById("currentMemberNo").value;
-        const csrfToken = document.querySelector('input[name="_csrf"]').value;
-        const chatRoomName = document.getElementById('chatRoomNameInput').value;
+      function updatePinStatus(status){
+         const csrfToken = document.querySelector('input[name="_csrf"]').value;
+         let statusValue = 0;
 
-        if (!chatRoomName.trim()) {
-            alert("채팅방 이름을 입력하세요.");
-            return;
-        }
+         if (status === true) {
+             statusValue = 1;
+         }
+          // 상태에 따른 메시지 설정
+         const messageText = statusValue === 1 ? "채팅방이 상단에 고정됩니다." : "채팅방 고정을 해제합니다.";
+         Swal.fire({
+            text: messageText,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            cancelButtonText: "취소",
+            dangerMode: true
+         }).then((result) => {
+            if (result.isConfirmed) {
+            // 채팅방 상단 고정요청
+            fetch(`/api/chat/pin/${currentChatRoomNo}`, {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-Token': csrfToken
+               },
+                  body: JSON.stringify({
+                  currentMember: currentMember,
+                  statusValue: statusValue,
+                  updatedAt: new Date().toISOString()}) // 사용자 ID를 서버에 보냄
+               })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     window.location.reload();
+                  } else {
+                     Swal.fire("실패", "고정에 실패했습니다.", "error");
+                  }
+               })
+               .catch(error => {
+                  console.error('오류 발생:', error);
+                   Swal.fire("오류", "서버와의 통신 중 오류가 발생했습니다.", "error");
+               });
+            }
+         });
+      }
 
-        // 채팅방 수정 함수 호출
-        updateChatRoom(currentMemberNo, currentChatRoomNo, csrfToken, chatRoomName);
-    });
 
        function updateChatRoom(currentMemberNo, roomNo, csrfToken, chatRoomName) {
 
@@ -623,6 +716,23 @@ function formatDateTime(date) {
                 console.error("error", error);
                 return null;
             });
+    }
+    //채팅방 고정 확인
+    function checkPinStatus(chatRoomNo) {
+        return fetch(`/api/chat/pin/status/${chatRoomNo}/${currentMember}`)
+              .then(response => {
+                          if (!response.ok) {
+                              throw new Error("고정에 실패했습니다.");
+                          }
+                          return response.json();
+                      })
+                      .then(data => {
+                          return data.isPinned;
+                      })
+                      .catch(error => {
+                          console.error("error", error);
+                          return null;
+                      });
     }
     function displayChatMessages(messages) {
         const chatContentDiv = document.getElementById("chatContent");
@@ -701,6 +811,49 @@ function formatDateTime(date) {
               }).catch(error => {
                     console.error('error', error);
               });
+
+              // 고정 상태 확인
+                checkPinStatus(element).then(isPinned => {
+                    const pinChatItem = document.getElementById('pinChatItem');
+                    const pinDeleteChatItem = document.getElementById('pinDeleteChatItem');
+                    const pin = document.getElementById('pin');
+                    if (isPinned) {
+                        pinChatItem.style.display = 'none'; // 고정 버튼 숨기기
+                        pinDeleteChatItem.style.display = 'block'; // 고정 해제 버튼 보이기
+                    } else {
+                        pinChatItem.style.display = 'block'; // 고정 버튼 보이기
+                        pinDeleteChatItem.style.display = 'none'; // 고정 해제 버튼 숨기기
+
+                    }
+                }).catch(error => {
+                    console.error('고정 상태 확인 중 오류 발생:', error);
+                });
+
+             // 참여자 수 가져오기
+                 getParticipantCount(element).then(count => {
+                     const participantCountElement = document.querySelector('.countParticipant span');
+                     participantCountElement.innerText = count; // 참여자 수 업데이트
+                 }).catch(error => {
+                     console.error('참여자 수를 가져오는 중 오류 발생:', error);
+                 });
+
+                // 읽음 처리
+                markAllMessagesAsRead(element);
+
+    }
+
+    // 참여자 수 가져오는 함수
+    function getParticipantCount(chatRoomNo) {
+        return fetch(`/api/chat/participants/count/${chatRoomNo}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('참여자 수를 가져올 수 없습니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data.count; // 참여자 수 반환
+            });
     }
     function getChatRoomName(chatRoomNo) {
         const memberNo = document.getElementById('currentMember').value;
@@ -716,7 +869,15 @@ function formatDateTime(date) {
                 return null;
             });
     }
-
+    // 읽음 처리
+    function markAllMessagesAsRead(chatRoomNo) {
+        const message = {
+            type: 'markAsRead',
+            chatRoomNo: chatRoomNo,
+            currentMember: currentMember // 현재 사용자 ID
+        };
+        socket.send(JSON.stringify(message));
+    }
 
     function resetSelectedMembers() {
         selectedMembers = [];
