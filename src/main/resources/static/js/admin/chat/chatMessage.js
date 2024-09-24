@@ -208,6 +208,11 @@ if (sendButton && messageInput) {
                     restoreSelection(data.instance);
                 }).on('changed.jstree', function (e, data) {
                     updateSelectedMembers(data.selected, data.instance);
+                });  
+                $('#organization_search').on('keyup', function() { 
+                    const searchString = $(this).val();
+
+                    $('#organization-chart').jstree(true).search(searchString); 
                 });
             },
             error: function(xhr, status, error) {

@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	var categoryNames = {};
 	
 	let selectedDate = null;
+	var pickStartDate = null;
+	var pickEndDate = null;
 	
 	$.ajax({
         url: '/categories',
@@ -154,12 +156,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }, 
             eventClick: function(info) {
-                if (info.event.extendedProps.createData) { 
-	                const eventId = info.event.id; 
-	                showEventModalById(calendar, eventId); 
-	            } else { 
-	                info.jsEvent.preventDefault(); 
-	            }
+				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
+			    pickStartDate = eventStart.toISOString().split('T')[0];
+			
+			    let eventEnd;
+			    if (info.event.end) { 
+			        if (info.event.allDay) {
+			            eventEnd = new Date(info.event.end.getTime() - 24 * 60 * 60 * 1000 - (info.event.end.getTimezoneOffset() * 60000));
+			        } else {
+			            eventEnd = new Date(info.event.end.getTime() - (info.event.end.getTimezoneOffset() * 60000));
+			        }
+			    } else {
+			        eventEnd = eventStart;
+			    }
+			    pickEndDate = eventEnd.toISOString().split('T')[0]; 
+			
+			    if (info.event.extendedProps.createData) {
+			        const eventId = info.event.id;
+			        showEventModalById(calendar, eventId);
+			    } else {
+			        info.jsEvent.preventDefault();
+			    }  
             },
             eventDidMount: function(info) { 
 	            if (info.event.extendedProps.createData) {
@@ -208,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			    selectedDate = info.dateStr;  
 			    console.log(selectedDate);
 			    $('#eventDate').val(selectedDate);   
-			    $('#eventDate').change();
+			    document.getElementById('eventDate').dispatchEvent(new Event('change'));
     
 			    document.getElementById('eventModal').style.display = 'block';
 		    }
@@ -220,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showEventModalById(calendar, eventId) {
 	    const event = calendar.getEventById(eventId);   
 	    if (!event) {
-	        console.error("해당 ID로 이벤트를 찾을 수 없습니다.");
+	        console.error("일정을 찾을 수 없습니다.");
 	        return;
 	    }
 	
@@ -236,9 +253,9 @@ document.addEventListener('DOMContentLoaded', function() {
  
 	    title.textContent = event.title;
 	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
-	 
-	    const startDate = event.extendedProps.startDate;
-	    const endDate = event.extendedProps.endDate;
+	  
+	    const startDate = pickStartDate;
+	    const endDate = pickEndDate;
 	    const startTime = event.extendedProps.startTime;
 	    const endTime = event.extendedProps.endTime;
 	    if(startDate === endDate) {
@@ -563,8 +580,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		else {
 			const isRecurring = document.getElementById('isRecurring').value;   
 		    
-		    if (isRecurring === "1") { 
-				console.log("isRecurring"); 
+		    if (isRecurring === "1") {   
 		        openEventRepeatModal();
 		    } else { 
 		        submitEventUpdate(); 
@@ -639,14 +655,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	            $('#isRecurring').val(data.schedule.schedule_repeat);  
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_title);
-	            $('#eventDate').val(data.schedule.schedule_start_date);
+	            $('#eventDate').val(pickStartDate);
 	            document.getElementById('eventDate').dispatchEvent(new Event('change'));
 	            
 	            if (data.schedule.schedule_allday === 1) {
 	                $('#allDay').prop('checked', true);
 	                document.getElementById('allDay').dispatchEvent(new Event('change'));
 	
-	                $('#endDate').val(data.schedule.schedule_end_date);
+	                $('#endDate').val(pickEndDate);
 	            } else {
 	                $('#allDay').prop('checked', false);
 	               document.getElementById('allDay').dispatchEvent(new Event('change')); 
@@ -668,8 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 	
 	// 반복 일정 수정 모달 
-	function openEventRepeatModal() {
-		console.log("openEventRepeatModal"); 
+	function openEventRepeatModal() { 
 	    var repeatModal = document.getElementById('eventRepeatModal');
 	    repeatModal.style.display = 'block';
 	}
@@ -691,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    
 	    $.ajax({
 	        type: "POST",
-	        url: '/company/schedule/edit/recurring/' + eventId + '?editOption=' + repeatEditOption,
+	        url: '/company/schedule/edit/recurring/' + eventId + '?editOption=' + repeatEditOption + '&pickStartDate=' + pickStartDate + '&pickEndDate=' + pickEndDate,
 	        contentType: 'application/json',
 	        data: JSON.stringify(eventData),
 	        headers: {
