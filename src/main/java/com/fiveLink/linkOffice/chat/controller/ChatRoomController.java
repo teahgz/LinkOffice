@@ -31,7 +31,6 @@ public class ChatRoomController {
 
         try {
             Long currentMember = Long.parseLong(requestBody.get("currentMember").toString());
-            System.out.println("currentMember: " + currentMember);
 
             // 현재 사용자가 채팅방에서 나가는 로직 처리
             int result = chatRoomService.chatRoomOut(currentChatRoomNo, currentMember);
@@ -65,7 +64,7 @@ public class ChatRoomController {
         try {
             Long currentMember = Long.parseLong(requestBody.get("currentMember").toString());
             int status = (int) requestBody.get("statusValue");
-            // updatedAt 값을 String으로 받고 LocalDateTime으로 변환
+
             String updatedAtStr = requestBody.get("updatedAt").toString();
             LocalDateTime updateTime = null;
             if (status == 1) {
