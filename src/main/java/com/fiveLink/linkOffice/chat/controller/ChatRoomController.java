@@ -24,7 +24,7 @@ public class ChatRoomController {
     @PostMapping("/api/chat/out/{currentChatRoomNo}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> chatRoomOut(
-            @PathVariable Long currentChatRoomNo,
+            @PathVariable("currentChatRoomNo") Long currentChatRoomNo,
             @RequestBody Map<String, Object> requestBody) {
 
         Map<String, Object> response = new HashMap<>();
@@ -57,7 +57,7 @@ public class ChatRoomController {
     @PostMapping("/api/chat/pin/{currentChatRoomNo}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> chatRoomPin(
-            @PathVariable Long currentChatRoomNo,
+            @PathVariable("currentChatRoomNo") Long currentChatRoomNo,
             @RequestBody Map<String, Object> requestBody) {
 
         Map<String, Object> response = new HashMap<>();
@@ -102,7 +102,7 @@ public class ChatRoomController {
 
     @GetMapping("/api/chat/pin/status/{chatRoomNo}/{currentMember}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> checkPinStatus(@PathVariable Long chatRoomNo, @PathVariable Long currentMember) {
+    public ResponseEntity<Map<String, Object>> checkPinStatus(@PathVariable("chatRoomNo") Long chatRoomNo, @PathVariable("currentMember") Long currentMember) {
         System.out.println("test : "+ chatRoomNo);
         int status =  chatRoomService.selectChatPin(chatRoomNo, currentMember);
         Map<String, Object> response = new HashMap<>();
@@ -112,7 +112,7 @@ public class ChatRoomController {
     //참여자 수
     @GetMapping("/api/chat/participants/count/{chatRoomNo}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> countParicipant(@PathVariable Long chatRoomNo) {
+    public ResponseEntity<Map<String, Object>> countParicipant(@PathVariable("chatRoomNo") Long chatRoomNo) {
         int status =  chatRoomService.countParicipant(chatRoomNo);
         Map<String, Object> response = new HashMap<>();
         response.put("count", status);

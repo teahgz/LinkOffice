@@ -238,4 +238,92 @@ public class DocumentFileController {
 	    } 
 	    return resultMap;
 	}
+	// 파일 복구 
+	@PostMapping("/document/file/update")
+	@ResponseBody
+	public Map<String, Object> documentFileUpdate(@RequestBody Map<String, Long> payload){
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "파일을 복구하지 못했습니다.");
+		
+        Long fileNo = payload.get("fileNo");
+        DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);
+        Long memberNo = file.getMember().getMemberNo();
+        Long docBoxType = file.getDocumentFolder().getDocumentBoxType();
+        Long docParentNo = null;
+        Long folderStatus = 0L;
+        int result = 0;
+        
+        if(file.getDocumentFolder().getDocumentFolderStatus() == 0L) {
+        	file.setDocumentFileStatus(0L);
+        	file.setDocumentFileUpdateDate(LocalDateTime.now());
+        	result = documentFileService.saveFile(file);  
+        } else {
+        	// 최상위 폴더 찾기
+        	DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
+        	if(parentFolder != null) {
+        		file.setDocumentFileStatus(0L);
+        		file.setDocumentFolder(parentFolder);
+        		file.setDocumentFileUpdateDate(LocalDateTime.now());
+        		result = documentFileService.saveFile(file);  
+        	} else {
+        		resultMap.put("res_msg", "복구할 수 있는 폴더가 존재하지 않습니다.");
+        	}
+        }       
+    	if(result > 0) {
+    		resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "파일 복구가 완료되었습니다.");
+    	}
+		return resultMap;
+	}
+	// 파일 선택 복구 
+	@PostMapping("/document/fileList/update")
+	@ResponseBody
+	public Map<String, Object> documentFileListUpdate(@RequestBody Map<String, List<Long>> payload){
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "파일을 복구하지 못했습니다.");
+		
+        List<Long> fileNos = payload.get("fileNos");
+        Long docParentNo = null;
+        Long folderStatus = 0L;
+        int result = 0;
+	    int updateCount = 0;
+
+	    // 리스트로 가져온 파일들을 하나씩 삭제 
+	    for (Long fileNo : fileNos) {
+	    	DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);	    	
+	    	Long memberNo = file.getMember().getMemberNo();
+	    	Long docBoxType = file.getDocumentFolder().getDocumentBoxType();
+	        if(file.getDocumentFolder().getDocumentFolderStatus() == 0L) {
+	        	file.setDocumentFileStatus(0L);
+	        	file.setDocumentFileUpdateDate(LocalDateTime.now());
+	        	result = documentFileService.saveFile(file);  
+	        	if(result > 0) {
+	        		updateCount++;
+	        	}
+	        } else {
+	        	// 최상위 폴더 찾기
+	        	DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
+	        	if(parentFolder != null) {
+	        		file.setDocumentFileStatus(0L);
+	        		file.setDocumentFolder(parentFolder);
+	        		file.setDocumentFileUpdateDate(LocalDateTime.now());
+	        		result = documentFileService.saveFile(file);  
+	        	} else {
+	        		resultMap.put("res_msg", "복구할 수 있는 폴더가 존재하지 않습니다.");
+	        	}
+	        }       
+	    	if(result > 0) {
+	    		if(updateCount == fileNos.size()) {
+	    			resultMap.put("res_code", "200");
+	    			resultMap.put("res_msg", "모든 파일 복구가 완료되었습니다.");	    			
+	    		} else {
+	    			resultMap.put("res_code", "200");
+	    			resultMap.put("res_msg", "복구할 수 있는 폴더가 존재하지 않는 파일을 제외한 모든 파일 복구가 완료되었습니다.");	
+	    		}
+	    	} 
+	    }	    
+		return resultMap;
+	}
 }

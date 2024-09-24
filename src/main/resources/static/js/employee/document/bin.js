@@ -111,7 +111,7 @@ $(function () {
                             </td>
                             <td>${formatDate(file.document_file_update_date)}</td>
                             <td>${file.document_file_size}</td>
-                            <td><input type="button" value="복구"  class="file_down_button"></td>
+                            <td><input type="button" value="복구" class="file_update_button"></td>
                             <td><input type="button" class="delete_button" value="영구 삭제" id="${file.document_file_no}"></td>
                         `;
                         fileTableBody.appendChild(row);
@@ -171,7 +171,31 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	                }
-	            });               
+	            });      
+	            // 파일 복구 
+				$('.file_update_button').on('click', function() {
+	                const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+	                updateFile(fileNo);
+	            });     
+	            // 파일 선택 복구
+	            $('#update_button').on('click', function() {
+	                const selectedFileNos = []; 
+	                
+	                // 체크된 파일들의 fileNo 가져오기 
+	                $('.file_checkbox:checked').each(function() {
+	                    const fileNo = $(this).closest('tr').find('.delete_button').attr('id');
+	                    selectedFileNos.push(fileNo); 
+	                });
+	                if (selectedFileNos.length > 0) {
+	                    updateSelectedFile(selectedFileNos);
+	                } else {
+	                    Swal.fire({
+	                        icon: 'warning',
+	                        text: '복구할 파일을 선택해 주세요.',
+	                        confirmButtonText: '확인'
+	                    });
+	                }
+	            }); 
             }
         });
     }
@@ -338,6 +362,68 @@ $(function () {
 	        }
 	    });
 	}	
+	// 파일 복구 
+	function updateFile(fileNo){
+		$.ajax({
+			type: 'POST',
+			url: '/document/file/update',
+			data: JSON.stringify({ fileNo: fileNo }),
+			contentType: 'application/json',
+			headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
+            },
+			success: function(response){
+				if (response.res_code === '200') {
+	                    Swal.fire({
+	                        icon: 'success',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	            	loadFiles();
+	            	getAllFileSize();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.res_msg,
+                        confirmButtonText: '확인'
+                    });
+                }
+                 $('#file_name_input').val(''); 
+			}
+		});
+	}	
+	// 파일 선택 복구 
+	function updateSelectedFile(selectedFileNos){
+		$.ajax({
+			type: 'POST',
+			url: '/document/fileList/update',
+			data: JSON.stringify({ fileNos: selectedFileNos }),
+			contentType: 'application/json',
+			headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
+            },
+			success: function(response){
+				if (response.res_code === '200') {
+	                    Swal.fire({
+	                        icon: 'success',
+	                        text: response.res_msg,
+	                        confirmButtonText: '확인'
+	                    });
+	            	loadFiles();
+	            	getAllFileSize();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.res_msg,
+                        confirmButtonText: '확인'
+                    });
+                }
+                 $('#file_name_input').val(''); 
+			}
+		});	
+	}
 	// 날짜 검색 
 	var today = new Date();
 	const todayStr = formatDate(today);	
