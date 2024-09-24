@@ -118,54 +118,65 @@ const editorConfig = {
 
 // 시작 기간 선택 전 disable
 document.addEventListener("DOMContentLoaded", function() {
-    const startDateInput = document.getElementById("vacationapproval_start_date");
-    const endDateInput = document.getElementById("vacationapproval_end_date");
-    const dateCountInput = document.getElementById("vacationapproval_date_count");
+	
+const startDateInput = document.getElementById("vacationapproval_start_date");
+const endDateInput = document.getElementById("vacationapproval_end_date");
+const dateCountInput = document.getElementById("vacationapproval_date_count");
 
-    endDateInput.disabled = true;
+endDateInput.disabled = true;
 
-    startDateInput.addEventListener("change", function() {
-        if (startDateInput.value) {
-            endDateInput.disabled = false; 
-            calculateDateDifference(); 
-        } else {
-            endDateInput.disabled = true; 
-            endDateInput.value = '';
-            dateCountInput.value = ''; 
-        }
-    });
-    
-    endDateInput.addEventListener("change", function() {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-
-        if (startDate && endDate && endDate < startDate) {
-            Swal.fire({
-                icon: 'warning',
-                text: "종료일은 시작일보다 이전일 수 없습니다.",
-                confirmButtonColor: '#B1C2DD',
-                confirmButtonText: "확인"
-            });
-            endDateInput.value = '';
-            dateCountInput.value = ''; 
-        } else {
-            calculateDateDifference(); 
-        }
-    });
-
-    function calculateDateDifference() {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-
-        if (startDate && endDate && endDate >= startDate) {
-            const timeDifference = endDate - startDate;
-            const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) + 1;
-            dateCountInput.value = daysDifference;
-        } else {
-            dateCountInput.value = ''; 
-        }
+startDateInput.addEventListener("change", function() {
+    if (startDateInput.value) {
+        endDateInput.disabled = false; 
+        calculateDateDifference(); 
+    } else {
+        endDateInput.disabled = true; 
+        endDateInput.value = '';
+        dateCountInput.value = ''; 
     }
-    
+});
+
+endDateInput.addEventListener("change", function() {
+    const startDate = new Date(startDateInput.value);
+    const endDate = new Date(endDateInput.value);
+
+    if (startDate && endDate && endDate < startDate) {
+        Swal.fire({
+            icon: 'warning',
+            text: "종료일은 시작일보다 이전일 수 없습니다.",
+            confirmButtonColor: '#B1C2DD',
+            confirmButtonText: "확인"
+        });
+        endDateInput.value = '';
+        dateCountInput.value = ''; 
+    } else {
+        calculateDateDifference(); 
+    }
+});
+
+function calculateDateDifference() {
+	// 시작과 종료
+    const startDate = new Date(startDateInput.value);
+    const endDate = new Date(endDateInput.value);
+
+    if (startDate && endDate && endDate >= startDate) {
+        let daysDifference = 0;
+	
+        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+			// 오늘날짜 확인
+            const dayOfWeek = d.getDay();
+			// 주말이 아니면 +1
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                daysDifference++;
+            }
+        }
+
+        dateCountInput.value = daysDifference;
+    } else {
+        dateCountInput.value = '';
+    }
+}
+
     
        document.getElementById('vacationapproval_file').addEventListener('change', function (event) {
         const vacationFile = event.target.files[0]; 
