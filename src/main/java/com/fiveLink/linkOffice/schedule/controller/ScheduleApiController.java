@@ -371,8 +371,7 @@ public class ScheduleApiController {
 	    if (request.get("repeatEndDate") != null) {
 	        scheduleRepeatDto.setSchedule_repeat_end_date((String) request.get("repeatEndDate"));
 	    }
-
-	    // 일정 수정  
+ 
 	    try {
 	        switch (editOption.intValue()) {
 	            case 1: // 이 일정만 수정

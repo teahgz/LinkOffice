@@ -171,19 +171,32 @@ public class ScheduleService {
          
         scheduleRepository.save(existingSchedule);
  
-        if (scheduleDto.getSchedule_repeat() != 0) {
-	        ScheduleRepeat repeat = ScheduleRepeat.builder()
-	                .scheduleNo(eventId)
-	                .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
-	                .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
-	                .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
-	                .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
-	                .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
-	                .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
-	                .build();
-
-	        scheduleRepeatRepository.save(repeat);
-	    }
+        if (scheduleDto.getSchedule_repeat() != 0) { 
+            ScheduleRepeat existingRepeat = scheduleRepeatRepository.getByScheduleNo(eventId);
+            
+            if (existingRepeat != null) { 
+                existingRepeat.setScheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type());
+                existingRepeat.setScheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())); // 요일
+                existingRepeat.setScheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())); // 주차
+                existingRepeat.setScheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())); // 일자
+                existingRepeat.setScheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())); // 월
+                existingRepeat.setScheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()); 
+ 
+                scheduleRepeatRepository.save(existingRepeat);
+            } else { 
+                ScheduleRepeat repeat = ScheduleRepeat.builder()
+                        .scheduleNo(eventId)
+                        .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
+                        .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
+                        .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
+                        .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
+                        .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
+                        .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
+                        .build();
+ 
+                scheduleRepeatRepository.save(repeat);
+            }
+        }
     }
     
     
@@ -227,13 +240,11 @@ public class ScheduleService {
         }
     }
 
-    // 모든 일정 수정
- // 모든 일정 수정
+    // 모든 일정 수정 
     public void updateAllEvents(Long eventId, ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {  
         Schedule schedule = scheduleRepository.findById(eventId)
             .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
-
-        // 일정 수정
+ 
         schedule.setScheduleTitle(scheduleDto.getSchedule_title());
         schedule.setScheduleComment(scheduleDto.getSchedule_comment());
         schedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
@@ -244,8 +255,7 @@ public class ScheduleService {
         schedule.setScheduleEndTime(scheduleDto.getSchedule_end_time());
         schedule.setScheduleRepeat(scheduleDto.getSchedule_repeat());
         scheduleRepository.save(schedule); 
-
-        // 반복 일정 수정
+ 
         if (scheduleDto.getSchedule_repeat() != 0) { 
             ScheduleRepeat existingRepeat = scheduleRepeatRepository.getByScheduleNo(eventId);
             
