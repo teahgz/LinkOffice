@@ -283,7 +283,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         response.put("data", unreadResponseList);
-        System.out.println(response);
         session.sendMessage(new TextMessage(new ObjectMapper().writeValueAsString(response)));
     }
     @Override

@@ -28,7 +28,7 @@ public class ChatMemberController {
     // 채팅방 이름 가져오기
     @GetMapping("/api/chat/roomName/{chatRoomNo}/{memberNo}")
     @ResponseBody
-    public String roomName(@PathVariable Long chatRoomNo, @PathVariable Long memberNo) {
+    public String roomName(@PathVariable("chatRoomNo") Long chatRoomNo, @PathVariable("memberNo") Long memberNo) {
         try {
             String chatRoomName = chatMemberService.selectChatRoomName(chatRoomNo, memberNo);
 
@@ -46,7 +46,7 @@ public class ChatMemberController {
 
     @GetMapping("/api/chat/roomType/{chatRoomNo}")
     @ResponseBody
-    public int chatRoomType(@PathVariable Long chatRoomNo){
+    public int chatRoomType(@PathVariable("chatRoomNo") Long chatRoomNo){
         System.out.println(chatMemberService.chatRoomType(chatRoomNo));
         return chatMemberService.chatRoomType(chatRoomNo);
 
@@ -54,7 +54,7 @@ public class ChatMemberController {
 
     @GetMapping("/api/chat/exist/{currentChatRoomNo}")
     @ResponseBody
-    public List<Long> getChatRoomMemberNo(@PathVariable Long currentChatRoomNo) {
+    public List<Long> getChatRoomMemberNo(@PathVariable("currentChatRoomNo") Long currentChatRoomNo) {
         List<Long> memberNos = chatMemberService.chatRoomMemberNo(currentChatRoomNo);
         return memberNos;
     }
@@ -62,7 +62,7 @@ public class ChatMemberController {
     // 채팅방 이름 가져오기(2)
     @GetMapping("/api/chat/room/name/{chatRoomNo}")
     @ResponseBody
-    public String getMemberChatRoomName(@PathVariable Long chatRoomNo) {
+    public String getMemberChatRoomName(@PathVariable("chatRoomNo") Long chatRoomNo) {
         try {
             String chatRoomName = chatMemberService.selectMemberChatRoomName(chatRoomNo);
 
