@@ -364,8 +364,7 @@ public class DocumentApiController {
    	  Map<String, Object> resultMap = new HashMap<>();
    	  resultMap.put("res_code", "404");
    	  resultMap.put("res_msg", "경로 오류");
-      resultMap.put("res_result", 0);
-   	  
+      resultMap.put("res_result", 0); 	  
       String folderNoStr = (String) payload.get("folderNo");
    	  Long folderNo = Long.valueOf(folderNoStr);
              
@@ -373,10 +372,8 @@ public class DocumentApiController {
 
      if (documentfolder.getDocumentFolderParentNo() != null) {
     	 resultMap.put("res_code", "200");
-   	  	 resultMap.put("res_msg", "해당 폴더의 하위 폴더가 모두 삭제되고 이 폴더와 하위 폴더의 파일이 최상위 폴더로 이동합니다. 폴더를 삭제하시겠습니까?");
      } else{
          resultMap.put("res_code", "200");
-   	  	 resultMap.put("res_msg", "해당 폴더의 하위 폴더가 모두 삭제되고 이 폴더와 하위 폴더의 파일이 모두 휴지통으로 이동합니다. 폴더를 삭제하시겠습니까?");
          resultMap.put("res_result", 1);
      }
      return resultMap;

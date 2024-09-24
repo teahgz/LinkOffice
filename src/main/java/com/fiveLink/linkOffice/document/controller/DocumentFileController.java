@@ -317,10 +317,11 @@ public class DocumentFileController {
 	    	if(result > 0) {
 	    		if(updateCount == fileNos.size()) {
 	    			resultMap.put("res_code", "200");
+	    			resultMap.put("res_status", 0);	    			
 	    			resultMap.put("res_msg", "모든 파일 복구가 완료되었습니다.");	    			
 	    		} else {
 	    			resultMap.put("res_code", "200");
-	    			resultMap.put("res_msg", "복구할 수 있는 폴더가 존재하지 않는 파일을 제외한 모든 파일 복구가 완료되었습니다.");	
+	    			resultMap.put("res_status", 1);	
 	    		}
 	    	} 
 	    }	    
