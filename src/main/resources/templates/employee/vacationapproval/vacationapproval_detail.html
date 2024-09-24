@@ -137,7 +137,7 @@
                                                    file.vacation_approval_file_ori_name.endsWith('.jpeg'))}" class="file_info">
                                         <a th:href="@{/download_vacation_file/{no}(no=${vacationapprovaldto.vacation_approval_no})}"
                                            th:text="${file.vacation_approval_file_ori_name}"></a>
-                                        <p th:text="${'파일 크기: ' + file.vacation_approval_file_size + ' bytes'}"></p>
+                                        <p th:text="${'파일 크기: ' + file.vacation_approval_file_size + ' KB'}"></p>
                                     </div>
                                 </div>
                             </div>

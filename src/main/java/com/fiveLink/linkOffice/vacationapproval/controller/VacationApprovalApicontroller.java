@@ -37,7 +37,6 @@ public class VacationApprovalApicontroller {
 	}
 	
 	// 휴가 결재 등록
-	
 	@ResponseBody
 	@PostMapping("/employee/vacationapproval/create")
 	public Map<String, String> createVacationApproval(
@@ -133,7 +132,7 @@ public class VacationApprovalApicontroller {
 	    return response;
 	}
 	
-	// 휴가 결재 기안 취소 (업데이트)
+	// 휴가 결재 기안 취소
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/cancel/{vacationapproval_no}")
 	public Map<String,String> employeeVacationApprovalDelete(@PathVariable("vacationapproval_no") Long vapNo,
@@ -153,7 +152,7 @@ public class VacationApprovalApicontroller {
 	    return response; 
 	}
 	
-	// 휴가 결재 수정 (업데이트)
+	// 휴가 결재 수정 
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/edit/{vacationapproval_no}")
 	public Map<String,String> employeeVacationApprovalEdit(@PathVariable("vacationapproval_no") Long vapNo, 
@@ -255,7 +254,7 @@ public class VacationApprovalApicontroller {
 	    return response;
 	}
 	
-	// 사용자 휴가결재 승인 (업데이트)
+	// 사용자 휴가결재 승인 
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/approve/{vacationapproval_no}")
 	public Map<String,String> employeeVacationApprovalFlowUpdate(@PathVariable("vacationapproval_no") Long vacationApprovalNo){
@@ -274,7 +273,7 @@ public class VacationApprovalApicontroller {
 	    return response;
 	}
 	
-	// 사용자 휴가결재 반려 (업데이트)
+	// 사용자 휴가결재 반려
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/reject/{vacationapproval_no}")
 	public Map<String,String> employeeVacationApprovalFlowReject(@PathVariable("vacationapproval_no") Long vacationApprovalNo,
@@ -296,7 +295,7 @@ public class VacationApprovalApicontroller {
 	    return response;
 	}
 	
-	// 사용자 휴가결재 승인취소 (업데이트)
+	// 사용자 휴가결재 승인취소
 	@ResponseBody
 	@PutMapping("/employee/vacationapproval/approvecancel/{vacationapproval_no}")
 	public Map<String,String> employeeVacationApprovalFlowCancel(@PathVariable("vacationapproval_no") Long vacationApprovalNo){

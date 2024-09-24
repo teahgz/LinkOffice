@@ -677,7 +677,7 @@ $(function () {
 	                if (response.res_result == 0) {
 	                    Swal.fire({
 	                        icon: 'warning',
-	                        text: response.res_msg,
+	                        html: "해당 폴더의 하위 폴더가 모두 삭제되고<br>모든 파일이 최상위 폴더로 이동합니다.<br>폴더를 삭제하시겠습니까?",
 	                        showCancelButton: true,
 	                        confirmButtonText: '확인',
 	                        cancelButtonText: '취소'
@@ -736,7 +736,7 @@ $(function () {
 	                } else {
 	                    Swal.fire({
 	                        icon: 'warning',
-	                        text: response.res_msg,
+	                        html: "해당 폴더의 하위 폴더가 모두 삭제되고<br>모든 파일이 휴지통으로 이동합니다.<br>폴더를 삭제하시겠습니까?",
 	                        showCancelButton: true,
 	                        confirmButtonText: '확인',
 	                        cancelButtonText: '취소'

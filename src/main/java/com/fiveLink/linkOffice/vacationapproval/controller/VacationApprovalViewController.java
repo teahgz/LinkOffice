@@ -1,7 +1,9 @@
 package com.fiveLink.linkOffice.vacationapproval.controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,12 +17,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalFileService;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
@@ -53,7 +58,7 @@ public class VacationApprovalViewController {
  		
  		return "employee/vacationapproval/vacationapproval_create";
  	}
- 	
+ 	// 휴가 정렬
  	private Sort getSortOption(String sort) {
 		if ("latest".equals(sort)) {
 			return Sort.by(Sort.Order.desc("vacationApprovalCreateDate")); 
@@ -119,6 +124,13 @@ public class VacationApprovalViewController {
             }
         }
         
+		if(vacationapprovaldto.getFiles() != null) {
+			for(VacationApprovalFileDto file : vacationapprovaldto.getFiles()) {
+				Long fileSize = file.getVacation_approval_file_size();
+				file.setVacation_approval_file_size(fileSize / 1024);
+			}
+		}
+        
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);
  		
@@ -149,4 +161,16 @@ public class VacationApprovalViewController {
 		return vacationApprovalFileService.download(vacationApprovalNo);
 	}
  	
+	// 휴가결재 수정 값 (js)
+	@GetMapping("/employee/vacationapproval/approve/{vacation_approval_no}")
+	@ResponseBody
+	public  Map<String, Object> approvalEdit(@PathVariable("vacation_approval_no") Long vacationApprovalNo) {
+		Map<String, Object> response = new HashMap<>();
+		
+ 		VacationApprovalDto vacationapprovaldto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+		
+ 		response.put("vacationapprovaldto", vacationapprovaldto);
+		
+		return response;
+	}
 }

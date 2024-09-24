@@ -1,5 +1,8 @@
 package com.fiveLink.linkOffice.survey.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +16,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
@@ -119,12 +124,14 @@ public class SurveyViewController {
         return "employee/survey/survey_ing_list";
     }
     
+
     @GetMapping("/employee/survey/detail/{survey_no}")
     public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
         Long memberNo = memberService.getLoggedInMemberNo();
         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
 
+        // 설문 참여 여부 확인
         boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
 
         model.addAttribute("dto", dto);
@@ -139,6 +146,14 @@ public class SurveyViewController {
             Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
             model.addAttribute("participationRates", participationRates);
 
+            // 옵션별 응답 수 데이터를 서비스에서 가져와 모델에 추가
+            Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
+            model.addAttribute("optionAnswerCounts", optionAnswerCounts);
+
+            // 차트 데이터 준비 (각 질문별 옵션 응답 수를 구글 차트 형식으로 변환)
+            Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
+            model.addAttribute("chartData", chartData);
+
             model.addAttribute("totalParticipants", totalParticipants);
             model.addAttribute("completedParticipants", completedParticipants);
             model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
@@ -148,6 +163,27 @@ public class SurveyViewController {
             return "employee/survey/survey_question_detail";
         }
     }
+
+    // 차트 데이터 변환 메서드
+    private Map<Long, List<List<Object>>> prepareChartData(Map<Long, List<Object[]>> optionAnswerCounts) {
+        Map<Long, List<List<Object>>> chartData = new HashMap<>();
+
+        for (Map.Entry<Long, List<Object[]>> entry : optionAnswerCounts.entrySet()) {
+            Long questionNo = entry.getKey();
+            List<Object[]> options = entry.getValue();
+            List<List<Object>> data = new ArrayList<>();
+            data.add(Arrays.asList("Option", "Votes")); 
+
+            for (Object[] option : options) {
+                String optionAnswer = (String) option[0];
+                Long answerCount = (Long) option[1];
+                data.add(Arrays.asList(optionAnswer, answerCount));
+            }
+            chartData.put(questionNo, data);
+        }
+        return chartData;
+    }
+
 
 
 }
