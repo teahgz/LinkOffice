@@ -244,8 +244,7 @@ public class ScheduleService {
     public void updateAllEvents(Long eventId, ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {  
         Schedule schedule = scheduleRepository.findById(eventId)
             .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
-
-        // 일정 수정
+ 
         schedule.setScheduleTitle(scheduleDto.getSchedule_title());
         schedule.setScheduleComment(scheduleDto.getSchedule_comment());
         schedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
@@ -256,8 +255,7 @@ public class ScheduleService {
         schedule.setScheduleEndTime(scheduleDto.getSchedule_end_time());
         schedule.setScheduleRepeat(scheduleDto.getSchedule_repeat());
         scheduleRepository.save(schedule); 
-
-        // 반복 일정 수정
+ 
         if (scheduleDto.getSchedule_repeat() != 0) { 
             ScheduleRepeat existingRepeat = scheduleRepeatRepository.getByScheduleNo(eventId);
             
