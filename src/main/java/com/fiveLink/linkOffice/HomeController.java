@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
@@ -28,12 +28,14 @@ public class HomeController {
 
 	private final MemberService memberService;
 	private final AttendanceService attendanceService;
+	private final ApprovalService approvalService;
 
 	@Autowired
 	public HomeController(MemberService memberService,
-			AttendanceService attendanceService) {
+			AttendanceService attendanceService, ApprovalService approvalService) {
 		this.memberService = memberService;
 		this.attendanceService = attendanceService;
+		this.approvalService = approvalService;
 		
 	}
 
@@ -89,8 +91,20 @@ public class HomeController {
 	            }
 	        }
 
-		    //[전주영] 멤버 객체 전달
+	        // [전주영] 전자결재 개수 조회
+	        long approvalCount = approvalService.countApprovalHistory(member_no);
+	        long referenceCount = approvalService.countApprovalReferences(member_no);
+	        long progressCount = approvalService.countApprovalProgress(memberNo);
+	        
+		    // [전주영] 멤버 객체 전달
 		    model.addAttribute("memberdto", memberdto);
+		    
+		    // [전주영] 결재 내역함 개수
+		    model.addAttribute("approvalCount", approvalCount);
+		    // [전주영] 결재 참조함 개수
+		    model.addAttribute("referenceCount", referenceCount);
+		    // [전주영] 결재 진행함 개수
+		    model.addAttribute("progressCount", progressCount);
 		    
 		    // [박혜선] 현재 시간 전달
 		    model.addAttribute("time", time);
@@ -98,6 +112,7 @@ public class HomeController {
 		    // [박혜선] 출퇴근 여부 전달
 		    model.addAttribute("isCheckedIn", isCheckedIn);
 		    model.addAttribute("isCheckedOut", isCheckedOut);
+		    
 		    
 		    return "home";
 		

@@ -271,5 +271,51 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long>{
 	    nativeQuery = true)
 	List<Object[]> findAllApprovalHistory(@Param("loggedInMemberNo") Long memberNo);
 
+	// home 내역함
+	@Query(value = "SELECT COUNT(*) FROM (" +
+	        "SELECT ap.approval_no " +
+	        "FROM fl_approval ap " +
+	        "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
+	        "WHERE af.member_no = :loggedInMemberNo " +
+	        "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " +
+	        "AND (af.approval_flow_status != 0) " +
+	        "UNION ALL " +
+	        "SELECT va.vacation_approval_no " +
+	        "FROM fl_vacation_approval va " +
+	        "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
+	        "WHERE vaf.member_no = :loggedInMemberNo " +
+	        "AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) " +
+	        "AND (vaf.vacation_approval_flow_status != 0) " +
+	        ") AS combined", nativeQuery = true)
+	long countApprovalHistory(@Param("loggedInMemberNo") Long memberNo);
+	
+	// home 참조함
+	@Query(value = "SELECT COUNT(*) FROM (" +
+	        "    SELECT approval_no " +
+	        "    FROM fl_approval ap " +
+	        "    WHERE EXISTS (" +
+	        "        SELECT 1 " +
+	        "        FROM fl_approval_flow af " +
+	        "        WHERE ap.approval_no = af.approval_no " +
+	        "              AND af.member_no = :loggedInMemberNo " + 
+	        "              AND af.approval_flow_role = 0) " +
+	        "    UNION ALL " +
+	        "    SELECT vacation_approval_no " +
+	        "    FROM fl_vacation_approval va " +
+	        "    WHERE EXISTS (" +
+	        "        SELECT 1 " +
+	        "        FROM fl_vacation_approval_flow vaf " +
+	        "        WHERE va.vacation_approval_no = vaf.vacation_approval_no " +
+	        "              AND vaf.member_no = :loggedInMemberNo " + 
+	        "              AND vaf.vacation_approval_flow_role = 0)" +
+	        ") AS combined", nativeQuery = true)
+	long countApprovalReferences(@Param("loggedInMemberNo") Long memberNo);
+
+	// home 진행함 
+	@Query("SELECT COUNT(a) FROM Approval a " +
+		       "JOIN a.member m " +
+		       "WHERE m.memberNo = :loggedInMemberNo " +
+		       "AND a.approvalStatus IN :approvalStatus")
+		long countApprovalProgress(@Param("loggedInMemberNo") Long memberNo, @Param("approvalStatus") List<Integer> approvalStatus);
 
 }
