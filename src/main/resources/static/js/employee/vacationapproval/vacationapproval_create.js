@@ -204,45 +204,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
         editor.ui.view.editable.element.style.height = '500px';
 			// 에디터에 휴가 양식 
             editor.setData(`
-            <h1><span style="font-family:나눔고딕, NanumGothic, sans-serif;"><strong>휴가 신청서</strong> </span></h1>
-            <p>&nbsp;</p>
-            <figure class="table" style="float:left;width:35.29%;">
-            <table class="ck-table-resized">
-            <colgroup><col style="width:34.74%;"><col style="width:65.26%;"></colgroup>
-            <tbody>
-            <tr><th>부서&nbsp;</th><td>&nbsp;</td></tr>
-            <tr><th>성명</th><td>&nbsp;</td></tr>
-            </tbody>
-            </table>
-            </figure>
-            <figure class="table" style="float:left;width:35.29%;">
-            <table class="ck-table-resized">
-            <colgroup><col style="width:34.74%;"><col style="width:65.26%;"></colgroup>
-            <tbody>
-            <tr><th>직위</th><td style="text-align:right;">&nbsp;</td></tr>
-            <tr><th>휴가구분</th><td>&nbsp;</td></tr>
-            </tbody>
-            </table>
-            </figure>
-            <p>&nbsp;</p><p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <figure class="table" style="float:left;width:70.62%;">
-            <table class="ck-table-resized">
-            <colgroup><col style="width:17.35%;"><col style="width:82.65%;"></colgroup>
-            <tbody>
-            <tr><th>휴가 기간</th><td>&nbsp;</td></tr>
-            </tbody>
-            </table>
-            </figure>
-            <figure class="table" style="float:left;width:70.62%;">
-            <table class="ck-table-resized">
-            <colgroup><col style="width:17.35%;"> <col style="width:82.65%;"></colgroup>
-            <tbody>
-            <tr><th>사유</th><td>&nbsp;</td></tr>
-            </tbody>
-            </table>
-            </figure>
-            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;상가 본인은 위와 같이 휴가 신청서를 제출 합니다.</p><p>&nbsp;</p><p>&nbsp;</p>`);
+            <h1>휴가신청서</h1><figure class="table" style="width:78.93%;"><table class="ck-table-resized"><colgroup><col style="width:18.8%;"><col style="width:81.2%;"></colgroup><tbody><tr><th>신청일</th><td>&nbsp;</td></tr><tr><th>신청자</th><td>&nbsp;</td></tr><tr><th>부서</th><td>&nbsp;</td></tr><tr><th>휴가 시작일</th><td>&nbsp;</td></tr><tr><th>휴가 종료일</th><td>&nbsp;</td></tr><tr><th>휴가 종류</th><td>&nbsp;</td></tr><tr><th>휴가 사유</th><td>&nbsp;</td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:78.93%;"><table class="ck-table-resized"><colgroup><col style="width:100%;"></colgroup><thead><tr><th>특이 사항</th></tr></thead><tbody><tr><td>&nbsp;</td></tr></tbody></table></figure>`);
 			
 			// 등록  폼
 			const form = document.getElementById('vacAppCreateFrm');

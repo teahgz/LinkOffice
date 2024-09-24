@@ -54,10 +54,10 @@ public class ChatRoomService {
 
     }
     //채팅방 고정
-    public int chatRoomPin(Long chatRoomNo, Long memberNo, int status, LocalDateTime updateTime){
+    public int chatRoomPin(Long currentChatRoomNo, Long currentMember, int status, LocalDateTime updateTime){
         int result = -1;
         try{
-            chatMapper.chatRoomPin(chatRoomNo, memberNo, status, updateTime);
+            chatMapper.chatRoomPin(currentChatRoomNo, currentMember, status, updateTime);
             result = 1;
 
         }catch (Exception e){
