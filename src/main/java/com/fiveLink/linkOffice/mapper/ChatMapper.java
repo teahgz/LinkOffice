@@ -1,11 +1,9 @@
 package com.fiveLink.linkOffice.mapper;
 
+import com.fiveLink.linkOffice.chat.domain.ChatMember;
 import com.fiveLink.linkOffice.chat.domain.ChatMemberDto;
-import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -51,4 +49,8 @@ public interface ChatMapper {
     List<Long> markMessagesAsReadForChatRoom(Map<String, Object> params);
     //채팅방 별 안읽은 메시지 개수
     List<Map<String, Object>> getUnreadCounts(Long memberNo);
+
+    List<Long> findChatRoomsByMember(Long selectedMembers);
+
+    List<Long> findMembersByChatRoom(Long chatRoomNo);
 }
