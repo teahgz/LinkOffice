@@ -46,7 +46,7 @@
 					</th:block>
 
 					<th:block th:if="${!#lists.isEmpty(approvals)}">
-						<tr th:each="approval, stat : ${approvals}" th:data_approval_no="${approval_no}" class="approval_row">
+						<tr th:each="approval, stat : ${approvals}" th:data-approval_no="${approval.approval_no}" th:data-type="${approval.approvalType}" class="approval_row">
 							<td th:text="${stat.count}"></td> 
 							<td th:text="${approval.approval_title}"></td>
 							<td th:text="${approval.member_name}"></td>

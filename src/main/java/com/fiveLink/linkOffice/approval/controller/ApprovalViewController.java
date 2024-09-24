@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
+import com.fiveLink.linkOffice.approval.domain.ApprovalFileDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFlowDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFormDto;
 import com.fiveLink.linkOffice.approval.service.ApprovalFileService;
@@ -28,6 +29,7 @@ import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
@@ -149,6 +151,8 @@ public class ApprovalViewController {
 				vapp.setFormat_approval_create_date(formattedCreateDate);
 			}
 		});
+		
+		
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);
@@ -161,7 +165,6 @@ public class ApprovalViewController {
 	public String approvalReferences(Model model,ApprovalDto searchdto) {
 	    Long memberNo = memberService.getLoggedInMemberNo();
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    
 	    List<ApprovalDto> approvals = approvalService.getAllApprovalReferences(memberNo, searchdto);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -171,6 +174,7 @@ public class ApprovalViewController {
 				vapp.setFormat_approval_create_date(formattedCreateDate);
 			}
 		});
+		
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);
@@ -277,7 +281,14 @@ public class ApprovalViewController {
 
 			}
 		}
-
+		
+		if(vacationapprovaldto.getFiles() != null) {
+			for(VacationApprovalFileDto file : vacationapprovaldto.getFiles()) {
+				Long fileSize = file.getVacation_approval_file_size();
+				file.setVacation_approval_file_size(fileSize / 1024);
+			}
+		}
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
 		model.addAttribute("currentUserMemberNo", member_no);
@@ -312,7 +323,14 @@ public class ApprovalViewController {
 
 				}
 			}
-
+			
+			if(approvaldto.getFiles() != null) {
+				for(ApprovalFileDto file : approvaldto.getFiles()) {
+					Long fileSize = file.getApproval_file_size();
+					file.setApproval_file_size(fileSize / 1024);
+				}
+			}
+			
 			model.addAttribute("memberdto", memberdto);
 			model.addAttribute("approvaldto", approvaldto);
 			model.addAttribute("currentUserMemberNo", member_no);
@@ -321,8 +339,8 @@ public class ApprovalViewController {
 		}
 	
 	// 사용자 결재 참조함 상세 페이지
-	@GetMapping("/employee/approval/approval_references_detail/{vacationapproval_no}")
-	public String approvalReferencesDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
+	@GetMapping("/employee/approval/approval_references_vacation_detail/{vacationapproval_no}")
+	public String approvalReferencesVacationDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
 
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
@@ -347,13 +365,62 @@ public class ApprovalViewController {
 
 			}
 		}
+		
+		if(vacationapprovaldto.getFiles() != null) {
+			for(VacationApprovalFileDto file : vacationapprovaldto.getFiles()) {
+				Long fileSize = file.getVacation_approval_file_size();
+				file.setVacation_approval_file_size(fileSize / 1024);
+			}
+		}
 
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
 		model.addAttribute("currentUserMemberNo", member_no);
 
-		return "employee/approval/approval_references_detail";
+		return "employee/approval/approval_references_vacation_detail";
 	}
+	
+	// 사용자 결재 (결재) 내역함 상세 페이지
+			@GetMapping("/employee/approval/approval_references_detail/{approval_no}")
+			public String approvalReferencesDetail(Model model, @PathVariable("approval_no") Long appNo) {
+
+				Long member_no = memberService.getLoggedInMemberNo();
+				List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+
+				ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				if (approvaldto.getApproval_create_date() != null) {
+					String formattedCreateDate = approvaldto.getApproval_create_date().format(formatter);
+					approvaldto.setFormat_approval_create_date(formattedCreateDate);
+				}
+
+				if (approvaldto.getFlows() != null) {
+					for (ApprovalFlowDto flow : approvaldto.getFlows()) {
+						if (flow.getApproval_flow_complete_date() != null) {
+							String formattedCompleteDate = flow.getApproval_flow_complete_date().format(formatter);
+							flow.setFormat_approval_flow_complete_date(formattedCompleteDate);
+						}
+
+						MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
+						flow.setDigital_name(currentMember.getMember_new_digital_img());
+
+					}
+				}
+				
+				if(approvaldto.getFiles() != null) {
+					for(ApprovalFileDto file : approvaldto.getFiles()) {
+						Long fileSize = file.getApproval_file_size();
+						file.setApproval_file_size(fileSize / 1024);
+					}
+				}
+
+				model.addAttribute("memberdto", memberdto);
+				model.addAttribute("approvaldto", approvaldto);
+				model.addAttribute("currentUserMemberNo", member_no);
+
+				return "employee/approval/approval_references_detail";
+			}
 	
 	// 사용자 결재 진행함 상세 페이지
 	@GetMapping("/employee/approval/approval_progress_detail/{approval_no}")
@@ -380,6 +447,13 @@ public class ApprovalViewController {
 				MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
 				flow.setDigital_name(currentMember.getMember_new_digital_img());
 
+			}
+		}
+		
+		if(approvaldto.getFiles() != null) {
+			for(ApprovalFileDto file : approvaldto.getFiles()) {
+				Long fileSize = file.getApproval_file_size();
+				file.setApproval_file_size(fileSize / 1024);
 			}
 		}
 
@@ -415,6 +489,13 @@ public class ApprovalViewController {
 				MemberDto currentMember = memberService.selectMemberOne(flow.getMember_no());
 				flow.setDigital_name(currentMember.getMember_new_digital_img());
 
+			}
+		}
+		
+		if(approvaldto.getFiles() != null) {
+			for(ApprovalFileDto file : approvaldto.getFiles()) {
+				Long fileSize = file.getApproval_file_size();
+				file.setApproval_file_size(fileSize / 1024);
 			}
 		}
 
