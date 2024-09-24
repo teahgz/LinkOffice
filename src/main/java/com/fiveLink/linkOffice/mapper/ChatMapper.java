@@ -44,7 +44,6 @@ public interface ChatMapper {
 
     // 채팅방 고정 여부
     int selectChatPin(Map<String, Object> params);
-
     //참여자 수
     int countParicipant(Long chatRoomNo);
 

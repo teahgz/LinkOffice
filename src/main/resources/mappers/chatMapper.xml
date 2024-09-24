@@ -135,4 +135,5 @@
         WHERE cr.chat_read_no IS NULL AND cm.chat_room_no IS NOT NULL
         GROUP BY cm.chat_room_no;
     </select>
+
 </mapper>

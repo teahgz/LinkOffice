@@ -64,8 +64,6 @@ public class ChatMemberService {
     }
 
     public int updateChatRoom(String roomName, Long memberNo, Long roomNo) {
-
-
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("roomName", roomName);
@@ -81,7 +79,6 @@ public class ChatMemberService {
     }
 
     public int chatRoomType(Long chatRoomNo) {
-
         return chatMapper.chatRoomType(chatRoomNo);
 
     }

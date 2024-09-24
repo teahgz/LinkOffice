@@ -42,7 +42,6 @@ public class ChatMessageService {
     }
 
     public void insertReadStatus(ChatReadDto chatReadDto) {
-
         ChatRead chat = chatReadDto.toEntity();
         chatReadRepository.save(chat);
 

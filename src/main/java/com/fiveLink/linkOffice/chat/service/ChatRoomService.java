@@ -99,7 +99,6 @@ public class ChatRoomService {
         try{
             result = chatMapper.countParicipant(chatRoomNo);
 
-
         }catch (Exception e){
             e.printStackTrace();
         }
