@@ -108,29 +108,21 @@ public class ChatRoomService {
 
     public boolean isDuplicateChatRoom(Long memberNo, List<Long> selectedMembers) {
         selectedMembers.add(memberNo);
-        System.out.println("selected :"+ selectedMembers);
-
         Set<Long> chatRoomNumbers = new HashSet<>();
 
         for (Long selectedMember : selectedMembers) {
             List<Long> chatRooms = chatMapper.findChatRoomsByMember(selectedMember);
-            System.out.println("chatRoom : " + chatRooms);
-
             chatRoomNumbers.addAll(chatRooms);
         }
 
-
-        // 중복 체크: 모든 선택된 멤버가 같은 채팅방에 있는지 확인
         for (Long chatRoomNo : chatRoomNumbers) {
-            // 채팅방의 멤버 리스트를 가져와서 선택된 멤버들이 모두 포함되는지 확인
             List<Long> roomMembers = chatMapper.findMembersByChatRoom(chatRoomNo);
-            System.out.println(roomMembers);
 
             if (roomMembers.containsAll(selectedMembers)) {
-                return true; // 중복되는 채팅방이 있음
+                return true;
             }
         }
-        return false; // 중복되는 채팅방 없음
+        return false;
     }
 
 }
