@@ -26,64 +26,34 @@
                             </div>
                             
 							<table id="approvalLineTable" class="approval_line_table">
-						        <tr>
-						            <th rowspan="3">결재</th>
-						            <td id="approve">
-						                <div >
-						                    <span th:text="${member.position_name}"></span>
-						                </div>
-						            </td>
-									  <td th:each=" flow : ${approvaldto.flows}" 
-									      th:if="${flow.approval_flow_role == 2}">
-									    <span th:text="${flow.member_position}"></span>
-									  </td>
-						        </tr>
-						          <tr>
-						            <td id="approve">
-						                <div class="signature_box">
-						            
-						                </div>
-						            </td>
-						            <td>
-						                <div class="signature_box">
-						            
-						                </div>			            				
-						            </td>
-						            <td>
-						                <div class="signature_box">
-						            
-						                </div>			            
-						            </td>
-						            <td>
-						                <div class="signature_box">
-						            
-						                </div>			            
-						            </td>
-						            <td>
-						                <div class="signature_box">
-						            
-						                </div>			            
-						            </td>
-						            <td>
-						                <div class="signature_box">
-						            
-						                </div>			            
-						            </td>
-						            <td>
-						                <div class="signature_box">
-						            
-						                </div>			            
-						            </td>
-						        </tr>
-						        
-								<tr>
-								  <td th:text="${member.member_name}"></td>
-								  <td th:each=" flow : ${approvaldto.flows}" 
-								      th:if="${flow.approval_flow_role == 2}">
-								    <span th:text="${flow.member_name}"></span></td>
-								</tr>
-								
-
+							    <tr>
+							        <th rowspan="3">결재</th>
+							        <td id="approve"><div><span th:text="${member.position_name}"></span></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							    </tr>
+							    <tr>
+							        <td id="approve"><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							    </tr>
+							    <tr>
+							        <td id="approve"><span th:text="${member.member_name}"></span></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							    </tr>
 
 							    <tr id="referenceRow">
 							        <td id="strong"><strong>합의</strong></td>
