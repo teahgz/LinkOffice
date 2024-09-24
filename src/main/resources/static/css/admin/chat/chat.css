@@ -369,6 +369,7 @@
 .chatDropdown {
     position: relative;
     display: inline-block;
+    margin-left:10px;
 }
 
 .chat-dropdown-menu {
@@ -380,8 +381,7 @@
     background-color: white;
     min-width: 140px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
+.}
 
 .chat-dropdown-item {
     padding: 10px;
@@ -398,6 +398,10 @@
 }
 .chat-dropdown-item:hover {
     background-color: #f1f1f1;
+}
+.unread-count-container {
+    display: flex;
+    align-items: center;
 }
 .menu-text {
     margin-left: 4px;

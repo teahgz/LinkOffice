@@ -66,9 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     $('#organization-chart').jstree(true).search(searchString);
                 });
             },
-            error: function (xhr, status, error) {
-                console.error('조직도 로딩 오류:', error);
-            }
         });
     }
 

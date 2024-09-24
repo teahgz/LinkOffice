@@ -27,7 +27,6 @@ window.onload = function() {
             remainingTime = timeLeft;
             setInterval(updateSessionTime, 1000);
         })
-        .catch(error => console.error('세션 시간 에러', error));
 };
 
 document.getElementById('userImage').addEventListener('click', function(event) {

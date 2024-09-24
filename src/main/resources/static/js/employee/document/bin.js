@@ -406,6 +406,7 @@ $(function () {
             },
 			success: function(response){
 				if (response.res_code === '200') {
+					if(response.res_status == 0){						
 	                    Swal.fire({
 	                        icon: 'success',
 	                        text: response.res_msg,
@@ -413,6 +414,15 @@ $(function () {
 	                    });
 	            	loadFiles();
 	            	getAllFileSize();
+					} else{
+						Swal.fire({
+	                        icon: 'success',
+	                        html: "복구할 수 있는 폴더가 존재하지 않는 파일을 제외한<br>모든 파일 복구가 완료되었습니다.",
+	                        confirmButtonText: '확인'
+	                    });
+	            	loadFiles();
+	            	getAllFileSize();
+					}
                 } else {
                     Swal.fire({
                         icon: 'error',
