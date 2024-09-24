@@ -454,6 +454,7 @@ public class ApprovalViewController {
 		return "employee/approval/approval_edit";
 	}
 	
+	// 전자결재 수정 결재자 값
 	@GetMapping("/employee/approval/approve/{approval_no}")
 	@ResponseBody
 	public  Map<String, Object> approvalEdit(@PathVariable("approval_no") Long appNo) {

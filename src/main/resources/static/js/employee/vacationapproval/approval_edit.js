@@ -8,32 +8,33 @@ document.addEventListener("DOMContentLoaded", function () {
     let referenceNames = [];
     let reviewerNames = [];
 
-    function loadSelectedMembers() {
-        const savedMembers = localStorage.getItem('selectedMembers');
-        if (savedMembers) {
-            selectedMembers = JSON.parse(savedMembers);
-        }
-    }
-
-    function restoreSelection(instance) {
-        selectedMembers.forEach(memberId => {
-            const node = instance.get_node(memberId);
-            if (node) {
-                instance.check_node(node);
-            }
-        });
-    }
-
     $('#openChart').click(function () {
         $('#organizationChartModal').modal('show');
+        resetSelections();
         loadOrganizationChart();
     });
+	
+	// 조직도 값 비우기
+    function resetSelections() {
+        selectedMembers = [];
+        approvers = [];
+        references = [];
+        reviewers = [];
+        approverNames = [];
+        referenceNames = [];
+        reviewerNames = [];
+
+        $('#approver-list').empty();
+        $('#reference-list').empty();
+        $('#reviewer-list').empty();
+    }
 
     function loadOrganizationChart() {
         $.ajax({
             url: '/organizationChart/chart',
             method: 'GET',
             success: function (data) {
+                $('#organization-chart').jstree('destroy');
                 $('#organization-chart').jstree({
                     'core': {
                         'data': data,
@@ -54,8 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             'icon': 'fa fa-user'  
                         }
                     }
-                }).on('ready.jstree', function (e, data) {
-                    restoreSelection(data.instance);
                 });
 
                 $('#organization-chart').on('changed.jstree', function (e, data) {
@@ -84,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 selectedMembers.push(memberNumber);
             }
         });
-        localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
     }
 
     function addMemberToBox(node, boxId, array, nameArray) {
@@ -97,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
         memberElement.append(checkBox).append(memberName).append(removeButton);
         $(`#${boxId}`).append(memberElement);
 
-        // 이름 배열에도 추가
         nameArray.push(node.text);
 
         removeButton.click(function () {
@@ -111,7 +108,6 @@ document.addEventListener("DOMContentLoaded", function () {
             array.splice(index, 1);
         }
 
-        // 이름 배열에서 제거
         const nameIndex = nameArray.indexOf(memberElement.find('span').text());
         if (nameIndex > -1) {
             nameArray.splice(nameIndex, 1);
@@ -125,10 +121,22 @@ document.addEventListener("DOMContentLoaded", function () {
         $('#organization-chart').jstree(true).enable_node(nodeId);
     }
 
-    function moveToList(targetId, array, nameArray) {
+    function moveToList(event, targetId, array, nameArray) {
         event.preventDefault();
 
         const selectedNodes = $('#organization-chart').jstree(true).get_selected(true);
+
+        if (targetId === 'approver-list') {
+            const currentApproverCount = array.length;
+
+            if (currentApproverCount + selectedNodes.length > 6) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: '결재자는 최대 6명까지 선택할 수 있습니다.',
+                });
+                return;
+            }
+        }
 
         selectedNodes.forEach(function (node) {
             if (node.original.type === 'member' && !$('#organization-chart').jstree(true).is_disabled(node)) {
@@ -141,11 +149,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     array.push(memberNumber);
                     console.log(`${targetId} 배열:`, array);
                 }
-            } 
+            }
         });
     }
 
-    function moveFromList(boxId, array, nameArray) {
+    function moveFromList(event, boxId, array, nameArray) {
         event.preventDefault();
 
         $(`#${boxId} .selected-member .remove-checkbox:checked`).each(function () {
@@ -156,81 +164,78 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     $('.move-to-approver').click(function (event) {
-        moveToList('approver-list', approvers, approverNames);
+        moveToList(event, 'approver-list', approvers, approverNames);
     });
 
     $('.move-from-approver').click(function (event) {
-        moveFromList('approver-list', approvers, approverNames);
+        moveFromList(event, 'approver-list', approvers, approverNames);
     });
 
     $('.move-to-reference').click(function (event) {
-        moveToList('reference-list', references, referenceNames);
+        moveToList(event, 'reference-list', references, referenceNames);
     });
 
     $('.move-from-reference').click(function (event) {
-        moveFromList('reference-list', references, referenceNames);
+        moveFromList(event, 'reference-list', references, referenceNames);
     });
 
     $('.move-to-reviewer').click(function (event) {
-        moveToList('reviewer-list', reviewers, reviewerNames);
+        moveToList(event, 'reviewer-list', reviewers, reviewerNames);
     });
 
     $('.move-from-reviewer').click(function (event) {
-        moveFromList('reviewer-list', reviewers, reviewerNames);
+        moveFromList(event, 'reviewer-list', reviewers, reviewerNames);
+    });
+	
+	// input 값 지워주기
+    function updateApproversDisplay() {
+        $('#approvalLineTable th').each(function () {
+        $(this).find('input').remove();  
+        
+    });
+    //  값 지워주기 ( 결재, 합의, 참조 )
+    $('#approvalLineTable tr:nth-child(1) td:not(#approve)').empty();
+    $('#approvalLineTable tr:nth-child(2) td:not(#approve) ').empty();
+    $('#approvalLineTable tr:nth-child(3) td:not(#approve) ').empty();
+
+    $('#referencestCell').empty();
+    $('#reviewerCell').empty();
+
+    approvers.forEach(function (memberNumber, index) {
+        const fullName = approverNames[index];
+        const [name, position] = fullName.split(' ');
+        const listItem = $('<span></span>').text(`${name}`);
+        const positionItem = $('<span></span>').text(`${position}`);
+
+        $('#approvalLineTable td ').eq(index + 1).append(positionItem);
+            
+            const targetRow = $('#approvalLineTable tr').eq(2); 
+            targetRow.find('td').eq(index + 1).append(listItem);
+            
+            $('<input type="hidden">').attr('id', 'approverNumbers').val(memberNumber).appendTo('#approvalLineTable th').eq(0);
     });
 
+    references.forEach(function (memberNumber, index) {
+        const fullName = referenceNames[index];
+        const [name] = fullName.split(' ');
+        const listItem = $('<span></span>').text(`${name} `);
+        $('#referencestCell').append(listItem);
+        $('<input type="hidden">').attr('id', 'referenceNumbers').val(memberNumber).appendTo('#referencestCell');
+    });
 
-    const approversDisplay = $('.approversDisplay');
-    const referencesDisplay = $('.referencesDisplay');
-    const reviewersDisplay = $('.reviewersDisplay');
-    
-function updateApproversDisplay() {
-	
-	    approversDisplay.empty();
-        referencesDisplay.empty();
-        reviewersDisplay.empty();
-        
-    if (approvers.length > 0 || references.length > 0 || reviewers.length > 0) {
-        const approverList = $('<div></div>');
-        const referenceList = $('<div></div>');
-        const reviewerList = $('<div></div>');
-
-        approvers.forEach(function (memberNumber, index) {
-            const memberName = approverNames[index];
-            const listItem = $('<p></p>').text(`${memberName}`);
-            approverList.append(listItem);
-             $('<input type="hidden">').attr('id', 'approverNumbers').val(memberNumber).appendTo(approversDisplay);
-        });
-        references.forEach(function (memberNumber, index) {
-            const memberName = referenceNames[index];
-            const listItem = $('<p></p>').text(`${memberName}`);
-            referenceList.append(listItem);
-             $('<input type="hidden">').attr('id', 'referenceNumbers').val(memberNumber).appendTo(referencesDisplay);
-        });
-        reviewers.forEach(function (memberNumber, index) {
-            const memberName = reviewerNames[index];
-            const listItem = $('<p></p>').text(`${memberName}`);
-            reviewerList.append(listItem);
-              $('<input type="hidden">').attr('id', 'reviewerNumbers').val(memberNumber).appendTo(reviewersDisplay);
-        });
-        
-        approversDisplay.append(approverList);
-        referencesDisplay.append(referenceList);
-        reviewersDisplay.append(reviewerList);
-        
-    } 
+    reviewers.forEach(function (memberNumber, index) {
+        const fullName = reviewerNames[index];
+        const [name] = fullName.split(' ');
+        const listItem = $('<span></span>').text(`${name} `);
+        $('#reviewerCell').append(listItem);
+        $('<input type="hidden">').attr('id', 'reviewerNumbers').val(memberNumber).appendTo('#reviewerCell');
+    });
 }
+    
 
-$('#confirmButton').click(function (event) {
-    event.preventDefault();
-    updateApproversDisplay(); 
-     approversDisplay.show();
-     referencesDisplay.show();
-     reviewersDisplay.show();
-    $('#organizationChartModal').modal('hide');
-    localStorage.removeItem('selectedMembers');
-    $('.permission_pick_list').empty();
-});
-
-    loadSelectedMembers();
+    $('#confirmButton').click(function (event) {
+        event.preventDefault();
+        updateApproversDisplay(); 
+        $('#organizationChartModal').modal('hide');
+    });
 });
