@@ -76,7 +76,7 @@ public class ApprovalViewController {
 	// 관리자 전자결재 양식함 페이지
 	@GetMapping("/admin/approval/form")
 	public String adminApprovalForm(Model model, ApprovalFormDto searchdto,
-			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(size = 10, sort = "approvalFormCreateDate", direction = Sort.Direction.DESC) Pageable pageable,
 			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
@@ -159,13 +159,26 @@ public class ApprovalViewController {
 	    return "employee/approval/approval_history_list";
 	}
 
+	// 사용자
+	private Sort getSortApprovalReferences(String sort) {
+		if ("latest".equals(sort)) {
+			return Sort.by(Sort.Order.desc("approval_date"));
+		} else if ("oldest".equals(sort)) {
+			return Sort.by(Sort.Order.asc("approval_date"));
+		}
+		return Sort.by(Sort.Order.desc("approval_date"));
+	}
 	
-	// 사용자 전자결재 참조함 (수정중)
+	// 사용자 전자결재 참조함
 	@GetMapping("/employee/approval/references")
-	public String approvalReferences(Model model,ApprovalDto searchdto,@RequestParam(value = "sort", defaultValue = "latest") String sort) {
+	public String approvalReferences(Model model,ApprovalDto searchdto,@RequestParam(value = "sort", defaultValue = "latest") String sort, @PageableDefault(size = 10, sort = "approval_date", direction = Sort.Direction.DESC) Pageable pageable) {
 	    Long memberNo = memberService.getLoggedInMemberNo();
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	    List<ApprovalDto> approvals = approvalService.getAllApprovalReferences(memberNo, searchdto,sort);
+	    
+	    Sort sortOption = getSortApprovalReferences(sort);
+	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
+	    
+	    Page<ApprovalDto> approvals = approvalService.getAllApprovalReferences(memberNo, searchdto, sortedPageable);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		approvals.forEach(vapp -> {
@@ -175,11 +188,11 @@ public class ApprovalViewController {
 			}
 		});
 		
-	    model.addAttribute("approvals", approvals);
+	    model.addAttribute("approvals", approvals.getContent());
+	    model.addAttribute("page", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);
 	    model.addAttribute("currentSort", sort);
-	    System.out.println(sort);
 	    return "employee/approval/approval_references_list";
 	}
 	
@@ -197,7 +210,7 @@ public class ApprovalViewController {
 	// 사용자 결재 진행함 페이지
 	@GetMapping("/employee/approval/progress")
 	public String approvalProgress(Model model, ApprovalDto searchdto,
-			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(size = 10, sort = "approvalCreateDate", direction = Sort.Direction.DESC) Pageable pageable,
 			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		
 		Long member_no = memberService.getLoggedInMemberNo();
@@ -228,7 +241,7 @@ public class ApprovalViewController {
 	// 사용자 결재 반려함 페이지
 	@GetMapping("/employee/approval/reject")
 	public String approvalReject(Model model, ApprovalDto searchdto,
-			@PageableDefault(size = 10, sort = "positionLevel", direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(size = 10, sort = "approvalCreateDate", direction = Sort.Direction.DESC) Pageable pageable,
 			@RequestParam(value = "sort", defaultValue = "latest") String sort) {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
