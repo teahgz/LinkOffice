@@ -4,13 +4,11 @@
     font-size: 14px;
 }
 
-
 .container {
     display: flex;
     justify-content: center;
     width: 100%;
 }
-
 
 .editor-container {
     background-color: #f8f9fa;
@@ -166,4 +164,44 @@ input:focus, select:focus {
 .file-list-container span {
     display: block; 
     margin-bottom: 5px;
+}
+
+
+.approval_line_section {
+    margin-top: 20px;
+}
+
+.approval_line_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.approval_line_table th, .approval_line_table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+.approval_line_table td {
+    min-height: 50px; 
+    width: 100px; 
+    vertical-align: top; 
+}
+.approval_line_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    width: 100px;
+}
+
+#strong{
+    background-color: #f2f2f2;
+}
+
+.signature_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
 }

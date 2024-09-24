@@ -2,79 +2,75 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/employee/approval/approval_references_list.css}" rel="stylesheet" type="text/css">
+	<link th:href="@{/css/employee/approval/approval_references_list.css}"
+		rel="stylesheet" type="text/css">
 	<section th:each="member : ${memberdto}">
 		<h1>결재 내역함</h1>
 		<div class="approval_list">
-       <div class="search_sort_container">
-         <div class="search_container" th:if="${searchDto != null}">
-             <form th:action="@{/employee/approval/references}" th:object="${searchDto}"  method="get">
-                 <select name="search_type" th:value="${searchDto.search_type}" >
-                     <option th:value="1" th:selected="${searchDto.search_type == 1}">전체</option>
-                     <option th:value="2" th:selected="${searchDto.search_type == 2}">제목</option>
-                     <option th:value="3" th:selected="${searchDto.search_type == 3}">상태</option>
-                 </select>
-                 <input type="text" class="search_text" name="search_text" th:field="*{search_text}" placeholder="검색어를 입력하세요.">
-                 <button type="submit" class="search_button">검색</button>
-             </form>
-         </div>
-        </div>		
+			<div class="search_sort_container">
+				<div class="search_container" th:if="${searchDto != null}">
+					<form th:action="@{/employee/approval/references}"
+						th:object="${searchDto}" method="get">
+						<select name="search_type" th:value="${searchDto.search_type}">
+							<option th:value="1" th:selected="${searchDto.search_type == 1}">전체</option>
+							<option th:value="2" th:selected="${searchDto.search_type == 2}">제목</option>
+							<option th:value="3" th:selected="${searchDto.search_type == 3}">상태</option>
+						</select> <input type="text" class="search_text" name="search_text"
+							th:field="*{search_text}" placeholder="검색어를 입력하세요.">
+						<button type="submit" class="search_button">검색</button>
+					</form>
+				</div>
+			</div>
 
 			<table class="approval_list_table">
 				<colgroup>
-		            <col width="15%">
-		            <col width="30%">
-		            <col width="10%">
-		            <col width="20%">
-		            <col width="10%">
-		            <col width="15%">
+					<col width="15%">
+					<col width="30%">
+					<col width="10%">
+					<col width="20%">
+					<col width="10%">
+					<col width="15%">
 				</colgroup>
 				<thead>
 					<tr>
-		              <th>목록</th>
-		              <th>제목</th>
-		              <th>기안자</th>
-		              <th>기안일</th>
-		              <th>구분</th>
-		              <th>상태</th>	
+						<th>목록</th>
+						<th>제목</th>
+						<th>기안자</th>
+						<th>기안일</th>
+						<th>구분</th>
+						<th>상태</th>
 					</tr>
 				</thead>
-<tbody>
-    <th:block th:if="${#lists.isEmpty(approvals)}">
-        <tr>
-            <td colspan="6">조회된 목록이 없습니다.</td>
-        </tr>
-    </th:block>
+				<tbody>
+					<th:block th:if="${#lists.isEmpty(approvals)}">
+						<tr>
+							<td colspan="6">조회된 목록이 없습니다.</td>
+						</tr>
+					</th:block>
 
-<th:block th:if="${!#lists.isEmpty(approvals)}">
-    <tr th:each="approval, stat : ${approvals}" 
-        th:data-approval_no="${approval.approval_no}" 
-        th:data-type="${approval.approvalType}" 
-        class="approval_row">
-        <td th:text="${stat.count}"></td> 
-        <td th:text="${approval.approval_title}"></td>
-        <td th:text="${approval.member_name}"></td>
-        <td th:text="${approval.format_approval_create_date}"></td>
-        <td th:switch="${approval.approval_flow_role}">
-            <span th:case="1">결재</span> 
-            <span th:case="2">합의</span> 
-        </td>							
-        <td th:switch="${approval.approval_status}">
-            <span th:case="0">진행중</span> 
-            <span th:case="1">완료</span> 
-            <span th:case="2">반려</span> 
-            <span th:case="3">기안취소</span> 
-        </td>
-    </tr>
-</th:block>
+					<th:block th:if="${!#lists.isEmpty(approvals)}">
+						<tr th:each="approval, stat : ${approvals}"
+							th:data-approval_no="${approval.approval_no}"
+							th:data-type="${approval.approvalType}" class="approval_row">
+							<td th:text="${stat.count}"></td>
+							<td th:text="${approval.approval_title}"></td>
+							<td th:text="${approval.member_name}"></td>
+							<td th:text="${approval.format_approval_create_date}"></td>
+							<td th:switch="${approval.approval_flow_role}"><span
+								th:case="1">결재</span> <span th:case="2">합의</span></td>
+							<td th:switch="${approval.approval_status}"><span
+								th:case="0">진행중</span> <span th:case="1">완료</span> <span
+								th:case="2">반려</span> <span th:case="3">기안취소</span></td>
+						</tr>
+					</th:block>
 
 
 
-</tbody>
+				</tbody>
 
 
 			</table>
-</div>
+		</div>
 
 	</section>
 

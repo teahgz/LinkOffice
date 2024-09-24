@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.survey.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,19 +240,39 @@ public class SurveyService {
         return participationRates;
     }
     
+ // 설문에 대한 옵션별 응답 수 계산
     public Map<Long, List<Object[]>> getOptionAnswerCountsBySurvey(Long surveyNo) {
+        LOGGER.info("옵션별 응답 수 계산 시작 - 설문 번호: {}", surveyNo);
+
+        // 설문에 대한 옵션별 응답 수를 레포지토리에서 조회
         List<Object[]> result = surveyOptionRepository.countAnswersByOptionWithAnswer(surveyNo);
 
-        // 질문별로 옵션 데이터를 저장
+        // 각 행의 데이터를 읽기 쉽게 출력
+        for (Object[] row : result) {
+            LOGGER.info("조회된 데이터 - 질문 번호: {}, 옵션: {}, 응답 수: {}", row[0], row[1], row[2]);
+        }
+
+        // 각 질문별로 응답 수를 정리하여 맵으로 저장
         Map<Long, List<Object[]>> optionAnswerCounts = new HashMap<>();
         for (Object[] row : result) {
             Long questionNo = (Long) row[0];
-            String optionAnswer = (String) row[1]; // 실제 답변 (예: "네", "아니요")
-            Long answerCount = (Long) row[2];      // 답변 수
-
-            optionAnswerCounts.computeIfAbsent(questionNo, k -> new ArrayList<>()).add(new Object[]{optionAnswer, answerCount});
+            String optionAnswer = (String) row[1];
+            Long answerCount = (Long) row[2];
+            optionAnswerCounts.computeIfAbsent(questionNo, k -> new ArrayList<>())
+                              .add(new Object[]{optionAnswer, answerCount});
         }
+
+        // 정리된 데이터의 내용을 쉽게 확인할 수 있도록 로그로 출력
+        optionAnswerCounts.forEach((questionNo, options) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append("질문 번호: ").append(questionNo).append(" -> ");
+            options.forEach(option -> sb.append(Arrays.toString(option)).append(" "));
+            LOGGER.info("정리된 옵션 응답 수 데이터: {}", sb.toString());
+        });
+
         return optionAnswerCounts;
     }
+
+
 
 }

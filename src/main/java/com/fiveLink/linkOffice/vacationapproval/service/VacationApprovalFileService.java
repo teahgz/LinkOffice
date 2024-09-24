@@ -2,12 +2,23 @@ package com.fiveLink.linkOffice.vacationapproval.service;
 
 import java.io.File;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fiveLink.linkOffice.approval.domain.Approval;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalFileRepository;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
@@ -75,5 +86,28 @@ public class VacationApprovalFileService {
             return false;
         }
         return vacationApprovalFileRepository.existsByVacationApproval(vacationApproval);
+    }
+    
+    public ResponseEntity<Object> download(Long vacationApprovalNo) {
+    	
+        try {
+        	 VacationApproval vacationApproval = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
+            
+            String newFileName = vacationApproval.getVacationApprovalFile().getVacationApprovalFileNewName();
+            String oriFileName = URLEncoder.encode(vacationApproval.getVacationApprovalFile().getVacationApprovalFileOriName(), "UTF-8");
+            String downDir = vacationFileDir + newFileName;
+            
+            Path filePath = Paths.get(downDir);
+            Resource resource = new InputStreamResource(Files.newInputStream(filePath));
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.builder("attachment").filename(oriFileName).build());
+            
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
     }
 }

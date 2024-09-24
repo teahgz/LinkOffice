@@ -307,6 +307,7 @@ public class ApprovalService {
 		public List<ApprovalDto> getAllApprovalHistory(Long member_no, ApprovalDto searchDto, String sort) {
 			
 			List<ApprovalDto> flowDtoList = new ArrayList<>();
+			
 		   try {
 			   List<Object[]> list = approvalRepository.findAllApprovalHistory(member_no);
 
@@ -439,4 +440,18 @@ public class ApprovalService {
 
 	        return approval;
 	    }
+	 	// 내역함 개수
+	    public long countApprovalHistory(Long memberNo) {
+	        return approvalRepository.countApprovalHistory(memberNo);
+	    }
+	    // 참조함 개수
+	    public long countApprovalReferences(Long memberNo) {
+	    	return approvalRepository.countApprovalReferences(memberNo);
+	    }
+	    // 진행함 개수
+	    public long countApprovalProgress(Long memberNo) {
+	        List<Integer> approvalStatus = Arrays.asList(0, 1); 
+	        return approvalRepository.countApprovalProgress(memberNo, approvalStatus);
+	    }
+
 }

@@ -1,6 +1,7 @@
 package com.fiveLink.linkOffice.survey.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,14 +124,16 @@ public class SurveyViewController {
         return "employee/survey/survey_ing_list";
     }
     
+
     @GetMapping("/employee/survey/detail/{survey_no}")
     public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
         Long memberNo = memberService.getLoggedInMemberNo();
         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
 
+        // 설문 참여 여부 확인
         boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
-        
+
         model.addAttribute("dto", dto);
         model.addAttribute("questions", questions);
 
@@ -143,9 +146,13 @@ public class SurveyViewController {
             Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
             model.addAttribute("participationRates", participationRates);
 
-            // 선택지별 응답 개수 추가
+            // 옵션별 응답 수 데이터를 서비스에서 가져와 모델에 추가
             Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
             model.addAttribute("optionAnswerCounts", optionAnswerCounts);
+
+            // 차트 데이터 준비 (각 질문별 옵션 응답 수를 구글 차트 형식으로 변환)
+            Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
+            model.addAttribute("chartData", chartData);
 
             model.addAttribute("totalParticipants", totalParticipants);
             model.addAttribute("completedParticipants", completedParticipants);
@@ -156,29 +163,26 @@ public class SurveyViewController {
             return "employee/survey/survey_question_detail";
         }
     }
-    
-    
-    @GetMapping("/employee/survey/chartView")
-    @ResponseBody
-    public List<Map<String, Object>> getChartData() {
-        List<Map<String, Object>> chartData = new ArrayList<>();
 
-        Map<String, Object> data1 = new HashMap<>();
-        data1.put("label", "Yes");
-        data1.put("value", 60);
-        chartData.add(data1);
+    // 차트 데이터 변환 메서드
+    private Map<Long, List<List<Object>>> prepareChartData(Map<Long, List<Object[]>> optionAnswerCounts) {
+        Map<Long, List<List<Object>>> chartData = new HashMap<>();
 
-        Map<String, Object> data2 = new HashMap<>();
-        data2.put("label", "No");
-        data2.put("value", 40);
-        chartData.add(data2);
+        for (Map.Entry<Long, List<Object[]>> entry : optionAnswerCounts.entrySet()) {
+            Long questionNo = entry.getKey();
+            List<Object[]> options = entry.getValue();
+            List<List<Object>> data = new ArrayList<>();
+            data.add(Arrays.asList("Option", "Votes")); 
 
-        return chartData; // JSON 데이터 반환
+            for (Object[] option : options) {
+                String optionAnswer = (String) option[0];
+                Long answerCount = (Long) option[1];
+                data.add(Arrays.asList(optionAnswer, answerCount));
+            }
+            chartData.put(questionNo, data);
+        }
+        return chartData;
     }
-
-
-
-
 
 
 

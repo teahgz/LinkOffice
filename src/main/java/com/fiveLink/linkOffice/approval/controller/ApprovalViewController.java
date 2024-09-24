@@ -2,7 +2,6 @@ package com.fiveLink.linkOffice.approval.controller;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,16 +9,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fiveLink.linkOffice.approval.domain.Approval;
 import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFlowDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFormDto;
+import com.fiveLink.linkOffice.approval.service.ApprovalFileService;
 import com.fiveLink.linkOffice.approval.service.ApprovalFormService;
 import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
@@ -35,14 +35,16 @@ public class ApprovalViewController {
 	private final ApprovalFormService approvalFormService;
 	private final VacationApprovalService vacationApprovalService;
 	private final ApprovalService approvalService;
+	private final ApprovalFileService approvalFileService;
 
 	@Autowired
 	public ApprovalViewController(MemberService memberService, ApprovalFormService approvalFormService,
-			VacationApprovalService vacationApprovalService, ApprovalService approvalService) {
+			VacationApprovalService vacationApprovalService, ApprovalService approvalService, ApprovalFileService approvalFileService) {
 		this.memberService = memberService;
 		this.approvalFormService = approvalFormService;
 		this.vacationApprovalService = vacationApprovalService;
 		this.approvalService = approvalService;
+		this.approvalFileService = approvalFileService;
 	}
 
 	// 관리자 전자결재 양식 등록 페이지
@@ -122,7 +124,7 @@ public class ApprovalViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 
 		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
-
+		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
 
@@ -166,7 +168,7 @@ public class ApprovalViewController {
 				vapp.setFormat_approval_create_date(formattedCreateDate);
 			}
 		});
-	    
+	    System.out.println(approvals);
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);
@@ -443,11 +445,17 @@ public class ApprovalViewController {
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
 		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
-		
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("approvaldto", approvaldto);
 		
 		return "employee/approval/approval_edit";
 	}
+	
+	// 전자결재 파일 다운로드 
+	@GetMapping("/download_file/{approval_no}")
+	public ResponseEntity<Object> noticeImgDownload(@PathVariable("approval_no")Long appNo){
+		return approvalFileService.download(appNo);
+	}
+	
 
 }
