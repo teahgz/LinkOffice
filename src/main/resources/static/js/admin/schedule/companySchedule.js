@@ -440,122 +440,136 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 일정 등록 
 	document.getElementById('eventForm').addEventListener('submit', function(event) {
-		console.log("등록 function");
+		const type_form = document.getElementById('create_modal_submit').innerText;
 	    event.preventDefault();
-	 
-	    const title = document.getElementById('eventTitle').value.trim();
-	    const category = document.getElementById('category').value;
-	    const startDate = document.getElementById('eventDate').value;
-	    const description = document.getElementById('description').value.trim();
-	    const allDay = document.getElementById('allDay').checked; 
-	    const endDate = document.getElementById('endDate').value;
-	    const startTime = document.getElementById('startTime').value;
-	    const endTime = document.getElementById('endTime').value;
-	    const repeatOption = document.getElementById('repeatOption').value;
-	    const repeatEndDate = document.getElementById('repeatEndDate').value;
-	
-	    if (!title) {
-	        showAlert('일정 제목을 입력해 주세요.');
-	        return;
-	    }
-	
-	    if (!category) {
-	        showAlert('카테고리를 선택해 주세요.');
-	        return;
-	    }
-	
-	    if (!startDate) {
-	        showAlert('날짜를 선택해 주세요.');
-	        return;
-	    }
-	 
-	    if (!allDay) {
-	        if (!startTime) {
-	            showAlert('시작 시간을 입력해 주세요.');
-	            return;
-	        }
-	        
-	        if (!endTime) {
-	            showAlert('종료 시간을 입력해 주세요.');
-	            return;
-	        }
-	
-	        if (endTime < startTime) {
-	            showAlert('종료 시간은 시작 시간 이후로 설정해 주세요.');
-	            return;
-	        }
-	    }
-	    
-	    if(allDay) {
-			if (!startDate) {
-	            showAlert('시작 날짜를 입력해 주세요.');
-	            return;
-	        }
-	        
-			if (!endDate) {
-	            showAlert('종료 날짜를 입력해 주세요.');
-	            return;
-	        }
+   		
+		if(type_form === "저장") { 
+		    const title = document.getElementById('eventTitle').value.trim();
+		    const category = document.getElementById('category').value;
+		    const startDate = document.getElementById('eventDate').value;
+		    const description = document.getElementById('description').value.trim();
+		    const allDay = document.getElementById('allDay').checked; 
+		    const endDate = document.getElementById('endDate').value;
+		    const startTime = document.getElementById('startTime').value;
+		    const endTime = document.getElementById('endTime').value;
+		    const repeatOption = document.getElementById('repeatOption').value;
+		    const repeatEndDate = document.getElementById('repeatEndDate').value;
+		
+		    if (!title) {
+		        showAlert('일정 제목을 입력해 주세요.');
+		        return;
+		    }
+		
+		    if (!category) {
+		        showAlert('카테고리를 선택해 주세요.');
+		        return;
+		    }
+		
+		    if (!startDate) {
+		        showAlert('날짜를 선택해 주세요.');
+		        return;
+		    }
+		 
+		    if (!allDay) {
+		        if (!startTime) {
+		            showAlert('시작 시간을 입력해 주세요.');
+		            return;
+		        }
+		        
+		        if (!endTime) {
+		            showAlert('종료 시간을 입력해 주세요.');
+		            return;
+		        }
+		
+		        if (endTime < startTime) {
+		            showAlert('종료 시간은 시작 시간 이후로 설정해 주세요.');
+		            return;
+		        }
+		    }
+		    
+		    if(allDay) {
+				if (!startDate) {
+		            showAlert('시작 날짜를 입력해 주세요.');
+		            return;
+		        }
+		        
+				if (!endDate) {
+		            showAlert('종료 날짜를 입력해 주세요.');
+		            return;
+		        }
+			}
+		    
+		    if (repeatOption != 0 && !repeatEndDate) {
+		        showAlert('반복 종료일을 입력해 주세요.');
+		        return;
+		    }
+		    
+		    if (!description) {
+		        showAlert('내용을 입력해 주세요.');
+		        return;
+		    } 
+		
+		    // 반복 옵션 값 
+		    const repeat_insert_date = document.getElementById('eventDate').value;
+		    const repeat = parseInt(document.getElementById('repeatOption').value);
+		    const repeatDayOfWeek = repeat === 2 ||  repeat ===  4 ? getDayOfWeek() : null; // 요일
+		    const repeatWeek = repeat === 4 ? getWeekNumber() : null; // 주차
+		    const repeatDate = repeat === 3 ||  repeat ===  5 ? new Date(repeat_insert_date).getDate() : null; // 특정 일
+		    const repeatMonth = repeat === 5 ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
+		 
+		    const eventData = {
+		        title: title,
+		        category: category,
+		        startDate: startDate,
+		        endDate : allDay ? endDate : null,
+		        repeatEndDate : repeatEndDate,
+		        startTime: allDay ? null : startTime,  
+		        endTime: allDay ? null : endTime,
+		        allDay: allDay,
+		        repeat: repeat,
+		        description: description,
+		        repeatEndDate: repeatEndDate,
+		        schedule_day_of_week: repeatDayOfWeek,
+		        schedule_week: repeatWeek,
+		        schedule_date: repeatDate,
+		        schedule_month: repeatMonth
+		    };
+		
+		    console.log(eventData);  
+		    
+		    $.ajax({
+		        type: "POST",
+		        url: '/company/schedule/save',   
+		        contentType: 'application/json',
+		        data: JSON.stringify(eventData),
+		        headers: {
+		            'X-CSRF-TOKEN': csrfToken
+		        },
+		        success: function(response) {
+		            Swal.fire({
+		                text: '일정이 저장되었습니다.',
+		                icon: 'success',
+		                confirmButtonText: '확인',
+		                confirmButtonColor: '#B1C2DD'
+		            }).then(function() {
+		                window.location.reload();  
+		                document.getElementById('eventModal').style.display = 'none';
+		            });
+		        } 
+		    }); 
+	    	
 		}
-	    
-	    if (repeatOption != 0 && !repeatEndDate) {
-	        showAlert('반복 종료일을 입력해 주세요.');
-	        return;
-	    }
-	    
-	    if (!description) {
-	        showAlert('내용을 입력해 주세요.');
-	        return;
-	    } 
-	
-	    // 반복 옵션 값 
-	    const repeat_insert_date = document.getElementById('eventDate').value;
-	    const repeat = parseInt(document.getElementById('repeatOption').value);
-	    const repeatDayOfWeek = repeat === 2 ||  repeat ===  4 ? getDayOfWeek() : null; // 요일
-	    const repeatWeek = repeat === 4 ? getWeekNumber() : null; // 주차
-	    const repeatDate = repeat === 3 ||  repeat ===  5 ? new Date(repeat_insert_date).getDate() : null; // 특정 일
-	    const repeatMonth = repeat === 5 ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
-	 
-	    const eventData = {
-	        title: title,
-	        category: category,
-	        startDate: startDate,
-	        endDate : allDay ? endDate : null,
-	        repeatEndDate : repeatEndDate,
-	        startTime: allDay ? null : startTime,  
-	        endTime: allDay ? null : endTime,
-	        allDay: allDay,
-	        repeat: repeat,
-	        description: description,
-	        repeatEndDate: repeatEndDate,
-	        schedule_day_of_week: repeatDayOfWeek,
-	        schedule_week: repeatWeek,
-	        schedule_date: repeatDate,
-	        schedule_month: repeatMonth
-	    };
-	
-	    console.log(eventData);  
-	    
-	    $.ajax({
-	        type: "POST",
-	        url: '/company/schedule/save',   
-	        contentType: 'application/json',
-	        data: JSON.stringify(eventData),
-	        headers: {
-	            'X-CSRF-TOKEN': csrfToken
-	        },
-	        success: function(response) {
-	            Swal.fire({
-	                text: '일정이 저장되었습니다.',
-	                icon: 'success',
-	                confirmButtonText: '확인',
-	                confirmButtonColor: '#B1C2DD'
-	            }).then(function() {
-	                window.location.reload();  
-	                document.getElementById('eventModal').style.display = 'none';
-	            });
-	        } 
-	    }); 
+		// 수정
+		else {
+			const isRecurring = document.getElementById('isRecurring').value;   
+		    
+		    if (isRecurring === "1") { 
+				console.log("isRecurring"); 
+		        openEventRepeatModal();
+		    } else { 
+		        submitEventUpdate(); 
+		    }
+		}
 	});
 	
 	// 요일 
@@ -651,23 +665,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            console.log("일정 정보를 불러오는 중 오류 발생: " + error);
 	        }
 	    });
-	}
-	
-	document.getElementById('create_modal_submit').addEventListener('click', function() {  
-	    event.preventDefault();
-	    
-	    const isRecurring = document.getElementById('isRecurring').value;  
-	    const eventId = document.getElementById('eventId').value;
-	    console.log("isRecurring : " + isRecurring);
-	    console.log("eventId : " + eventId);
-	    
-	    if (isRecurring === "1") { 
-			console.log("isRecurring"); 
-	        openEventRepeatModal();
-	    } else { 
-	        submitEventUpdate(); 
-	    }
-	});
+	} 
 	
 	// 반복 일정 수정 모달 
 	function openEventRepeatModal() {
@@ -686,33 +684,39 @@ document.addEventListener('DOMContentLoaded', function() {
 	}); 
 	
 	// 반복 일정 수정  
-/*	function handleRecurringEventUpdate(eventId, repeatEditOption) {
-	    const eventData = getEventFormData();
-	    eventData.editOption = repeatEditOption;   
-	 
+	function handleRecurringEventUpdate(eventId, repeatEditOption) {
+	    const eventData = getEventFormData();   
+	    
+	    console.log("eventData : ", eventData); 
+	    
 	    $.ajax({
 	        type: "POST",
-	        url: '/company/schedule/edit/recurring/' + eventId,
+	        url: '/company/schedule/edit/recurring/' + eventId + '?editOption=' + repeatEditOption,
 	        contentType: 'application/json',
 	        data: JSON.stringify(eventData),
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken,
 	        },
 	        success: function(response) {
-	            Swal.fire({
-	                text: '반복 일정이 수정되었습니다.',
-	                icon: 'success',
-	                confirmButtonText: '확인',
-	                confirmButtonColor: '#B1C2DD',
-	            }).then(function() {
-	                window.location.reload();
-	            });
-	        },
-	        error: function(xhr, status, error) {
-	            console.error('반복 일정 수정 오류: ', error);
+				 if (response.res_code === "200") {
+	                Swal.fire({
+						title : response.res_msg,
+		                text: '반복 일정이 수정되었습니다.',
+		                icon: 'success',
+		                confirmButtonText: '확인',
+		                confirmButtonColor: '#B1C2DD',
+		            }).then(function() {
+		                window.location.reload();
+		            });
+	            } else {
+	                Swal.fire('반복 일정', response.res_msg, 'error');
+	            }   
+            },
+	        error: function () {
+	            Swal.fire("서버 오류", "반복 일정 수정 중 오류가 발생했습니다.", "error");
 	        }
 	    });
-	}*/
+	} 
 
 	// 일반 일정 수정
 	function submitEventUpdate() {
@@ -755,6 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const repeatOption = document.getElementById('repeatOption').value;
 	    const repeatEndDate = document.getElementById('repeatEndDate').value;
 	
+		const repeat_insert_date = document.getElementById('eventDate').value;
 	    const repeatDayOfWeek = repeatOption === "2" || repeatOption === "4" ? getDayOfWeek() : null; // 요일
 	    const repeatWeek = repeatOption === "4" ? getWeekNumber() : null; // 주차
 	    const repeatDate = repeatOption === "3" || repeatOption === "5" ? new Date(repeat_insert_date).getDate() : null; // 특정 일
