@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{include/layout}">
+<th:block layout:fragment="content">
+	<link th:href="@{/css/employee/survey/survey_question_result.css}"
+		rel="stylesheet" type="text/css">
+	<section>
+		<h1>설문 상세</h1>
+		<div class="container">
+			<div class="header">
+				<div th:if="${dto != null}">
+					<h1 th:text="${dto.survey_title}"></h1>
+					<br>
+					<p>
+						작성자: <span th:text="${dto.member_name}"></span>
+					</p>
+					<p>
+						작성일: <span th:text="${dto.survey_create_date}"></span>
+					</p>
+					<p>
+						설문 기간: <span
+							th:text="${dto.survey_start_date} + ' ~ ' + ${dto.survey_end_date}"></span>
+					</p>
+					<p>
+						설문 상태: <span th:text="${dto.survey_status == 0 ? '진행 중' : '종료'}"></span>
+					</p>
+
+					<!-- 참여 통계 -->
+					<div class="stats">
+						<div class="stat">
+							<p>전체 참여자</p>
+							<h2 th:text="${totalParticipants}"></h2>
+						</div>
+						<div class="stat">
+							<p>참여 완료</p>
+							<h2 th:text="${completedParticipants}"></h2>
+						</div>
+						<div class="stat">
+							<p>미참여</p>
+							<h2 th:text="${notParticipatedParticipants}"></h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+
+			<div class="questions">
+				<div class="question" th:each="question, iterStat : ${questions}">
+					<!-- 질문 번호 및 텍스트 -->
+					<p>
+						<strong th:text="${iterStat.count + '.'}"></strong> <span
+							th:text="${question.survey_question_text}"></span>
+					</p>
+
+					<!-- 객관식 질문일 경우 -->
+					<div th:if="${question.survey_question_type == 0}">
+						<!-- 참여자 및 참여율 요약 -->
+						<div class="participation-summary">
+							<p>
+								전체 참여자: <span class="total-participants"
+									th:text="${totalParticipants}"></span> <span class="spacer"></span>
+								참여율: <span class="participation-rate"
+									th:text="${participationRates[question.survey_question_no] + '%'}"></span>
+							</p>
+						</div>
+
+
+						<!-- 차트 렌더링 -->
+						<div th:id="'piechart-' + ${question.survey_question_no}"
+							style="width: 600px; height: 400px;"></div>
+					</div>
+
+					<!-- 주관식 질문일 경우 -->
+					<div th:if="${question.survey_question_type == 1}">
+						<div class="participation-summary">
+							<p>
+								전체 참여자: <span class="total-participants"
+									th:text="${totalParticipants}"></span> <span class="spacer"></span>
+								참여율: <span class="participation-rate"
+									th:text="${participationRates[question.survey_question_no] + '%'}"></span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+	</section>
+
+	<!-- Google Charts 스크립트 -->
+	<script type="text/javascript"
+		src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+
+        // 차트 그리기 위한 데이터
+        function drawChart(questionNo, chartData) {
+            var data = google.visualization.arrayToDataTable(chartData);
+
+            var options = {
+                title: '질문 ' + questionNo + '에 대한 응답 통계',
+                is3D: true,
+                pieSliceText: 'value',
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart-' + questionNo));
+            chart.draw(data, options);
+        }
+
+        // 모든 차트 데이터를 서버에서 불러옴
+        document.addEventListener("DOMContentLoaded", function () {
+            let surveyResults = /*[[${surveyResults}]]*/ []; // 서버에서 받은 데이터
+
+            surveyResults.forEach(function(result) {
+                const questionNo = result.questionNo;
+                const chartData = [['Option', 'Votes'], ...result.data];
+
+                drawChart(questionNo, chartData);
+            });
+        });
+    </script>
+</th:block>
+</html>

@@ -1,11 +1,16 @@
-document.addEventListener('DOMContentLoaded', function(){
-	const memberRows = document.querySelectorAll('.vacationapproval_row');
-	
-	memberRows.forEach(row => {
-		row.addEventListener('click',function(){
-			const vacationApprovalNo = this.getAttribute('data_vacationapproval_no');
-			
-			window.location.href = '/employee/approval/approval_history_detail/'+vacationApprovalNo;
-		});
-	});
+document.addEventListener('DOMContentLoaded', function() {
+    const approvalRow = document.querySelectorAll('.approval_row');
+
+    approvalRow.forEach(row => {
+        row.addEventListener('click', function() {
+            const approvalNo = this.getAttribute('data-approval_no');
+            const approvalType = this.getAttribute('data-type');
+            
+            if (approvalType === 'VACATION') {
+                window.location.href = '/employee/approval/approval_history_vacation_detail/' + approvalNo;
+            } else {
+                window.location.href = '/employee/approval/approval_history_detail/' + approvalNo;
+            }
+        });
+    });
 });

@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{include/layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
     <link th:href="@{/css/employee/survey/survey_question_detail.css}" rel="stylesheet" type="text/css">
 <section>
@@ -11,30 +11,33 @@
       <h1 th:text="${dto.survey_title}"></h1><br>
       <h3 th:text="${dto.survey_description}"></h3><br>
       <p>작성자: <span th:text="${dto.member_name}"></span></p>
-      <p>설문 기간: <span th:text="${dto.survey_start_date} + ' ~ ' + ${dto.survey_end_date}"></span></p>
+      <p>설문 기간: <span th:text="|${dto.survey_start_date} ~ ${dto.survey_end_date}|"></span></p>
       <p>설문 상태: <span th:text="${dto.survey_status == 0 ? '진행 중' : '종료'}"></span></p>
     </div>
   </div><br>
 
+ <div class="container">
   <!-- 질문 출력 -->
-  <div class="question" th:each="question, iterStat : ${questions}">
-    <!-- 질문 번호 출력 -->
-    <p><strong th:text="${iterStat.count + '.'}"></strong> <span th:text="${question.survey_question_text}"></span></p>
+  <div th:each="question, iterStat : ${questions}">
+    <!-- 질문 번호 및 질문 텍스트 -->
+    <p><strong th:text="${iterStat.count + '.'}">1.</strong> <span th:text="${question.survey_question_text}">질문 텍스트</span></p>
 
-    <!-- 객관식 질문일 경우 (questionType이 0일 때) -->
+    <!-- 객관식 질문일 경우 -->
     <div th:if="${question.survey_question_type == 0}">
-      <div th:each="option, optionIter : ${question.survey_option_no}">
-        <input type="radio" th:id="${'option' + option}" th:name="${'question' + question.survey_question_no}"
-               th:value="${option}" class="survey-option" onchange="updateAnswerCount()">
-        <label th:for="${'option' + option}" th:text="${question.survey_option_answer[optionIter.index]}"></label>
+      <div th:each="option, iterOpt : ${question.survey_option_answer}">
+        <input type="radio" th:id="${'option' + iterOpt.index}" th:name="${'question' + question.survey_question_no}"
+               th:value="${option}" class="survey-option" />
+        <label th:for="${'option' + iterOpt.index}" th:text="${option}">옵션 텍스트</label>
       </div>
     </div>
 
-    <!-- 주관식 질문일 경우 (questionType이 1일 때) -->
+    <!-- 주관식 질문일 경우 -->
     <div th:if="${question.survey_question_type == 1}">
-      <input type="text" th:name="${'question' + question.survey_question_no}" style="width: 100%; height: 50px;" class="survey-text" oninput="updateAnswerCount()" />
+      <input type="text" th:name="${'question' + question.survey_question_no}" class="survey-text" />
     </div>
   </div>
+</div>
+
 
   <!-- 고정된 답변 개수 상자 -->
   <div class="fixed-box">
@@ -62,12 +65,13 @@
 
       document.getElementById('answered-count').textContent = answeredCount;
   }
+
   document.addEventListener("DOMContentLoaded", function () {
       const totalQuestions = document.querySelectorAll('.container > .question').length;
       document.getElementById('total-count').textContent = totalQuestions;
   });
   
-//라디오 버튼 체크 해제 기능 구현
+  // 라디오 버튼 체크 해제 기능 구현
   document.addEventListener("DOMContentLoaded", function () {
       let lastCheckedRadio = null;
 

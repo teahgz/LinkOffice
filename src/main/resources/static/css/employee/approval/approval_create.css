@@ -143,7 +143,6 @@ input:focus, select:focus {
     max-width: 300px; 
 }
 
-
 .approval_line_section {
     margin-top: 20px;
 }
@@ -169,6 +168,10 @@ input:focus, select:focus {
     background-color: #f2f2f2;
     font-weight: bold;
     width: 100px;
+}
+
+#strong{
+    background-color: #f2f2f2;
 }
 
 .signature_box {
