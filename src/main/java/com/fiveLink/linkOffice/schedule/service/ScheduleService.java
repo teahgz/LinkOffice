@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleException;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleExceptionDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleExceptionRepository;
@@ -110,7 +111,7 @@ public class ScheduleService {
     }
 
 	// 관리자 - 수정 
-	 public ScheduleDto getScheduleById(Long eventNo) {
+	public ScheduleDto getScheduleById(Long eventNo) {
         Optional<Schedule> scheduleOpt = scheduleRepository.findById(eventNo);
         if (scheduleOpt.isPresent()) {
             return convertToDto(scheduleOpt.get());
@@ -118,7 +119,7 @@ public class ScheduleService {
         return null;
     }
  
-	 public ScheduleRepeatDto getScheduleRepeatById(Long eventNo) { 
+	public ScheduleRepeatDto getScheduleRepeatById(Long eventNo) { 
 	    List<ScheduleRepeat> scheduleRepeatList = scheduleRepeatRepository.findByScheduleNo(eventNo);
 	    if (!scheduleRepeatList.isEmpty()) {  
 	        return convertToRepeatDto(scheduleRepeatList.get(0)); 
@@ -207,72 +208,22 @@ public class ScheduleService {
     public void updateSingleEvent(Long eventId, ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto, String pickStartDate, String pickEndDate) {
         Schedule schedule = scheduleRepository.findById(eventId)
             .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
-        
-        // 기존 반복 옵션 날짜 수정
-        ScheduleRepeat scheduleRepeat = scheduleRepeatRepository.getByScheduleNo(eventId);
-        LocalDate adjustedEndDate = LocalDate.parse(pickStartDate).minusDays(1);
-        String adjustedEndDateString = adjustedEndDate.format(DateTimeFormatter.ISO_LOCAL_DATE); 
-        scheduleRepeat.setScheduleRepeatEndDate(adjustedEndDateString); 
-        scheduleRepeatRepository.save(scheduleRepeat);
-        
-        // 동일 옵션으로 일정 재생성  
-        LocalDate adjustedStartDate = LocalDate.parse(pickStartDate).plusDays(1);
-        String adjustedStartDateString = adjustedStartDate.format(DateTimeFormatter.ISO_LOCAL_DATE);   
-         
-	    Schedule newschedule = Schedule.builder()
-	    		.memberNo(schedule.getMemberNo())
-	            .scheduleTitle(schedule.getScheduleTitle())
-	            .scheduleComment(schedule.getScheduleComment())
-	            .scheduleStartDate(adjustedStartDateString)
-	            .scheduleAllday(schedule.getScheduleAllday())
-	            .scheduleEndDate(pickEndDate)
-	            .scheduleStartTime(schedule.getScheduleStartTime())
-	            .scheduleEndTime(schedule.getScheduleEndTime())
-	            .scheduleCategoryNo(schedule.getScheduleCategoryNo())
-	            .scheduleRepeat(schedule.getScheduleRepeat())
-	            .scheduleType(3L)
-	            .scheduleStatus(0L)
-	            .build(); 
-	    scheduleRepository.save(newschedule);
-        
-        // 반복 일정 재저장
-	    if (scheduleDto.getSchedule_repeat() != 0) {
-	        ScheduleRepeat repeat = ScheduleRepeat.builder()
-	                .scheduleNo(schedule.getScheduleNo())
-	                .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
-	                .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
-	                .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
-	                .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
-	                .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
-	                .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
-	                .build(); 
-	        scheduleRepeatRepository.save(repeat);
-	    }
-	    
-        // 예외 일정 저장
-        schedule.setScheduleTitle(scheduleDto.getSchedule_title());
-        schedule.setScheduleComment(scheduleDto.getSchedule_comment());
-        schedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
-        schedule.setScheduleEndDate(scheduleDto.getSchedule_end_date());
-        schedule.setScheduleAllday(scheduleDto.getSchedule_allday());
-        schedule.setScheduleCategoryNo(scheduleDto.getSchedule_category_no());
-        schedule.setScheduleStartTime(scheduleDto.getSchedule_start_time());
-        schedule.setScheduleEndTime(scheduleDto.getSchedule_end_time());
-        schedule.setScheduleRepeat(scheduleDto.getSchedule_repeat());
-        scheduleRepository.save(schedule);
-        
-	    if (scheduleDto.getSchedule_repeat() != 0) {
-	        ScheduleRepeat repeat = ScheduleRepeat.builder()
-	                .scheduleNo(schedule.getScheduleNo())
-	                .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
-	                .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
-	                .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
-	                .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
-	                .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
-	                .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
-	                .build(); 
-	        scheduleRepeatRepository.save(repeat);
-	    } 
+
+        // 예외 일정으로 저장 
+        ScheduleException scheduleException = ScheduleException.builder()
+                .scheduleNo(schedule.getScheduleNo())
+                .scheduleExceptionDate(pickStartDate)
+                .scheduleExceptionTitle(scheduleDto.getSchedule_title())
+                .scheduleExceptionComment(scheduleDto.getSchedule_comment())
+                .scheduleExceptionStartDate(scheduleDto.getSchedule_start_date())
+                .scheduleExceptionEndDate(scheduleDto.getSchedule_end_date())
+                .scheduleExceptionStartTime(scheduleDto.getSchedule_start_time())
+                .scheduleExceptionEndTime(scheduleDto.getSchedule_end_time())
+                .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleExceptionAllday(scheduleDto.getSchedule_allday())
+                .scheduleExceptionStatus(0L)
+                .build();
+        scheduleExceptionRepository.save(scheduleException);  
     }
 
     // 이 일정 및 향후 일정 수정
@@ -296,9 +247,7 @@ public class ScheduleService {
             .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
  
         schedule.setScheduleTitle(scheduleDto.getSchedule_title());
-        schedule.setScheduleComment(scheduleDto.getSchedule_comment());
-        schedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
-        schedule.setScheduleEndDate(scheduleDto.getSchedule_end_date());
+        schedule.setScheduleComment(scheduleDto.getSchedule_comment()); 
         schedule.setScheduleAllday(scheduleDto.getSchedule_allday());
         schedule.setScheduleCategoryNo(scheduleDto.getSchedule_category_no());
         schedule.setScheduleStartTime(scheduleDto.getSchedule_start_time());
@@ -333,4 +282,49 @@ public class ScheduleService {
             }
         }
     }  
+    
+    // 예외 일정 가져오기
+    public List<ScheduleException> getAllExceptionSchedules() { 
+	    return scheduleExceptionRepository.findByScheduleExceptionStatus(0L);
+	}
+    
+    // 예외 일정 상세
+    public ScheduleExceptionDto getScheduleExceptionById(Long eventNo) {
+        Optional<ScheduleException> scheduleExceptionOpt = scheduleExceptionRepository.findById(eventNo);
+        if (scheduleExceptionOpt.isPresent()) {
+            return convertToExceptionDto(scheduleExceptionOpt.get());
+        }
+        return null;
+    }
+    
+    private ScheduleExceptionDto convertToExceptionDto(ScheduleException scheduleException) { 
+        ScheduleExceptionDto dto = new ScheduleExceptionDto(); 
+        dto.setSchedule_no(scheduleException.getScheduleNo()); 
+        dto.setSchedule_exception_title(scheduleException.getScheduleExceptionTitle());
+        dto.setSchedule_exception_comment(scheduleException.getScheduleExceptionComment());
+        dto.setSchedule_exception_start_date(scheduleException.getScheduleExceptionStartDate());
+        dto.setSchedule_exception_end_date(scheduleException.getScheduleExceptionEndDate());
+        dto.setSchedule_exception_start_time(scheduleException.getScheduleExceptionStartTime());
+        dto.setSchedule_exception_end_time(scheduleException.getScheduleExceptionEndTime());
+        dto.setSchedule_exception_allday(scheduleException.getScheduleExceptionAllday());
+        dto.setSchedule_exception_category_no(scheduleException.getScheduleExceptionCategoryNo());  
+        dto.setSchedule_exception_create_date(scheduleException.getScheduleExceptionCreateDate());
+        return dto;
+    }
+    
+    // 예외 일정 수정
+    public void updateCompanyExceptionSchedule(Long eventId, ScheduleExceptionDto scheduleExceptionDto) {
+        ScheduleException existingSchedule = scheduleExceptionRepository.findById(eventId)
+            .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+         
+        existingSchedule.setScheduleExceptionTitle(scheduleExceptionDto.getSchedule_exception_title());
+        existingSchedule.setScheduleExceptionComment(scheduleExceptionDto.getSchedule_exception_comment());
+        existingSchedule.setScheduleExceptionStartDate(scheduleExceptionDto.getSchedule_exception_start_date());
+        existingSchedule.setScheduleExceptionEndDate(scheduleExceptionDto.getSchedule_exception_end_date());
+        existingSchedule.setScheduleExceptionAllday(scheduleExceptionDto.getSchedule_exception_allday());
+        existingSchedule.setScheduleExceptionStartTime(scheduleExceptionDto.getSchedule_exception_start_time());
+        existingSchedule.setScheduleExceptionEndTime(scheduleExceptionDto.getSchedule_exception_end_time()); 
+         
+        scheduleExceptionRepository.save(existingSchedule); 
+    }
 }

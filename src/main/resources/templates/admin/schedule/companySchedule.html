@@ -26,7 +26,7 @@
 	        <form id="eventForm">
 	            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	            <input type="hidden" id="eventId">
-	            <input type="hidden" id="isRecurring">
+	            <input type="hidden" id="isRecurring"> 
 	            
 	            <div class="form-group">
 	                <label for="eventTitle">일정 제목</label>
@@ -94,6 +94,7 @@
 	<div id="eventViewModal" class="event_view_modal" style="display: none;">
 	    <div class="event_modal-content"> 
 	    	<input type="hidden" id="eventId">
+	    	<input type="hidden" id="isException">
 		    <div class="modal-schedule-button">
 		    	<span class="modal-schedule-button-two">
 		            <button id="editEventBtn"><i class="fa-solid fa-pencil"></i></button> 
