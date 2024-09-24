@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,8 @@ import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleException;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleExceptionDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
@@ -404,5 +405,65 @@ public class ScheduleApiController {
 
 	    return resultMap;
 	}
+	
+	// 예외 일정
+	@ResponseBody
+	@GetMapping("/api/company/exception/schedules")
+	public List<ScheduleExceptionDto> getExceptionSchedules() {
+		List<ScheduleException> exceptionSchedules = scheduleService.getAllExceptionSchedules();
 
+		List<ScheduleExceptionDto> scheduleExceptionDtos = new ArrayList<>();
+		for (ScheduleException scheduleException : exceptionSchedules) {
+			ScheduleExceptionDto dto = ScheduleExceptionDto.toDto(scheduleException);
+			scheduleExceptionDtos.add(dto);
+		}
+
+		System.out.println("scheduleExceptionDtos : " + scheduleExceptionDtos);
+		return scheduleExceptionDtos;
+	}
+	
+	// 예외 상세
+	@ResponseBody
+	@GetMapping("/schedule/exception/edit/{eventNo}")
+	public Map<String, Object> getExceptionScheduleById(@PathVariable("eventNo") Long eventNo) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			ScheduleExceptionDto scheduleExceptionDto = scheduleService.getScheduleExceptionById(eventNo); 
+
+			if (scheduleExceptionDto != null) {
+				resultMap.put("res_code", "200");
+				resultMap.put("schedule", scheduleExceptionDto); 
+			} else {
+				resultMap.put("res_code", "404");
+				resultMap.put("res_msg", "일정을 찾을 수 없습니다.");
+			}
+		} catch (Exception e) {
+			resultMap.put("res_code", "500");
+			resultMap.put("res_msg", "서버 오류가 발생했습니다.");
+			e.printStackTrace();
+		}
+		return resultMap;
+	}
+
+	// 예외 일정 수정
+	@PostMapping("/company/schedule/exception/edit/{eventId}")
+	@ResponseBody
+	public String editExceptionSchedule(@PathVariable("eventId") Long eventId, @RequestBody Map<String, Object> request) {
+
+		ScheduleExceptionDto scheduleExceptionDto = new ScheduleExceptionDto(); 
+
+		scheduleExceptionDto.setSchedule_exception_no(eventId);
+		scheduleExceptionDto.setSchedule_exception_title((String) request.get("title"));
+		scheduleExceptionDto.setSchedule_exception_comment((String) request.get("description"));
+		scheduleExceptionDto.setSchedule_exception_start_date((String) request.get("startDate"));
+		scheduleExceptionDto.setSchedule_exception_end_date((String) request.get("endDate"));
+		scheduleExceptionDto.setSchedule_exception_allday(Boolean.TRUE.equals(request.get("allDay")) ? 1L : 0L);
+		scheduleExceptionDto.setSchedule_exception_start_time((String) request.get("startTime"));
+		scheduleExceptionDto.setSchedule_exception_end_time((String) request.get("endTime"));
+		scheduleExceptionDto.setSchedule_exception_category_no(getLongValue(request.get("category")));
+
+		scheduleService.updateCompanyExceptionSchedule(eventId, scheduleExceptionDto);
+
+		return "success";
+	}
 }
