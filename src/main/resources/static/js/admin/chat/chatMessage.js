@@ -503,10 +503,36 @@ if (sendButton && messageInput) {
         if (selectedMembers.length > 1) {
             $('#groupChatNameModal').modal('show');
         } else {
-            createChatRoom(currentMemberNo, currentMemberName, csrfToken);
+             checkDuplicateChatRoom(currentMemberNo, selectedMembers).then(isDuplicate => {
+                 if (!isDuplicate) {
+                     createChatRoom(currentMemberNo, currentMemberName, csrfToken);
+                 } else {
+                     console.log('채팅방 존재합니다.');
+                        }
+                    }).catch(error => {
+                        console.error('채팅방 중복 확인 중 오류 발생:', error);
+                    });
         }
     };
-
+    //개인 채팅방 중복 확인
+    function checkDuplicateChatRoom(currentMemberNo, selectedMembers) {
+    console.log(selectedMembers);
+    console.log(currentMemberNo);
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+        return fetch('/api/chat/checkDuplicateChatRoom', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                currentMemberNo: currentMemberNo,
+                selectedMembers: selectedMembers
+            })
+        })
+        .then(response => response.json())
+        .then(data => data.isDuplicate); // 서버에서 반환된 값에 따라 true/false
+    }
     function createChatRoom(currentMemberNo, currentMemberName, csrfToken) {
         const groupChatName = selectedMembers.length > 1 ? document.getElementById('groupChatNameInput').value : null;
         const message = {
