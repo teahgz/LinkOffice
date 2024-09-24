@@ -13,5 +13,5 @@ public interface ScheduleRepeatRepository extends JpaRepository<ScheduleRepeat, 
 	 List<ScheduleRepeat> findByScheduleNo(long scheduleNo);
 	 
 	 @Query("SELECT sr FROM ScheduleRepeat sr")
-	 List<ScheduleRepeat> findAllScheduleRepeats();
+	 List<ScheduleRepeat> findAllScheduleRepeats(); 
 }

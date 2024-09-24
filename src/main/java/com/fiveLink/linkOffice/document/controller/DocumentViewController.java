@@ -120,7 +120,7 @@ public class DocumentViewController {
 	   return ResponseEntity.ok(folderList);
    }
 	
-   // 부서 문서함 파일 사이즈 
+   // 사내 문서함 파일 사이즈 
    @GetMapping("/company/fileSize")
    public ResponseEntity<Double> getCompanyFileSize() throws IOException{
 	   double allFileSize = documentFileService.getCompanyFileSize();
@@ -133,11 +133,23 @@ public class DocumentViewController {
 		   @PathVariable("member_no") Long memberNo) {
 	   // memberDto 불러오기
 	   List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-	   List<DocumentFileDto> fileList = documentFileService.documentBinList(memberNo);
 	   
 	   model.addAttribute("memberdto", memberdto);
-	   model.addAttribute("fileList", fileList);
-	   return "employee/document/bin";
-		
+	   return "employee/document/bin";	
+   }
+   // 휴지통 파일 
+   @GetMapping("/file/bin")
+   public ResponseEntity<List<DocumentFileDto>> selectBinFileList(
+		   @RequestParam("memberNo") Long memberNo) throws IOException {
+	   List<DocumentFileDto> fileList = documentFileService.documentBinList(memberNo);
+       return ResponseEntity.ok(fileList);
+   }
+   
+   // 휴지통 파일 사이즈 
+   @GetMapping("/bin/fileSize")
+   public ResponseEntity<Double> getBinFileSize(
+		   @RequestParam("memberNo") Long memberNo) throws IOException{
+	   double allFileSize = documentFileService.getBinFileSize(memberNo);
+	   return ResponseEntity.ok(allFileSize);
    }
 }

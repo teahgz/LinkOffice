@@ -22,9 +22,9 @@
 				<hr class="divider">
 				<h3 class="approval-title">전자결재</h3>
 				<ul class="approval-status">
-					<li><span>진행함</span> <span>3</span></li>
-					<li><span>미결함</span> <span>0</span></li>
-					<li><span>참조함</span> <span>4</span></li>
+					<li><span>진행함</span> <span th:text="${progressCount}"></span></li>
+					<li><span>내역함</span> <span th:text="${approvalCount}"></span></li>
+					<li><span>참조함</span> <span th:text="${referenceCount}"></span></li>
 				</ul>
 			</div>
 			<div class="main_item_box left-bottom custom-height-2">
