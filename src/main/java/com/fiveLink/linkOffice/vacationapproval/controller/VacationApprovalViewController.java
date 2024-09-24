@@ -25,6 +25,7 @@ import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalFileService;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
@@ -122,6 +123,13 @@ public class VacationApprovalViewController {
                 
             }
         }
+        
+		if(vacationapprovaldto.getFiles() != null) {
+			for(VacationApprovalFileDto file : vacationapprovaldto.getFiles()) {
+				Long fileSize = file.getVacation_approval_file_size();
+				file.setVacation_approval_file_size(fileSize / 1024);
+			}
+		}
         
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);

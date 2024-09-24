@@ -271,23 +271,23 @@
 }
 
 
-#vacationapproval_cancel_reason {
+#approval_cancel_reason {
     text-align: center; 
     font-size: 20px;
 }
 
-#vacationapproval_cancel_reason div {
+#approval_cancel_reason div {
     margin-top: 10px;
     font-size: 15px;
     color: #333; 
 }
 
-#vacationapproval_flow_reject_reason {
+#approval_flow_reject_reason {
     text-align: center; 
     font-size: 20px;
 }
 
-#vacationapproval_flow_reject_reason div {
+#approval_flow_reject_reason div {
     margin-top: 10px;
     font-size: 15px;
     color: #333; 
