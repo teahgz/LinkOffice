@@ -1,5 +1,7 @@
 package com.fiveLink.linkOffice.survey.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +15,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
@@ -126,7 +130,7 @@ public class SurveyViewController {
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
 
         boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
-
+        
         model.addAttribute("dto", dto);
         model.addAttribute("questions", questions);
 
@@ -139,6 +143,10 @@ public class SurveyViewController {
             Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
             model.addAttribute("participationRates", participationRates);
 
+            // 선택지별 응답 개수 추가
+            Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
+            model.addAttribute("optionAnswerCounts", optionAnswerCounts);
+
             model.addAttribute("totalParticipants", totalParticipants);
             model.addAttribute("completedParticipants", completedParticipants);
             model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
@@ -148,6 +156,30 @@ public class SurveyViewController {
             return "employee/survey/survey_question_detail";
         }
     }
+    
+    
+    @GetMapping("/employee/survey/chartView")
+    @ResponseBody
+    public List<Map<String, Object>> getChartData() {
+        List<Map<String, Object>> chartData = new ArrayList<>();
+
+        Map<String, Object> data1 = new HashMap<>();
+        data1.put("label", "Yes");
+        data1.put("value", 60);
+        chartData.add(data1);
+
+        Map<String, Object> data2 = new HashMap<>();
+        data2.put("label", "No");
+        data2.put("value", 40);
+        chartData.add(data2);
+
+        return chartData; // JSON 데이터 반환
+    }
+
+
+
+
+
 
 
 }
