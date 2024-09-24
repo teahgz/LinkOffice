@@ -39,7 +39,7 @@ public class ChatMemberDto {
     public ChatMemberDto toDto(ChatMember chatMember){
         return ChatMemberDto.builder()
                 .chat_member_no(chatMember.getChatMemberNo())
-                .chat_room_no(chatMember.getChatMemberNo())
+                .chat_room_no(chatMember.getChatRoomNo())
                 .member_no(chatMember.getMemberNo())
                 .chat_member_room_name(chatMember.getChatMemberRoomName())
                 .chat_member_join_date(chatMember.getChatMemberJoinDate())

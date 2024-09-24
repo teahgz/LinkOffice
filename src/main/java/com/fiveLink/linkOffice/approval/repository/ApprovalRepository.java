@@ -19,7 +19,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long>{
 	Page<Approval> findByMemberMemberNoAndApprovalStatusInAndApprovalTitleContaining(Long memberNo, List<Integer> approvalStatus, String searchText, Pageable sortedPageable);
 	
 	// 진행
-	
 	@Query("SELECT app FROM Approval app "+
 			"WHERE app.member.memberNo = :memberNo "+
 			"AND app.approvalStatus IN (0,1) "+
@@ -36,7 +35,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long>{
 	Page<Approval> findByMemberMemberNoAndApprovalStatus(@Param("memberNo") Long memberNo, @Param("searchText") String searchText, Pageable sortedPageable);
 	
 	// 반려
-	
 	@Query("SELECT app FROM Approval app "+
 			"WHERE app.member.memberNo = :memberNo "+
 			"AND app.approvalStatus IN (2,3) "+
@@ -56,7 +54,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long>{
 	// 진행함 상세 조회
 	Approval findByApprovalNo(Long ApprovalNo);
 	
-	Page<Approval> findByApprovalNoIn(List<Long> approvalNos, Pageable pageable);
 	
 	// 참조함 조회
 	@Query(value = "SELECT * FROM (" +

@@ -7,7 +7,9 @@ import com.fiveLink.linkOffice.mapper.ChatMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatMemberService {
@@ -52,23 +54,31 @@ public class ChatMemberService {
         }
         return result;
     }
-    public String selectChatRoomName(Long chatRoomNo, Long memberNo){
-        return chatMapper.selectChatRoomName(chatRoomNo, memberNo);
+    public String selectChatRoomName(Long chatRoomNo, Long memberNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomNo", chatRoomNo);
+        params.put("memberNo", memberNo);
+
+        String roomName = chatMapper.selectChatRoomName(params);
+        return roomName;
     }
 
-    public int updateChatRoom( String roomName, Long memberNo, Long roomNo){
-        int result = -1;
-        try{
-            chatMapper.updateChatRoom(roomName, memberNo, roomNo);
-            result = 1;
+    public int updateChatRoom(String roomName, Long memberNo, Long roomNo) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("roomName", roomName);
+            params.put("memberNo", memberNo);
+            params.put("roomNo", roomNo);
 
-        }catch (Exception e){
+            chatMapper.updateChatRoom(params);
+            return 1;
+        } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
-        return result;
     }
-    public int chatRoomType(Long chatRoomNo) {
 
+    public int chatRoomType(Long chatRoomNo) {
         return chatMapper.chatRoomType(chatRoomNo);
 
     }

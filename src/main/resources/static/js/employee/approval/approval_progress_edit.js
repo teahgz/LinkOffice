@@ -143,9 +143,36 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
-    	
-    
-    
+
+// 결재자 값 가져오기
+const appNo = document.getElementById('approval_no').value;
+
+$.ajax({
+    url: '/employee/approval/approve/' + appNo,
+    type: 'get',
+    dataType: 'json',
+    success: function(data) {
+
+        const filteredApprovers = data.approvaldto.flows.filter(approver => approver.approval_flow_role === 2);
+
+        populateApprovalLine(filteredApprovers);
+    }
+});
+
+function populateApprovalLine(approvers) {
+    const table = document.getElementById('approvalLineTable');
+    const positionCells = table.querySelectorAll('tr:nth-child(1) td');
+    const nameCells = table.querySelectorAll('tr:nth-child(3) td');
+
+    approvers.forEach((approver, index) => {
+        if (index < positionCells.length - 1) {
+            positionCells[index + 1].innerHTML = `<span>${approver.member_position}</span>`;
+            nameCells[index + 1].innerHTML = `<span>${approver.member_name}</span>`;
+        }
+    });
+}
+
+
 });
 
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
@@ -166,10 +193,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			const references = Array.from(document.querySelectorAll('input[id="referenceNumbers"]')).map(input => input.value);
 			const reviewers = Array.from(document.querySelectorAll('input[id="reviewerNumbers"]')).map(input => input.value);
 
-			console.log(approvers);
-			console.log(references);
-			console.log(reviewers);
-		
 		 	let vali_check = false;
             let vali_text = "";
 			
@@ -227,6 +250,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    })
 			}
 	});
-
-
+	
+	
+    
 });

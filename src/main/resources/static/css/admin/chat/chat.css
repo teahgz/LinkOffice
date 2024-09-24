@@ -369,6 +369,7 @@
 .chatDropdown {
     position: relative;
     display: inline-block;
+    margin-left:10px;
 }
 
 .chat-dropdown-menu {

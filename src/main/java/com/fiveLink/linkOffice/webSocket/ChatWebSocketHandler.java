@@ -66,7 +66,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             for (WebSocketSession s : sessions.values()) {
                 if (s.isOpen()) {
-                    System.out.println(s);
                     s.sendMessage(new TextMessage(payload));
                 }
             }
@@ -162,7 +161,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             Map<String, Object> responseMap = new HashMap<>();
             responseMap.put("chatRoomNo", chatRoomNo);
             responseMap.put("members", members);
-            //responseMap.put("currentMemberNo", currentMemberNo);
             responseMap.put("type", "groupChatCreate");
             responseMap.put("names", groupChatName);
 
@@ -242,10 +240,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMember"));
         Long roomNo = ((Number) jsonMap.get("chatRoomNo")).longValue();
         List<Long> messageNo = chatMessageService.markMessagesAsReadForChatRoom(currentMemberNo, roomNo);
-        System.out.println(messageNo);
         if (!messageNo.isEmpty()) {
             for (Long i : messageNo) {
-                System.out.println(i);
                 ChatReadDto chatReadDto = new ChatReadDto();
                 chatReadDto.setMember_no(currentMemberNo);
                 chatReadDto.setChat_message_no(i);
@@ -265,14 +261,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     //채팅 읽음 개수
     private void handleChatCount(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMember"));
-        System.out.println("current: "+ currentMemberNo);
-        // 데이터베이스에서 읽지 않은 메시지 개수 조회
-        List<Map<String, Object>> unreadCounts = chatMessageService.getUnreadCounts(currentMemberNo);
-        System.out.println("count : "+ unreadCounts);
-        // 응답 데이터 구조화
-        Map<String, Object> response = new HashMap<>();
-        response.put("type", "unreadCounts"); // 타입 추가
 
+        List<Map<String, Object>> unreadCounts = chatMessageService.getUnreadCounts(currentMemberNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("type", "unreadCounts");
         // 읽지 않은 메시지 개수 추가
         List<Map<String, Object>> unreadResponseList = new ArrayList<>();
         for (Map<String, Object> count : unreadCounts) {
@@ -283,7 +275,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         response.put("data", unreadResponseList);
-        System.out.println(response);
         session.sendMessage(new TextMessage(new ObjectMapper().writeValueAsString(response)));
     }
     @Override
