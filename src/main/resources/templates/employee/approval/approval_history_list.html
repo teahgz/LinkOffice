@@ -56,11 +56,14 @@
 							<td th:text="${approval.approval_title}"></td>
 							<td th:text="${approval.member_name}"></td>
 							<td th:text="${approval.format_approval_create_date}"></td>
-							<td th:switch="${approval.approval_flow_role}"><span
-								th:case="1">결재</span> <span th:case="2">합의</span></td>
-							<td th:switch="${approval.approval_status}"><span
-								th:case="0">진행중</span> <span th:case="1">완료</span> <span
-								th:case="2">반려</span> <span th:case="3">기안취소</span></td>
+							<td th:switch="${approval.approval_flow_role}">
+								<span th:case="1">합의</span> 
+								<span th:case="2">결재</span> </td>
+							<td th:switch="${approval.approval_status}">
+								<span th:case="0">진행중</span>
+								<span th:case="1">완료</span>
+								<span th:case="2">반려</span>
+								<span th:case="3">기안취소</span></td>
 						</tr>
 					</th:block>
 

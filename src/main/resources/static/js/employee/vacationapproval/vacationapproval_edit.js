@@ -193,7 +193,32 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     	
-    
+    const vapNo = document.getElementById('vacationapproval_no').value;
+
+$.ajax({
+    url: '/employee/vacationapproval/approve/' + vapNo,
+    type: 'get',
+    dataType: 'json',
+    success: function(data) {
+
+        const filteredApprovers = data.vacationapprovaldto.flows.filter(approver => approver.vacation_approval_flow_role === 2);
+
+        populateApprovalLine(filteredApprovers);
+    }
+});
+
+function populateApprovalLine(approvers) {
+    const table = document.getElementById('approvalLineTable');
+    const positionCells = table.querySelectorAll('tr:nth-child(1) td');
+    const nameCells = table.querySelectorAll('tr:nth-child(3) td');
+
+    approvers.forEach((approver, index) => {
+        if (index < positionCells.length - 1) {
+            positionCells[index + 1].innerHTML = `<span>${approver.member_position}</span>`;
+            nameCells[index + 1].innerHTML = `<span>${approver.member_name}</span>`;
+        }
+    });
+}
     
 });
 
@@ -221,10 +246,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			const references = Array.from(document.querySelectorAll('input[id="referenceNumbers"]')).map(input => input.value);
 			const reviewers = Array.from(document.querySelectorAll('input[id="reviewerNumbers"]')).map(input => input.value);
 
-			console.log(approvers);
-			console.log(references);
-			console.log(reviewers);
-		
 		 	let vali_check = false;
             let vali_text = "";
 			

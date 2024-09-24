@@ -40,31 +40,50 @@
                                 	<button type="button" id="openChart" class="btn btn-primary approve_button">결재선 지정</button>
                             	</div>
                             </div>
-							<div class="app_navbar">
-							    <div class="app_nav">결재자</div>
-							    <div class="app_nav">합의자</div>
-							    <div class="app_nav">참조자</div>    
-							</div>
-							
-							<div class="app_member">
-							    <div class="approversDisplay" >
-							        <span th:each="flow : ${vacationapprovaldto.flows}" 
-							              th:if="${flow.vacation_approval_flow_role == 2}"
-							              th:text="${flow.member_name}"></span>
-							    </div>
-							
-							    <div class="referencesDisplay">
-							        <span th:each="flow : ${vacationapprovaldto.flows}" 
+                            
+							<table id="approvalLineTable" class="approval_line_table">
+							    <tr>
+							        <th rowspan="3">결재</th>
+							        <td id="approve"><div><span th:text="${member.position_name}"></span></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							        <td><div></div></td>
+							    </tr>
+							    <tr>
+							        <td id="approve"><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							        <td><div class="signature_box"></div></td>
+							    </tr>
+							    <tr>
+							        <td id="approve"><span th:text="${member.member_name}"></span></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							        <td></td>
+							    </tr>
+
+							    <tr id="referenceRow">
+							        <td id="strong"><strong>합의</strong></td>
+							        <td colspan="7" id="referencestCell"><span th:each="flow : ${vacationapprovaldto.flows}" 
 							              th:if="${flow.vacation_approval_flow_role == 1}"
-							              th:text="${flow.member_name}"></span>
-							    </div>
-							
-							    <div class="reviewersDisplay">
-							        <span th:each="flow : ${vacationapprovaldto.flows}" 
+							              th:text="${flow.member_name}+' '"></span></td>
+							    </tr>
+							    <tr id="referenceRow">
+							        <td id="strong"><strong>참조</strong></td>
+							        <td id="reviewerCell" colspan="7"><span th:each="flow : ${vacationapprovaldto.flows}" 
 							              th:if="${flow.vacation_approval_flow_role == 0}"
-							              th:text="${flow.member_name}"></span>
-							    </div>
-							</div>
+							              th:text="${flow.member_name}+' '"></span></td>
+							    </tr>
+							</table>
 
                  	
                             <div class="editor-container__editor" id="editor" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>

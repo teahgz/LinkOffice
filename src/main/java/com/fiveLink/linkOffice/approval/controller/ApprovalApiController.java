@@ -85,7 +85,7 @@ public class ApprovalApiController {
 	    return response; 
 	}
 	
-	// 관리자 전자결재 양식 삭제 (update)
+	// 관리자 전자결재 양식 삭제
 	@ResponseBody
 	@PutMapping("/admin/approval/delete/{form_no}")
 	public Map<String,String> adminApprovalDelete(@PathVariable("form_no") Long formNo){
@@ -103,7 +103,7 @@ public class ApprovalApiController {
 	    return response; 
 	}
 	
-	// 사용자 전자결재 양식 등록 
+	// 사용자 전자결재 기안
 	@ResponseBody
 	@PostMapping("/employee/approval/create")
 	public Map<String,String> createApproval(
@@ -175,9 +175,6 @@ public class ApprovalApiController {
 	        	filedto.setApproval_file_new_name(saveFileName);
 	        	filedto.setApproval_file_size(file.getSize());
 
-	        	System.out.println(file.getOriginalFilename());
-	        	System.out.println(approvalTitle);
-	        	System.out.println(approvalContent);
 	            if (approvalService.createApprovalFile(appdto, filedto, approvalFlowdto) != null) {
 	                response.put("res_code", "200");
 	                response.put("res_msg", "결재 작성이 완료되었습니다.");
@@ -189,8 +186,6 @@ public class ApprovalApiController {
 	    // 파일이 없을 때
 	    if (!isFileUploaded) {
 	        if (approvalService.createApproval(appdto, approvalFlowdto) != null) {
-	    	    System.out.println(approvalTitle);
-	    	    System.out.println(approvalContent);
 	            response.put("res_code", "200");
 	            response.put("res_msg", "결재 작성이 완료되었습니다."); 
 	        }
@@ -199,7 +194,7 @@ public class ApprovalApiController {
 	    return response;
 	}
 	
-	// 전자 결재 기안 취소 (업데이트) 
+	// 사용자 전자 결재 기안 취소
 	@ResponseBody
 	@PutMapping("/employee/approval/cancel/{approval_no}")
 	public Map<String,String> employeeApprovalDelete(@PathVariable("approval_no") Long aapNo,
@@ -219,7 +214,7 @@ public class ApprovalApiController {
 	    return response; 
 	} 
 	
-	// 전자결재 수정 (업데이트)
+	// 사용자 전자결재 기안 수정
 	@ResponseBody
 	@PutMapping("/employee/approval/edit/{approval_no}")
 	public Map<String,String> editApproval(@PathVariable("approval_no") Long aapNo,
@@ -317,7 +312,7 @@ public class ApprovalApiController {
 	    return response;
 	}
 	
-	// 전자결재 내역함 - 승인
+	// 사용자 (결재자) 전자결재 내역함 - 승인
 	@ResponseBody
 	@PutMapping("/employee/approval/approve/{approval_no}")
 	public Map<String,String> employeeApprovalFlowUpdate(@PathVariable("approval_no") Long appNo){
@@ -336,7 +331,7 @@ public class ApprovalApiController {
 	    return response;
 	}
 	
-	// 전자결재 내역함 - 승인 취소
+	// 사용자 (결재자) 전자결재 내역함 - 승인 취소
 	@ResponseBody
 	@PutMapping("/employee/approval/approvecancel/{approval_no}")
 	public Map<String,String> employeeApprovalFlowCancel(@PathVariable("approval_no") Long appNo){
@@ -355,7 +350,7 @@ public class ApprovalApiController {
 	    return response;
 	}
 	
-	// 전자결재 내역함 - 반려
+	// 사용자 (결재자) 전자결재 내역함 - 반려
 	@ResponseBody
 	@PutMapping("/employee/approval/reject/{approval_no}")
 	public Map<String,String> employeeApprovalFlowReject(@PathVariable("approval_no") Long appNo,

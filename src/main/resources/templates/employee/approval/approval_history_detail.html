@@ -17,7 +17,7 @@
 						        <div id="approval_title" th:text="${approvaldto.approval_title}"></div>
 						        <div class="reject_button_container">
 						            <button type="button" class="reject_button" th:each="flow : ${approvaldto.flows}" 
-						            	th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo}">반려</button>
+						            	th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}">반려</button>
 						        </div>
 						    </div>
                         </div>
@@ -51,7 +51,7 @@
 						            </td>
 						            <td th:each="flow, stat : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 2}">
 										<div class="signature_box">
-										    <button th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
+										    <button th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}" 
 										            type="button" class="approval_button" 
 										            onclick="approveRequest()">승인</button>
 										
@@ -100,7 +100,7 @@
 						                        <span th:text="${flow.member_name}"></span>
 						                        <span th:if="${flow.approval_flow_status == 2}" class="approved">(승인)</span>
 						                        <span th:if="${flow.approval_flow_status == 3}" class="rejected">(반려)</span>
-										    <button th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo}" 
+										    <button th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}" 
 										            type="button" class="reapproval_button" 
 										            onclick="approveRequest()">승인</button>
 										    <button th:if="${flow.approval_flow_status == 2 
@@ -156,9 +156,9 @@
                                                    file.approval_file_ori_name.endsWith('.png') or 
                                                    file.approval_file_ori_name.endsWith('.jpg') or 
                                                    file.approval_file_ori_name.endsWith('.jpeg'))}" class="file_info">
-                                        <a th:href="@{'/linkOfficeImg/approval/approval/' + ${file.approval_file_new_name}}" 
+                                        <a th:href="@{/download_file/{no}(no=${approvaldto.approval_no})}"
                                            th:text="${file.approval_file_ori_name}"></a>
-                                        <p th:text="${'파일 크기: ' + file.approval_file_size + ' bytes'}"></p>
+                                        <p th:text="${'파일 크기: ' + file.approval_file_size + ' KB'}"></p>
                                     </div>
                                 </div>
                             </div>
