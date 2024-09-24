@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class ChatRoomService {
@@ -44,7 +46,11 @@ public class ChatRoomService {
     public int chatRoomOut(Long chatRoomNo, Long memberNo){
         int result = -1;
         try{
-            chatMapper.chatRoomOut(chatRoomNo, memberNo);
+            Map<String, Object> params = new HashMap<>();
+            params.put("chatRoomNo", chatRoomNo);
+            params.put("memberNo", memberNo);
+
+            chatMapper.chatRoomOut(params);
             result = 1;
 
         }catch (Exception e){
@@ -57,7 +63,13 @@ public class ChatRoomService {
     public int chatRoomPin(Long chatRoomNo, Long memberNo, int status, LocalDateTime updateTime){
         int result = -1;
         try{
-            chatMapper.chatRoomPin(chatRoomNo, memberNo, status, updateTime);
+            Map<String, Object> params = new HashMap<>();
+            params.put("chatRoomNo", chatRoomNo);
+            params.put("memberNo", memberNo);
+            params.put("status", status);
+            params.put("updateTime", updateTime);
+            chatMapper.chatRoomPin(params);
+
             result = 1;
 
         }catch (Exception e){
@@ -70,8 +82,10 @@ public class ChatRoomService {
     public int selectChatPin(Long chatRoomNo, Long memberNo){
         int result = 0;
         try{
-            result = chatMapper.selectChatPin(chatRoomNo, memberNo);
-
+            Map<String, Object> params = new HashMap<>();
+            params.put("chatRoomNo", chatRoomNo);
+            params.put("memberNo", memberNo);
+            result = chatMapper.selectChatPin(params);
 
         }catch (Exception e){
             e.printStackTrace();

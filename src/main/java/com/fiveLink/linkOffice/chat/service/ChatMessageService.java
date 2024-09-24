@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,12 @@ public class ChatMessageService {
         return chatMapper.getChatMessages(roomNo);
     }
     public List<Long> markMessagesAsReadForChatRoom(Long memberNo, Long chatRoomNo){
-        return chatMapper.markMessagesAsReadForChatRoom(memberNo, chatRoomNo);
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberNo", memberNo);
+        params.put("chatRoomNo", chatRoomNo);
+
+
+        return chatMapper.markMessagesAsReadForChatRoom(params);
     }
 
     public void insertReadStatus(ChatReadDto chatReadDto) {

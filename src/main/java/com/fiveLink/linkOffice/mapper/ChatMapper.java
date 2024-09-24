@@ -20,9 +20,9 @@ public interface ChatMapper {
     //채팅방 목록 디비 입력 이름+부서
     String searchPosition(Long memberNo);
     //채팅방 이름 가져오기
-    String selectChatRoomName(Long chatRoomNo, Long memberNo);
+    String selectChatRoomName(Map<String, Object> params);
     //채팅방 이름 수정
-    int updateChatRoom(String roomName, Long memberNo, Long roomNo);
+    int updateChatRoom(Map<String, Object> params);
 
     //채팅방 타입 가져오기
     int chatRoomType(Long chatRooNo);
@@ -36,18 +36,20 @@ public interface ChatMapper {
     //개인 채팅방 정보 가져오기
     List<ChatMemberDto> getMembersByChatRoomNo(Long chatRoomNo);
 
-    //채팅방 나가기
-    int chatRoomOut(Long chatRoomNo, Long memberNo);
+    // 채팅방 나가기
+    int chatRoomOut(Map<String, Object> params);
 
-    //채팅방 고정
-    int chatRoomPin(Long chatRoomNo, Long memberNo, int status, LocalDateTime updateTime);
-    int selectChatPin(Long chatRoomNo, Long memberNo);
+    // 채팅방 고정
+    int chatRoomPin(Map<String, Object> params);
+
+    // 채팅방 고정 여부
+    int selectChatPin(Map<String, Object> params);
 
     //참여자 수
     int countParicipant(Long chatRoomNo);
 
-    //채팅방 별 안읽은 메시지 읽기
-    List<Long> markMessagesAsReadForChatRoom(Long memberNo, Long chatRoomNo);
+    // 채팅방 별 안읽은 메시지 읽기
+    List<Long> markMessagesAsReadForChatRoom(Map<String, Object> params);
     //채팅방 별 안읽은 메시지 개수
     List<Map<String, Object>> getUnreadCounts(Long memberNo);
 }

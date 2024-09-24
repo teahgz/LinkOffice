@@ -26,11 +26,11 @@ public class ChatMemberController {
 
     }
     // 채팅방 이름 가져오기
-    @GetMapping("/api/chat/roomName/{chatRoomNo}/{memberNo}")
+    @GetMapping("/api/chat/roomName/{chatRoomNo}/{currentMember}")
     @ResponseBody
-    public String roomName(@PathVariable("chatRoomNo") Long chatRoomNo, @PathVariable("memberNo") Long memberNo) {
+    public String roomName(@PathVariable("chatRoomNo") Long chatRoomNo, @PathVariable("currentMember") Long currentMember) {
         try {
-            String chatRoomName = chatMemberService.selectChatRoomName(chatRoomNo, memberNo);
+            String chatRoomName = chatMemberService.selectChatRoomName(chatRoomNo, currentMember);
 
             if (chatRoomName != null) {
                 return chatRoomName;
