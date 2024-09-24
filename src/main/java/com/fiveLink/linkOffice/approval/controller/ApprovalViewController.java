@@ -1,7 +1,9 @@
 package com.fiveLink.linkOffice.approval.controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
 import com.fiveLink.linkOffice.approval.domain.ApprovalFlowDto;
@@ -449,6 +452,17 @@ public class ApprovalViewController {
 		model.addAttribute("approvaldto", approvaldto);
 		
 		return "employee/approval/approval_edit";
+	}
+	
+	@GetMapping("/employee/approval/approve/{approval_no}")
+	@ResponseBody
+	public  Map<String, Object> approvalEdit(@PathVariable("approval_no") Long appNo) {
+		Map<String, Object> response = new HashMap<>();
+		
+		ApprovalDto approvaldto = approvalService.selectApprovalOne(appNo);
+		response.put("approvaldto", approvaldto);
+		
+		return response;
 	}
 	
 	// 전자결재 파일 다운로드 

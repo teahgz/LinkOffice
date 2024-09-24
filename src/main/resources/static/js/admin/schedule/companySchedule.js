@@ -685,31 +685,35 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// 반복 일정 수정  
 	function handleRecurringEventUpdate(eventId, repeatEditOption) {
-	    const eventData = getEventFormData();
-	    eventData.editOption = repeatEditOption;   
+	    const eventData = getEventFormData();   
 	    
 	    console.log("eventData : ", eventData); 
 	    
 	    $.ajax({
 	        type: "POST",
-	        url: '/company/schedule/edit/recurring/' + eventId,
+	        url: '/company/schedule/edit/recurring/' + eventId + '?editOption=' + repeatEditOption,
 	        contentType: 'application/json',
 	        data: JSON.stringify(eventData),
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken,
 	        },
 	        success: function(response) {
-	            Swal.fire({
-	                text: '반복 일정이 수정되었습니다.',
-	                icon: 'success',
-	                confirmButtonText: '확인',
-	                confirmButtonColor: '#B1C2DD',
-	            }).then(function() {
-	                window.location.reload();
-	            });
-	        },
-	        error: function(xhr, status, error) {
-	            console.error('반복 일정 수정 오류: ', error);
+				 if (response.res_code === "200") {
+	                Swal.fire({
+						title : response.res_msg,
+		                text: '반복 일정이 수정되었습니다.',
+		                icon: 'success',
+		                confirmButtonText: '확인',
+		                confirmButtonColor: '#B1C2DD',
+		            }).then(function() {
+		                window.location.reload();
+		            });
+	            } else {
+	                Swal.fire('반복 일정', response.res_msg, 'error');
+	            }   
+            },
+	        error: function () {
+	            Swal.fire("서버 오류", "반복 일정 수정 중 오류가 발생했습니다.", "error");
 	        }
 	    });
 	} 

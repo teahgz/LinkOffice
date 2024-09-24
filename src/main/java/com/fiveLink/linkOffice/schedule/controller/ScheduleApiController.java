@@ -306,7 +306,7 @@ public class ScheduleApiController {
 	public Map<String, String> editRecurringEvent(
 	        @PathVariable("eventId") Long eventId,
 	        @RequestBody ScheduleDto scheduleDto,
-	        @RequestParam("editOption") String editOption) {
+	        @RequestParam("editOption") Long editOption) {
 
 	    Map<String, String> resultMap = new HashMap<>();
 	    resultMap.put("res_code", "404");
@@ -316,23 +316,23 @@ public class ScheduleApiController {
 	    System.out.println("editOption 예외 수정 : " + editOption);
 	    
 	    try {
-	        switch (editOption) {
-	            case "single": // 이 일정만 수정
+	        switch (editOption.intValue()) {
+	            case 1: // 이 일정만 수정
 	                scheduleService.updateSingleEvent(eventId, scheduleDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "일정이 성공적으로 수정되었습니다.");
+	                resultMap.put("res_msg", "이 일정만 수정");
 	                break;
 
-	            case "future": // 이 일정 및 향후 일정 수정
+	            case 2: // 이 일정 및 향후 일정 수정
 	                scheduleService.updateFutureEvents(eventId, scheduleDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "일정이 성공적으로 수정되었습니다.");
+	                resultMap.put("res_msg", "이 일정 및 향후 일정 수정");
 	                break;
 
-	            case "all": // 모든 일정 수정
+	            case 3: // 모든 일정 수정
 	                scheduleService.updateAllEvents(eventId, scheduleDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "일정이 성공적으로 수정되었습니다.");
+	                resultMap.put("res_msg", "모든 일정 수정");
 	                break;
 
 	            default:

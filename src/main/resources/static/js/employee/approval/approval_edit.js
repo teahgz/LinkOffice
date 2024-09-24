@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
         resetSelections();
         loadOrganizationChart();
     });
-
+	
+	// 조직도 값 비우기
     function resetSelections() {
         selectedMembers = [];
         approvers = [];
@@ -185,15 +186,17 @@ document.addEventListener("DOMContentLoaded", function () {
     $('.move-from-reviewer').click(function (event) {
         moveFromList(event, 'reviewer-list', reviewers, reviewerNames);
     });
-
+	
+	// input 값 지워주기
     function updateApproversDisplay() {
         $('#approvalLineTable th').each(function () {
         $(this).find('input').remove();  
+        
     });
-
-    $('#approvalLineTable tr:nth-child(2) td:not(#approve) div').remove();
-    $('#approvalLineTable tr:nth-child(1) td:not(#approve) div span').remove();
-    $('#approvalLineTable tr:nth-child(3) td:not(#approve) span').remove();
+    //  값 지워주기 ( 결재, 합의, 참조 )
+    $('#approvalLineTable tr:nth-child(1) td:not(#approve)').empty();
+    $('#approvalLineTable tr:nth-child(2) td:not(#approve) ').empty();
+    $('#approvalLineTable tr:nth-child(3) td:not(#approve) ').empty();
 
     $('#referencestCell').empty();
     $('#reviewerCell').empty();
@@ -204,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const listItem = $('<span></span>').text(`${name}`);
         const positionItem = $('<span></span>').text(`${position}`);
 
-        $('#approvalLineTable td div').eq(index + 1).append(positionItem);
+        $('#approvalLineTable td ').eq(index + 1).append(positionItem);
             
             const targetRow = $('#approvalLineTable tr').eq(2); 
             targetRow.find('td').eq(index + 1).append(listItem);

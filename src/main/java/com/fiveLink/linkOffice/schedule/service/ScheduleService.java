@@ -219,13 +219,10 @@ public class ScheduleService {
 
         // 반복 일정을 수정
         List<ScheduleRepeat> repeats = scheduleRepeatRepository.findByScheduleNo(eventId);
-        for (ScheduleRepeat repeat : repeats) {
-            // 반복 일정 수정 로직 추가
-            // 예를 들어, 반복 기간을 수정할 수 있습니다.
+        for (ScheduleRepeat repeat : repeats) { 
             if (repeat.getScheduleRepeatEndDate().compareTo(scheduleDto.getSchedule_end_date()) > 0) {
                 repeat.setScheduleRepeatEndDate(scheduleDto.getSchedule_end_date());
-            }
-            // 기타 필요한 수정 사항 반영
+            } 
             scheduleRepeatRepository.save(repeat);
         }
     }

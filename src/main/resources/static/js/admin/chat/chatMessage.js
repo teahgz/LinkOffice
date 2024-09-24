@@ -856,8 +856,8 @@ function formatDateTime(date) {
             });
     }
     function getChatRoomName(chatRoomNo) {
-        const memberNo = document.getElementById('currentMember').value;
-        return fetch(`/api/chat/roomName/${chatRoomNo}/${memberNo}`)
+
+        return fetch(`/api/chat/roomName/${chatRoomNo}/${currentMember}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("채팅방 이름을 찾지 못했습니다.");
