@@ -60,7 +60,8 @@ public class ApprovalViewController {
 
 		return "admin/approval/approval_create";
 	}
-
+	
+	// 양식 정렬
 	private Sort getSortOption(String sort) {
 		if ("latest".equals(sort)) {
 			return Sort.by(Sort.Order.desc("approvalFormCreateDate"));
@@ -109,7 +110,6 @@ public class ApprovalViewController {
 		ApprovalFormDto formList = approvalFormService.getApprovalFormOne(formNo);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
 		if (formList.getApproval_form_create_date() != null) {
 			String formattedCreateDate = formList.getApproval_form_create_date().format(formatter);
 			formList.setFormat_create_date(formattedCreateDate);
@@ -134,7 +134,7 @@ public class ApprovalViewController {
 		return "admin/approval/approval_edit";
 	}
 
-	// 내역함
+	// 사용자 전자결재 내역함 (수정중)
 	@GetMapping("/employee/approval/history")
 	public String approvalHistory(Model model,ApprovalDto searchdto, @RequestParam(value = "sort", defaultValue = "latest") String sort) {
 	    Long memberNo = memberService.getLoggedInMemberNo();
@@ -156,7 +156,7 @@ public class ApprovalViewController {
 	}
 
 	
-	// 참조
+	// 사용자 전자결재 참조함 (수정중)
 	@GetMapping("/employee/approval/references")
 	public String approvalReferences(Model model,ApprovalDto searchdto) {
 	    Long memberNo = memberService.getLoggedInMemberNo();
@@ -171,13 +171,13 @@ public class ApprovalViewController {
 				vapp.setFormat_approval_create_date(formattedCreateDate);
 			}
 		});
-	    System.out.println(approvals);
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);
 	    return "employee/approval/approval_references_list";
 	}
-
+	
+	// 사용자 결재 진행, 반려 정렬
 	private Sort getSortApproval(String sort) {
 		if ("latest".equals(sort)) {
 			return Sort.by(Sort.Order.desc("approvalCreateDate"));
@@ -203,7 +203,6 @@ public class ApprovalViewController {
 		Page<ApprovalDto> ApprovalDtoPage = approvalService.getAllApproval(member_no, searchdto, sortedPageable);
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		
 		ApprovalDtoPage.getContent().forEach(vapp -> {
 		    if (vapp.getApproval_create_date() != null) {  
 		        String formattedCreateDate = vapp.getApproval_create_date().format(formatter); 
@@ -234,7 +233,6 @@ public class ApprovalViewController {
 		Page<ApprovalDto> ApprovalDtoPage = approvalService.getAllReject(member_no, searchdto, sortedPageable);
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		
 		ApprovalDtoPage.getContent().forEach(vapp -> {
 		    if (vapp.getApproval_create_date() != null) {  
 		        String formattedCreateDate = vapp.getApproval_create_date().format(formatter); 
@@ -252,7 +250,7 @@ public class ApprovalViewController {
 		return "employee/approval/approval_reject_list";
 	}
 
-	// 사용자 결재 (휴가)내역함 상세 페이지
+	// 사용자 결재 (휴가) 내역함 상세 페이지
 	@GetMapping("/employee/approval/approval_history_vacation_detail/{vacationapproval_no}")
 	public String approvalHistoryVacationDetail(Model model, @PathVariable("vacationapproval_no") Long vacationApprovalNo) {
 
@@ -287,7 +285,7 @@ public class ApprovalViewController {
 		return "employee/approval/approval_history_vacation_detail";
 	}
 	
-	// 사용자 결재 (휴가)내역함 상세 페이지
+	// 사용자 결재 (결재) 내역함 상세 페이지
 		@GetMapping("/employee/approval/approval_history_detail/{approval_no}")
 		public String approvalHistoryDetail(Model model, @PathVariable("approval_no") Long appNo) {
 
@@ -454,7 +452,7 @@ public class ApprovalViewController {
 		return "employee/approval/approval_edit";
 	}
 	
-	// 전자결재 수정 결재자 값
+	// 전자결재 수정 결재자 값 (js)
 	@GetMapping("/employee/approval/approve/{approval_no}")
 	@ResponseBody
 	public  Map<String, Object> approvalEdit(@PathVariable("approval_no") Long appNo) {
@@ -472,5 +470,4 @@ public class ApprovalViewController {
 		return approvalFileService.download(appNo);
 	}
 	
-
 }

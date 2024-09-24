@@ -90,7 +90,6 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 		})
 		.then(response => response.json())
 		.then(data => {
-			console.log(data);
 			if(data.res_code == '200'){
 				Swal.fire({
 				icon : 'success',

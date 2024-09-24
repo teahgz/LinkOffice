@@ -94,14 +94,13 @@ public class ApprovalService {
 		return approvalRepository.save(app);
 	}
 	
-	// 결재 진행함
+	// 사용자 결재 진행함
 	public Page<ApprovalDto> getAllApproval(Long member_no, ApprovalDto searchdto, Pageable sortedPageable){
 		
 		Page<Approval> approvals = null;
         List<ApprovalDto> approvalDtoList = new ArrayList<ApprovalDto>();
 			
 			List<Integer> statusList = Arrays.asList(0, 1); 
-			System.out.println(statusList);
 			String searchText = searchdto.getSearch_text();
 			if(searchText != null && "".equals(searchText) == false) {
 				int searchType = searchdto.getSearch_type();
@@ -122,14 +121,13 @@ public class ApprovalService {
 			}
 
 	        for(Approval app : approvals) {
-	        	System.out.println(app);
 	        	ApprovalDto dto = app.toDto();
 	        	approvalDtoList.add(dto);
 	        }
         return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
 	}
 	
-	// 결재 반려함
+	// 사용자 결재 반려함
 	public Page<ApprovalDto> getAllReject(Long member_no, ApprovalDto searchdto, Pageable sortedPageable){
 		
 		Page<Approval> approvals = null;
@@ -164,7 +162,7 @@ public class ApprovalService {
         return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
 	}
 	
-	// 상세 조회
+	// 결재 상세 조회
 	public ApprovalDto selectApprovalOne(Long approvalNo) {
 	    Approval origin = approvalRepository.findByApprovalNo(approvalNo);
 	    
@@ -192,7 +190,7 @@ public class ApprovalService {
 	    return dto;
 	}
 	
-	// 전자 결재 기안 취소
+	// 사용자  전자 결재 기안 취소
 	public Approval cancelApproval(ApprovalDto dto) {
 		Member member = memberRepository.findByMemberNo(dto.getMember_no());
 		
@@ -268,7 +266,7 @@ public class ApprovalService {
 	    
 	}
 		
-	// 전자 결재 참조함
+	// 전자 결재 참조함 (수정중)
 	
 		public List<ApprovalDto> getAllApprovalReferences(Long memberNo, ApprovalDto searchdto) {
 			List<Approval> list = null;
@@ -302,7 +300,7 @@ public class ApprovalService {
 	        return flowDtoList;
 		}
 		
-		// 전자 결재 내역함
+	// 전자 결재 내역함 (수정중)
 		
 		public List<ApprovalDto> getAllApprovalHistory(Long member_no, ApprovalDto searchDto, String sort) {
 			
@@ -354,21 +352,24 @@ public class ApprovalService {
 		   return flowDtoList;
 		}
 
-	// 전자 결재 승인
+	// 사용자 전자 결재 승인
 	@Transactional  
 	 public Approval employeeApprovalFlowUpdate(Long approvalNo, Long memberNo) {
         Approval approval = approvalRepository.findById(approvalNo).orElse(null);
 
         List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApproval(approval);
-
+        
+        // 흐름 조회 (흐름 멤버와 로그인한 멤버 확인)
         ApprovalFlow currentFlow = approvalFlows.stream()
             .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
             .findFirst()
             .orElse(null);
-
+        
+        // 값 업데이트
         currentFlow.setApprovalFlowStatus(2L); 
         approvalFlowRepository.save(currentFlow);
-
+        
+        // 그 다음 값 확인
         ApprovalFlow nextFlow = approvalFlows.stream()
             .filter(flow -> flow.getApprovalFlowOrder() != null)
             .filter(flow -> flow.getApprovalFlowOrder() > currentFlow.getApprovalFlowOrder())
@@ -386,7 +387,7 @@ public class ApprovalService {
         return approval;
     }
 	
-	// 전자결재 승인 취소
+	// 사용자 전자결재 승인 취소
 	@Transactional 
 	 public Approval employeeApprovalFlowApproveCancel(Long approvalNo, Long memberNo) {
 		 
@@ -417,7 +418,7 @@ public class ApprovalService {
 	 }
 	
 	
-	 // 전자 결재 반려
+	 // 사용자 전자 결재 반려
 	 @Transactional
 	    public Approval employeeApprovalFlowReject(ApprovalFlowDto approvalFlowDto, Long memberNo) {
 	        Approval approval = approvalRepository.findById(approvalFlowDto.getApproval_no()).orElse(null);
