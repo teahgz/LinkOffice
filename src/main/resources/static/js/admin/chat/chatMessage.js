@@ -173,43 +173,48 @@ if (sendButton && messageInput) {
             });
     }
     // 조직도 로딩
-    function loadOrganizationChart() {
-        $.ajax({
-            url: '/chat/chart',
-            method: 'GET',
-            success: function(data) {
-                $('#organization-chart').jstree('destroy').empty();
-                $('#organization-chart').jstree({
-                    'core': {
-                        'data': data,
-                        'themes': {
-                            'icons': true,
-                            'dots': false,
-                        }
-                    },
-                    'plugins': ['checkbox', 'types', 'search'],
-                    'types': {
-                        'default': {
-                            'icon': 'fa fa-users'
+        function loadOrganizationChart() {
+            $.ajax({
+                url: '/chat/chart',
+                method: 'GET',
+                success: function(data) {
+                    $('#organization-chart').jstree('destroy').empty();
+                    $('#organization-chart').jstree({
+                        'core': {
+                            'data': data,
+                            'themes': {
+                                'icons': true,
+                                'dots': false,
+                            }
                         },
-                        'department': {
-                            'icon': 'fa fa-users'
-                        },
-                        'member': {
-                            'icon': 'fa fa-user'
+                        'plugins': ['checkbox', 'types', 'search'],
+                        'types': {
+                            'default': {
+                                'icon': 'fa fa-users'
+                            },
+                            'department': {
+                                'icon': 'fa fa-users'
+                            },
+                            'member': {
+                                'icon': 'fa fa-user'
+                            }
                         }
-                    }
-                }).on('ready.jstree', function (e, data) {
-                    restoreSelection(data.instance);
-                }).on('changed.jstree', function (e, data) {
-                    updateSelectedMembers(data.selected, data.instance);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('조직도 로딩 오류:', error);
-            }
-        });
-    }
+                    }).on('ready.jstree', function (e, data) {
+                        restoreSelection(data.instance);
+                    }).on('changed.jstree', function (e, data) {
+                        updateSelectedMembers(data.selected, data.instance);
+                    });
+                    $('#organization_search').on('keyup', function() {
+                        const searchString = $(this).val();
+
+                        $('#organization-chart').jstree(true).search(searchString);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('조직도 로딩 오류:', error);
+                }
+            });
+        }
 
     // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
@@ -284,6 +289,17 @@ if (sendButton && messageInput) {
                                           unreadCountElement.classList.add('unread-count');
                                           unreadCountElement.innerText = unreadCount;
                                           chatItem.appendChild(unreadCountElement);
+                                      }
+
+                                        // 읽지 않은 개수가 0 이상일 때 배경색을 변경
+                                      if (unreadCount > 0) {
+                                          unreadCountElement.style.backgroundColor = 'red';
+                                          unreadCountElement.style.color = 'white';
+                                          unreadCountElement.style.width = '24px';
+                                          unreadCountElement.style.height = '24px';
+                                          unreadCountElement.style.lineHeight = '24px';
+                                          unreadCountElement.style.textAlign = 'center';
+                                          unreadCountElement.style.borderRadius = '50%';
                                       }
                                   }
                               }
@@ -384,7 +400,15 @@ if (sendButton && messageInput) {
                  if (chatItem) {
                     const unreadCountElement = chatItem.querySelector('.unread-count');
                     if (unreadCountElement) {
-                       unreadCountElement.innerText = unreadCount;
+                       if (unreadCount === 0) {
+                          unreadCountElement.innerText = '';
+                          unreadCountElement.style.backgroundColor = '';
+                          unreadCountElement.style.color = '';
+                          unreadCountElement.style.padding = '';
+                          unreadCountElement.style.borderRadius = '';
+                       } else {
+                          unreadCountElement.innerText = '';
+                       }
                     }
                  }
        }
@@ -870,6 +894,7 @@ function formatDateTime(date) {
             chatRoomNo: chatRoomNo,
             currentMember: currentMember
         };
+
         socket.send(JSON.stringify(message));
     }
 
@@ -921,13 +946,59 @@ function formatDateTime(date) {
                 }).on('changed.jstree', function (e, data) {
                     updateSelectedMembersAdd(data.selected, data.instance); // 선택된 멤버 업데이트
                 });
+                   $('#organization_add_search').on('keyup', function() {
+                       const searchString = $(this).val();
+                       $('#organization-chart-add').jstree(true).search(searchString);
+                   });
             },
             error: function(xhr, status, error) {
                 console.error('조직도 로딩 오류:', error);
             }
         });
     }
-
+//function loadOrganizationAddChart() {
+//            $.ajax({
+//                url: '/chat/chart',
+//                method: 'GET',
+//                success: function(data) {
+//                    $('#organization-chart').jstree('destroy').empty();
+//                    $('#organization-chart').jstree({
+//                        'core': {
+//                            'data': data,
+//                            'themes': {
+//                                'icons': true,
+//                                'dots': false,
+//                            }
+//                        },
+//                        'plugins': ['checkbox', 'types', 'search'],
+//                        'types': {
+//                            'default': {
+//                                'icon': 'fa fa-users'
+//                            },
+//                            'department': {
+//                                'icon': 'fa fa-users'
+//                            },
+//                            'member': {
+//                                'icon': 'fa fa-user'
+//                            }
+//                        }
+//                    }).on('ready.jstree', function (e, data) {
+//                         restoreSelection(data.instance);
+//                         disableCheckedMembers(globalMemberNumbers);
+//                    }).on('changed.jstree', function (e, data) {
+//                        updateSelectedMembers(data.selected, data.instance);
+//                    });
+//                    $('#organization_search').on('keyup', function() {
+//                        const searchString = $(this).val();
+//
+//                        $('#organization-chart').jstree(true).search(searchString);
+//                    });
+//                },
+//                error: function(xhr, status, error) {
+//                    console.error('조직도 로딩 오류:', error);
+//                }
+//            });
+//        }
 
 
     function updateSelectedMembersAdd(selectedIds, instance) {

@@ -253,7 +253,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("type", "updateUnreadCount");
         response.put("chatRoomNo", roomNo);
-        response.put("unreadCount", 0);
+       response.put("unreadCount", 0);
 
         session.sendMessage(new TextMessage(new ObjectMapper().writeValueAsString(response)));
     }
