@@ -57,7 +57,7 @@ public class VacationApprovalViewController {
  		
  		return "employee/vacationapproval/vacationapproval_create";
  	}
- 	
+ 	// 휴가 정렬
  	private Sort getSortOption(String sort) {
 		if ("latest".equals(sort)) {
 			return Sort.by(Sort.Order.desc("vacationApprovalCreateDate")); 
@@ -153,7 +153,7 @@ public class VacationApprovalViewController {
 		return vacationApprovalFileService.download(vacationApprovalNo);
 	}
  	
-	// 휴가결재 수정 값
+	// 휴가결재 수정 값 (js)
 	@GetMapping("/employee/vacationapproval/approve/{vacation_approval_no}")
 	@ResponseBody
 	public  Map<String, Object> approvalEdit(@PathVariable("vacation_approval_no") Long vacationApprovalNo) {
