@@ -168,7 +168,7 @@ public class ApprovalViewController {
 				vapp.setFormat_approval_create_date(formattedCreateDate);
 			}
 		});
-	    
+	    System.out.println(approvals);
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("searchDto", searchdto);
 	    model.addAttribute("memberdto", memberdto);

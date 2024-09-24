@@ -307,6 +307,7 @@ public class ApprovalService {
 		public List<ApprovalDto> getAllApprovalHistory(Long member_no, ApprovalDto searchDto, String sort) {
 			
 			List<ApprovalDto> flowDtoList = new ArrayList<>();
+			
 		   try {
 			   List<Object[]> list = approvalRepository.findAllApprovalHistory(member_no);
 
