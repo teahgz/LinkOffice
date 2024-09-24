@@ -8,12 +8,9 @@ document.addEventListener("DOMContentLoaded", function() {
 //        }
 //    }
 
-    // 메시지 입력 필드와 전송 버튼 가져오기
   const messageInput = document.getElementById('messageInput');
   const sendButton = document.getElementById('sendButton');
-// sendButton과 messageInput이 정의된 위치에서
 if (sendButton && messageInput) {
-    // toggleSendButton을 if 블록 외부로 이동
     function toggleSendButton() {
         sendButton.disabled = messageInput.value.trim() === '';
         if (messageInput.value.trim() !== '') {
@@ -23,9 +20,8 @@ if (sendButton && messageInput) {
         }
     }
 
-    // 이벤트 리스너 등록
     messageInput.addEventListener('input', toggleSendButton);
-    toggleSendButton(); // 초기 상태 업데이트
+    toggleSendButton();
 } else {
     console.error("버튼 또는 입력 필드를 찾을 수 없습니다.");
 }
@@ -104,7 +100,6 @@ if (sendButton && messageInput) {
 
     socket.onopen = function() {
         console.log("웹소켓이 연결되었습니다.");
-        console.log("값 :" +currentMember);
         const initialRequest = {
             type: 'getUnreadCounts',
             currentMember: currentMember
@@ -268,19 +263,13 @@ if (sendButton && messageInput) {
    socket.onmessage = function(event) {
        const message = JSON.parse(event.data);
        const chatContentDiv = document.getElementById("chatContent");
-       // 메시지 타입에 따른 처리
 
            if (message.type === "unreadCounts") {
-
-                // 서버에서 보내온 읽지 않은 메시지 개수
-                   message.data.forEach(item => { // message.data로 변경
-                         const chatRoomNo = item.chatRoomNo;  // 채팅방 번호
-                              const unreadCount = item.unreadCount; // 읽지 않은 메시지 개수
-
-                              // 해당 채팅방의 안 읽은 메시지 수를 업데이트
+                   message.data.forEach(item => {
+                         const chatRoomNo = item.chatRoomNo;
+                              const unreadCount = item.unreadCount;
                               const inputElement = document.querySelector(`input[value="${chatRoomNo}"]`);
 
-                              // inputElement가 존재하는지 확인
                               if (inputElement) {
                                   const chatItem = inputElement.closest('.chatItem');
                                   if (chatItem) {
@@ -297,8 +286,6 @@ if (sendButton && messageInput) {
                                           chatItem.appendChild(unreadCountElement);
                                       }
                                   }
-                              } else {
-                                  console.error(`채팅방 번호 ${chatRoomNo}에 해당하는 요소를 찾을 수 없습니다.`);
                               }
                    });
        }
@@ -308,7 +295,7 @@ if (sendButton && messageInput) {
               const memberInfo = message.memberInfoList.find(info => info.memberNo === currentMemberNo);
 
               if (memberInfo) {
-                  createChatListIfNotExists(); // chatList가 없으면 생성
+                  createChatListIfNotExists();
 
                   const newChatItem = document.createElement("div");
                   newChatItem.classList.add("chatItem");
@@ -439,9 +426,6 @@ if (sendButton && messageInput) {
 
 
            }
-
-
-
        }
    };
 
@@ -451,9 +435,7 @@ if (sendButton && messageInput) {
          if (!chatList) {
              chatList = document.createElement('div');
              chatList.id = 'chatList';
-             chatList.classList.add('chatList');
 
-             // chatContainer 안에 chatList 추가
              const chatContainer = document.querySelector('.chatContainer');
              chatContainer.appendChild(chatList);
          }
@@ -519,7 +501,16 @@ if (sendButton && messageInput) {
             }
         $('#groupChatNameModal').modal('hide');
     }
+    document.getElementById('groupChatNameInput').addEventListener('input', function() {
+        const groupChatNameInput = document.getElementById('groupChatNameInput');
+        const confirmButton = document.getElementById('confirmGroupChatName');
 
+        if (groupChatNameInput.value.trim() !== '') {
+            confirmButton.disabled = false;
+        } else {
+            confirmButton.disabled = true;
+        }
+    });
    document.getElementById('confirmButton').addEventListener('click', function(event) {
       event.preventDefault();
       window.confirmButton();
@@ -638,7 +629,7 @@ if (sendButton && messageInput) {
                   body: JSON.stringify({
                   currentMember: currentMember,
                   statusValue: statusValue,
-                  updatedAt: new Date().toISOString()}) // 사용자 ID를 서버에 보냄
+                  updatedAt: new Date().toISOString()})
                })
                .then(response => response.json())
                .then(data => {
@@ -672,10 +663,9 @@ if (sendButton && messageInput) {
                csrfToken: csrfToken
            };
 
-           // 웹소켓을 통해 서버로 메시지 전송
            socket.send(JSON.stringify(message));
 
-           $('#editChatRoomModal').modal('hide'); // 모달 닫기
+           $('#editChatRoomModal').modal('hide');
        }
     window.addEventListener('click', function(e) {
         const dropdownMenu = document.getElementById('chatDropdownMenu');
@@ -713,7 +703,7 @@ function formatDateTime(date) {
                 return response.text();
             })
             .catch(error => {
-                console.error("error", error);
+                console.error("에러", error);
                 return null;
             });
     }
@@ -730,7 +720,7 @@ function formatDateTime(date) {
                           return data.isPinned;
                       })
                       .catch(error => {
-                          console.error("error", error);
+                          console.error("에러", error);
                           return null;
                       });
     }
@@ -779,15 +769,19 @@ function formatDateTime(date) {
             console.log(currentChatRoomNo);
 
 
-                let chatItems = document.getElementsByClassName('chatItem');
-                for (let i = 0; i < chatItems.length; i++) {
-                    chatItems[i].classList.remove('selected');
-                }
+            let chatItems = document.getElementsByClassName('chatItem');
+            for (let i = 0; i < chatItems.length; i++) {
+                chatItems[i].classList.remove('selected');
+            }
+            let selectedChatItem = document.querySelector(`input[value="${element}"]`).closest('.chatItem');
+            if (selectedChatItem) {
+                selectedChatItem.classList.add('selected');
+            }
+            const dropdownMenu = document.getElementById('chatHeader-buttons');
+            dropdownMenu.style.display = 'block';
 
-                let selectedChatItem = document.querySelector(`input[value="${element}"]`).closest('.chatItem');
-                if (selectedChatItem) {
-                    selectedChatItem.classList.add('selected');
-                }
+            const countParticipant = document.getElementById('countParticipant');
+            countParticipant.style.display = 'block';
 
             getChatRoomName(element).then(chatRoomName => {
                 if (chatRoomName) {
@@ -818,11 +812,11 @@ function formatDateTime(date) {
                     const pinDeleteChatItem = document.getElementById('pinDeleteChatItem');
                     const pin = document.getElementById('pin');
                     if (isPinned) {
-                        pinChatItem.style.display = 'none'; // 고정 버튼 숨기기
-                        pinDeleteChatItem.style.display = 'block'; // 고정 해제 버튼 보이기
+                        pinChatItem.style.display = 'none';
+                        pinDeleteChatItem.style.display = 'block';
                     } else {
-                        pinChatItem.style.display = 'block'; // 고정 버튼 보이기
-                        pinDeleteChatItem.style.display = 'none'; // 고정 해제 버튼 숨기기
+                        pinChatItem.style.display = 'block';
+                        pinDeleteChatItem.style.display = 'none';
 
                     }
                 }).catch(error => {
@@ -832,7 +826,7 @@ function formatDateTime(date) {
              // 참여자 수 가져오기
                  getParticipantCount(element).then(count => {
                      const participantCountElement = document.querySelector('.countParticipant span');
-                     participantCountElement.innerText = count; // 참여자 수 업데이트
+                     participantCountElement.innerText = count;
                  }).catch(error => {
                      console.error('참여자 수를 가져오는 중 오류 발생:', error);
                  });
@@ -852,7 +846,7 @@ function formatDateTime(date) {
                 return response.json();
             })
             .then(data => {
-                return data.count; // 참여자 수 반환
+                return data.count;
             });
     }
     function getChatRoomName(chatRoomNo) {
@@ -874,7 +868,7 @@ function formatDateTime(date) {
         const message = {
             type: 'markAsRead',
             chatRoomNo: chatRoomNo,
-            currentMember: currentMember // 현재 사용자 ID
+            currentMember: currentMember
         };
         socket.send(JSON.stringify(message));
     }
@@ -896,10 +890,8 @@ function formatDateTime(date) {
             url: '/chat/chart',
             method: 'GET',
             success: function(data) {
-                // 기존 선택된 멤버의 ID 목록
                 const excludedMembers = globalMemberNumbers.map(memberNo => 'member_' + memberNo);
 
-                // 데이터에서 이미 선택된 멤버를 제외
                 const filteredData = data.filter(node => !excludedMembers.includes(node.id));
 
                 $('#organization-chart-add').jstree('destroy').empty();
@@ -1030,7 +1022,7 @@ function formatDateTime(date) {
                             return response.text();
                         })
                         .catch(error => {
-                            console.error("error", error);
+                            console.error("에러", error);
                             return null;
                         });
                 }
