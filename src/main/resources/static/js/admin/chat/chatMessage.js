@@ -507,11 +507,16 @@ if (sendButton && messageInput) {
                  if (!isDuplicate) {
                      createChatRoom(currentMemberNo, currentMemberName, csrfToken);
                  } else {
-                     console.log('채팅방 존재합니다.');
-                        }
-                    }).catch(error => {
-                        console.error('채팅방 중복 확인 중 오류 발생:', error);
-                    });
+                     Swal.fire({
+                         icon: 'warning',
+                         title: '중복된 채팅방',
+                         text: '동일한 멤버와의 채팅방이 이미 존재합니다.',
+                         confirmButtonText: '확인'
+                     });
+                 }
+             }).catch(error => {
+                 console.error('채팅방 중복 확인 중 오류 발생:', error);
+             });
         }
     };
     //개인 채팅방 중복 확인
@@ -531,7 +536,7 @@ if (sendButton && messageInput) {
             })
         })
         .then(response => response.json())
-        .then(data => data.isDuplicate); // 서버에서 반환된 값에 따라 true/false
+        .then(data => data.isDuplicate);
     }
     function createChatRoom(currentMemberNo, currentMemberName, csrfToken) {
         const groupChatName = selectedMembers.length > 1 ? document.getElementById('groupChatNameInput').value : null;
@@ -572,7 +577,30 @@ if (sendButton && messageInput) {
 
    document.getElementById('confirmGroupChatName').addEventListener('click', function(event) {
       event.preventDefault();
-      createChatRoom(document.getElementById("currentMemberNo").value, document.getElementById("currentMemberName").value, document.querySelector('input[name="_csrf"]').value);
+      const currentMemberNo = document.getElementById("currentMemberNo").value;
+          const currentMemberName = document.getElementById("currentMemberName").value;
+          const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+          const groupChatName = document.getElementById('groupChatNameInput').value;
+
+          checkDuplicateChatRoom(currentMemberNo, selectedMembers).then(isDuplicate => {
+              if (!isDuplicate) {
+
+                  createChatRoom(currentMemberNo, currentMemberName, csrfToken);
+                  $('#groupChatNameModal').modal('hide');
+              } else {
+                  Swal.fire({
+                      icon: 'warning',
+                      title: '중복된 채팅방',
+                      text: '동일한 멤버의 그룹방이 이미 존재합니다.',
+                      confirmButtonText: '확인'
+                  });
+                  $('#groupChatNameModal').modal('hide');
+              }
+          }).catch(error => {
+              console.error('채팅방 중복 확인 중 오류 발생:', error);
+          });
+
    });
 
    document.getElementById('editChatRoomButton').addEventListener('click', function(event) {
