@@ -194,13 +194,19 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		                 "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
 		                 "WHERE af.member_no = :loggedInMemberNo " +
 		                 "AND af.approval_flow_role = 0 " +
-		                 "AND approval_title LIKE CONCAT('%', :searchText, '%') " +
+		                 "AND ((:searchText = '진행중' OR :searchText = '진행' AND approval_status = 0) " +
+		 	             "OR (:searchText = '완료' AND approval_status = 1) " +
+		 	             "OR (:searchText = '반려' AND approval_status = 2) " +
+		 	             "OR (:searchText = '취소' AND approval_status = 3)) " +
 		                 "UNION ALL " +
 		                 "SELECT va.vacation_approval_no FROM fl_vacation_approval va " +
 		                 "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
 		                 "WHERE vaf.member_no = :loggedInMemberNo " +
 		                 "AND vaf.vacation_approval_flow_role = 0 " +
-		                 "AND vacation_approval_title LIKE CONCAT('%', :searchText, '%')) as countQuery",
+		                 "AND ((:searchText = '진행중' OR :searchText = '진행' AND va.vacation_approval_status = 0) " +
+		                 "OR (:searchText = '완료' AND va.vacation_approval_status = 1) " +
+		                 "OR (:searchText = '반려' AND va.vacation_approval_status = 2) " +
+		                 "OR (:searchText = '취소' AND va.vacation_approval_status = 3))) as countQuery",
 		    nativeQuery = true)
 		Page<Object[]> findAllApprovalReferencesStatus(@Param("loggedInMemberNo") Long memberNo, @Param("searchText") String searchText, Pageable pageable);
 		
@@ -252,35 +258,242 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		                 "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
 		                 "WHERE af.member_no = :loggedInMemberNo " +
 		                 "AND af.approval_flow_role = 0 " +
-		                 "AND approval_title LIKE CONCAT('%', :searchText, '%') " +
+		                 "AND (approval_title LIKE CONCAT('%', :searchText, '%') " +
+		 				 "OR (:searchText = '진행중' OR :searchText = '진행' AND approval_status = 0) " +
+		 	             "OR (:searchText = '완료' AND approval_status = 1) " +
+		 	             "OR (:searchText = '반려' AND approval_status = 2) " +
+		 	             "OR (:searchText = '취소' AND approval_status = 3)) " +
 		                 "UNION ALL " +
 		                 "SELECT va.vacation_approval_no FROM fl_vacation_approval va " +
 		                 "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
 		                 "WHERE vaf.member_no = :loggedInMemberNo " +
 		                 "AND vaf.vacation_approval_flow_role = 0 " +
-		                 "AND vacation_approval_title LIKE CONCAT('%', :searchText, '%')) as countQuery",
+		                 "AND (vacation_approval_title LIKE CONCAT('%', :searchText, '%') " +
+		 				 "OR (:searchText = '진행중' OR :searchText = '진행' AND va.vacation_approval_status = 0) " +
+		                 "OR (:searchText = '완료' AND va.vacation_approval_status = 1) " +
+		                 "OR (:searchText = '반려' AND va.vacation_approval_status = 2) " +
+		                 "OR (:searchText = '취소' AND va.vacation_approval_status = 3))) as countQuery",
 		    nativeQuery = true)
 		Page<Object[]> findAllApprovalReferencesTitleAndStatus(@Param("loggedInMemberNo") Long memberNo, @Param("searchText") String searchText, Pageable pageable);
 
 		
 		// 내역함 조회
-	@Query(value = "SELECT ap.approval_no, " + "ap.member_no, " + "ap.approval_title, " + "ap.approval_effective_date, "
-			+ "ap.approval_content, " + "ap.approval_status, " + "ap.approval_create_date AS approval_date, "
-			+ "ap.approval_update_date, " + "ap.approval_cancel_reason, " + "af.approval_flow_role, "
-			+ "'APPROVAL' AS approval_type " + "FROM fl_approval ap "
-			+ "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " + "WHERE af.member_no = :loggedInMemberNo "
-			+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + "AND (af.approval_flow_status != 0) "
-			+ "UNION ALL " + "SELECT va.vacation_approval_no, " + "va.member_no, " + "va.vacation_approval_title, "
-			+ "NULL AS approval_effective_date, " + "va.vacation_approval_content, " + "va.vacation_approval_status, "
-			+ "va.vacation_approval_create_date AS approval_date, " + "va.vacation_approval_update_date, "
-			+ "va.vacation_approval_cancel_reason, " + "vaf.vacation_approval_flow_role AS approval_flow_role, "
-			+ "'VACATION' AS approval_type " + "FROM fl_vacation_approval va "
-			+ "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no "
-			+ "WHERE vaf.member_no = :loggedInMemberNo "
-			+ "AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "
-			+ "AND (vaf.vacation_approval_flow_status != 0) " + "ORDER BY approval_date DESC", nativeQuery = true)
-	List<Object[]> findAllApprovalHistory(@Param("loggedInMemberNo") Long memberNo);
-
+		@Query(value = "SELECT ap.approval_no, " + 
+						"ap.member_no, " + 
+						"ap.approval_title, " + 
+						"ap.approval_effective_date, "+ 
+						"ap.approval_content, " + 
+						"ap.approval_status, " + 
+						"ap.approval_create_date AS approval_date, "+ 
+						"ap.approval_update_date, " + "ap.approval_cancel_reason, " + "af.approval_flow_role, "+ 
+						"'APPROVAL' AS approval_type " + "FROM fl_approval ap "+ 
+						"JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " + 
+						"WHERE af.member_no = :loggedInMemberNo "+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+						"AND (af.approval_flow_status != 0) "+ 
+						"UNION ALL " + 
+						"SELECT va.vacation_approval_no, " + 
+						"va.member_no, " + 
+						"va.vacation_approval_title, "+ 
+						"NULL AS approval_effective_date, " + 
+						"va.vacation_approval_content, " + "va.vacation_approval_status, "+ 
+						"va.vacation_approval_create_date AS approval_date, " + "va.vacation_approval_update_date, "+ 
+						"va.vacation_approval_cancel_reason, " + 
+						"vaf.vacation_approval_flow_role AS approval_flow_role, "+ 
+						"'VACATION' AS approval_type " + 
+						"FROM fl_vacation_approval va "+ 
+						"JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no "+ 
+						"WHERE vaf.member_no = :loggedInMemberNo "+ 
+						"AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+ 
+						"AND (vaf.vacation_approval_flow_status != 0)",
+						countQuery = "SELECT COUNT(*) FROM (" +
+				                 "SELECT ap.approval_no FROM fl_approval ap " +
+				                 "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
+				                 "WHERE af.member_no = :loggedInMemberNo " +
+				                 "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+				                 "AND af.approval_flow_role != 0 " +
+				                 "UNION ALL " +
+				                 "SELECT va.vacation_approval_no FROM fl_vacation_approval va " +
+				                 "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
+				                 "WHERE vaf.member_no = :loggedInMemberNo " +
+				                 "AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+
+				                 "AND vaf.vacation_approval_flow_role != 0) as countQuery",nativeQuery = true)
+		Page<Object[]> findAllApprovalHistory(@Param("loggedInMemberNo") Long memberNo, Pageable pageable);
+	
+		@Query(value = "SELECT ap.approval_no, " + 
+				"ap.member_no, " + 
+				"ap.approval_title, " + 
+				"ap.approval_effective_date, "+ 
+				"ap.approval_content, " + 
+				"ap.approval_status, " + 
+				"ap.approval_create_date AS approval_date, "+ 
+				"ap.approval_update_date, " + "ap.approval_cancel_reason, " + "af.approval_flow_role, "+ 
+				"'APPROVAL' AS approval_type " + "FROM fl_approval ap "+ 
+				"JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " + 
+				"WHERE af.member_no = :loggedInMemberNo "+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+				"AND (af.approval_flow_status != 0) "+
+				"AND approval_title LIKE CONCAT('%', :searchText, '%') " +
+				"UNION ALL " + 
+				"SELECT va.vacation_approval_no, " + 
+				"va.member_no, " + 
+				"va.vacation_approval_title, "+ 
+				"NULL AS approval_effective_date, " + 
+				"va.vacation_approval_content, " + "va.vacation_approval_status, "+ 
+				"va.vacation_approval_create_date AS approval_date, " + "va.vacation_approval_update_date, "+ 
+				"va.vacation_approval_cancel_reason, " + 
+				"vaf.vacation_approval_flow_role AS approval_flow_role, "+ 
+				"'VACATION' AS approval_type " + 
+				"FROM fl_vacation_approval va "+ 
+				"JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no "+ 
+				"WHERE vaf.member_no = :loggedInMemberNo "+ 
+				"AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+ 
+				"AND (vaf.vacation_approval_flow_status != 0 ) "+
+	            "AND vacation_approval_title LIKE CONCAT('%', :searchText, '%')",
+				countQuery = "SELECT COUNT(*) FROM (" +
+		                 "SELECT ap.approval_no FROM fl_approval ap " +
+		                 "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
+		                 "WHERE af.member_no = :loggedInMemberNo " +
+		                 "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+		                 "AND af.approval_flow_role != 0 " +
+		                 "AND approval_title LIKE CONCAT('%', :searchText, '%') " +
+		                 "UNION ALL " +
+		                 "SELECT va.vacation_approval_no FROM fl_vacation_approval va " +
+		                 "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
+		                 "WHERE vaf.member_no = :loggedInMemberNo " +
+		                 "AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+
+		                 "AND vaf.vacation_approval_flow_role != 0 "+
+		                 "AND vacation_approval_title LIKE CONCAT('%', :searchText, '%')) as countQuery",nativeQuery = true)
+	Page<Object[]> findAllApprovalHistoryTitle(@Param("loggedInMemberNo") Long memberNo,@Param("searchText") String searchText, Pageable pageable);
+	
+	// 상태 검색(참조함)
+			@Query(value = "SELECT ap.approval_no, " + 
+					"ap.member_no, " + 
+					"ap.approval_title, " + 
+					"ap.approval_effective_date, "+ 
+					"ap.approval_content, " + 
+					"ap.approval_status, " + 
+					"ap.approval_create_date AS approval_date, "+ 
+					"ap.approval_update_date, " + 
+					"ap.approval_cancel_reason, " + 
+					"af.approval_flow_role, "+ 
+					"'APPROVAL' AS approval_type " + 
+					"FROM fl_approval ap "+ 
+					"JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " + 
+					"WHERE af.member_no = :loggedInMemberNo "+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+					"AND (af.approval_flow_status != 0) "+
+					"AND ((:searchText = '진행중' OR :searchText = '진행' AND approval_status = 0) " +
+		            "OR (:searchText = '완료' AND approval_status = 1) " +
+		            "OR (:searchText = '반려' AND approval_status = 2) " +
+		            "OR (:searchText = '취소' AND approval_status = 3)) " +			
+					"UNION ALL " + 
+					"SELECT va.vacation_approval_no, " + 
+					"va.member_no, "+ 
+					"va.vacation_approval_title, " + 
+					"NULL AS approval_effective_date, " + 
+					"va.vacation_approval_content, "+ 
+					"va.vacation_approval_status, " + 
+					"va.vacation_approval_create_date AS approval_date, "+ 
+					"va.vacation_approval_update_date, " + 
+					"va.vacation_approval_cancel_reason, "+ 
+					"vaf.vacation_approval_flow_role AS approval_flow_role, " + 
+					"'VACATION' AS approval_type "+ 
+					"FROM fl_vacation_approval va "+ 
+					"JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no "+ 
+					"WHERE vaf.member_no = :loggedInMemberNo "+ 
+					"AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+ 
+					"AND (vaf.vacation_approval_flow_status != 0 ) "+
+					"AND ((:searchText = '진행중' OR :searchText = '진행' AND va.vacation_approval_status = 0) " +
+	                "OR (:searchText = '완료' AND va.vacation_approval_status = 1) " +
+	                "OR (:searchText = '반려' AND va.vacation_approval_status = 2) " +
+	                "OR (:searchText = '취소' AND va.vacation_approval_status = 3))",
+				    countQuery = "SELECT COUNT(*) FROM (" +
+			                 "SELECT ap.approval_no FROM fl_approval ap " +
+			                 "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
+							 "WHERE af.member_no = :loggedInMemberNo "+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+							 "AND (af.approval_flow_status != 0) "+
+			                 "AND ((:searchText = '진행중' OR :searchText = '진행' AND approval_status = 0) " +
+			 	             "OR (:searchText = '완료' AND approval_status = 1) " +
+			 	             "OR (:searchText = '반려' AND approval_status = 2) " +
+			 	             "OR (:searchText = '취소' AND approval_status = 3)) " +
+			                 "UNION ALL " +
+			                 "SELECT va.vacation_approval_no FROM fl_vacation_approval va " +
+			                 "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
+			 				 "WHERE vaf.member_no = :loggedInMemberNo "+ 
+							 "AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+ 
+							 "AND (vaf.vacation_approval_flow_status != 0 ) "+
+			                 "AND ((:searchText = '진행중' OR :searchText = '진행' AND va.vacation_approval_status = 0) " +
+			                 "OR (:searchText = '완료' AND va.vacation_approval_status = 1) " +
+			                 "OR (:searchText = '반려' AND va.vacation_approval_status = 2) " +
+			                 "OR (:searchText = '취소' AND va.vacation_approval_status = 3))) as countQuery",
+			    nativeQuery = true)
+			Page<Object[]> findAllApprovalHistoryStatus(@Param("loggedInMemberNo") Long memberNo, @Param("searchText") String searchText, Pageable pageable);
+	
+			// 전체 검색(참조함)
+			@Query(value = "SELECT ap.approval_no, " + 
+					"ap.member_no, " + 
+					"ap.approval_title, " + 
+					"ap.approval_effective_date, "+ 
+					"ap.approval_content, " + 
+					"ap.approval_status, " + 
+					"ap.approval_create_date AS approval_date, "+ 
+					"ap.approval_update_date, " + 
+					"ap.approval_cancel_reason, " + 
+					"af.approval_flow_role, "+ 
+					"'APPROVAL' AS approval_type " + 
+					"FROM fl_approval ap "+ 
+					"JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " + 
+					"WHERE af.member_no = :loggedInMemberNo "+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+					"AND (af.approval_flow_status != 0) "+
+					"AND (approval_title LIKE CONCAT('%', :searchText, '%') " +
+					"OR (:searchText = '진행중' OR :searchText = '진행' AND approval_status = 0) " +
+		            "OR (:searchText = '완료' AND approval_status = 1) " +
+		            "OR (:searchText = '반려' AND approval_status = 2) " +
+		            "OR (:searchText = '취소' AND approval_status = 3)) " +	
+					"UNION ALL " + 
+					"SELECT va.vacation_approval_no, " + 
+					"va.member_no, "+ 
+					"va.vacation_approval_title, " + 
+					"NULL AS approval_effective_date, " + 
+					"va.vacation_approval_content, "+ 
+					"va.vacation_approval_status, " + 
+					"va.vacation_approval_create_date AS approval_date, "+ 
+					"va.vacation_approval_update_date, " + 
+					"va.vacation_approval_cancel_reason, "+ 
+					"vaf.vacation_approval_flow_role AS approval_flow_role, " + 
+					"'VACATION' AS approval_type "+ 
+					"FROM fl_vacation_approval va "+ 
+					"JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no "+ 
+	 				"WHERE vaf.member_no = :loggedInMemberNo "+ 
+					"AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+ 
+					"AND (vaf.vacation_approval_flow_status != 0 ) "+
+					"AND (vacation_approval_title LIKE CONCAT('%', :searchText, '%') " +
+					"OR (:searchText = '진행중' OR :searchText = '진행' AND va.vacation_approval_status = 0) " +
+	                "OR (:searchText = '완료' AND va.vacation_approval_status = 1) " +
+	                "OR (:searchText = '반려' AND va.vacation_approval_status = 2) " +
+	                "OR (:searchText = '취소' AND va.vacation_approval_status = 3))",
+				    countQuery = "SELECT COUNT(*) FROM (" +
+			                 "SELECT ap.approval_no FROM fl_approval ap " +
+			                 "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " +
+			                 "WHERE af.member_no = :loggedInMemberNo "+ "AND (af.approval_flow_role = 1 OR af.approval_flow_role = 2) " + 
+							 "AND (af.approval_flow_status != 0) "+
+			                 "AND (approval_title LIKE CONCAT('%', :searchText, '%') " +
+			 				 "OR (:searchText = '진행중' OR :searchText = '진행' AND approval_status = 0) " +
+			 	             "OR (:searchText = '완료' AND approval_status = 1) " +
+			 	             "OR (:searchText = '반려' AND approval_status = 2) " +
+			 	             "OR (:searchText = '취소' AND approval_status = 3)) " +
+			                 "UNION ALL " +
+			                 "SELECT va.vacation_approval_no FROM fl_vacation_approval va " +
+			                 "JOIN fl_vacation_approval_flow vaf ON va.vacation_approval_no = vaf.vacation_approval_no " +
+			 				 "WHERE vaf.member_no = :loggedInMemberNo "+ 
+							 "AND (vaf.vacation_approval_flow_role = 1 OR vaf.vacation_approval_flow_role = 2) "+ 
+							 "AND (vaf.vacation_approval_flow_status != 0 ) "+
+			                 "AND (vacation_approval_title LIKE CONCAT('%', :searchText, '%') " +
+			 				 "OR (:searchText = '진행중' OR :searchText = '진행' AND va.vacation_approval_status = 0) " +
+			                 "OR (:searchText = '완료' AND va.vacation_approval_status = 1) " +
+			                 "OR (:searchText = '반려' AND va.vacation_approval_status = 2) " +
+			                 "OR (:searchText = '취소' AND va.vacation_approval_status = 3))) as countQuery",
+			    nativeQuery = true)
+			Page<Object[]> findAllApprovalHistoryTitleAndStatus(@Param("loggedInMemberNo") Long memberNo, @Param("searchText") String searchText, Pageable pageable);
+			
 	// home 내역함
 	@Query(value = "SELECT COUNT(*) FROM (" + "SELECT ap.approval_no " + "FROM fl_approval ap "
 			+ "JOIN fl_approval_flow af ON ap.approval_no = af.approval_no " + "WHERE af.member_no = :loggedInMemberNo "
