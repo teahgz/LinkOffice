@@ -556,6 +556,16 @@ if (sendButton && messageInput) {
             }
         $('#groupChatNameModal').modal('hide');
     }
+   // Enter 키로도 메시지 전송 가능하게 구성
+   document.getElementById("messageInput").addEventListener("keydown", function(event) {
+       if (event.key === "Enter" && !event.shiftKey) {
+           event.preventDefault();
+           const sendButton = document.getElementById("sendButton");
+           if (!sendButton.disabled) {
+               sendMessage();
+           }
+       }
+   });
     document.getElementById('groupChatNameInput').addEventListener('input', function() {
         const groupChatNameInput = document.getElementById('groupChatNameInput');
         const confirmButton = document.getElementById('confirmGroupChatName');
@@ -843,6 +853,8 @@ function formatDateTime(date) {
     }
 
     window.handleChatRoomClick = function(element) {
+            document.getElementById("messageInput").value = "";
+
             currentChatRoomNo = element;
             console.log(currentChatRoomNo);
 
