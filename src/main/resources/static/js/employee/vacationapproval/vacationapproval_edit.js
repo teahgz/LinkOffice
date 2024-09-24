@@ -193,7 +193,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     	
-    
+    const vapNo = document.getElementById('vacationapproval_no').value;
+
+$.ajax({
+    url: '/employee/vacationapproval/approve/' + vapNo,
+    type: 'get',
+    dataType: 'json',
+    success: function(data) {
+        console.log(data); 
+        console.log(data.vacationapprovaldto.flows); 
+
+        const filteredApprovers = data.vacationapprovaldto.flows.filter(approver => approver.vacation_approval_flow_role === 2);
+
+        console.log(filteredApprovers);
+
+        populateApprovalLine(filteredApprovers);
+    }
+});
+
+function populateApprovalLine(approvers) {
+    const table = document.getElementById('approvalLineTable');
+    const positionCells = table.querySelectorAll('tr:nth-child(1) td');
+    const nameCells = table.querySelectorAll('tr:nth-child(3) td');
+
+    approvers.forEach((approver, index) => {
+        if (index < positionCells.length - 1) {
+            positionCells[index + 1].innerHTML = `<span>${approver.member_position}</span>`;
+            nameCells[index + 1].innerHTML = `<span>${approver.member_name}</span>`;
+        }
+    });
+}
     
 });
 
