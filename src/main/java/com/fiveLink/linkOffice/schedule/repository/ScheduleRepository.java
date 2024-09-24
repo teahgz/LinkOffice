@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.fiveLink.linkOffice.schedule.domain.Schedule; 
+import com.fiveLink.linkOffice.schedule.domain.Schedule;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat; 
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
@@ -22,5 +23,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 //	// 관리자 - 반복 일정 수정
 //	@Query("SELECT s FROM Schedule s WHERE s.startDate >= :newStartDate AND s.id != :eventId")
 //    List<Schedule> findFutureEvents(Long eventId, String newStartDate);
-
+ 
 }

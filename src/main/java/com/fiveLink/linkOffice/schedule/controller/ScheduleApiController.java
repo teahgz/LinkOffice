@@ -305,34 +305,92 @@ public class ScheduleApiController {
 	@PostMapping("/company/schedule/edit/recurring/{eventId}")
 	public Map<String, String> editRecurringEvent(
 	        @PathVariable("eventId") Long eventId,
-	        @RequestBody ScheduleDto scheduleDto,
+	        @RequestBody Map<String, Object> request,  
 	        @RequestParam("editOption") Long editOption) {
 
 	    Map<String, String> resultMap = new HashMap<>();
 	    resultMap.put("res_code", "404");
 	    resultMap.put("res_msg", "일정 수정 중 오류가 발생했습니다.");
 
-	    System.out.println("scheduleDto 예외 수정 : " + scheduleDto); 
-	    System.out.println("editOption 예외 수정 : " + editOption);
-	    
+	    ScheduleDto scheduleDto = new ScheduleDto();
+	    ScheduleRepeatDto scheduleRepeatDto = new ScheduleRepeatDto();
+	    Long memberNo = memberService.getLoggedInMemberNo();
+ 
+	    scheduleDto.setMember_no(memberNo);
+	    scheduleDto.setSchedule_title((String) request.get("title"));
+	    scheduleDto.setSchedule_comment((String) request.get("description"));
+	    scheduleDto.setSchedule_start_date((String) request.get("startDate"));
+	    scheduleDto.setSchedule_allday((Boolean) request.get("allDay") ? 1L : 0L);
+	    scheduleDto.setSchedule_end_date((String) request.get("endDate"));
+	    scheduleDto.setSchedule_start_time((String) request.get("startTime"));
+	    scheduleDto.setSchedule_end_time((String) request.get("endTime"));
+
+	    // 반복 설정
+	    if (request.get("repeat") != null) {
+	        Object repeatValue = request.get("repeat");
+	        long repeat = repeatValue instanceof Integer ? ((Integer) repeatValue).longValue()
+	                : Long.parseLong(repeatValue.toString());
+	        scheduleDto.setSchedule_repeat(repeat != 0 ? 1L : 0L);
+
+	        if (repeat != 0) {
+	            scheduleRepeatDto.setSchedule_repeat_type(repeat);
+	        }
+	    }
+
+	    if (request.get("category") != null) {
+	        Object category = request.get("category");
+	        scheduleDto.setSchedule_category_no(
+	                category instanceof Integer ? ((Integer) category).longValue() : Long.parseLong((String) category));
+	    }
+
+	    // 반복 주기 설정
+	    if (request.get("schedule_day_of_week") != null) {
+	        Object scheduleDayOfWeek = request.get("schedule_day_of_week");
+	        scheduleRepeatDto.setSchedule_repeat_day(
+	                scheduleDayOfWeek instanceof Integer ? ((Integer) scheduleDayOfWeek).longValue()
+	                        : Long.parseLong((String) scheduleDayOfWeek));
+	    }
+	    if (request.get("schedule_week") != null) {
+	        Object scheduleWeek = request.get("schedule_week");
+	        scheduleRepeatDto.setSchedule_repeat_week(
+	                scheduleWeek instanceof Integer ? ((Integer) scheduleWeek).longValue()
+	                        : Long.parseLong((String) scheduleWeek));
+	    }
+	    if (request.get("schedule_date") != null) {
+	        Object scheduleDate = request.get("schedule_date");
+	        scheduleRepeatDto.setSchedule_repeat_date(
+	                scheduleDate instanceof Integer ? ((Integer) scheduleDate).longValue()
+	                        : Long.parseLong((String) scheduleDate));
+	    }
+	    if (request.get("schedule_month") != null) {
+	        Object scheduleMonth = request.get("schedule_month");
+	        scheduleRepeatDto.setSchedule_repeat_month(
+	                scheduleMonth instanceof Integer ? ((Integer) scheduleMonth).longValue()
+	                        : Long.parseLong((String) scheduleMonth));
+	    }
+	    if (request.get("repeatEndDate") != null) {
+	        scheduleRepeatDto.setSchedule_repeat_end_date((String) request.get("repeatEndDate"));
+	    }
+
+	    // 일정 수정  
 	    try {
 	        switch (editOption.intValue()) {
 	            case 1: // 이 일정만 수정
 	                scheduleService.updateSingleEvent(eventId, scheduleDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "이 일정만 수정");
+	                resultMap.put("res_msg", "이 일정만 수정되었습니다.");
 	                break;
 
 	            case 2: // 이 일정 및 향후 일정 수정
 	                scheduleService.updateFutureEvents(eventId, scheduleDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "이 일정 및 향후 일정 수정");
+	                resultMap.put("res_msg", "이 일정 및 향후 일정 수정되었습니다.");
 	                break;
 
 	            case 3: // 모든 일정 수정
-	                scheduleService.updateAllEvents(eventId, scheduleDto);
+	                scheduleService.updateAllEvents(eventId, scheduleDto, scheduleRepeatDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "모든 일정 수정");
+	                resultMap.put("res_msg", "모든 일정이 수정되었습니다.");
 	                break;
 
 	            default:
@@ -345,5 +403,6 @@ public class ScheduleApiController {
 	    }
 
 	    return resultMap;
-	} 
+	}
+
 }
