@@ -317,8 +317,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			        const imgHeight = canvas.height * imgWidth / canvas.width; 
 			
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
-			        const y = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; 
-			
+					const y = 10;			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
 			        pdf.save('결재문서.pdf');
 			
