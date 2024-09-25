@@ -199,12 +199,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 					    margin: auto;
 					    margin-bottom: 20px						
 					}
-					.approval_line_table {
-					    margin: auto;
-					    width: 700px;
-					    border-collapse: collapse;
-					    margin-bottom: 50px;
-					}
 					.section_separator {
 						border: none;
 					    border-top: 1px solid #ddd;
@@ -303,7 +297,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    previewWindow.document.write('</body></html>');
 		    previewWindow.document.close();
 		
-		  previewWindow.downloadPDF = function() {
+		   previewWindow.downloadPDF = function() {
 			
 			    const downloadButton = previewWindow.document.querySelector('.download_button');
 			    const solid = previewWindow.document.querySelector('.solid');

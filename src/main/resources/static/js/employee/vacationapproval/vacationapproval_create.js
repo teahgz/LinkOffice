@@ -253,13 +253,15 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
         editor.ui.view.editable.element.style.height = '500px';
 			// 에디터에 휴가 양식 
             editor.setData(`
-            <h1>휴가신청서</h1><figure class="table" style="width:78.93%;"><table class="ck-table-resized"><colgroup><col style="width:18.8%;"><col style="width:81.2%;"></colgroup><tbody><tr><th>신청일</th><td>&nbsp;</td></tr><tr><th>신청자</th><td>&nbsp;</td></tr><tr><th>부서</th><td>&nbsp;</td></tr><tr><th>휴가 시작일</th><td>&nbsp;</td></tr><tr><th>휴가 종료일</th><td>&nbsp;</td></tr><tr><th>휴가 종류</th><td>&nbsp;</td></tr><tr><th>휴가 사유</th><td>&nbsp;</td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:78.93%;"><table class="ck-table-resized"><colgroup><col style="width:100%;"></colgroup><thead><tr><th>특이 사항</th></tr></thead><tbody><tr><td>&nbsp;</td></tr></tbody></table></figure>`);
+            <figure class="table" style="width:78.93%;"><table class="ck-table-resized"><colgroup><col style="width:18.8%;"><col style="width:81.2%;"></colgroup><tbody><tr><th>신청일</th><td>&nbsp;</td></tr><tr><th>신청자</th><td>&nbsp;</td></tr><tr><th>부서</th><td>&nbsp;</td></tr><tr><th>휴가 시작일</th><td>&nbsp;</td></tr><tr><th>휴가 종료일</th><td>&nbsp;</td></tr><tr><th>휴가 종류</th><td>&nbsp;</td></tr><tr><th>휴가 사유</th><td>&nbsp;</td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:78.93%;"><table class="ck-table-resized"><colgroup><col style="width:100%;"></colgroup><thead><tr><th>특이 사항</th></tr></thead><tbody><tr><td>&nbsp;</td></tr></tbody></table></figure>`);
 			
 			document.getElementById('previewButton').addEventListener('click', function() {
 		    const editorContent = editor.getData();
 		    
 		    const approvalLineContent = document.getElementById('approvalLineTable').outerHTML;
-		    const approval_title = document.getElementById('approval_title').value;
+		    const approval_title = document.getElementById('vacationapproval_title').value;
+		    const title = document.querySelector('.vacation_title').outerHTML;
+		    
 		    var windowW = 1000;
 		    var windowH = 900;
 		    var winHeight = document.body.clientHeight;
@@ -294,7 +296,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 					    margin: auto;
 					    width: 700px;
 					    border-collapse: collapse;
-					    margin-bottom: 50px;
 					}
 					.section_separator {
 						border: none;
@@ -305,12 +306,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 					.solid{
 						border: 1px solid #ddd;
 					}
-		            .approval_line_table {
-					    margin: auto;
-					    width: 700px;
-					    border-collapse: collapse;
-					    margin-bottom: 50px;
-		            }
 		            .approval_line_table th, .approval_line_table td {
 		                border: 1px solid #ccc;
 		                padding: 10px;
@@ -372,6 +367,12 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     					width: 780px;
 					    margin-left: 10px;
 					}
+					#vacationapproval_title{
+						font-size:30px;
+					}
+					.field{
+						margin-left: 40px;
+					}					
 		        </style>
 		    `);
 		    
@@ -383,11 +384,12 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    previewWindow.document.write('<div class="preview_div">');
 		    previewWindow.document.write('<div class="solid">');
 			previewWindow.document.write('<div class="title">');
-			previewWindow.document.write('<h2>'+approval_title+'</h2>');
+			previewWindow.document.write('<h2>'+title+'</h2>');
 			previewWindow.document.write('<button class="download_button" onclick="downloadPDF()">PDF 다운로드</button>');
 			previewWindow.document.write('</div>');
 		    previewWindow.document.write(approvalLineContent); 
 		    previewWindow.document.write('<hr class="section_separator">');
+		    previewWindow.document.write('<div class="field">'+approval_title+'</div>');
 		    previewWindow.document.write('<div class="editorPDF">' + editorContent + '</div>');    
 		    previewWindow.document.write('</div>');
 		    previewWindow.document.write('</div>');
@@ -413,8 +415,9 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			        const imgWidth = 190; 
 			        const imgHeight = canvas.height * imgWidth / canvas.width; 
 			
+
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
-			        const y = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; 
+			        const y = 10;
 			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
 			        pdf.save('휴가문서.pdf');

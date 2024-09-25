@@ -13,18 +13,23 @@
     max-width: 800px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 80px 30px;
+    padding: 20px 50px 30px;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
+.vacation_title{
+	display: flex;
+    justify-content: center;
+    font-size: 30px;
+}
 
-.details_section,
 .content_section {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 20px;
+    border:solid 1px #ddd;
 }
 
 .text_field {

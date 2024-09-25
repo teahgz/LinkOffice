@@ -226,3 +226,9 @@ input:focus, select:focus {
 .cancel_button, .submit_button, .preview_button:hover {
     opacity: 0.8;
 }
+
+.vacation_title{
+	display: flex;
+    justify-content: center;
+    font-size: 30px;
+}

@@ -17,7 +17,7 @@
 						        <div id="approval_title" th:text="${approvaldto.approval_title}"></div>
 						        <div class="reject_button_container">
 						            <button type="button" class="reject_button" th:each="flow : ${approvaldto.flows}" 
-						            	th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}">반려</button>
+						            	th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}" onclick="approvalReject()">반려</button>
 						        </div>
 						    </div>
                         </div>
