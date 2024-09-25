@@ -99,14 +99,34 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 		}).then((result) => {
 			location.href = ("/login");
 		});
-			} else{
+			} else if(data.res_code == '409'){
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
 				confirmButtonColor: '#B1C2DD', 
 				confirmButtonText : "확인"
-			})
-			}
+			}).then(() => {
+				pwChangeFrm.user_id.value = '';
+				pwChangeFrm.national_number_front.value = '';
+				pwChangeFrm.national_number_mid.value = '';
+				pwChangeFrm.national_number_back.value = '';
+				pwChangeFrm.new_password.value = '';
+		});
+		} else{
+				Swal.fire({
+				icon : 'error',
+				text : data.res_msg,
+				confirmButtonColor: '#B1C2DD', 
+				confirmButtonText : "확인"
+			}).then(() => {
+				pwChangeFrm.user_id.value = '';
+				pwChangeFrm.national_number_front.value = '';
+				pwChangeFrm.national_number_mid.value = '';
+				pwChangeFrm.national_number_back.value = '';
+				pwChangeFrm.new_password.value = '';
+		});
+		}
+		
 		})
 	}
 })

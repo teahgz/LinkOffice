@@ -229,31 +229,41 @@ public class MemberApiController {
 		    
 		    List<MemberDto> memberDtoList = memberService.getAllMembers();
 		    
-		    // 받아온 주민번호 값
 		    String userNational = national1 +"-" + national2 + national3;
 		    
+		    boolean memberExists = false; 
+
 		    for (MemberDto memberDto : memberDtoList) {
-		    	String memberNumber = memberDto.getMember_number();
-		    	String memberNational = memberDto.getMember_national();
-		    	// 사원 번호가 같으면
-			    if (memberNumber.equals(userId)) {
-			    	// 주민번호가 같으면
-			    	dto.setMember_number(userId);
-			    	if(!memberNational.equals(userNational)) {
-			    		response.put("res_code", "409");
-					    response.put("res_msg", "사번과 등록된 주민번호가 일치하지 않습니다!");
-					    return response;
-			    	} else {
-			    		dto.setMember_pw(newPw);
-			    	}
-			    }
-			}
-		    
-		    if(memberService.pwchange(dto) != null) {
-				response.put("res_code", "200");
-			    response.put("res_msg", "비밀번호가 변경되었습니다.");
-			}
+		        String memberNumber = memberDto.getMember_number();
+		        String memberNational = memberDto.getMember_national();
+
+		        if (memberNumber.equals(userId)) {
+		            memberExists = true; 
+		            dto.setMember_number(userId);
+
+		            if (!memberNational.equals(userNational)) {
+		                response.put("res_code", "409");
+		                response.put("res_msg", "등록된 주민번호와 일치하지 않습니다!");
+		                return response; 
+		            } else {
+		                dto.setMember_pw(newPw); 
+		            }
+		        }
+		    }
+
+		    if (!memberExists) {
+		        response.put("res_code", "404");
+		        response.put("res_msg", "등록된 아이디가 아닙니다!");
+		        return response;
+		    }
+
+		    if (memberService.pwchange(dto) != null) {
+		        response.put("res_code", "200");
+		        response.put("res_msg", "비밀번호가 변경되었습니다.");
+		    }
+
 		    return response;
+
 	}
 	
 	// [전주영] 사원 상태 변경

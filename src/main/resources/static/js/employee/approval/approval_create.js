@@ -168,6 +168,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    const editorContent = editor.getData();
 		    
 		    const approvalLineContent = document.getElementById('approvalLineTable').outerHTML;
+		    const approval_title = document.getElementById('approval_title').value;
 		    var windowW = 1000;
 		    var windowH = 900;
 		    var winHeight = document.body.clientHeight;
@@ -190,13 +191,34 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		                padding: 0;
 		                align-items: center;
 		            }
-		            .approval_line_section {
-		                margin-top: 20px;
-		            }
+		            .title{
+					    display: flex;
+					    justify-content: space-between;
+					    align-items: center;
+					    width: 700px;
+					    margin: auto;
+					    margin-bottom: 20px						
+					}
+					.approval_line_table {
+					    margin: auto;
+					    width: 700px;
+					    border-collapse: collapse;
+					    margin-bottom: 50px;
+					}
+					.section_separator {
+						border: none;
+					    border-top: 1px solid #ddd;
+					    width: 700px;
+					    margin-top: 20px;
+					}					
+					.solid{
+						border: 1px solid #ddd;
+					}
 		            .approval_line_table {
-		                width: 100%;
-		                border-collapse: collapse;
-		                margin-bottom: 20px;
+					    margin: auto;
+					    width: 700px;
+					    border-collapse: collapse;
+					    margin-bottom: 50px;
 		            }
 		            .approval_line_table th, .approval_line_table td {
 		                border: 1px solid #ccc;
@@ -254,6 +276,11 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 					    font-size: 14px;
 					    color: #000000;
 		            }
+		            .editorPDF{
+					    margin: auto;
+    					width: 780px;
+					    margin-left: 10px;
+					}
 		        </style>
 		    `);
 		    
@@ -263,33 +290,52 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    `);
 		    previewWindow.document.write('</head><body>');
 		    previewWindow.document.write('<div class="preview_div">');
-		    previewWindow.document.write('<button class="download_button" onclick="downloadPDF()">PDF 다운로드</button>');
-		    previewWindow.document.write('<h2>결재선</h2>');
+		    previewWindow.document.write('<div class="solid">');
+			previewWindow.document.write('<div class="title">');
+			previewWindow.document.write('<h2>'+approval_title+'</h2>');
+			previewWindow.document.write('<button class="download_button" onclick="downloadPDF()">PDF 다운로드</button>');
+			previewWindow.document.write('</div>');
 		    previewWindow.document.write(approvalLineContent); 
-		    previewWindow.document.write('<hr>');
-		    previewWindow.document.write('<div>' + editorContent + '</div>');    
+		    previewWindow.document.write('<hr class="section_separator">');
+		    previewWindow.document.write('<div class="editorPDF">' + editorContent + '</div>');    
+		    previewWindow.document.write('</div>');
 		    previewWindow.document.write('</div>');
 		    previewWindow.document.write('</body></html>');
 		    previewWindow.document.close();
 		
-		    previewWindow.downloadPDF = function() {
-		        previewWindow.html2canvas(previewWindow.document.querySelector('.preview_div'), { scale: 2 })
-		        .then(canvas => {
-		            const imgData = canvas.toDataURL('image/png');
-		            const { jsPDF } = previewWindow.jspdf;
-		            const pdf = new jsPDF({
-		                orientation: 'portrait',
-		                unit: 'mm',
-		                format: 'a4'
-		            });
-		            const imgWidth = 210;
-		            const imgHeight = canvas.height * imgWidth / canvas.width;
-		            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-		            pdf.save('결재문서.pdf');
-		        }).catch(error => {
-		            console.error('PDF 생성 중 오류 발생:', error);
-		        });
-		    };
+		  previewWindow.downloadPDF = function() {
+			
+			    const downloadButton = previewWindow.document.querySelector('.download_button');
+			    const solid = previewWindow.document.querySelector('.solid');
+			    downloadButton.style.display = 'none'; 
+			    solid.style.border = 'none'; 
+			
+			    previewWindow.html2canvas(previewWindow.document.querySelector('.preview_div'), { scale: 2 })
+			    .then(canvas => {
+			        const imgData = canvas.toDataURL('image/png');
+			        const { jsPDF } = previewWindow.jspdf;
+			        const pdf = new jsPDF({
+			            orientation: 'portrait',
+			            unit: 'mm',
+			            format: 'a4'
+			        });
+			        const imgWidth = 190; 
+			        const imgHeight = canvas.height * imgWidth / canvas.width; 
+			
+			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
+			        const y = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; 
+			
+			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
+			        pdf.save('결재문서.pdf');
+			
+			        downloadButton.style.display = 'block'; 
+			    }).catch(error => {
+			        console.error('PDF 생성 중 오류 발생:', error);
+			        
+			        downloadButton.style.display = 'block'; 
+			    });
+			};
+
 		});
 
 
