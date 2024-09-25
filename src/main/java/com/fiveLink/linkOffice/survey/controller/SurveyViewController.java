@@ -74,6 +74,48 @@ public class SurveyViewController {
         return "employee/survey/survey_my_list";
     }
     
+ // 설문 결과 페이지 (주관식 및 객관식 응답 포함)
+    @GetMapping("/employee/survey/result/{survey_no}")
+    public String surveyResult(@PathVariable("survey_no") Long surveyNo, Model model) {
+        // 설문 상세 정보
+        SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+
+        // 설문에 대한 질문들 (객관식, 주관식)
+        List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+
+        // 참여자 통계
+        int totalParticipants = surveyService.getTotalParticipants(surveyNo);
+        int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
+        int notParticipatedParticipants = totalParticipants - completedParticipants;
+
+        // 각 질문에 대한 참여율 및 응답 통계
+        Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
+        Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
+        Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
+
+        // 주관식 답변도 포함
+        Map<Long, List<Object[]>> textAnswers = surveyService.getTextAnswersBySurvey(surveyNo);
+        
+        // 주관식 답변 로그 확인
+        textAnswers.forEach((questionNo, answers) -> {
+            answers.forEach(answer -> {
+                LOGGER.info("Survey No: {}, Question No: {}, Participant: {}, Answer: {}", surveyNo, questionNo, answer[0], answer[1]);
+            });
+        });
+
+
+        model.addAttribute("dto", dto);
+        model.addAttribute("questions", questions);
+        model.addAttribute("totalParticipants", totalParticipants);
+        model.addAttribute("completedParticipants", completedParticipants);
+        model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
+        model.addAttribute("participationRates", participationRates);
+        model.addAttribute("chartData", chartData);
+        model.addAttribute("textAnswers", textAnswers);
+
+        return "employee/survey/survey_question_myResult";
+    }
+    
     @GetMapping("/employee/survey/endList")
     public String surveyEndList(
             @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
