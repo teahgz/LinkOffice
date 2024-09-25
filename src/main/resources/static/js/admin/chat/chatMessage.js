@@ -339,12 +339,10 @@ if (sendButton && messageInput) {
           }
       }else if (message.type === "groupChatCreate") {
          if (message.chatRoomNo){
-                      createChatListIfNotExists();
-
-                      message.members.forEach(member => {
-
-                          // 멤버 번호가 현재 로그인된 사용자 번호와 같을 때만 목록 추가
-                          if (member === currentMember) {
+            createChatListIfNotExists();
+            message.members.forEach(member => {
+            // 멤버 번호가 현재 로그인된 사용자 번호와 같을 때만 목록 추가
+            if (member === currentMember) {
                               const newChatItem = document.createElement("div");
                               newChatItem.classList.add("chatItem");
                               newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
@@ -383,8 +381,8 @@ if (sendButton && messageInput) {
            chatRoomTitleElement.textContent = updatedChatRoomName;
            document.getElementById('chatRoomNameInput').value = '';
 
-       }
-       else if (message.type === "memberAdded") {
+      }
+      else if (message.type === "memberAdded") {
                const chatRoomNo = message.chatRoomNo;
                const chatRoomName = message.chatRoomName;
 
@@ -405,7 +403,7 @@ if (sendButton && messageInput) {
                    chatList.insertBefore(newChatItem, chatList.firstChild);
                }
 
-       }else if(message.type === "updateUnreadCount") {
+      }else if(message.type === "updateUnreadCount") {
                 const chatRoomNo = message.chatRoomNo;
                 const unreadCount = message.unreadCount;
                 const chatItem = document.querySelector(`input[value="${chatRoomNo}"]`).closest('.chatItem');
@@ -423,8 +421,8 @@ if (sendButton && messageInput) {
                        }
                     }
                  }
-       }
-       else {
+      }
+      else {
            if (message.chat_room_no === currentChatRoomNo) { // 메시지가 현재 채팅방에 속하는지 확인
                const messageElement = document.createElement("div");
                const now = new Date();
@@ -459,7 +457,30 @@ if (sendButton && messageInput) {
                }
                chatContentDiv.appendChild(messageElement);
                chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
+               // 채팅방 목록에서 해당 채팅방을 찾고, 이동시키기
+                const chatItems = document.getElementsByClassName('chatItem');
+                const chatList = document.getElementById('chatList');
 
+                for (let i = 0; i < chatItems.length; i++) {
+                    const chatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10); // 채팅방 번호 가져오기
+                    console.log(chatRoomNo);
+                    // 현재 채팅방 번호와 메시지의 채팅방 번호가 일치하는지 확인
+                    if (chatRoomNo === message.chat_room_no) {
+                        const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
+
+                        // 고정된 채팅방이 있는 경우
+                        if (pinnedItems.length > 0) {
+                            const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                            chatList.insertBefore(chatItems[i], lastPinnedItem.nextSibling); // 마지막 고정 채팅방 아래로 이동
+                        } else {
+                            // 고정된 채팅방이 없다면 최상위로 이동
+                            chatList.insertBefore(chatItems[i], chatList.firstChild);
+                        }
+
+                        // 채팅방 이동 후 루프 종료
+                        break;
+                    }
+                }
 
            }
        }
