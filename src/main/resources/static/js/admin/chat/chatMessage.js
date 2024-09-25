@@ -324,7 +324,14 @@ if (sendButton && messageInput) {
                   `;
 
                   const chatList = document.getElementById('chatList');
+                  const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
                   chatList.insertBefore(newChatItem, chatList.firstChild);
+                  if (pinnedItems.length > 0) {
+                      const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                      lastPinnedItem.after(newChatItem);
+                  } else {
+                      chatList.insertBefore(newChatItem, chatList.firstChild);
+                  }
               }
 
               resetSelectedMembers();
@@ -350,7 +357,14 @@ if (sendButton && messageInput) {
                               `;
 
                               const chatList = document.getElementById('chatList');
-                              chatList.insertBefore(newChatItem, chatList.firstChild);
+                                  const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
+                                  chatList.insertBefore(newChatItem, chatList.firstChild);
+                                  if (pinnedItems.length > 0) {
+                                      const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                                      lastPinnedItem.after(newChatItem);
+                                  } else {
+                                       chatList.insertBefore(newChatItem, chatList.firstChild);
+                                  }
                           }
                       });
 
