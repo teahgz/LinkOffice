@@ -11,23 +11,25 @@
     margin: 1vw;
     padding: 1vw;
     background-color: #fefefe;
-    width: 16vw;
+    width: 18%;
 	height: 71.3vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-size: 1.1vw;
     overflow-y: auto;
 }
 .box_size{
-	padding-top: 59vh;
 	height: 10%;
-	margin: 0.5vh 0 0 1vw;
-	font-size: 1vw;
+	margin: 59.7vh 0 0 1vw;
+	font-size: 0.8vw;
 }
 #cloud{
-	width: 1.3vw;
+	width: 1vw;
+	height: 2vh;
+	margin-top: 0.2vh;
 }
 .current_size_percent{
 	display: flex;	
+	align-items: center;
 }
 #print_size{
 	margin-top: 0.3vh;
@@ -59,7 +61,7 @@
 .document_file_div{
 	border-radius: 20px;
 	background-color: #fefefe;
-	width: 60vw;
+	width: 80%;
 	height: 75vh;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	margin: 1vw;

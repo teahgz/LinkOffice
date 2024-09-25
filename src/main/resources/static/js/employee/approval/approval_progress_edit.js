@@ -152,12 +152,8 @@ $.ajax({
     type: 'get',
     dataType: 'json',
     success: function(data) {
-        console.log(data); 
-        console.log(data.approvaldto.flows); 
 
         const filteredApprovers = data.approvaldto.flows.filter(approver => approver.approval_flow_role === 2);
-
-        console.log(filteredApprovers);
 
         populateApprovalLine(filteredApprovers);
     }
@@ -197,10 +193,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			const references = Array.from(document.querySelectorAll('input[id="referenceNumbers"]')).map(input => input.value);
 			const reviewers = Array.from(document.querySelectorAll('input[id="reviewerNumbers"]')).map(input => input.value);
 
-			console.log(approvers);
-			console.log(references);
-			console.log(reviewers);
-		
 		 	let vali_check = false;
             let vali_text = "";
 			

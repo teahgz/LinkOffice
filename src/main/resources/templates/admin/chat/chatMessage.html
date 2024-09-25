@@ -34,34 +34,37 @@
                         <i class="fa-solid fa-times"></i>
                     </button>
                 </div>
-                <div class="chatList" id="chatList" th:each="chat:${chatList}">
-                    <!-- 채팅 목록 항목 -->
-                    <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${chat.chat_room_no} + ')'">
-                        <h3><p th:text="${chat.chat_member_room_name}"></p></h3>
-                        <div class="pin">
-                            <i class="fa-solid fa-thumbtack" th:if="${chat.chat_member_pin == 1}" ></i>
+                <div class="chatList-container">
+                    <div class="chatList" id="chatList" th:each="chat:${chatList}">
+                        <!-- 채팅 목록 항목 -->
+                        <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${chat.chat_room_no} + ')'">
+                            <h3><p th:text="${chat.chat_member_room_name}"></p></h3>
+                            <div class="pin">
+                                <i class="fa-solid fa-thumbtack" th:if="${chat.chat_member_pin == 1}" ></i>
+                            </div>
+                            <!-- 읽지 않은 메시지 개수 표시 -->
+                            <div class="unread-count-container">
+                                <span class="unread-count"></span>
+                            </div>
+                            <input type="hidden" id="memberNo" th:value="${member.member_no}"/>
+                            <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
                         </div>
-                        <!-- 읽지 않은 메시지 개수 표시 -->
-                        <div class="unread-count-container">
-                            <span class="unread-count"></span>
-                        </div>
-                        <input type="hidden" id="memberNo" th:value="${member.member_no}"/>
-                        <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
                     </div>
                 </div>
+
             </div>
 
             <div class="chatElement">
                 <div class="chatHeader">
                     <div class="chatInfo">
                         <h4 id="chatRoomTitle">채팅방을 선택해주세요</h4>
-                        <div class ="countParticipant">
+                        <div class ="countParticipant" id="countParticipant" style="display:none;">
                             <i class="fa-solid fa-user"></i>
-                            <span>0</span>
+                            <span></span>
                         </div>
                     </div>
 
-                    <div class ="chatHeader-buttons">
+                    <div class ="chatHeader-buttons" id="chatHeader-buttons" style="display:none;">
                         <button id="searchChatContent" class="btn btn-primary no-style">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
@@ -153,7 +156,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary ml-auto" id="confirmGroupChatName">확인</button>
+                        <button type="button" class="btn btn-primary ml-auto" id="confirmGroupChatName" disabled>확인</button>
                     </div>
                 </div>
             </div>

@@ -26,7 +26,7 @@
 	        <form id="eventForm">
 	            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	            <input type="hidden" id="eventId">
-	            <input type="hidden" id="isRecurring">
+	            <input type="hidden" id="isRecurring"> 
 	            
 	            <div class="form-group">
 	                <label for="eventTitle">일정 제목</label>
@@ -94,6 +94,7 @@
 	<div id="eventViewModal" class="event_view_modal" style="display: none;">
 	    <div class="event_modal-content"> 
 	    	<input type="hidden" id="eventId">
+	    	<input type="hidden" id="isException">
 		    <div class="modal-schedule-button">
 		    	<span class="modal-schedule-button-two">
 		            <button id="editEventBtn"><i class="fa-solid fa-pencil"></i></button> 
@@ -119,16 +120,22 @@
 	
 	<!-- 반복 일정 -->
 	<div id="eventRepeatModal" class="event_repeat_modal" style="display: none;">
-	    <input type="radio" id="editThisEvent" name="repeatEditOption" value="single" checked>
-	    <label for="editThisEvent">이 일정</label>
-	    
-	    <input type="radio" id="editFutureEvents" name="repeatEditOption" value="future">
-	    <label for="editFutureEvents">이 일정 및 향후 일정</label>
-	
-	    <input type="radio" id="editAllEvents" name="repeatEditOption" value="all">
-	    <label for="editAllEvents">모든 일정</label>
-	    
-	    <button id="event_repeat_modal_btn">확인</button>
+	    <div class="event_repeat-content"> 
+		    <div>
+			    <input type="radio" id="editThisEvent" name="repeatEditOption" value=1>
+			    <label for="editThisEvent">이 일정</label>
+		    </div>
+		    <div>
+			    <input type="radio" id="editFutureEvents" name="repeatEditOption" value=2>
+			    <label for="editFutureEvents">이 일정 및 향후 일정</label>
+			</div>
+			<div>
+			    <input type="radio" id="editAllEvents" name="repeatEditOption" value=3>
+			    <label for="editAllEvents">모든 일정</label>
+		    </div>
+		    <button id="event_repeat_modal_btn">확인</button>
+		    <button id="event_repeat_close_btn">취소</button>
+	    </div>
 	</div>
 
 	<script th:src="@{/js/admin/schedule/companySchedule.js}"></script>

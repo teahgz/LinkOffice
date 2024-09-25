@@ -136,4 +136,16 @@
         GROUP BY cm.chat_room_no;
     </select>
 
+    <!-- 채팅방 중복 생성-->
+    <select id="findChatRoomsByMember" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT chat_room_no
+        FROM fl_chat_member
+        WHERE member_no = #{memberNo} AND chat_member_par = 0
+    </select>
+
+    <select id="findMembersByChatRoom" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT member_no
+        FROM fl_chat_member
+        WHERE chat_room_no = #{chatRoomNo}
+    </select>
 </mapper>

@@ -46,18 +46,17 @@ public class ChatMessageController {
             List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
             List<ChatMemberDto> chatList = chatMemberService.selectChatList(memberNo);
             if (memberDtoList.isEmpty()) {
-                model.addAttribute("error", "No member found with the provided ID.");
+                model.addAttribute("error", "회원번호가 없습니다.");
                 return "error";
             }
 
             model.addAttribute("memberdto", memberDtoList);
             model.addAttribute("chatList",chatList);
-            // 디버깅을 위한 로그 출력 (프로덕션에서는 삭제 권장)
-            System.out.println("Chat List: " + chatList);
+
 
             return "admin/chat/chatMessage";
         } catch (Exception e) {
-            model.addAttribute("error", "An error occurred while fetching member information.");
+            model.addAttribute("error", "회원 정보를 가져오는 동안 오류가 발생했습니다.");
             return "error";
         }
 

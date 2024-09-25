@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class ChatRoomController {
@@ -31,7 +33,6 @@ public class ChatRoomController {
 
         try {
             Long currentMember = Long.parseLong(requestBody.get("currentMember").toString());
-            System.out.println("currentMember: " + currentMember);
 
             // 현재 사용자가 채팅방에서 나가는 로직 처리
             int result = chatRoomService.chatRoomOut(currentChatRoomNo, currentMember);
@@ -65,7 +66,7 @@ public class ChatRoomController {
         try {
             Long currentMember = Long.parseLong(requestBody.get("currentMember").toString());
             int status = (int) requestBody.get("statusValue");
-            // updatedAt 값을 String으로 받고 LocalDateTime으로 변환
+
             String updatedAtStr = requestBody.get("updatedAt").toString();
             LocalDateTime updateTime = null;
             if (status == 1) {
@@ -118,5 +119,21 @@ public class ChatRoomController {
         response.put("count", status);
         return ResponseEntity.ok(response);
     }
+    //중복 확인
+    @PostMapping("/api/chat/checkDuplicateChatRoom")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkDuplicateChatRoom( @RequestBody Map<String, Object> requestBody) {
+        Long memberNo = Long.parseLong(requestBody.get("currentMemberNo").toString());
+        List<Long> selectedMembers = ((List<?>) requestBody.get("selectedMembers")).stream()
+                .map(member -> Long.parseLong(member.toString()))
+                .collect(Collectors.toList());
+        System.out.println("test : "+ selectedMembers);
+        System.out.println("test : "+ memberNo);
+        boolean isDuplicate = chatRoomService.isDuplicateChatRoom(memberNo, selectedMembers);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
 }

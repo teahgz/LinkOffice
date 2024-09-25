@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.chat.service;
 
+import com.fiveLink.linkOffice.chat.domain.ChatMember;
 import com.fiveLink.linkOffice.chat.domain.ChatRoom;
 import com.fiveLink.linkOffice.chat.domain.ChatRoomDto;
 import com.fiveLink.linkOffice.chat.repository.ChatRoomRepository;
@@ -9,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ChatRoomService {
@@ -104,6 +104,25 @@ public class ChatRoomService {
         }
         return result;
 
+    }
+
+    public boolean isDuplicateChatRoom(Long memberNo, List<Long> selectedMembers) {
+        selectedMembers.add(memberNo);
+        Set<Long> chatRoomNumbers = new HashSet<>();
+
+        for (Long selectedMember : selectedMembers) {
+            List<Long> chatRooms = chatMapper.findChatRoomsByMember(selectedMember);
+            chatRoomNumbers.addAll(chatRooms);
+        }
+
+        for (Long chatRoomNo : chatRoomNumbers) {
+            List<Long> roomMembers = chatMapper.findMembersByChatRoom(chatRoomNo);
+
+            if (roomMembers.containsAll(selectedMembers) && roomMembers.size() == selectedMembers.size()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

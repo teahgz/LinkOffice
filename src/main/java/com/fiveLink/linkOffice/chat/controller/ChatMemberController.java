@@ -47,7 +47,6 @@ public class ChatMemberController {
     @GetMapping("/api/chat/roomType/{chatRoomNo}")
     @ResponseBody
     public int chatRoomType(@PathVariable("chatRoomNo") Long chatRoomNo){
-        System.out.println(chatMemberService.chatRoomType(chatRoomNo));
         return chatMemberService.chatRoomType(chatRoomNo);
 
     }

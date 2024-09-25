@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
                 }).then(() => {
-                    location.href = "/employee/approval/approval_progress_detail/"+appNo;
+                    location.href = "/employee/approval/approval_reject_detail/"+appNo;
                 });
             } else {
                 Swal.fire({

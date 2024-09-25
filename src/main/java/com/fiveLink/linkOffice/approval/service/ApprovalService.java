@@ -24,9 +24,6 @@ import com.fiveLink.linkOffice.approval.repository.ApprovalFlowRepository;
 import com.fiveLink.linkOffice.approval.repository.ApprovalRepository;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApproval;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlow;
-import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
 
 import jakarta.transaction.Transactional;
@@ -38,14 +35,12 @@ public class ApprovalService {
 	private final ApprovalRepository approvalRepository;
 	private final ApprovalFlowRepository approvalFlowRepository;
 	private final ApprovalFileRepository approvalFileRepository;
-	private final VacationApprovalRepository vacationApprovalRepository;
 	@Autowired
 	public ApprovalService(MemberRepository memberRepository, ApprovalRepository approvalRepository, ApprovalFlowRepository approvalFlowRepository, ApprovalFileRepository approvalFileRepository, VacationApprovalRepository vacationApprovalRepository) {
         this.memberRepository = memberRepository;
         this.approvalRepository = approvalRepository;
         this.approvalFlowRepository = approvalFlowRepository;
         this.approvalFileRepository = approvalFileRepository;
-        this.vacationApprovalRepository = vacationApprovalRepository;
     }
 	
 	// 사용자 결재 신청 (파일 O)
@@ -94,14 +89,13 @@ public class ApprovalService {
 		return approvalRepository.save(app);
 	}
 	
-	// 결재 진행함
+	// 사용자 결재 진행함
 	public Page<ApprovalDto> getAllApproval(Long member_no, ApprovalDto searchdto, Pageable sortedPageable){
 		
 		Page<Approval> approvals = null;
         List<ApprovalDto> approvalDtoList = new ArrayList<ApprovalDto>();
 			
 			List<Integer> statusList = Arrays.asList(0, 1); 
-			System.out.println(statusList);
 			String searchText = searchdto.getSearch_text();
 			if(searchText != null && "".equals(searchText) == false) {
 				int searchType = searchdto.getSearch_type();
@@ -115,21 +109,23 @@ public class ApprovalService {
 						break;
 					case 3 :
 						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatus(member_no,searchText ,sortedPageable);
-						break;						
+						break;
+					default :
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusIn(member_no, statusList, sortedPageable);
+						break;
 				}
 			}else {
 				approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusIn(member_no, statusList, sortedPageable);
 			}
 
 	        for(Approval app : approvals) {
-	        	System.out.println(app);
 	        	ApprovalDto dto = app.toDto();
 	        	approvalDtoList.add(dto);
 	        }
         return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
 	}
 	
-	// 결재 반려함
+	// 사용자 결재 반려함
 	public Page<ApprovalDto> getAllReject(Long member_no, ApprovalDto searchdto, Pageable sortedPageable){
 		
 		Page<Approval> approvals = null;
@@ -150,7 +146,10 @@ public class ApprovalService {
 						break;
 					case 3 :
 						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusReject(member_no,searchText ,sortedPageable);
-						break;	
+						break;
+					default :
+						approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusIn(member_no, statusList, sortedPageable);
+						break;
 				}
 			}else {
 				approvals = approvalRepository.findByMemberMemberNoAndApprovalStatusIn(member_no, statusList, sortedPageable);
@@ -164,7 +163,7 @@ public class ApprovalService {
         return new PageImpl<>(approvalDtoList, sortedPageable, approvals.getTotalElements());
 	}
 	
-	// 상세 조회
+	// 결재 상세 조회
 	public ApprovalDto selectApprovalOne(Long approvalNo) {
 	    Approval origin = approvalRepository.findByApprovalNo(approvalNo);
 	    
@@ -192,7 +191,7 @@ public class ApprovalService {
 	    return dto;
 	}
 	
-	// 전자 결재 기안 취소
+	// 사용자  전자 결재 기안 취소
 	public Approval cancelApproval(ApprovalDto dto) {
 		Member member = memberRepository.findByMemberNo(dto.getMember_no());
 		
@@ -268,107 +267,173 @@ public class ApprovalService {
 	    
 	}
 		
-	// 전자 결재 참조함
+	// 전자 결재 참조함 
 	
-		public List<ApprovalDto> getAllApprovalReferences(Long memberNo, ApprovalDto searchdto) {
-			List<Approval> list = null;
-			
-			String searchText = searchdto.getSearch_text();
-			
-			if(searchText != null &&"".equals(searchText) == false) {
-				int searchType = searchdto.getSearch_type();
-				
-				switch(searchType) {
-					case 1 :
-						list = approvalRepository.findAllApprovalReferencesTitleAndStatus(memberNo, searchText);
-						break;
-					case 2 :
-						list = approvalRepository.findAllApprovalReferencesTitle(memberNo, searchText);
-						break;
-					case 3 :
-						list = approvalRepository.findAllApprovalReferencesStatus(memberNo, searchText);
-						break;					
-				}
-			} else {
-				list = approvalRepository.findAllApprovalReferences(memberNo);
-			}
-			
-			List<ApprovalDto> flowDtoList = new ArrayList<ApprovalDto>();
-			
-			for(Approval vaf : list) {
-				ApprovalDto dto = vaf.toDto();
-				flowDtoList.add(dto);
-			}
-	        return flowDtoList;
-		}
+	public Page<ApprovalDto> getAllApprovalReferences(Long member_no, ApprovalDto searchdto, Pageable pageable) {
+	    Page<Object[]> list = null;
+	    List<ApprovalDto> flowDtoList = new ArrayList<>();
+	    
+	    try {
+	        String searchText = searchdto.getSearch_text();
+	        int searchType = searchdto.getSearch_type();
+
+	        if (searchText != null && !"".equals(searchText)) {
+	            switch (searchType) {
+	            	// 전체 검색
+	                case 1:
+	                    list = approvalRepository.findAllApprovalReferencesTitleAndStatus(member_no, searchText, pageable);
+	                    break;
+	               // 제목 검색 
+	                case 2:
+	                    list = approvalRepository.findAllApprovalReferencesTitle(member_no, searchText, pageable);
+	                    break;
+	               // 상태 검색     
+	                case 3:
+	                    list = approvalRepository.findAllApprovalReferencesStatus(member_no, searchText, pageable);
+	                    break;
+	                default:
+	                    list = approvalRepository.findAllApprovalReferences(member_no,pageable);
+	                    break;
+	            }
+	        } else {
+	            list = approvalRepository.findAllApprovalReferences(member_no,pageable);
+	        }
+
+	        for (Object[] result : list) {
+	            Long approvalNo = (Long) result[0];
+	            Long memberNo = (Long) result[1];
+	            String approvalTitle = (String) result[2];
+	            String approvalEffectiveDate = (String) result[3];
+	            String approvalContent = (String) result[4];
+	            Long approvalStatus = (Long) result[5];
+	            Timestamp approvalCreateDate = (Timestamp) result[6];
+	            Timestamp approvalUpdateDate = (Timestamp) result[7];
+	            String approvalCancelReason = (String) result[8];
+	            Long approvalFlowRole = (Long) result[9];
+	            String approvalType = (String) result[10];
+
+	            LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
+	            LocalDateTime updateDateTime = approvalUpdateDate.toLocalDateTime();
+
+	            Member member = memberRepository.findBymemberNo(memberNo);
+
+	            ApprovalDto dto = new ApprovalDto();
+	            dto.setApproval_no(approvalNo);
+	            dto.setMember_no(memberNo);
+	            dto.setMember_name(member.getMemberName());
+	            dto.setApproval_title(approvalTitle);
+	            dto.setApproval_content(approvalContent);
+	            dto.setApproval_effective_date(approvalEffectiveDate);
+	            dto.setApproval_status(approvalStatus);
+	            dto.setApproval_create_date(createDateTime);
+	            dto.setApproval_update_date(updateDateTime);
+	            dto.setApproval_cancel_reason(approvalCancelReason);
+	            dto.setApproval_flow_role(approvalFlowRole);
+	            dto.setApprovalType(approvalType);
+
+	            flowDtoList.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new PageImpl<>(flowDtoList, pageable, list.getTotalElements());
+	}
+
+
 		
-		// 전자 결재 내역함
+	// 전자 결재 내역함
 		
-		public List<ApprovalDto> getAllApprovalHistory(Long member_no, ApprovalDto searchDto, String sort) {
+		public Page<ApprovalDto> getAllApprovalHistory(Long member_no, ApprovalDto searchdto, Pageable pageable) {
 			
-			List<ApprovalDto> flowDtoList = new ArrayList<>();
-			
-		   try {
-			   List<Object[]> list = approvalRepository.findAllApprovalHistory(member_no);
+			 Page<Object[]> list = null;
+			    List<ApprovalDto> flowDtoList = new ArrayList<>();
+			    
+			    try {
+			        String searchText = searchdto.getSearch_text();
+			        int searchType = searchdto.getSearch_type();
 
+			        if (searchText != null && !"".equals(searchText)) {
+			            switch (searchType) {
+			            	// 전체 검색
+			                case 1:
+			                    list = approvalRepository.findAllApprovalHistoryTitleAndStatus(member_no, searchText, pageable);
+			                    break;
+			               // 제목 검색 
+			                case 2:
+			                    list = approvalRepository.findAllApprovalHistoryTitle(member_no, searchText, pageable);
+			                    break;
+			               // 상태 검색     
+			                case 3:
+			                    list = approvalRepository.findAllApprovalHistoryStatus(member_no, searchText, pageable);
+			                    break;
+			                default:
+			                    list = approvalRepository.findAllApprovalHistory(member_no,pageable);
+			                    break;
+			            }
+			        } else {
+			            list = approvalRepository.findAllApprovalHistory(member_no,pageable);
+			        }
 
-			 for (Object[] result : list) {
-			     Long approvalNo = (Long) result[0];
-			     Long memberNo = (Long) result[1];
-			     String approvalTitle = (String) result[2];
-			     String approvalEffectiveDate = (String) result[3];
-			     String approvalContent = (String) result[4];
-			     Long approvalStatus = (Long) result[5];
-			     Timestamp approvalCreateDate = (Timestamp) result[6]; 
-			     Timestamp approvalUpdateDate = (Timestamp) result[7]; 
-			     String approvalCancelReason = (String) result[8];
-			     Long approvalFlowRole = (Long) result[9];
-			     String approvalType = (String) result[10]; 
+			        for (Object[] result : list) {
+			            Long approvalNo = (Long) result[0];
+			            Long memberNo = (Long) result[1];
+			            String approvalTitle = (String) result[2];
+			            String approvalEffectiveDate = (String) result[3];
+			            String approvalContent = (String) result[4];
+			            Long approvalStatus = (Long) result[5];
+			            Timestamp approvalCreateDate = (Timestamp) result[6];
+			            Timestamp approvalUpdateDate = (Timestamp) result[7];
+			            String approvalCancelReason = (String) result[8];
+			            Long approvalFlowRole = (Long) result[9];
+			            String approvalType = (String) result[10];
 
-			     LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
-			     LocalDateTime updateDateTime = approvalUpdateDate.toLocalDateTime();
-			     
-			     Member member = memberRepository.findBymemberNo(memberNo);
-			     
-			     ApprovalDto dto = new ApprovalDto();
-			     dto.setApproval_no(approvalNo);
-			     dto.setMember_no(memberNo);
-			     dto.setMember_name(member.getMemberName());
-			     dto.setApproval_title(approvalTitle);
-			     dto.setApproval_content(approvalContent);
-			     dto.setApproval_effective_date(approvalEffectiveDate);
-			     dto.setApproval_status(approvalStatus);
-			     dto.setApproval_create_date(createDateTime); 
-			     dto.setApproval_update_date(updateDateTime); 
-			     dto.setApproval_cancel_reason(approvalCancelReason);
-			     dto.setApproval_flow_role(approvalFlowRole);
-			     dto.setApprovalType(approvalType);
+			            LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
+			            LocalDateTime updateDateTime = approvalUpdateDate.toLocalDateTime();
 
-			     flowDtoList.add(dto);
-			 }
+			            Member member = memberRepository.findBymemberNo(memberNo);
 
-			    return flowDtoList;
-		   }catch(Exception e) {
-			  e.printStackTrace();
-		   }
-		   return flowDtoList;
-		}
+			            ApprovalDto dto = new ApprovalDto();
+			            dto.setApproval_no(approvalNo);
+			            dto.setMember_no(memberNo);
+			            dto.setMember_name(member.getMemberName());
+			            dto.setApproval_title(approvalTitle);
+			            dto.setApproval_content(approvalContent);
+			            dto.setApproval_effective_date(approvalEffectiveDate);
+			            dto.setApproval_status(approvalStatus);
+			            dto.setApproval_create_date(createDateTime);
+			            dto.setApproval_update_date(updateDateTime);
+			            dto.setApproval_cancel_reason(approvalCancelReason);
+			            dto.setApproval_flow_role(approvalFlowRole);
+			            dto.setApprovalType(approvalType);
 
-	// 전자 결재 승인
+			            flowDtoList.add(dto);
+			        }
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+
+			    return new PageImpl<>(flowDtoList, pageable, list.getTotalElements());
+			}
+
+	// 사용자 전자 결재 승인
 	@Transactional  
 	 public Approval employeeApprovalFlowUpdate(Long approvalNo, Long memberNo) {
         Approval approval = approvalRepository.findById(approvalNo).orElse(null);
 
         List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApproval(approval);
-
+        
+        // 흐름 조회 (흐름 멤버와 로그인한 멤버 확인)
         ApprovalFlow currentFlow = approvalFlows.stream()
             .filter(flow -> flow.getMember().getMemberNo().equals(memberNo))
             .findFirst()
             .orElse(null);
-
+        
+        // 값 업데이트
         currentFlow.setApprovalFlowStatus(2L); 
         approvalFlowRepository.save(currentFlow);
-
+        
+        // 그 다음 값 확인
         ApprovalFlow nextFlow = approvalFlows.stream()
             .filter(flow -> flow.getApprovalFlowOrder() != null)
             .filter(flow -> flow.getApprovalFlowOrder() > currentFlow.getApprovalFlowOrder())
@@ -386,7 +451,7 @@ public class ApprovalService {
         return approval;
     }
 	
-	// 전자결재 승인 취소
+	// 사용자 전자결재 승인 취소
 	@Transactional 
 	 public Approval employeeApprovalFlowApproveCancel(Long approvalNo, Long memberNo) {
 		 
@@ -417,7 +482,7 @@ public class ApprovalService {
 	 }
 	
 	
-	 // 전자 결재 반려
+	 // 사용자 전자 결재 반려
 	 @Transactional
 	    public Approval employeeApprovalFlowReject(ApprovalFlowDto approvalFlowDto, Long memberNo) {
 	        Approval approval = approvalRepository.findById(approvalFlowDto.getApproval_no()).orElse(null);
