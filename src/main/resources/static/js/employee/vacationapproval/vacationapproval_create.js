@@ -133,7 +133,7 @@ function fetchHolidays(startDate) {
     // 공휴일 API
     const xhr = new XMLHttpRequest();
     const url = 'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo';
-    const serviceKey = '서비스키'; 
+    const serviceKey = 'h8Gz1P5QVyOyAWHg7Cfs2N+UQCYcsX80WVLB8Za9h0fgYD4CRN5+9L/eVnb2nG85zzjN+0i/gkQ5VeUSTqlTfg=='; 
     let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + encodeURIComponent(serviceKey);
     queryParams += '&' + encodeURIComponent('solYear') + '=' + encodeURIComponent(year);
     queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('100');
