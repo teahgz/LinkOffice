@@ -53,4 +53,12 @@ public interface ChatMapper {
     List<Long> findChatRoomsByMember(Long selectedMembers);
 
     List<Long> findMembersByChatRoom(Long chatRoomNo);
+
+    //한 채팅방 참여자 번호
+    List<Long> findChatRoomMembers(Map<String, Object> params);
+
+    //한 채팅방 참여자 안읽은 개수
+    int chatRoomUnread(Map<String, Object> params);
+
+
 }

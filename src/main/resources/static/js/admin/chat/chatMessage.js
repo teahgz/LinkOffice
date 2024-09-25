@@ -304,7 +304,75 @@ if (sendButton && messageInput) {
                                   }
                               }
                    });
-       }
+       }else if (message.type === "unreadCountMember") {
+            console.log(message);
+            let currentMemberNo = parseInt(currentMember);
+            if (message.data && Array.isArray(message.data)) {
+                message.data.forEach(item => {
+                    const chatRoomNo = item.chatRoomNo;
+                    const unreadCount = item.unreadCount;
+                    const memberNo = item.memberNo;
+                    console.log(chatRoomNo);
+                    console.log(unreadCount);
+                    console.log(memberNo);
+                    console.log("memberNo type:", typeof memberNo);
+                     console.log("currentMember type:", typeof currentMember);
+                    const inputElement = document.querySelector(`input[value="${chatRoomNo}"]`);
+                    console.log(inputElement);
+                    if (inputElement) {
+                        const chatItem = inputElement.closest('.chatItem');
+                        if (chatItem) {
+
+                            const unreadCountContainer = chatItem.querySelector('.unread-count-container');
+                            let unreadCountElement = unreadCountContainer.querySelector('.unread-count');
+                            // 현재 멤버 번호와 비교하여 읽지 않은 메시지 수를 업데이트
+                            if (memberNo === currentMemberNo) {
+                                    if (unreadCountElement) {
+                                        // If the unreadCountElement exists, update its text and styles
+                                        unreadCountElement.innerText = unreadCount;
+
+                                        if (unreadCount > 0) {
+                                            // Show and style the element if unreadCount > 0
+                                            unreadCountElement.style.display = 'block';
+                                            unreadCountElement.style.backgroundColor = 'red';
+                                            unreadCountElement.style.color = 'white';
+                                            unreadCountElement.style.width = '24px';
+                                            unreadCountElement.style.height = '24px';
+                                            unreadCountElement.style.lineHeight = '24px';
+                                            unreadCountElement.style.textAlign = 'center';
+                                            unreadCountElement.style.borderRadius = '50%';
+                                        } else {
+                                            // Hide the element if unreadCount is 0
+                                            unreadCountElement.style.display = 'none';
+                                        }
+                                    } else {
+                                        // Create the element if it doesn't exist and unreadCount > 0
+                                        if (unreadCount > 0) {
+                                            unreadCountElement = document.createElement('span');
+                                            unreadCountElement.classList.add('unread-count');
+                                            unreadCountElement.innerText = unreadCount;
+
+                                            // Set styles for the new element
+                                            unreadCountElement.style.backgroundColor = 'red';
+                                            unreadCountElement.style.color = 'white';
+                                            unreadCountElement.style.width = '24px';
+                                            unreadCountElement.style.height = '24px';
+                                            unreadCountElement.style.lineHeight = '24px';
+                                            unreadCountElement.style.textAlign = 'center';
+                                            unreadCountElement.style.borderRadius = '50%';
+
+                                            // Append to unread-count-container
+                                            unreadCountContainer.appendChild(unreadCountElement);
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                });
+            } else {
+                console.error("데이터를 찾을 수 없다", message);
+            }
+        }
       else if (message.type === "chatRoomCreation") {
           if (message.chatRoomNo && message.memberInfoList) {
               const currentMemberNo = parseInt(document.getElementById('currentMember').value, 10);
@@ -461,8 +529,6 @@ if (sendButton && messageInput) {
                 const chatItems = document.getElementsByClassName('chatItem');
                 const chatList = document.querySelector('.chatList-container'); // 여기서 변경
 
-
-
                 for (let i = 0; i < chatItems.length; i++) {
                     const chatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10);
                     if (chatRoomNo === message.chat_room_no) {
@@ -485,7 +551,6 @@ if (sendButton && messageInput) {
            }
        }
    };
-
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
          let chatList = document.getElementById('chatList');
