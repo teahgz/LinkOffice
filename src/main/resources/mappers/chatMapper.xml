@@ -5,13 +5,28 @@
 <mapper namespace="com.fiveLink.linkOffice.mapper.ChatMapper"> <!-- namespace 수정 -->
 <!-- 채팅방 목록 가져오기   -->
     <select id="selectChatList" parameterType="java.lang.Long" resultType="com.fiveLink.linkOffice.chat.domain.ChatMemberDto">
-        SELECT *
-        FROM fl_chat_member
-        WHERE member_no = #{memberNo}
-        AND chat_member_par = 0
-        ORDER BY chat_member_pin DESC, chat_member_pin_time DESC, chat_member_join_date DESC
+        SELECT cm.*
+        FROM fl_chat_member cm
+        LEFT JOIN (
+        SELECT cm.chat_room_no, MAX(cmsg.chat_message_create_date) AS recent_message_date
+        FROM fl_chat_member cm
+        JOIN fl_chat_message cmsg ON cm.chat_room_no = cmsg.chat_room_no
+        WHERE cm.member_no = #{memberNo}
+        GROUP BY cm.chat_room_no
+        ) AS rm ON cm.chat_room_no = rm.chat_room_no
+        WHERE cm.member_no = #{memberNo}
+        AND cm.chat_member_par = 0
+        ORDER BY
+        cm.chat_member_pin DESC,
+        cm.chat_member_pin_time DESC,
+        CASE
+        WHEN cm.chat_member_pin = 0 THEN rm.recent_message_date
+        ELSE NULL
+        END DESC,
+        cm.chat_member_join_date DESC;
     </select>
-<!-- 채팅 내용 가져오기   -->
+
+    <!-- 채팅 내용 가져오기   -->
     <select id="getChatMessages" parameterType="java.lang.Long" resultType="java.util.HashMap">
         SELECT
         cm.chat_message_create_date AS chatMessageCreateDate,
