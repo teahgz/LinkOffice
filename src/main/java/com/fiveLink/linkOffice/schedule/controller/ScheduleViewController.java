@@ -52,10 +52,23 @@ public class ScheduleViewController {
 	public String companySchedule(Model model) { 
 	    Long memberNo = memberService.getLoggedInMemberNo();  
 	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
-  
-
+   
 	    model.addAttribute("memberdto", memberDto);  
 	    
 	    return "/admin/schedule/companySchedule";
+	}
+	
+	
+	// 사원
+	// 사원 일정
+	@GetMapping("/employee/schedule")
+	public String employeeSchedule(Model model) { 
+	    Long memberNo = memberService.getLoggedInMemberNo();  
+	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);  
+
+	    model.addAttribute("memberdto", memberDto);  
+	    model.addAttribute("memberNo", memberNo); 
+	     
+	    return "/employee/schedule/employeeSchedule";
 	}
 }

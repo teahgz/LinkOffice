@@ -14,13 +14,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.service.DepartmentService;
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleCheckDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleException;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleExceptionDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipantDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
@@ -31,13 +36,15 @@ public class ScheduleApiController {
 	private final MemberService memberService;
 	private final ScheduleCategoryService scheduleCategoryService;
 	private final ScheduleService scheduleService;
-
+	private final DepartmentService departmentService; 
+	
 	@Autowired
 	public ScheduleApiController(MemberService memberService, ScheduleCategoryService scheduleCategoryService,
-			ScheduleService scheduleService) {
+			ScheduleService scheduleService, DepartmentService departmentService) {
 		this.memberService = memberService;
 		this.scheduleCategoryService = scheduleCategoryService;
 		this.scheduleService = scheduleService;
+		this.departmentService = departmentService;
 	}
 
 	@GetMapping("/schedule/category/get/{categoryId}")
@@ -380,19 +387,19 @@ public class ScheduleApiController {
 	            case 1: // 이 일정만 수정
 	                scheduleService.updateSingleEvent(eventId, scheduleDto, scheduleRepeatDto, pickStartDate, pickEndDate);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "이 일정만 수정되었습니다.");
+	                resultMap.put("res_msg", "일정이 수정되었습니다.");
 	                break;
 
 	            case 2: // 이 일정 및 향후 일정 수정
 	                scheduleService.updateFutureEvents(eventId, scheduleDto, scheduleRepeatDto, pickStartDate);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "이 일정 및 향후 일정 수정되었습니다.");
+	                resultMap.put("res_msg", "일정이 수정되었습니다.");
 	                break;
 
 	            case 3: // 모든 일정 수정
 	                scheduleService.updateAllEvents(eventId, scheduleDto, scheduleRepeatDto);
 	                resultMap.put("res_code", "200");
-	                resultMap.put("res_msg", "모든 일정이 수정되었습니다.");
+	                resultMap.put("res_msg", "일정이 수정되었습니다.");
 	                break;
 
 	            default:
@@ -532,7 +539,7 @@ public class ScheduleApiController {
 	            	isDeleted = scheduleService.deleteSingleEvent(eventId, scheduleDto, scheduleRepeatDto, pickStartDate, pickEndDate);
 	            	if (isDeleted) {
 	                    resultMap.put("res_code", "200");
-	                    resultMap.put("res_msg", "이 일정만 삭제되었습니다.");
+	                    resultMap.put("res_msg", "일정이 삭제되었습니다.");
 	                } else {
 	                    resultMap.put("res_code", "404");
 	                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
@@ -543,7 +550,7 @@ public class ScheduleApiController {
 	            	isDeleted = scheduleService.deleteFutureEvents(eventId, scheduleDto, scheduleRepeatDto, pickStartDate, pickEndDate);
 	            	if (isDeleted) {
 	                    resultMap.put("res_code", "200");
-	                    resultMap.put("res_msg", "이 일정 및 향후 일정이 삭제되었습니다.");
+	                    resultMap.put("res_msg", "일정이 삭제되었습니다.");
 	                } else {
 	                    resultMap.put("res_code", "404");
 	                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
@@ -554,7 +561,7 @@ public class ScheduleApiController {
 	            	isDeleted = scheduleService.deleteAllEvents(eventId);
 	            	if (isDeleted) {
 	                    resultMap.put("res_code", "200");
-	                    resultMap.put("res_msg", "모든 일정이 삭제되었습니다.");
+	                    resultMap.put("res_msg", "일정이 삭제되었습니다.");
 	                } else {
 	                    resultMap.put("res_code", "404");
 	                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
@@ -572,4 +579,101 @@ public class ScheduleApiController {
 
 	    return resultMap;
 	}
+	
+	
+	// 사원
+	// 사원 카테고리
+	@GetMapping("/employee/categories")
+	@ResponseBody
+	public List<ScheduleCategoryDto> getAllemployeeScheduleCategory() { 
+		return scheduleCategoryService.getAllemployeeScheduleCategory();
+	}
+	
+	// 개인 일정
+	@ResponseBody
+	@GetMapping("/api/personal/schedules/{memberNo}")
+	public List<ScheduleDto> getpersonalSchedules(@PathVariable("memberNo") Long memberNo) {
+		List<Schedule> schedules = scheduleService.getAllpersonalSchedules(memberNo);
+		
+		List<ScheduleDto> personalResult = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			personalResult.add(dto);
+		}  
+		return personalResult;
+	} 
+	 
+	// 부서 일정
+	@ResponseBody
+	@GetMapping("/api/department/schedules")
+	public List<ScheduleDto> getpersonalSchedules() {
+		List<Schedule> schedules = scheduleService.getAlldepartmentSchedules();
+
+		List<ScheduleDto> departmentResult = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			departmentResult.add(dto);
+		} 
+		return departmentResult;
+	} 
+	
+	// 참여자 일정
+	@ResponseBody
+	@GetMapping("/api/participate/schedules")
+	public List<ScheduleDto> getparticipateSchedules() {
+		List<Schedule> schedules = scheduleService.getAllparticipateSchedules();
+
+		List<ScheduleDto> participateResult = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			participateResult.add(dto);
+		} 
+		return participateResult;
+	} 
+	
+	// 참여자 정보  
+	@GetMapping("/api/participate/member/schedules/{scheduleNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMemberSchedules(@PathVariable("scheduleNo") Long scheduleNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByReservationNo(scheduleNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
+	
+	
+	// 부서 정보
+    @ResponseBody
+    @GetMapping("/api/schedule/department/list")
+    public List<DepartmentDto> getAllDepartments() {
+        List<DepartmentDto> departments = departmentService.getSecondDepartments();
+        
+        System.out.println("departments information : " + departments);
+        return departments;
+    }
+    
+    // 부서 체크박스 상태 확인
+    @ResponseBody
+    @GetMapping("/api/schedule/checks/{memberNo}")
+    public List<ScheduleCheckDto> getScheduleChecks(@PathVariable("memberNo") Long memberNo) {
+        List<ScheduleCheckDto> scheduleChecks = scheduleService.getScheduleChecksByMemberNo(memberNo);
+        System.out.println("scheduleChecks : " + scheduleChecks);
+        return scheduleChecks;
+    }
+
+    // 부서 체크박스 상태 저장 
+    @ResponseBody
+    @PostMapping("/api/schedule/checks/save")
+    public void updateScheduleCheck(@RequestBody ScheduleCheckDto scheduleCheckDto) { 
+        scheduleService.updateScheduleCheck(
+            scheduleCheckDto.getMember_no(),
+            scheduleCheckDto.getDepartment_no(),
+            scheduleCheckDto.getSchedule_check_status()
+        );
+    }
+
+
 }
