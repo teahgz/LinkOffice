@@ -459,25 +459,25 @@ if (sendButton && messageInput) {
                chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
                // 채팅방 목록에서 해당 채팅방을 찾고, 이동시키기
                 const chatItems = document.getElementsByClassName('chatItem');
-                const chatList = document.getElementById('chatList');
+                const chatList = document.querySelector('.chatList-container'); // 여기서 변경
+
+
 
                 for (let i = 0; i < chatItems.length; i++) {
-                    const chatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10); // 채팅방 번호 가져오기
-                    console.log(chatRoomNo);
-                    // 현재 채팅방 번호와 메시지의 채팅방 번호가 일치하는지 확인
+                    const chatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10);
                     if (chatRoomNo === message.chat_room_no) {
-                        const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
+                        const isPinned = chatItems[i].querySelector('.fa-thumbtack') !== null;
+                        if (!isPinned) {
+                            const pinnedItems = document.querySelectorAll('.chatItem .fa-thumbtack');
+                            if (pinnedItems.length > 0) {
+                                const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                                console.log(lastPinnedItem);
+                                 lastPinnedItem.after(chatItems[i]);
 
-                        // 고정된 채팅방이 있는 경우
-                        if (pinnedItems.length > 0) {
-                            const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                            chatList.insertBefore(chatItems[i], lastPinnedItem.nextSibling); // 마지막 고정 채팅방 아래로 이동
-                        } else {
-                            // 고정된 채팅방이 없다면 최상위로 이동
-                            chatList.insertBefore(chatItems[i], chatList.firstChild);
+                            } else {
+                                chatList.insertBefore(chatItems[i], chatList.firstChild);
+                            }
                         }
-
-                        // 채팅방 이동 후 루프 종료
                         break;
                     }
                 }
