@@ -25,6 +25,7 @@ public class SurveyQuestionDto {
 	private List<Long> survey_option_no;
 	private List<String> survey_option_answer;
     private List<Long> survey_text_no;
+    private List<String> survey_text_answer;
 	
 	public SurveyQuestion toEntity() {
 		return SurveyQuestion.builder()

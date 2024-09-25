@@ -53,9 +53,7 @@
 							th:text="${question.survey_question_text}"></span>
 					</p>
 
-					<!-- 객관식 질문일 경우 -->
 					<div th:if="${question.survey_question_type == 0}">
-						<!-- 참여자 및 참여율 요약 -->
 						<div class="participation-summary">
 							<p>
 								전체 참여자: <span class="total-participants"
