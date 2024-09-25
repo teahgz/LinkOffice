@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			document.getElementById('previewButton').addEventListener('click', function() {
 		    
 		    const approvalLineContent = document.querySelector('.approval_line_table').outerHTML.replace(/<button[^>]*>(.*?)<\/button>/g, '');
-		    const approval_title = document.getElementById('approval_title').value;
+		    const approval_title = document.getElementById('approval_title').outerHTML;
 		    const contentSection = document.querySelector('.content_section').outerHTML;
 		    var windowW = 1000;
 		    var windowH = 900;
@@ -183,7 +183,19 @@ document.addEventListener('DOMContentLoaded', function() {
 					    max-width: 70%;
 					    max-height: 40px;
 					    display: block;
-					}				
+					}		
+					.reference_box {
+					    display: flex;
+					    flex-wrap: wrap;
+					    gap: 10px;
+					}
+					
+					.reference_box > div {
+					    background-color: #f2f2f2;
+					    padding: 5px 10px;
+					    border-radius: 3px;
+					    font-size: 14px;
+					}							
 		        </style>
 		    `);
 		    
