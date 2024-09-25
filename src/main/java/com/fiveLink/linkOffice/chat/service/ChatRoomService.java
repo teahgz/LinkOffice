@@ -118,7 +118,7 @@ public class ChatRoomService {
         for (Long chatRoomNo : chatRoomNumbers) {
             List<Long> roomMembers = chatMapper.findMembersByChatRoom(chatRoomNo);
 
-            if (roomMembers.containsAll(selectedMembers)) {
+            if (roomMembers.containsAll(selectedMembers) && roomMembers.size() == selectedMembers.size()) {
                 return true;
             }
         }
