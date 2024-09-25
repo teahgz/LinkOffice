@@ -367,8 +367,6 @@ if (sendButton && messageInput) {
                                   }
                           }
                       });
-
-
               resetSelectedMembers();
               $('#organizationChartModal').modal('hide');
          }
@@ -868,10 +866,7 @@ function formatDateTime(date) {
 
     window.handleChatRoomClick = function(element) {
             document.getElementById("messageInput").value = "";
-
             currentChatRoomNo = element;
-            console.log(currentChatRoomNo);
-
 
             let chatItems = document.getElementsByClassName('chatItem');
             for (let i = 0; i < chatItems.length; i++) {
