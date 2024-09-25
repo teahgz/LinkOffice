@@ -12,15 +12,15 @@
     padding: 1vw;
     background-color: #fefefe;
     width: 16vw;
-	height: 600px;
+	height: 71.3vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-size: 1.1vw;
     overflow-y: auto;
 }
 #tree{
-    font-size: 13px;
+    font-size: 0.8vw;
 	display: block;
-	height: 80%;
+	height: 75%;
 }
 .jstree-closed > .jstree-icon::before{
     content: '';  
@@ -72,7 +72,7 @@
 }
 .box_size{
 	height: 10%;
-	margin-left: 1vw;
+	margin: 0.5vh 0 0 1vw;
 	font-size: 1vw;
 }
 #cloud{
@@ -116,9 +116,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 1vw;
-    width: 3.8vw;
-    height: 3.7vh;
+    font-size: 0.65vw;
+    width: 3.5vw;
+    height: 3.3vh;
     text-align: center;
 }
 #folder_delete_button:hover{
@@ -135,9 +135,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 1vw;
-    width: 3.8vw;
-    height: 3.7vh;
+    font-size: 0.65vw;
+    width: 3.5vw;
+    height: 3.3vh;
     text-align: center;
 }
 #folder_add_button:hover{
@@ -151,7 +151,7 @@
 	border-radius: 20px;
 	background-color: #fefefe;
 	width: 60vw;
-	height: 630px;
+	height: 75vh;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	margin: 1vw;
 }
@@ -236,7 +236,7 @@
 	margin: 0.6vh 0 0 1vw; 
 	width: 12vw;
 	height: 2.7vh;
-	font-size: 1vw;
+	font-size: 0.9vw;
 	padding: 0.5vh 0 0.5vh 0.5vw;
 	border: 1px solid #ddd;
     border-radius: 4px;
@@ -253,10 +253,12 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 12px;
+    font-size: 0.8vw;
     width: 3.8vw;
     height: 3.8vh;
+    display: flex;
     text-align: center;
+    justify-content: center;
 }
 #search_button:hover{
     background-color: #9CAFC7;
@@ -272,7 +274,7 @@
 }
 #folder_name{
 	margin-right: 1vw;
-	font-size: 1.2vw;
+	font-size: 1.3vw;
 }
 #change_name_button{
 	margin-right: 0.5vw;
@@ -282,9 +284,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 10px;
-    width: 4vw;
-    height: 3vh;
+    font-size: 0.65vw;
+    width: 3.7vw;
+    height: 2.8vh;
     text-align: center;
 }
 #change_name_button:hover{
@@ -311,9 +313,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 10px;
-    width: 4vw;
-    height: 3vh;
+    font-size: 0.65vw;
+    width: 3.7vw;
+    height: 2.8vh;
     text-align: center;
 }
 #select_delete:hover{
@@ -331,9 +333,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 10px;
-    width: 4vw;
-    height: 3vh;
+    font-size: 0.65vw;
+    width: 3.7vw;
+    height: 2.8vh;
     text-align: center;
 }
 #select_down:hover{
@@ -351,16 +353,16 @@
 }
 #upload_button{
 	margin-right: 0.5vw;
-	margin-top: 0.4vh;
+	margin-top: 0.3vh;
     padding: 0.5vh 0.5vw;
     background-color: #B1C2DD;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 10px;
+    font-size: 0.65vw;
     width: 3vw;
-    height: 3vh;
+    height: 2.8vh;
     text-align: center;
 }
 #upload_button:hover{
@@ -411,12 +413,12 @@
 	padding: 0.8vh;
     text-align: center;
     border-bottom: 2px solid gray;
-    font-size: 13px;
+    font-size: 0.9vw;
 }
 .file_table tbody tr {
     height: 4.5vh; 
     vertical-align: middle; 
-    font-size: 11px;
+    font-size: 0.8vw;
 }
 
 #table_foot{
@@ -438,9 +440,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 10px;
+    font-size: 0.65vw;
     width: 2.6vw;
-    line-height: 2vh;
+    line-height: 1.7vh;
     text-align: center;
     text-decoration: none;
     color: black;
@@ -459,9 +461,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 10px;
+    font-size: 0.65vw;
     width: 2.7vw;
-    height: 3vh;
+    line-height: 1.7vh;
     text-align: center;
 }
 .delete_button:hover{
@@ -474,6 +476,7 @@
 .pagination {
     display: flex;
     justify-content: center;
+    margin-top: 10px;
 }
 .pagination_button {
     margin: 0 5px;
