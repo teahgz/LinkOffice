@@ -459,7 +459,24 @@ if (sendButton && messageInput) {
                }
                chatContentDiv.appendChild(messageElement);
                chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
-
+               // 채팅방 목록에서 해당 채팅방을 찾고, 이동시키기
+               const chatList = document.getElementById('chatList');
+               const chatItems = chatList.getElementsByClassName('chatItem');
+               for (let i = 0; i < chatItems.length; i++) {
+                   const chatRoomNo = currentChatRoomNo;
+                   if (chatRoomNo === message.chat_room_no) {
+                       const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
+                       console.log(pinnedItems);
+                     // 해당 채팅방을 고정된 목록 아래로 이동
+                       if (pinnedItems.length > 0) {
+                             const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                             chatList.insertBefore(chatItems[i], lastPinnedItem.nextSibling); // 마지막 고정 채팅방 아래로 이동
+                       } else {
+                           chatList.insertBefore(chatItems[i], chatList.firstChild);
+                       }
+                        break;
+                   }
+               }
 
            }
        }
