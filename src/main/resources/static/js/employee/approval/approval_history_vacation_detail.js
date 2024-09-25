@@ -227,8 +227,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		   previewWindow.downloadPDF = function() {
 			
 			    const downloadButton = previewWindow.document.querySelector('.download_button');
+				const solid = previewWindow.document.querySelector('.solid');			    
 			    downloadButton.style.display = 'none'; 
-			
+			    solid.style.border = 'none';
+			    			
 			    previewWindow.html2canvas(previewWindow.document.querySelector('.preview_div'), { scale: 2 })
 			    .then(canvas => {
 			        const imgData = canvas.toDataURL('image/png');

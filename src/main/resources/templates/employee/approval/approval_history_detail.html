@@ -11,18 +11,12 @@
             	<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}" >
                 <div class="main_container">
                     <div class="details_section">
-                        <div class="text_field">
-						 <div class="field title_row">
-						        <strong>제목</strong>
-						        <div id="approval_title" th:text="${approvaldto.approval_title}"></div>
+                    	<button type="button" id="previewButton" class="preview_button">미리보기</button>
 						        <div class="reject_button_container">
 						            <button type="button" class="reject_button" th:each="flow : ${approvaldto.flows}" 
 						            	th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}" onclick="approvalReject()">반려</button>
 						        </div>
-						    </div>
-                        </div>
-                        
-                        
+						        
 						<div class="approval_line_section">
 						    <table class="approval_line_table">
 						        <tr>
@@ -127,6 +121,18 @@
 						    </table>
 						</div>
 						
+						 <div class="field">
+						        <div id="approval_title" th:text="${approvaldto.approval_title}"></div>
+						  </div>
+                    </div>
+                    
+						  
+	                    <div class="content_section">
+	                        <div class="vacationapproval_content">
+	                            <div class="table_container" th:utext="${approvaldto.approval_content}"></div>
+	                        </div>
+	                    </div>    
+                                        
 						<div th:if="${approvaldto.approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
 						    <strong>기안 취소 사유</strong>
 						    <div th:text="${approvaldto.approval_cancel_reason}"></div>
@@ -136,15 +142,9 @@
 							 <strong>반려 사유</strong>
 							<div th:text="${flow.approval_flow_reject_reason}"></div>
 						</div>	
-											
-                        <hr class="section_separator"> 
-                    </div>
-
-                    <div class="content_section">
-                        <div class="vacationapproval_content">
-                            <div class="table_container" th:utext="${approvaldto.approval_content}"></div>
-                        </div>
-                        <hr class="section_separator"> 
+						                        
+                        
+                        
                         <div class="field">
                             <div th:if="${approvaldto != null and !#lists.isEmpty(approvaldto.files)}">
                                 <div th:each="file : ${approvaldto.files}" class="file_item">
@@ -166,7 +166,7 @@
                                 <p>등록된 파일이 없습니다.</p>
                             </div>
                         </div>
-                    </div>
+
 
                     <div class="button_container">
                         <button type="button" class="list_button" onclick="location.href='/employee/approval/history'">목록</button>
