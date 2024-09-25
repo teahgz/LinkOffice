@@ -66,11 +66,9 @@ input:focus, select:focus {
 
 
 .approve_container {
-    position: absolute; 
-    top: 0; 
-    right: 0;
+
     display: flex; 
-    align-items: flex-start; 
+    justify-content: right; 
     gap: 10px; 
 }
 
@@ -210,9 +208,7 @@ input:focus, select:focus {
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    position: absolute;
-    bottom: 5px; 
-    left: 5px; 
+    width:100px;
 }
 
 .button_container {

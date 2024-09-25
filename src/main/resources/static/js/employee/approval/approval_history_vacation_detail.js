@@ -198,8 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 					#vacationapproval_title{
 						font-size:30px;
-					}
-					.field{
 						margin-left: 40px;
 					}
 					
