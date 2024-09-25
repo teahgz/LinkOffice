@@ -55,30 +55,31 @@ document.addEventListener('DOMContentLoaded', function() {
 	                    'X-CSRF-TOKEN': csrfToken
 	                }
 	            })
-		        .done(function(exceptions) {
-		            var events = [];
-			
-					console.log(exceptions);
-		            schedules.forEach(function(schedule) {
-		                if (schedule.schedule_repeat === 0) { 
-		                    events.push(createEvent(schedule));
-		                } else {
-		                    // 반복 일정
-		                    var repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
+	            .done(function(exceptions) {
+	                var events = [];
+	
+	                schedules.forEach(function(schedule) {
+	                    if (schedule.schedule_repeat === 0) { 
+	                        events.push(createEvent(schedule));
+	                    } else {
+	                        // 반복 일정
+	                        var repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
 	                        if (repeatInfo) {
 	                            var startDate = new Date(schedule.schedule_start_date);
 	                            var endDate = repeatInfo.schedule_repeat_end_date ? new Date(repeatInfo.schedule_repeat_end_date) : new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
 	                            var currentDate = new Date(startDate);
-								
+	                            
 	                            while (currentDate <= endDate) {
-	                                // 예외 일정  
+	                                // 예외 일정 검사
 	                                var exceptionEvent = exceptions.find(e => 
 	                                    e.schedule_no === schedule.schedule_no && 
 	                                    e.schedule_exception_date === formatDate(currentDate)
 	                                );
 	
-	                                if (exceptionEvent) {
+	                                if (exceptionEvent && exceptionEvent.schedule_exception_status === 0) {
 	                                    events.push(createExceptionEvent(exceptionEvent, currentDate));
+	                                } else if (exceptionEvent && exceptionEvent.schedule_exception_status === 1) {
+	                                    
 	                                } else {
 	                                    events.push(createEvent(schedule, currentDate, repeatInfo));
 	                                }
@@ -838,8 +839,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('event_repeat_modal_btn').addEventListener('click', function() {
 	    const eventId = document.getElementById('eventId').value;
 	    const repeatEditOption = document.querySelector('input[name="repeatEditOption"]:checked').value;
-	 
-	    handleRecurringEventUpdate(eventId, repeatEditOption);
+	 	const typeEventRepeat = document.getElementById('event_repeat_title').innerText;
+	 	
+	 	if(typeEventRepeat === "반복 일정 수정") {
+		    handleRecurringEventUpdate(eventId, repeatEditOption);			
+		} else {
+			repeatDelete(eventId, repeatEditOption);
+		}
 	 
 	    document.getElementById('eventRepeatModal').style.display = 'none';
 	}); 
@@ -859,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            'X-CSRF-TOKEN': csrfToken,
 	        },
 	        success: function(response) {
-				 if (response.res_code === "200") {
+				 if (response.res_code === '200') {
 	                Swal.fire({
 						title : response.res_msg,
 		                text: '반복 일정이 수정되었습니다.',
@@ -944,5 +950,156 @@ document.addEventListener('DOMContentLoaded', function() {
 	        schedule_month: repeatMonth
 	    };
 	}
+	
+	// 일정 삭제 버튼
+	document.getElementById('deleteEventBtn').addEventListener('click', function() { 
+		const isException = document.getElementById('isException').value;
+		const isOne = document.getElementById('eventViewRepeatInfo').innerText.trim(); 
+	    const eventId = document.getElementById('eventId').value;  
+	    const isOneBoolean = !!isOne;
+ 		
+ 		// 반복 예외
+	    if (isException === "0" && !isOneBoolean) { 
+	        exceptionDelete(eventId);
+	    } 
+	    // 기본 일정 (반복X)
+	    else if(!isOneBoolean){ 
+	        basicDelete(eventId);
+	    }
+	    else { 
+			document.getElementById('event_repeat_title').innerText ='반복 일정 삭제';
+			openEventRepeatModal(); 
+		}
+	    
+	});
  
+ 	// 기본 삭제
+ 	function basicDelete(eventId) {
+		Swal.fire({
+            text: '일정을 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EEB3B3',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',  
+                    url: '/company/schedule/delete',   
+                    contentType: 'application/json',
+                    data: JSON.stringify({ eventId: eventId }),  
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.res_code === '200') {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'success',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            }).then(() => {
+                                 location.href = "/schedule/company";  
+                            });
+                        } else {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'error',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('서버 오류', response.res_msg, 'error');
+                    }
+                });
+            }
+        }); 
+	}
+	
+	// 예외 삭제
+ 	function exceptionDelete(eventId) {
+		Swal.fire({
+            text: '일정을 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EEB3B3',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',  
+                    url: '/company/schedule/exception/delete',   
+                    contentType: 'application/json',
+                    data: JSON.stringify({ eventId: eventId }),  
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.res_code === '200') {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'success',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            }).then(() => {
+                                 location.href = "/schedule/company";  
+                            });
+                        } else {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'error',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('서버 오류', response.res_msg, 'error');
+                    }
+                });
+            }
+        }); 
+	}
+	
+	// 반복 삭제  
+ 	function repeatDelete(eventId, repeatEditOption) {   
+        $.ajax({
+            type: 'POST',   
+            url: '/company/schedule/repeat/delete/' + eventId + '?editOption=' + repeatEditOption + '&pickStartDate=' + pickStartDate + '&pickEndDate=' + pickEndDate,   
+            contentType: 'application/json', 
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(response) {
+                if (response.res_code === '200') {
+                    Swal.fire({
+                        text: response.res_msg,
+                        icon: 'success',
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                         location.href = "/schedule/company";  
+                    });
+                } else {
+                    Swal.fire({
+                        text: response.res_msg,
+                        icon: 'error',
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: '확인'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire('서버 오류', response.res_msg, 'error');
+            }
+        });
+    } 
+     
+
 });
