@@ -26,6 +26,9 @@
     gap: 20px;
     padding: 20px;
 }
+.content_section{
+	border:solid 1px #ddd;
+}
 
 .text_field {
     display: flex;

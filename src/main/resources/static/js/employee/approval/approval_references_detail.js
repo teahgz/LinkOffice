@@ -1,69 +1,9 @@
-// 모달 창 기안 취소
-
 document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById("myModal");
-    const closeModal = document.querySelector(".close");
-
-    document.querySelector('.cancel_button').addEventListener('click', function() {
-        modal.style.display = "flex";
-    });
-
-    closeModal.addEventListener('click', function() {
-        modal.style.display = "none";
-    });
-
-    document.getElementById('confirm_cancel_button').addEventListener('click', function() {
-        const cancelReason = document.getElementById('cancel_reason').value;
-        const appNo = document.querySelector('#approval_no').value;
-        const csrfToken = document.getElementById("csrf_token").value;
-
-        if (!cancelReason) {
-            Swal.fire({
-                icon: 'warning',
-                text: '취소 사유를 입력해주세요.',
-                confirmButtonColor: '#B1C2DD',
-                confirmButtonText: "확인"
-            });
-            return;
-        }
-
-        fetch('/employee/approval/cancel/' + appNo, {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({
-                approval_cancel_reason: cancelReason
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.res_code == '200') {
-                Swal.fire({
-                    icon: 'success',
-                    text: data.res_msg,
-                    confirmButtonColor: '#B1C2DD',
-                    confirmButtonText: "확인"
-                }).then(() => {
-                    location.href = "/employee/approval/approval_reject_detail/"+appNo;
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    text: data.res_msg,
-                    confirmButtonColor: '#B1C2DD',
-                    confirmButtonText: "확인"
-                });
-            }
-        });
-    });
-    
     	// 미리보기
 			document.getElementById('previewButton').addEventListener('click', function() {
 		    
 		    const approvalLineContent = document.querySelector('.approval_line_table').outerHTML.replace(/<button[^>]*>(.*?)<\/button>/g, '');
-		    const approval_title = document.getElementById('approval_title').value;
+		    const approval_title = document.getElementById('vacationapproval_title').outerHTML;
 		    const contentSection = document.querySelector('.content_section').outerHTML;
 		    var windowW = 1000;
 		    var windowH = 900;
@@ -183,7 +123,19 @@ document.addEventListener('DOMContentLoaded', function() {
 					    max-width: 70%;
 					    max-height: 40px;
 					    display: block;
-					}				
+					}
+					.reference_box {
+					    display: flex;
+					    flex-wrap: wrap;
+					    gap: 10px;
+					}
+					
+					.reference_box > div {
+					    background-color: #f2f2f2;
+					    padding: 5px 10px;
+					    border-radius: 3px;
+					    font-size: 14px;
+					}							
 		        </style>
 		    `);
 		    
@@ -228,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
 					const y = 10;			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
-			        pdf.save('결재문서.pdf');
+			        pdf.save('휴가문서.pdf');
 			
 			        downloadButton.style.display = 'block'; 
 			    }).catch(error => {
@@ -239,8 +191,4 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
-    
-    
-    
-    
 });
