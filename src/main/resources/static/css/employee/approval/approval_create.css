@@ -87,23 +87,13 @@ input:focus, select:focus {
     opacity: 0.8;
 }
 
-
-.button_container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-right: 30px;
-    gap: 20px; 
-}
-
-
 .submit_button {
     padding: 8px 15px;
-    background-color: #B3C7EE; 
+    background-color: #B3C7EE;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    text-decoration: none; 
+    text-decoration: none;
     font-size: 14px;
     color: #000000;
 }
@@ -114,6 +104,7 @@ input:focus, select:focus {
     background-color: #C0C0C0;
     border: none;
     border-radius: 5px;
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -129,7 +120,6 @@ input:focus, select:focus {
     gap: 10px;
 
 }
-
 
 .form-group strong {
     flex: 0 0 150px; 
@@ -180,4 +170,29 @@ input:focus, select:focus {
     align-items: center;
     justify-content: center;
     height: 60px;
+}
+
+
+.preview_button {
+    padding: 8px 15px;
+    background-color: #f9e1e1; 
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 5px; 
+    left: 5px; 
+}
+
+.button_container {
+	display: flex;
+    justify-content: flex-end; 	
+    gap: 10px;
+    position: relative;
+}
+
+
+.cancel_button, .submit_button, .preview_button:hover {
+    opacity: 0.8;
 }
