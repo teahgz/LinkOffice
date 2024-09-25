@@ -26,4 +26,7 @@ public interface ScheduleCategoryRepository extends JpaRepository<ScheduleCatego
     // 관리자 - 일정 등록 카테고리
     List<ScheduleCategory> findByScheduleCategoryStatusOrderByScheduleCategoryNameAsc(Long scheduleCategoryStatus);
     
+    // 사원 - 일정 카테고리
+    List<ScheduleCategory> findByScheduleCategoryStatusAndScheduleCategoryAdminOrderByScheduleCategoryNameAsc(Long scheduleCategoryStatus, Long scheduleCategoryAdmin);
+
 }

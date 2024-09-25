@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headerToolbar: {
                 left: 'prev,next today yearButton,monthButton',
 	            center: 'title',
-	            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+	            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,listMonth'
             }, 
             customButtons: {
 	            yearButton: {
@@ -302,6 +302,13 @@ document.addEventListener('DOMContentLoaded', function() {
         calendar.render();
     }
     
+    window.addEventListener('click', function(event) {
+	    const modal = document.getElementById('eventViewModal');
+	    if (event.target === modal) {
+	        modal.style.display = 'none';
+	    }
+	});
+
     function showYearPicker() {
 	    const currentYear = calendar.getDate().getFullYear();
 	    const yearPicker = document.createElement('select');
@@ -403,10 +410,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    comment.textContent = event.extendedProps.comment; 
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
 	    repeatInfo.textContent = getRepeatInfoText(event.extendedProps.repeatType, event.extendedProps.repeatDay, event.extendedProps.repeatWeek , event.extendedProps.repeatDate , event.extendedProps.repeatMonth);
-	    modal.style.display = 'block'; 
-	    modal.style.position = 'absolute';  
-	} 
-	
+	    modal.style.display = 'block';  
+	}  
+
 	// 예외 상세 모달
 	function showExceptionEventModal(event) {
 	    const modal = document.getElementById('eventViewModal');
@@ -447,8 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
 	    repeatInfo.textContent = '';
 	
-	    modal.style.display = 'block'; 
-	    modal.style.position = 'absolute';  
+	    modal.style.display = 'block';  
 	}
 	
 	function getRepeatInfoText(repeatType, repeatDay, repeatWeek, repeatDate, repeatMonth) { 
@@ -974,9 +979,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	        },
 	        success: function(response) {
 				 if (response.res_code === '200') {
-	                Swal.fire({
-						title : response.res_msg,
-		                text: '반복 일정이 수정되었습니다.',
+	                Swal.fire({ 
+		                text: response.res_msg,
 		                icon: 'success',
 		                confirmButtonText: '확인',
 		                confirmButtonColor: '#B1C2DD',
@@ -1009,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        },
 	        success: function(response) {
 	            Swal.fire({
-	                text: '일정이 수정되었습니다.',
+	                text: response.res_msg,
 	                icon: 'success',
 	                confirmButtonText: '확인',
 	                confirmButtonColor: '#B1C2DD',

@@ -142,6 +142,17 @@ public class ScheduleCategoryService {
 	    return scheduleCategoryDtos;
 	} 
 
+	// 사원 - 일정 카테고리
+	public List<ScheduleCategoryDto> getAllemployeeScheduleCategory() {
+	    List<ScheduleCategory> scheduleCategories= scheduleCategoryRepository.findByScheduleCategoryStatusAndScheduleCategoryAdminOrderByScheduleCategoryNameAsc(0L, 0L);
+	    List<ScheduleCategoryDto> scheduleCategoryDtos = new ArrayList();
+
+	    for (ScheduleCategory scheduleCategory : scheduleCategories) {
+	    	ScheduleCategoryDto scheduleCategoryDto = ScheduleCategoryDto.toDto(scheduleCategory);
+	    	scheduleCategoryDtos.add(scheduleCategoryDto);
+	    } 
+	    return scheduleCategoryDtos;
+	} 
 
     
 }

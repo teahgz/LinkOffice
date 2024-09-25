@@ -16,12 +16,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 	
 	@Query("SELECT s FROM Schedule s WHERE s.scheduleType = :scheduleType AND s.scheduleStatus = :scheduleStatus")
 	List<Schedule> findByScheduleTypeAndScheduleStatus(@Param("scheduleType") Long scheduleType, @Param("scheduleStatus") Long scheduleStatus);
-	
-//	// 관리자 - 반복 일정 수정
-//	List<Schedule> findAllByScheduleNo(Long scheduleNo);
-//	
-//	// 관리자 - 반복 일정 수정
-//	@Query("SELECT s FROM Schedule s WHERE s.startDate >= :newStartDate AND s.id != :eventId")
-//    List<Schedule> findFutureEvents(Long eventId, String newStartDate);
+	 
+	@Query("SELECT s FROM Schedule s WHERE s.scheduleType = :scheduleType AND s.scheduleStatus = :scheduleStatus AND s.memberNo = :memberNo")
+	List<Schedule> findByScheduleTypeAndScheduleStatusAndMemberNo(@Param("scheduleType") Long scheduleType, @Param("scheduleStatus") Long scheduleStatus, @Param("memberNo") Long memberNo);
  
 }
