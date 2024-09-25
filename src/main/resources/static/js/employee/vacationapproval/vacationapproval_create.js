@@ -125,10 +125,49 @@ const dateCountInput = document.getElementById("vacationapproval_date_count");
 
 endDateInput.disabled = true;
 
+let holidaysData = {};
+
+function fetchHolidays(startDate) {
+    const year = new Date(startDate).getFullYear();
+
+    // 공휴일 API
+    const xhr = new XMLHttpRequest();
+    const url = 'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo';
+    const serviceKey = '서비스키'; 
+    let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + encodeURIComponent(serviceKey);
+    queryParams += '&' + encodeURIComponent('solYear') + '=' + encodeURIComponent(year);
+    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('100');
+
+    xhr.open('GET', url + queryParams);
+    
+    xhr.onreadystatechange = function () {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(this.responseText, "text/xml");
+                const items = xmlDoc.getElementsByTagName("item");
+
+                for (let i = 0; i < items.length; i++) {
+                    const locdate = items[i].getElementsByTagName("locdate")[0].textContent;
+                    const dateName = items[i].getElementsByTagName("dateName")[0].textContent;
+
+                    holidaysData[locdate] = dateName;
+                }
+                
+            } else {
+                console.error('오류 :', this.status);
+            }
+        }
+    };
+
+    xhr.send();
+}
+
 startDateInput.addEventListener("change", function() {
     if (startDateInput.value) {
         endDateInput.disabled = false; 
-        calculateDateDifference(); 
+        fetchHolidays(startDateInput.value);
+        calculateDateDifference();
     } else {
         endDateInput.disabled = true; 
         endDateInput.value = '';
@@ -154,19 +193,18 @@ endDateInput.addEventListener("change", function() {
     }
 });
 
+// 공휴일, 주말 제외
 function calculateDateDifference() {
-	// 시작과 종료
     const startDate = new Date(startDateInput.value);
     const endDate = new Date(endDateInput.value);
 
     if (startDate && endDate && endDate >= startDate) {
         let daysDifference = 0;
-	
+        
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-			// 오늘날짜 확인
             const dayOfWeek = d.getDay();
-			// 주말이 아니면 +1
-            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+            const locdate = d.toISOString().slice(0, 10).replace(/-/g, ''); 
+            if (dayOfWeek !== 0 && dayOfWeek !== 6 && !holidaysData[locdate]) {
                 daysDifference++;
             }
         }
