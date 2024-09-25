@@ -64,9 +64,55 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
             chatMessageService.saveChatMessage(chatMessageDto);
 
+            Object senderNoObj = jsonMap.get("chat_sender_no");
+            Object currentRoomObj = jsonMap.get("chat_room_no");
+
+            Long senderNo;
+            Long currentRoom;
+
+            if (senderNoObj instanceof String) {
+                senderNo = Long.parseLong((String) senderNoObj);
+            } else if (senderNoObj instanceof Integer) {
+                senderNo = ((Integer) senderNoObj).longValue();
+            } else {
+                throw new IllegalArgumentException("타입 오류");
+            }
+
+            if (currentRoomObj instanceof String) {
+                currentRoom = Long.parseLong((String) currentRoomObj);
+            } else if (currentRoomObj instanceof Integer) {
+                currentRoom = ((Integer) currentRoomObj).longValue();
+            } else {
+                throw new IllegalArgumentException("타입 오류");
+            }
+
+            List<Map<String, Object>> unreadCounts = new ArrayList<>();
+            List<Long> userIdsInChatRoom = chatRoomService.findChatRoomMembers(currentRoom, senderNo);
+
+            for (Long memberNo : userIdsInChatRoom)  {
+                Map<String, Object> memberUnreadCount = new HashMap<>();
+                memberUnreadCount.put("memberNo", memberNo);
+
+                memberUnreadCount.put("chatRoomNo", currentRoom);
+
+                int count = chatRoomService.chatUnreadCount(currentRoom, memberNo);
+
+                memberUnreadCount.put("unreadCount", count);
+
+                unreadCounts.add(memberUnreadCount);
+            }
+
+
             for (WebSocketSession s : sessions.values()) {
                 if (s.isOpen()) {
                     s.sendMessage(new TextMessage(payload));
+
+                    Map<String, Object> responseMap = new HashMap<>();
+                    responseMap.put("type", "unreadCountMember");
+                    responseMap.put("data", unreadCounts);
+                    System.out.println("list: "+ unreadCounts);
+                    String unreadMessage = objectMapper.writeValueAsString(responseMap);
+                    s.sendMessage(new TextMessage(unreadMessage));
                 }
             }
         }
