@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
@@ -465,5 +466,110 @@ public class ScheduleApiController {
 		scheduleService.updateCompanyExceptionSchedule(eventId, scheduleExceptionDto);
 
 		return "success";
+	}
+	
+	// 기본 일정 삭제
+	@PostMapping("/company/schedule/delete")
+    @ResponseBody
+    public Map<String, String> deleteScheduleCompany(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        Long eventId = Long.valueOf(payload.get("eventId").toString());
+
+        boolean isDeleted = scheduleService.deleteBasicSchedule(eventId);
+
+        if (isDeleted) {
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "일정이 삭제되었습니다.");
+        } else {
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
+        }
+
+        return resultMap;
+    }
+	
+	// 예외 일정 삭제
+	@PostMapping("/company/schedule/exception/delete")
+    @ResponseBody
+    public Map<String, String> deleteScheduleExceptionCompany(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        Long eventId = Long.valueOf(payload.get("eventId").toString());
+
+        boolean isDeleted = scheduleService.deleteExceptionSchedule(eventId);
+
+        if (isDeleted) {
+            resultMap.put("res_code", "200");
+            resultMap.put("res_msg", "일정이 삭제되었습니다.");
+        } else {
+            resultMap.put("res_code", "404");
+            resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
+        }
+
+        return resultMap;
+    }
+	
+	// 관리자 - 반복 일정 삭제
+	@ResponseBody
+	@PostMapping("/company/schedule/repeat/delete/{eventId}")
+	public Map<String, String> deleteRepeatEvent(
+			@PathVariable("eventId") Long eventId,  
+	        @RequestParam("editOption") Long editOption,
+	        @RequestParam("pickStartDate") String pickStartDate,
+	        @RequestParam("pickEndDate") String pickEndDate) { 
+		
+		Map<String, String> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "일정 수정 중 오류가 발생했습니다.");
+	     
+	    ScheduleDto scheduleDto = scheduleService.getScheduleById(eventId);
+		ScheduleRepeatDto scheduleRepeatDto = scheduleService.getScheduleRepeatById(eventId); 
+	     
+	    boolean isDeleted;
+	    
+	    try {
+	        switch (editOption.intValue()) {
+	            case 1: // 이 일정만 삭제
+	            	isDeleted = scheduleService.deleteSingleEvent(eventId, scheduleDto, scheduleRepeatDto, pickStartDate, pickEndDate);
+	            	if (isDeleted) {
+	                    resultMap.put("res_code", "200");
+	                    resultMap.put("res_msg", "이 일정만 삭제되었습니다.");
+	                } else {
+	                    resultMap.put("res_code", "404");
+	                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
+	                }
+	                break;
+
+	            case 2: // 이 일정 및 향후 일정 삭제
+	            	isDeleted = scheduleService.deleteFutureEvents(eventId, scheduleDto, scheduleRepeatDto, pickStartDate, pickEndDate);
+	            	if (isDeleted) {
+	                    resultMap.put("res_code", "200");
+	                    resultMap.put("res_msg", "이 일정 및 향후 일정이 삭제되었습니다.");
+	                } else {
+	                    resultMap.put("res_code", "404");
+	                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
+	                }
+	                break;
+
+	            case 3: // 모든 일정 삭제
+	            	isDeleted = scheduleService.deleteAllEvents(eventId);
+	            	if (isDeleted) {
+	                    resultMap.put("res_code", "200");
+	                    resultMap.put("res_msg", "모든 일정이 삭제되었습니다.");
+	                } else {
+	                    resultMap.put("res_code", "404");
+	                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
+	                }
+	                break;
+
+	            default:
+	            	resultMap.put("res_code", "404");
+                    resultMap.put("res_msg", "해당 일정이 존재하지 않습니다.");
+	                break;
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("res_msg", e.getMessage());
+	    }
+
+	    return resultMap;
 	}
 }

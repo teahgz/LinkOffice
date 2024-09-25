@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 삭제
 	deleteButtons.forEach(button => {
         button.addEventListener('click', function() {
-            var categoryId = parseInt(this.getAttribute('data-category-id'), 10); // 카테고리 ID 가져오기
+            var categoryId = parseInt(this.getAttribute('data-category-id'), 10);  
             
             Swal.fire({
                 text: '카테고리를 삭제하시겠습니까?',
