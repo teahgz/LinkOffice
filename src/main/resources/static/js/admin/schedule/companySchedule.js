@@ -201,10 +201,27 @@ document.addEventListener('DOMContentLoaded', function() {
             initialView: 'dayGridMonth',
             locale: 'ko',
             headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                left: 'prev,next today yearButton,monthButton',
+	            center: 'title',
+	            right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }, 
+            customButtons: {
+	            yearButton: {
+	                text: '년도',
+	                click: function() {
+	                    showYearPicker();
+	                }
+	            },
+	            monthButton: {
+	                text: '월',
+	                click: function() {
+	                    showMonthPicker();
+	                }
+	            }
+	        }, 
+	        contentHeight: 'auto',
+	        handleWindowResize: true,
+	        fixedWeekCount: false,
             eventClick: function(info) {
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
@@ -285,6 +302,64 @@ document.addEventListener('DOMContentLoaded', function() {
         calendar.render();
     }
     
+    function showYearPicker() {
+	    const currentYear = calendar.getDate().getFullYear();
+	    const yearPicker = document.createElement('select');
+	    
+	    for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+	        const option = document.createElement('option');
+	        option.value = year;
+	        option.text = year;
+	        if (year === currentYear) option.selected = true;
+	        yearPicker.appendChild(option);
+	    }
+	    
+	    yearPicker.onchange = function() {
+	        const selectedYear = parseInt(this.value);
+	        const currentDate = calendar.getDate();
+	        calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
+	    };
+	    
+	    Swal.fire({
+	        title: '년도 선택',
+	        html: yearPicker,
+	        showCancelButton: true,
+	        cancelButtonColor: '#C0C0C0',
+	        confirmButtonColor: '#B1C2DD',
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    });
+	}
+	
+	function showMonthPicker() {
+	    const currentDate = calendar.getDate();
+	    const monthPicker = document.createElement('select');
+	    const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+	    
+	    months.forEach((month, index) => {
+	        const option = document.createElement('option');
+	        option.value = index;
+	        option.text = month;
+	        if (index === currentDate.getMonth()) option.selected = true;
+	        monthPicker.appendChild(option);
+	    });
+	    
+	    monthPicker.onchange = function() {
+	        const selectedMonth = parseInt(this.value);
+	        calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
+	    };
+	    
+	    Swal.fire({
+	        title: '월 선택',
+	        html: monthPicker,
+	        confirmButtonColor: '#B1C2DD',
+	        cancelButtonColor: '#C0C0C0',
+	        showCancelButton: true,
+	        confirmButtonText: '확인',
+	        cancelButtonText: '취소'
+	    });
+	}
+
     function showEventModalById(calendar, eventId) {
 	    const event = calendar.getEventById(eventId);   
 	    if (!event) {
@@ -467,6 +542,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 	
+	document.getElementById('event_repeat_close_btn').addEventListener('click', function() { 
+		document.getElementById('eventRepeatModal').style.display = 'none'; 
+	});
+	
 	document.getElementById('closeModalBtn2').addEventListener('click', function() {
 		Swal.fire({
 			text: '작성한 내용이 저장되지 않습니다.',
@@ -494,11 +573,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
 	// 종일 체크박스 선택  
 	document.getElementById('allDay').addEventListener('change', function() {
-        const isChecked = this.checked;
-        document.getElementById('timeGroup').style.display = isChecked ? 'none' : 'block';
-        document.getElementById('endTimeGroup').style.display = isChecked ? 'none' : 'block';
-        document.getElementById('endDateGroup').style.display = isChecked ? 'block' : 'none';
-    });
+	    const isChecked = this.checked;
+	
+	    const timeGroup = document.getElementById('timeGroup');
+	    const startTimeInput = timeGroup.querySelector('input');
+	
+	    const endTimeGroup = document.getElementById('endTimeGroup');
+	    const endTimeInput = endTimeGroup.querySelector('input');
+	
+	    const endDateGroup = document.getElementById('endDateGroup');
+	    const endDateInput = endDateGroup.querySelector('input');
+	
+	    timeGroup.style.display = isChecked ? 'none' : 'block';
+	    endTimeGroup.style.display = isChecked ? 'none' : 'block';
+	    endDateGroup.style.display = isChecked ? 'block' : 'none';
+	
+	    // 클래스 추가 및 제거
+	    if (timeGroup.style.display === 'block') {
+	        startTimeInput.classList.add('plus_detail_option');
+	    } else {
+	        startTimeInput.classList.remove('plus_detail_option');  
+	    }
+	
+	    if (endTimeGroup.style.display === 'block') {
+	        endTimeInput.classList.add('plus_detail_option');
+	    } else {
+	        endTimeInput.classList.remove('plus_detail_option');  
+	    }
+	
+	    if (endDateGroup.style.display === 'block') {
+	        endDateInput.classList.add('plus_detail_option');
+	    } else {
+	        endDateInput.classList.remove('plus_detail_option');  
+	    }
+	}); 
+
 	 
 	// 카테고리 옵션
 	$.ajax({
@@ -557,100 +666,99 @@ document.addEventListener('DOMContentLoaded', function() {
 		const type_form = document.getElementById('create_modal_submit').innerText;
 	    event.preventDefault();
    		
-		if(type_form === "저장") { 
-		    const title = document.getElementById('eventTitle').value.trim();
-		    const category = document.getElementById('category').value;
-		    const startDate = document.getElementById('eventDate').value;
-		    const description = document.getElementById('description').value.trim();
-		    const allDay = document.getElementById('allDay').checked; 
-		    const endDate = document.getElementById('endDate').value;
-		    const startTime = document.getElementById('startTime').value;
-		    const endTime = document.getElementById('endTime').value;
-		    const repeatOption = document.getElementById('repeatOption').value;
-		    const repeatEndDate = document.getElementById('repeatEndDate').value;
 		
-		    if (!title) {
-		        showAlert('일정 제목을 입력해 주세요.');
-		        return;
-		    }
-		
-		    if (!category) {
-		        showAlert('카테고리를 선택해 주세요.');
-		        return;
-		    }
-		
-		    if (!startDate) {
-		        showAlert('날짜를 선택해 주세요.');
-		        return;
-		    }
-		 
-		    if (!allDay) {
-		        if (!startTime) {
-		            showAlert('시작 시간을 입력해 주세요.');
-		            return;
-		        }
-		        
-		        if (!endTime) {
-		            showAlert('종료 시간을 입력해 주세요.');
-		            return;
-		        }
-		
-		        if (endTime < startTime) {
-		            showAlert('종료 시간은 시작 시간 이후로 설정해 주세요.');
-		            return;
-		        }
-		    }
-		    
-		    if(allDay) {
-				if (!startDate) {
-		            showAlert('시작 날짜를 입력해 주세요.');
-		            return;
-		        }
-		        
-				if (!endDate) {
-		            showAlert('종료 날짜를 입력해 주세요.');
-		            return;
-		        }
-			}
-		    
-		    if (repeatOption != 0 && !repeatEndDate) {
-		        showAlert('반복 종료일을 입력해 주세요.');
-		        return;
-		    }
-		    
-		    if (!description) {
-		        showAlert('내용을 입력해 주세요.');
-		        return;
-		    } 
-		
-		    // 반복 옵션 값 
-		    const repeat_insert_date = document.getElementById('eventDate').value;
-		    const repeat = parseInt(document.getElementById('repeatOption').value);
-		    const repeatDayOfWeek = repeat === 2 ||  repeat ===  4 ? getDayOfWeek() : null; // 요일
-		    const repeatWeek = repeat === 4 ? getWeekNumber() : null; // 주차
-		    const repeatDate = repeat === 3 ||  repeat ===  5 ? new Date(repeat_insert_date).getDate() : null; // 특정 일
-		    const repeatMonth = repeat === 5 ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
-		 
-		    const eventData = {
-		        title: title,
-		        category: category,
-		        startDate: startDate,
-		        endDate : allDay ? endDate : null,
-		        repeatEndDate : repeatEndDate,
-		        startTime: allDay ? null : startTime,  
-		        endTime: allDay ? null : endTime,
-		        allDay: allDay,
-		        repeat: repeat,
-		        description: description,
-		        repeatEndDate: repeatEndDate,
-		        schedule_day_of_week: repeatDayOfWeek,
-		        schedule_week: repeatWeek,
-		        schedule_date: repeatDate,
-		        schedule_month: repeatMonth
-		    };
-		
-		    console.log(eventData);  
-		    
+	    const title = document.getElementById('eventTitle').value.trim();
+	    const category = document.getElementById('category').value;
+	    const startDate = document.getElementById('eventDate').value;
+	    const description = document.getElementById('description').value.trim();
+	    const allDay = document.getElementById('allDay').checked; 
+	    const endDate = document.getElementById('endDate').value;
+	    const startTime = document.getElementById('startTime').value;
+	    const endTime = document.getElementById('endTime').value;
+	    const repeatOption = document.getElementById('repeatOption').value;
+	    const repeatEndDate = document.getElementById('repeatEndDate').value;
+	
+	    if (!title) {
+	        showAlert('일정 제목을 입력해 주세요.');
+	        return;
+	    }
+	
+	    if (!category) {
+	        showAlert('카테고리를 선택해 주세요.');
+	        return;
+	    }
+	
+	    if (!startDate) {
+	        showAlert('날짜를 선택해 주세요.');
+	        return;
+	    }
+	 
+	    if (!allDay) {
+	        if (!startTime) {
+	            showAlert('시작 시간을 입력해 주세요.');
+	            return;
+	        }
+	        
+	        if (!endTime) {
+	            showAlert('종료 시간을 입력해 주세요.');
+	            return;
+	        }
+	
+	        if (endTime < startTime) {
+	            showAlert('종료 시간은 시작 시간 이후로 설정해 주세요.');
+	            return;
+	        }
+	    }
+	    
+	    if(allDay) {
+			if (!startDate) {
+	            showAlert('시작 날짜를 입력해 주세요.');
+	            return;
+	        }
+	        
+			if (!endDate) {
+	            showAlert('종료 날짜를 입력해 주세요.');
+	            return;
+	        }
+		}
+	    
+	    if (repeatOption != 0 && !repeatEndDate) {
+	        showAlert('반복 종료일을 입력해 주세요.');
+	        return;
+	    }
+	    
+	    if (!description) {
+	        showAlert('내용을 입력해 주세요.');
+	        return;
+	    } 
+	
+	    // 반복 옵션 값 
+	    const repeat_insert_date = document.getElementById('eventDate').value;
+	    const repeat = parseInt(document.getElementById('repeatOption').value);
+	    const repeatDayOfWeek = repeat === 2 ||  repeat ===  4 ? getDayOfWeek() : null; // 요일
+	    const repeatWeek = repeat === 4 ? getWeekNumber() : null; // 주차
+	    const repeatDate = repeat === 3 ||  repeat ===  5 ? new Date(repeat_insert_date).getDate() : null; // 특정 일
+	    const repeatMonth = repeat === 5 ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
+	 
+	    const eventData = {
+	        title: title,
+	        category: category,
+	        startDate: startDate,
+	        endDate : allDay ? endDate : null,
+	        repeatEndDate : repeatEndDate,
+	        startTime: allDay ? null : startTime,  
+	        endTime: allDay ? null : endTime,
+	        allDay: allDay,
+	        repeat: repeat,
+	        description: description,
+	        repeatEndDate: repeatEndDate,
+	        schedule_day_of_week: repeatDayOfWeek,
+	        schedule_week: repeatWeek,
+	        schedule_date: repeatDate,
+	        schedule_month: repeatMonth
+	    };
+	 
+		if(type_form === "저장") {     
 		    $.ajax({
 		        type: "POST",
 		        url: '/company/schedule/save',   
