@@ -49,16 +49,11 @@ input:focus, select:focus {
     max-height: 500px;
 }
 
-
 .approve_container {
-    position: absolute; 
-    top: 0; 
-    right: 0;
-    display: flex; 
-    align-items: flex-start; 
+    display: flex;
+    justify-content: right;
     gap: 10px; 
 }
-
 
 .app_member {
     display: flex;
@@ -180,9 +175,7 @@ input:focus, select:focus {
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    position: absolute;
-    bottom: 5px; 
-    left: 5px; 
+    width:100px;
 }
 
 .button_container {

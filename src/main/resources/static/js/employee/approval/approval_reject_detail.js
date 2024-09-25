@@ -1,85 +1,11 @@
-// 승인 버튼 업데이트
-function approveRequest(){
-	 const csrfToken = document.querySelector('#csrf_token').value;
-	 const vacationapprovalNo = document.querySelector('#vacationapproval_no').value;
-	 
-	fetch('/employee/vacationapproval/approve/'+vacationapprovalNo,{
-		method: 'put',
-		headers: {
-			 'X-CSRF-TOKEN': csrfToken
-		}
-	})
-	.then(reponse => reponse.json())
-	.then(data => {
-		if(data.res_code == '200'){
-			Swal.fire({
-				icon: 'success',
-			    text: data.res_msg,
-			    confirmButtonColor: '#B1C2DD',
-			    confirmButtonText: "확인"
-			}).then((result) => {
-				location.href = "/employee/approval/approval_history_vacation_detail/" + vacationapprovalNo;
-			});
-		}else{
-			Swal.fire({
-			     icon: 'error',
-			     text: data.res_msg,
-			     confirmButtonColor: '#B1C2DD',
-			     confirmButtonText: "확인"
-			});
-		}
-	})
-}
-
-
-// 승인 취소 업데이트
-function cancelApproval(){
-	 const csrfToken = document.querySelector('#csrf_token').value;
-	 const vacationapprovalNo = document.querySelector('#vacationapproval_no').value;
-	 
-	fetch('/employee/vacationapproval/approvecancel/'+vacationapprovalNo,{
-		method: 'put',
-		headers: {
-			 'X-CSRF-TOKEN': csrfToken
-		}
-	})
-	.then(reponse => reponse.json())
-	.then(data => {
-		if(data.res_code == '200'){
-			Swal.fire({
-				icon: 'success',
-			    text: data.res_msg,
-			    confirmButtonColor: '#B1C2DD',
-			    confirmButtonText: "확인"
-			}).then((result) => {
-				location.href = "/employee/approval/approval_history_vacation_detail/" + vacationapprovalNo;
-			});
-		}else{
-			Swal.fire({
-			     icon: 'error',
-			     text: data.res_msg,
-			     confirmButtonColor: '#B1C2DD',
-			     confirmButtonText: "확인"
-			});
-		}
-	})
-}
-
-
 document.addEventListener('DOMContentLoaded', function() {
 
-    const previewButton = document.getElementById('previewButton');
-    
-        previewButton.addEventListener('click', function () {
-
-    // 미리볼 내용을 가져옵니다.
-	const approvalLineTable = document.querySelector('.approval_line_table').outerHTML.replace(/<button[^>]*>(.*?)<\/button>/g, '');
-    const title = document.querySelector('.vacation_title').outerHTML;
-    const field = document.querySelector('#vacationapproval_title').outerHTML;
-    const contentSection = document.querySelector('.content_section').outerHTML;
-
-    // HTML 구조를 만듭니다.
-   			var windowW = 1000;
+			document.getElementById('previewButton').addEventListener('click', function() {
+		    
+		    const approvalLineContent = document.querySelector('.approval_line_table').outerHTML.replace(/<button[^>]*>(.*?)<\/button>/g, '');
+		    const approval_title = document.getElementById('approval_title').outerHTML;
+		    const contentSection = document.querySelector('.content_section').outerHTML;
+		    var windowW = 1000;
 		    var windowH = 900;
 		    var winHeight = document.body.clientHeight;
 		    var winWidth = document.body.clientWidth - 500;
@@ -89,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		    var popY = winY + (winHeight - windowH) / 2;
 		    
 		    const previewWindow = window.open('', '미리보기', "width=" + windowW + ", height=" + windowH + ", scrollbars=no, menubar=no, top=" + popY + ", left=" + popX);
-		    previewWindow.document.write('<html><head><title>휴가결재 미리보기</title>');
+		    previewWindow.document.write('<html><head><title>전자결재 미리보기</title>');
 		    
 		    previewWindow.document.write(`
 		        <style>
@@ -109,11 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					    margin: auto;
 					    margin-bottom: 20px						
 					}
-					.approval_line_table {
-					    margin: auto;
-					    width: 700px;
-					    border-collapse: collapse;
-					}
 					.section_separator {
 						border: none;
 					    border-top: 1px solid #ddd;
@@ -123,6 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
 					.solid{
 						border: 1px solid #ddd;
 					}
+		            .approval_line_table {
+					    margin: auto;
+					    width: 700px;
+					    border-collapse: collapse;
+					    margin-bottom: 50px;
+		            }
 		            .approval_line_table th, .approval_line_table td {
 		                border: 1px solid #ccc;
 		                padding: 10px;
@@ -132,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		            .approval_line_table td {
 		                min-height: 50px; 
 		                width: 100px; 
+		                vertical-align: top; 
 		            }
 		            .approval_line_table th {
 		                background-color: #f2f2f2;
@@ -178,29 +106,36 @@ document.addEventListener('DOMContentLoaded', function() {
 					    font-size: 14px;
 					    color: #000000;
 		            }
-		            .content_section{
+		            .editorPDF{
 					    margin: auto;
     					width: 780px;
 					    margin-left: 10px;
 					}
-				  .signature_box {
-				    display: flex;
-				    flex-direction: column;
-				    align-items: center;
-				    justify-content: center;
-				    height: 60px;
+					.signature_box {
+					    display: flex;
+					    flex-direction: column;
+					    align-items: center;
+					    justify-content: center;
+					    height: 60px;
 					}
 					
 					.signature_box img, .signature_box .currentSignature {
 					    max-width: 70%;
 					    max-height: 40px;
 					    display: block;
-					}
-					#vacationapproval_title{
-						font-size:30px;
-						margin-left: 40px;
+					}		
+					.reference_box {
+					    display: flex;
+					    flex-wrap: wrap;
+					    gap: 10px;
 					}
 					
+					.reference_box > div {
+					    background-color: #f2f2f2;
+					    padding: 5px 10px;
+					    border-radius: 3px;
+					    font-size: 14px;
+					}							
 		        </style>
 		    `);
 		    
@@ -212,13 +147,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		    previewWindow.document.write('<div class="preview_div">');
 		    previewWindow.document.write('<div class="solid">');
 			previewWindow.document.write('<div class="title">');
-			previewWindow.document.write('<h2>'+title+'</h2>');
+			previewWindow.document.write('<h2>'+approval_title+'</h2>');
 			previewWindow.document.write('<button class="download_button" onclick="downloadPDF()">PDF 다운로드</button>');
 			previewWindow.document.write('</div>');
-		    previewWindow.document.write(approvalLineTable); 
+		    previewWindow.document.write(approvalLineContent); 
 		    previewWindow.document.write('<hr class="section_separator">');
-			previewWindow.document.write(field);
-		    previewWindow.document.write(contentSection);    
+		    previewWindow.document.write('<div class="editorPDF">' + contentSection + '</div>');    
 		    previewWindow.document.write('</div>');
 		    previewWindow.document.write('</div>');
 		    previewWindow.document.write('</body></html>');
@@ -227,10 +161,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		   previewWindow.downloadPDF = function() {
 			
 			    const downloadButton = previewWindow.document.querySelector('.download_button');
-				const solid = previewWindow.document.querySelector('.solid');			    
+			    const solid = previewWindow.document.querySelector('.solid');
 			    downloadButton.style.display = 'none'; 
-			    solid.style.border = 'none';
-			    			
+			    solid.style.border = 'none'; 
+			
 			    previewWindow.html2canvas(previewWindow.document.querySelector('.preview_div'), { scale: 2 })
 			    .then(canvas => {
 			        const imgData = canvas.toDataURL('image/png');
@@ -244,10 +178,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			        const imgHeight = canvas.height * imgWidth / canvas.width; 
 			
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
-			        const y = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; 
-			
+					const y = 10;			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
-			        pdf.save('휴가문서.pdf');
+			        pdf.save('결재문서.pdf');
 			
 			        downloadButton.style.display = 'block'; 
 			    }).catch(error => {
@@ -258,54 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
+    
+    
+    
+    
 });
-
-    const modal = document.getElementById("myModal");
-    const closeModal = document.querySelector(".close");
-
-
-    closeModal.addEventListener('click', function() {
-        modal.style.display = "none";
-    });
-	
-	function approvalReject(){
-		modal.style.display = "flex";
-			
-		// 반려 버튼 업데이트
-		document.getElementById('confirm_reject_button').addEventListener('click', function( ){
-			const csrfToken = document.querySelector('#csrf_token').value;
-			const vacationapprovalNo = document.querySelector('#vacationapproval_no').value;
-			 const rejectReason = document.getElementById('reject_reason').value;
-			 
-			fetch('/employee/vacationapproval/reject/'+vacationapprovalNo,{
-				method: 'put',
-				headers: {
-					'Content-Type': 'application/json',
-					 'X-CSRF-TOKEN': csrfToken
-				},
-				body: JSON.stringify({
-	                vacation_approval_flow_reject_reason: rejectReason
-	            })
-			})
-			.then(reponse => reponse.json())
-			.then(data => {
-				if(data.res_code == '200'){
-					Swal.fire({
-						icon: 'success',
-					    text: data.res_msg,
-					    confirmButtonColor: '#B1C2DD',
-					    confirmButtonText: "확인"
-					}).then((result) => {
-						location.href = "/employee/approval/approval_history_vacation_detail/" + vacationapprovalNo;
-					});
-				}else{
-					Swal.fire({
-					     icon: 'error',
-					     text: data.res_msg,
-					     confirmButtonColor: '#B1C2DD',
-					     confirmButtonText: "확인"
-					});
-				}
-			});
-		});
-	}	

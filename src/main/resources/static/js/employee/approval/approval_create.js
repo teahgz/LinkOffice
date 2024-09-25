@@ -199,12 +199,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 					    margin: auto;
 					    margin-bottom: 20px						
 					}
-					.approval_line_table {
-					    margin: auto;
-					    width: 700px;
-					    border-collapse: collapse;
-					    margin-bottom: 50px;
-					}
 					.section_separator {
 						border: none;
 					    border-top: 1px solid #ddd;
@@ -303,7 +297,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    previewWindow.document.write('</body></html>');
 		    previewWindow.document.close();
 		
-		  previewWindow.downloadPDF = function() {
+		   previewWindow.downloadPDF = function() {
 			
 			    const downloadButton = previewWindow.document.querySelector('.download_button');
 			    const solid = previewWindow.document.querySelector('.solid');
@@ -323,8 +317,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			        const imgHeight = canvas.height * imgWidth / canvas.width; 
 			
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
-			        const y = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; 
-			
+					const y = 10;			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
 			        pdf.save('결재문서.pdf');
 			

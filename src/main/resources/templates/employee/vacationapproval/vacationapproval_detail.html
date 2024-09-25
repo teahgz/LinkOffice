@@ -10,27 +10,8 @@
             	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
             	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
                 <div class="main_container">
-                    <div class="details_section">
-                        <div class="text_field">
-                            <div class="field">
-                                <strong>제목</strong>
-                                <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
-                            </div>
-                            <div class="field">
-                                <strong>종류</strong>
-                                <div id="vacationapproval_type_name" th:text="${vacationapprovaldto.vacation_type_name}"></div>
-                            </div>
-                            <div class="field">
-                                <strong>기간</strong>
-                                <div id="vacationapproval_start_date" th:text="${vacationapprovaldto.vacation_approval_start_date}"></div>
-                                <span> ~ </span>
-                                <div id="vacationapproval_end_date" th:text="${vacationapprovaldto.vacation_approval_end_date}"></div>
-                                <div>(</div>
-                                <div id="vacationapproval_total_days" th:text="${vacationapprovaldto.vacation_approval_total_days}"></div>
-                                <div>일)</div>
-                            </div>
-                        </div>
-                        
+               		<button type="button" id="previewButton" class="preview_button">미리보기</button> 
+                        <p class="vacation_title">휴가 신청서</p>
 						<div class="approval_line_section">
 						    <table class="approval_line_table">
 						        <tr>
@@ -105,25 +86,17 @@
 						        </tr>
 						    </table>
 						</div>
-						</div>
+                            <div class="field">
+                                <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
+                            </div>
 
-					<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
-					    <strong>기안 취소 사유</strong>
-					    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
-					</div>
 
-					<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
-						 <strong>반려 사유</strong>
-						<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
-					</div>	
-
-                        <hr class="section_separator"> 
                         
                     <div class="content_section">
                         <div class="vacationapproval_content">
                             <div class="table_container" th:utext="${vacationapprovaldto.vacation_approval_content}"></div>
                         </div>
-                        <hr class="section_separator"> 
+                    </div>
                         <div class="field">
                             <div th:if="${vacationapprovaldto != null and !#lists.isEmpty(vacationapprovaldto.files)}">
                                 <div th:each="file : ${vacationapprovaldto.files}" class="file_item">
@@ -141,14 +114,24 @@
                                     </div>
                                 </div>
                             </div>
+                            
+							<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
+							    <strong>기안 취소 사유</strong>
+							    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
+							</div>
+		
+							<div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_reject_reason != null}" id="vacationapproval_flow_reject_reason">
+								 <strong>반려 사유</strong>
+								<div th:text="${flow.vacation_approval_flow_reject_reason}"></div>
+							</div>	
+					
                             <div th:if="${vacationapprovaldto == null or #lists.isEmpty(vacationapprovaldto.files)}">
                                 <p>등록된 파일이 없습니다.</p>
                             </div>
                         </div>
-                    </div>
 
                     <div class="button_container">
-                    	<button type="button" class="cancel_button" th:if="${vacationapprovaldto.vacation_approval_status == 0}">기안 취소</button>
+                    	<button type="button" class="cancel_button" th:if="${vacationapprovaldto.vacation_approval_status == 0}" onclick="vacationCancel()">기안 취소</button>
 		                <a th:if="${#lists.size(vacationapprovaldto.flows) > 0 and vacationapprovaldto.flows[0].vacation_approval_flow_status == 1 and vacationapprovaldto.vacation_approval_status == 0}" 
 		                   th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" 
 		                   class="edit_button">수정</a>
