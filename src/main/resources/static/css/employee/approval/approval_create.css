@@ -49,7 +49,6 @@ input:focus, select:focus {
     max-height: 500px;
 }
 
-
 .approve_container {
     display: flex;
     justify-content: right;
