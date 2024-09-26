@@ -1,31 +1,33 @@
 @charset "UTF-8";
 
 .main_container {
-    font-size: 14px;
+	width: 60%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px 50px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    margin:auto;
 }
-
 
 .container {
     display: flex;
     justify-content: center;
-    width: 100%;
 }
 
-
-.editor-container {
-    background-color: #f8f9fa;
-    border-radius: 12px; 
-    max-width: 800px; 
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 80px 30px;
-    margin-top: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-start; 
-    gap: 20px;
+.title_button_container{
+    justify-content: center;
+    display: flex;
+    margin-bottom: 20px;
 }
 
+.vacation_title{
+    padding-right: 70px;
+    margin: auto;
+    font-size: 20px;
+}
 
 input, select {
     padding: 8px;
@@ -37,20 +39,6 @@ input, select {
 input:focus, select:focus {
     outline: none;
     border-color: #B1C2DD;
-}
-
-.editor-container {
-    background-color: #f8f9fa;
-    border-radius: 12px; 
-    max-width: 800px; 
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 80px 30px;
-    margin-top: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-start; 
-    gap: 20px;
 }
 
 
@@ -68,22 +56,10 @@ input:focus, select:focus {
 .approve_container {
     display: flex; 
     justify-content: right; 
-    gap: 10px; 
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
-
-.app_member {
-    display: flex;
-    gap: 10px; 
-    justify-content: flex-start; 
-    width: 100%; 
-}
-.app_navbar {
-    display: flex;
-    gap: 10px; 
-    justify-content: flex-start;
-    width: 100%; 
-}
 .approve_button {
     padding: 8px 15px;
     background-color: #B3C7EE;
