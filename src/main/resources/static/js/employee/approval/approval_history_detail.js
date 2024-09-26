@@ -120,12 +120,12 @@ function cancelApproval(){
     
         previewButton.addEventListener('click', function () {
 
-    // 미리볼 내용을 가져옵니다.
+    // 미리볼 내용
 	const approvalLineTable = document.querySelector('.approval_line_table').outerHTML.replace(/<button[^>]*>(.*?)<\/button>/g, '');
     const title = document.querySelector('#approval_title').outerHTML;
     const contentSection = document.querySelector('.content_section').outerHTML;
 
-    // HTML 구조를 만듭니다.
+    // HTML 구조
    			var windowW = 1000;
 		    var windowH = 900;
 		    var winHeight = document.body.clientHeight;
@@ -152,19 +152,19 @@ function cancelApproval(){
 					    display: flex;
 					    justify-content: space-between;
 					    align-items: center;
-					    width: 700px;
+					    width: 900px;
 					    margin: auto;
 					    margin-bottom: 20px						
 					}
 					.approval_line_table {
 					    margin: auto;
-					    width: 700px;
+					    width: 900px;
 					    border-collapse: collapse;
 					}
 					.section_separator {
 						border: none;
 					    border-top: 1px solid #ddd;
-					    width: 700px;
+					    width: 900px;
 					    margin-top: 20px;
 					}					
 					.solid{
@@ -212,7 +212,7 @@ function cancelApproval(){
 		            }
 		            .preview_div{
 		                padding: 20px;
-		                width: 800px;
+		                width: 1000px;
 		            }
 		            .download_button {
 						float: right;
@@ -227,8 +227,7 @@ function cancelApproval(){
 		            }
 		            .content_section{
 					    margin: auto;
-    					width: 780px;
-					    margin-left: 10px;
+    					width: 900px;
 					}
 				  .signature_box {
 				    display: flex;
@@ -247,7 +246,18 @@ function cancelApproval(){
 						font-size:30px;
 						margin-left: 40px;
 					}
-					
+						.reference_box {
+						    display: flex;
+						    flex-wrap: wrap;
+						    gap: 10px;
+						}
+						
+						.reference_box > div {
+						    background-color: #f2f2f2;
+						    padding: 5px 10px;
+						    border-radius: 3px;
+						    font-size: 14px;
+						}						
 		        </style>
 		    `);
 		    
