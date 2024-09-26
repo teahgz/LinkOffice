@@ -467,7 +467,7 @@ public class ScheduleApiController {
 		scheduleExceptionDto.setSchedule_exception_allday(Boolean.TRUE.equals(request.get("allDay")) ? 1L : 0L);
 		scheduleExceptionDto.setSchedule_exception_start_time((String) request.get("startTime"));
 		scheduleExceptionDto.setSchedule_exception_end_time((String) request.get("endTime"));
-		scheduleExceptionDto.setSchedule_exception_category_no(getLongValue(request.get("category")));
+		scheduleExceptionDto.setSchedule_category_no(getLongValue(request.get("category")));
 
 		scheduleService.updateCompanyExceptionSchedule(eventId, scheduleExceptionDto);
 
@@ -959,15 +959,16 @@ public class ScheduleApiController {
 	    	    scheduleRepeatDto.setSchedule_repeat_month(getLongValue(request.get("schedule_month")));
 	    	    scheduleRepeatDto.setSchedule_repeat_end_date((String) request.get("repeatEndDate"));
 	    	}
-
+	    	
+	    	String selectedMembers = (String) request.get("selectedMembers");
 	    	switch (scheduleEditType) {
 	    	    case "0": // 개인 일정
 	    	    case "1": // 부서 일정 
 	    	        scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
+	    	        scheduleService.updateParticipants(scheduleDto, selectedMembers); 
 	    	        break;
 
-	    	    case "2": // 참여자 일정 
-	    	        String selectedMembers = (String) request.get("selectedMembers"); 
+	    	    case "2": // 참여자 일정  
     	            scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
     	            scheduleService.updateParticipants(scheduleDto, selectedMembers); 
 	    	        break;
@@ -982,9 +983,7 @@ public class ScheduleApiController {
 	    	resultMap.put("res_msg", "성공적으로 처리되었습니다.");
 	    	return resultMap;
 
-
-			 
-
+ 
 	    } catch (Exception e) {
 	        resultMap.put("res_code", "500");
 	        resultMap.put("res_msg", "서버 오류가 발생했습니다.");
@@ -994,5 +993,17 @@ public class ScheduleApiController {
 	    return resultMap;
 	}
 
+	// 예외 일정 참여자 정보  
+	@GetMapping("/api/participate/member/schedules/exception/{scheduleExceptionNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMemberExceptionSchedules(@PathVariable("scheduleExceptionNo") Long scheduleExceptionNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleExceptionNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
 	 
 }

@@ -33,6 +33,9 @@ public class ScheduleException {
 
     @Column(name = "schedule_no")
     private Long scheduleNo; 
+    
+    @Column(name = "member_no")
+    private Long memberNo; 
 
     @Column(name = "schedule_exception_date")
     private String scheduleExceptionDate;
@@ -58,11 +61,14 @@ public class ScheduleException {
     @Column(name = "schedule_exception_allday")
     private Long scheduleExceptionAllday;
 
-    @Column(name = "schedule_exception_category_no")
-    private Long scheduleExceptionCategoryNo;
+    @Column(name = "schedule_category_no")
+    private Long scheduleCategoryNo;
 
     @Column(name = "schedule_exception_type")
     private Long scheduleExceptionType; 
+    
+    @Column(name = "department_no")
+    private Long departmentNo; 
     
     @CreationTimestamp
     @Column(name = "schedule_exception_create_date")

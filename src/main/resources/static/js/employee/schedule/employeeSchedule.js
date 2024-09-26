@@ -130,6 +130,27 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	} 
 	
+	// 예외 일정 참여자 정보 
+	var exceptionParMemberNos = [];
+
+	function searchExceptionParticipate(scheduleExceptionNo, callback) {
+	    $.ajax({
+	        url: '/api/participate/member/schedules/exception' + scheduleExceptionNo,
+	        method: 'GET',
+	        dataType: 'json',
+	        headers: {
+	            'X-CSRF-TOKEN': csrfToken
+	        },
+	        success: function(data) {
+	            exceptionParMemberNos = data.participants.map(participant => participant.member_no); 
+	            callback(exceptionParMemberNos);
+	        },
+	        error: function(error) { 
+	            callback([]);
+	        }
+	    });
+	} 
+	
     function fetchAllSchedules() {
         var allEvents = [];  
 
@@ -275,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	       endDate.setDate(endDate.getDate() + 1);
 	   } 
     
+    	console.log(exceptionEvent);
        var event = {
             order: 1,
             id: exceptionEvent.schedule_exception_no,
@@ -749,14 +771,19 @@ document.addEventListener('DOMContentLoaded', function() {
             openOrganizationChartButton.disabled = false;
         }
     });
- 
-    openOrganizationChartButton.addEventListener('click', function () {
-        departmentScheduleCheckbox.disabled = true;
-    });
-	
+   
 	$('#openOrganizationChartButton').on('click', function() {
         openOrganizationChartModal();
+        updateCheckboxState();
     });
+    
+	function updateCheckboxState() {
+	    if (document.getElementById('selectedMembers').value.trim() === '') {
+	        departmentScheduleCheckbox.disabled = false; // 빈 경우 체크박스 활성화
+	    } else {
+	        departmentScheduleCheckbox.disabled = true; // 값이 있는 경우 체크박스 비활성화
+	    }
+	}
 	
 	function openOrganizationChartModal() {
 	    selectedMembers = [];   
@@ -765,7 +792,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	    loadOrganizationChart();
 	}
-
+	 
+	document.getElementById('chart_close').addEventListener('click', function() { 
+		$('#organizationChartModal').modal('hide');	 
+	});
+	
     // 조직도 로딩
     function loadOrganizationChart() {
         $.ajax({
@@ -805,10 +836,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 검색  
                 $('#organization_search').on('keyup', function() { 
-                    const searchString = $(this).val();
-
-                    $('#organization-chart').jstree(true).search(searchString); 
-                });
+                	const searchString = $(this).val();
+	                $('#organization-chart').jstree(true).search(searchString);
+	            });
             },
             error: function(xhr, status, error) {
                 console.error('조직도 로딩 오류:', error);
@@ -878,6 +908,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        reservationArea.append(participantItem);
 	    }); 
 	    $('#organizationChartModal').modal('hide');
+	    updateCheckboxState();
 	 });
 	 
 	// 요일 

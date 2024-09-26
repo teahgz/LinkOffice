@@ -28,6 +28,7 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipantDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleCheckRepository;
+import com.fiveLink.linkOffice.schedule.repository.ScheduleExceptionParticipantRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleExceptionRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleParticipantRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleRepeatRepository;
@@ -45,10 +46,11 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final ScheduleParticipantRepository scheduleParticipantRepository;
     private final ScheduleParticipantService scheduleParticipantService;
+    private final ScheduleExceptionParticipantRepository scheduleExceptionParticipantRepository;
     
 	@Autowired
 	public ScheduleService(ScheduleRepository scheduleRepository, ScheduleRepeatRepository scheduleRepeatRepository, ScheduleExceptionRepository scheduleExceptionRepositor, ScheduleExceptionRepository scheduleExceptionRepository, 
-			ScheduleCheckRepository scheduleCheckRepository, MemberRepository memberRepository, ScheduleParticipantRepository scheduleParticipantRepository, ScheduleParticipantService scheduleParticipantService) { 
+			ScheduleCheckRepository scheduleCheckRepository, MemberRepository memberRepository, ScheduleParticipantRepository scheduleParticipantRepository, ScheduleParticipantService scheduleParticipantService, ScheduleExceptionParticipantRepository scheduleExceptionParticipantRepository) { 
 	    this.scheduleRepository = scheduleRepository; 
 	    this.scheduleRepeatRepository = scheduleRepeatRepository; 
 	    this.scheduleExceptionRepository = scheduleExceptionRepository; 
@@ -56,6 +58,7 @@ public class ScheduleService {
 	    this.memberRepository = memberRepository;
 	    this.scheduleParticipantRepository = scheduleParticipantRepository;
 	    this.scheduleParticipantService = scheduleParticipantService;
+	    this.scheduleExceptionParticipantRepository = scheduleExceptionParticipantRepository;
 	} 
   
 	public void saveCompanySchedule(ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {
@@ -243,7 +246,7 @@ public class ScheduleService {
                 .scheduleExceptionEndDate(scheduleDto.getSchedule_end_date())
                 .scheduleExceptionStartTime(scheduleDto.getSchedule_start_time())
                 .scheduleExceptionEndTime(scheduleDto.getSchedule_end_time())
-                .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleCategoryNo(scheduleDto.getSchedule_category_no()) 
                 .scheduleExceptionType(3L) 
                 .scheduleExceptionAllday(scheduleDto.getSchedule_allday())
                 .scheduleExceptionStatus(0L)
@@ -332,7 +335,7 @@ public class ScheduleService {
         dto.setSchedule_exception_start_time(scheduleException.getScheduleExceptionStartTime());
         dto.setSchedule_exception_end_time(scheduleException.getScheduleExceptionEndTime());
         dto.setSchedule_exception_allday(scheduleException.getScheduleExceptionAllday());
-        dto.setSchedule_exception_category_no(scheduleException.getScheduleExceptionCategoryNo());  
+        dto.setSchedule_category_no(scheduleException.getScheduleCategoryNo());  
         dto.setSchedule_exception_create_date(scheduleException.getScheduleExceptionCreateDate());
         return dto;
     }
@@ -455,7 +458,7 @@ public class ScheduleService {
                 .scheduleExceptionEndDate(pickEndDate)
                 .scheduleExceptionStartTime(scheduleDto.getSchedule_start_time())
                 .scheduleExceptionEndTime(scheduleDto.getSchedule_end_time())
-                .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleCategoryNo(scheduleDto.getSchedule_category_no()) 
                 .scheduleExceptionAllday(scheduleDto.getSchedule_allday())
                 .scheduleExceptionStatus(0L)
                 .build();
@@ -528,12 +531,7 @@ public class ScheduleService {
 	// 참여자 일정
 	public List<Schedule> getAllparticipateSchedules() { 
 	    return scheduleRepository.findByScheduleTypeAndScheduleStatus(2L, 0L);
-	} 
-	
-	// 참여자 정보 
-//	public List<Schedule> getAllparticipateMemberSchedules() { 
-//	    return ScheduleParticipantRepository.  
-//	} 
+	}  
 	
 	// 사원 부서 체크박스 상태 
 	public List<ScheduleCheckDto> getScheduleChecksByMemberNo(Long memberNo) {
@@ -781,10 +779,7 @@ public class ScheduleService {
             Long ownerMemberNo = scheduleDto.getMember_no();
             if (ownerMemberNo != null && !newMemberList.contains(String.valueOf(ownerMemberNo))) {
                 newMemberList.add(String.valueOf(ownerMemberNo));  
-            }
-            
-            
-            System.out.println("newMemberList : " + newMemberList);
+            } 
             
             for (ScheduleParticipantDto participant : existingParticipants) {
                 if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
@@ -810,5 +805,36 @@ public class ScheduleService {
         }
     }
     
+    // 예외 일정 참여자 
+ 	public List<ScheduleParticipantDto> getParticipantsByExceptionReservationNo(Long scheduleExceptionNo) { 
+         List<ScheduleParticipant> participants = scheduleExceptionParticipantRepository.findParticipantsByScheduleNo(scheduleExceptionNo);
+  
+         return participants.stream().map(participant -> { 
+             String memberName = memberRepository.findById(participant.getMemberNo())
+                                                .map(Member::getMemberName)
+                                                .orElse("사원");
+             String positionName = "직위";
+             String departmentName = "부서";
+             
+             Long memberNo = participant.getMemberNo();
+             
+             List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+             
+             Object[] row = memberInfo.get(0);  
+             positionName = (String) row[1];   
+             departmentName = (String) row[2]; 
+              
+              
+             return ScheduleParticipantDto.builder()
+                     .schedule_participant_no(participant.getScheduleParticipantNo())
+                     .schedule_no(participant.getScheduleNo())
+                     .member_no(participant.getMemberNo())
+                     .schedule_participant_status(participant.getScheduleParticipantStatus())
+                     .memberName(memberName)  
+                     .positionName(positionName)   
+                     .departmentName(departmentName)
+                     .build();
+         }).collect(Collectors.toList());
+     }
     
 }
