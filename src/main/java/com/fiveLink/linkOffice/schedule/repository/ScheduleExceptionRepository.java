@@ -13,5 +13,5 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleException;
 public interface ScheduleExceptionRepository extends JpaRepository<ScheduleException, Long>{
 	List<ScheduleException> findByScheduleNo(Long scheduleNo);
 	 
-	List<ScheduleException> findByScheduleExceptionStatus(Long scheduleExceptionStatus);
+	List<ScheduleException> findByScheduleExceptionStatus(Long scheduleExceptionStatus); 
 }

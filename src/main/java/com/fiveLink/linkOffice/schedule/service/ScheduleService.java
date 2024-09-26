@@ -2,6 +2,8 @@ package com.fiveLink.linkOffice.schedule.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipant;
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
@@ -25,6 +28,7 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipantDto;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleCheckRepository;
+import com.fiveLink.linkOffice.schedule.repository.ScheduleExceptionParticipantRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleExceptionRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleParticipantRepository;
 import com.fiveLink.linkOffice.schedule.repository.ScheduleRepeatRepository;
@@ -41,19 +45,22 @@ public class ScheduleService {
     private final ScheduleCheckRepository scheduleCheckRepository;
     private final MemberRepository memberRepository;
     private final ScheduleParticipantRepository scheduleParticipantRepository;
+    private final ScheduleParticipantService scheduleParticipantService;
+    private final ScheduleExceptionParticipantRepository scheduleExceptionParticipantRepository;
     
 	@Autowired
 	public ScheduleService(ScheduleRepository scheduleRepository, ScheduleRepeatRepository scheduleRepeatRepository, ScheduleExceptionRepository scheduleExceptionRepositor, ScheduleExceptionRepository scheduleExceptionRepository, 
-			ScheduleCheckRepository scheduleCheckRepository, MemberRepository memberRepository, ScheduleParticipantRepository scheduleParticipantRepository) { 
+			ScheduleCheckRepository scheduleCheckRepository, MemberRepository memberRepository, ScheduleParticipantRepository scheduleParticipantRepository, ScheduleParticipantService scheduleParticipantService, ScheduleExceptionParticipantRepository scheduleExceptionParticipantRepository) { 
 	    this.scheduleRepository = scheduleRepository; 
 	    this.scheduleRepeatRepository = scheduleRepeatRepository; 
 	    this.scheduleExceptionRepository = scheduleExceptionRepository; 
 	    this.scheduleCheckRepository = scheduleCheckRepository; 
 	    this.memberRepository = memberRepository;
 	    this.scheduleParticipantRepository = scheduleParticipantRepository;
+	    this.scheduleParticipantService = scheduleParticipantService;
+	    this.scheduleExceptionParticipantRepository = scheduleExceptionParticipantRepository;
 	} 
- 
-	
+  
 	public void saveCompanySchedule(ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {
 	    Schedule schedule = Schedule.builder()
 	    		.memberNo(scheduleDto.getMember_no())
@@ -239,7 +246,8 @@ public class ScheduleService {
                 .scheduleExceptionEndDate(scheduleDto.getSchedule_end_date())
                 .scheduleExceptionStartTime(scheduleDto.getSchedule_start_time())
                 .scheduleExceptionEndTime(scheduleDto.getSchedule_end_time())
-                .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleExceptionType(3L) 
                 .scheduleExceptionAllday(scheduleDto.getSchedule_allday())
                 .scheduleExceptionStatus(0L)
                 .build();
@@ -305,7 +313,7 @@ public class ScheduleService {
     
     // 예외 일정 가져오기
     public List<ScheduleException> getAllExceptionSchedules() { 
-	    return scheduleExceptionRepository.findAll();
+	    return scheduleExceptionRepository.findAll(); 
 	}
     
     // 예외 일정 상세
@@ -327,7 +335,7 @@ public class ScheduleService {
         dto.setSchedule_exception_start_time(scheduleException.getScheduleExceptionStartTime());
         dto.setSchedule_exception_end_time(scheduleException.getScheduleExceptionEndTime());
         dto.setSchedule_exception_allday(scheduleException.getScheduleExceptionAllday());
-        dto.setSchedule_exception_category_no(scheduleException.getScheduleExceptionCategoryNo());  
+        dto.setSchedule_category_no(scheduleException.getScheduleCategoryNo());  
         dto.setSchedule_exception_create_date(scheduleException.getScheduleExceptionCreateDate());
         return dto;
     }
@@ -450,7 +458,7 @@ public class ScheduleService {
                 .scheduleExceptionEndDate(pickEndDate)
                 .scheduleExceptionStartTime(scheduleDto.getSchedule_start_time())
                 .scheduleExceptionEndTime(scheduleDto.getSchedule_end_time())
-                .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleCategoryNo(scheduleDto.getSchedule_category_no()) 
                 .scheduleExceptionAllday(scheduleDto.getSchedule_allday())
                 .scheduleExceptionStatus(0L)
                 .build();
@@ -523,12 +531,7 @@ public class ScheduleService {
 	// 참여자 일정
 	public List<Schedule> getAllparticipateSchedules() { 
 	    return scheduleRepository.findByScheduleTypeAndScheduleStatus(2L, 0L);
-	} 
-	
-	// 참여자 정보 
-//	public List<Schedule> getAllparticipateMemberSchedules() { 
-//	    return ScheduleParticipantRepository.  
-//	} 
+	}  
 	
 	// 사원 부서 체크박스 상태 
 	public List<ScheduleCheckDto> getScheduleChecksByMemberNo(Long memberNo) {
@@ -686,4 +689,152 @@ public class ScheduleService {
 	    }
     }
 
+    // 참여자 정보 
+    public List<ScheduleParticipantDto> getParticipantsByScheduleNo(Long scheduleNo) { 
+        List<ScheduleParticipant> participants = scheduleParticipantRepository.findParticipantsByScheduleNo(scheduleNo);
+ 
+        return participants.stream().map(participant -> { 
+            String memberName = memberRepository.findById(participant.getMemberNo())
+                                               .map(Member::getMemberName)
+                                               .orElse("사원");
+            String positionName = "직위";
+            String departmentName = "부서";
+            
+            Long memberNo = participant.getMemberNo();
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+              
+            return ScheduleParticipantDto.builder()
+                    .schedule_participant_no(participant.getScheduleParticipantNo())
+                    .schedule_no(participant.getScheduleNo())
+                    .member_no(participant.getMemberNo())
+                    .schedule_participant_status(participant.getScheduleParticipantStatus())
+                    .memberName(memberName)  
+                    .positionName(positionName)   
+                    .departmentName(departmentName)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+    
+    // 사원 개인 일정 수정
+    public void updateEmployeeSchedule(Long eventId, ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {
+        Schedule existingSchedule = scheduleRepository.findById(eventId)
+            .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+         
+        existingSchedule.setScheduleTitle(scheduleDto.getSchedule_title());
+        existingSchedule.setScheduleComment(scheduleDto.getSchedule_comment());
+        existingSchedule.setScheduleStartDate(scheduleDto.getSchedule_start_date());
+        existingSchedule.setScheduleEndDate(scheduleDto.getSchedule_end_date());
+        existingSchedule.setScheduleAllday(scheduleDto.getSchedule_allday());
+        existingSchedule.setScheduleStartTime(scheduleDto.getSchedule_start_time());
+        existingSchedule.setScheduleEndTime(scheduleDto.getSchedule_end_time());
+        existingSchedule.setScheduleRepeat(scheduleDto.getSchedule_repeat());
+        existingSchedule.setScheduleCategoryNo(scheduleDto.getSchedule_category_no());
+        existingSchedule.setScheduleType(scheduleDto.getSchedule_type());
+        existingSchedule.setDepartmentNo(scheduleDto.getDepartment_no());
+        
+        scheduleRepository.save(existingSchedule);
+ 
+        if (scheduleDto.getSchedule_repeat() != 0) { 
+            ScheduleRepeat existingRepeat = scheduleRepeatRepository.getByScheduleNo(eventId);
+            
+            if (existingRepeat != null) { 
+                existingRepeat.setScheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type());
+                existingRepeat.setScheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())); // 요일
+                existingRepeat.setScheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())); // 주차
+                existingRepeat.setScheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())); // 일자
+                existingRepeat.setScheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())); // 월
+                existingRepeat.setScheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()); 
+ 
+                scheduleRepeatRepository.save(existingRepeat);
+            } else { 
+                ScheduleRepeat repeat = ScheduleRepeat.builder()
+                        .scheduleNo(eventId)
+                        .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
+                        .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
+                        .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
+                        .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
+                        .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
+                        .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
+                        .build();
+ 
+                scheduleRepeatRepository.save(repeat);
+            }
+        }
+    }
+    
+    // 사원 참여자 수정
+    @Transactional
+    public void updateParticipants(ScheduleDto scheduleDto, String selectedMembers) {
+    	
+    	// 참여자 정보 
+        if (selectedMembers != null && !selectedMembers.isEmpty()) { 
+            List<ScheduleParticipantDto> existingParticipants = scheduleParticipantService.getParticipantsByscheduleNo(scheduleDto.getSchedule_no());
+            List<String> newMemberList = new ArrayList<>(Arrays.asList(selectedMembers.split(","))); 
+            
+            Long ownerMemberNo = scheduleDto.getMember_no();
+            if (ownerMemberNo != null && !newMemberList.contains(String.valueOf(ownerMemberNo))) {
+                newMemberList.add(String.valueOf(ownerMemberNo));  
+            } 
+            
+            for (ScheduleParticipantDto participant : existingParticipants) {
+                if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
+                    participant.setSchedule_participant_status(1L);  
+                    scheduleParticipantService.updateParticipantStatus(participant);
+                }
+            }
+ 
+            for (String memberId : newMemberList) {
+                Long memberIdLong = Long.parseLong(memberId.trim());
+                boolean isExisting = existingParticipants.stream()
+                    .anyMatch(participant -> participant.getMember_no().equals(memberIdLong));
+ 
+                if (!isExisting) {
+                	ScheduleParticipantDto newParticipant = ScheduleParticipantDto.builder()
+                        .schedule_no(scheduleDto.getSchedule_no())
+                        .member_no(memberIdLong)
+                        .schedule_participant_status(0L) 
+                        .build();
+                	scheduleParticipantService.save(newParticipant);
+                }
+            }
+        }
+    }
+    
+    // 예외 일정 참여자 
+ 	public List<ScheduleParticipantDto> getParticipantsByExceptionReservationNo(Long scheduleExceptionNo) { 
+         List<ScheduleParticipant> participants = scheduleExceptionParticipantRepository.findParticipantsByScheduleNo(scheduleExceptionNo);
+  
+         return participants.stream().map(participant -> { 
+             String memberName = memberRepository.findById(participant.getMemberNo())
+                                                .map(Member::getMemberName)
+                                                .orElse("사원");
+             String positionName = "직위";
+             String departmentName = "부서";
+             
+             Long memberNo = participant.getMemberNo();
+             
+             List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+             
+             Object[] row = memberInfo.get(0);  
+             positionName = (String) row[1];   
+             departmentName = (String) row[2]; 
+              
+              
+             return ScheduleParticipantDto.builder()
+                     .schedule_participant_no(participant.getScheduleParticipantNo())
+                     .schedule_no(participant.getScheduleNo())
+                     .member_no(participant.getMemberNo())
+                     .schedule_participant_status(participant.getScheduleParticipantStatus())
+                     .memberName(memberName)  
+                     .positionName(positionName)   
+                     .departmentName(departmentName)
+                     .build();
+         }).collect(Collectors.toList());
+     }
+    
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
@@ -225,8 +226,7 @@ public class ScheduleApiController {
 			ScheduleRepeatDto dto = ScheduleRepeatDto.toDto(scheduleRepeat);
 			scheduleRepeatDtos.add(dto);
 		}
-
-		System.out.println("scheduleRepeatDtos : " + scheduleRepeatDtos);
+ 
 		return scheduleRepeatDtos;
 	}
 
@@ -260,8 +260,6 @@ public class ScheduleApiController {
 	@PostMapping("/company/schedule/edit/{eventId}")
 	@ResponseBody
 	public String editSchedule(@PathVariable("eventId") Long eventId, @RequestBody Map<String, Object> request) {
-		System.out.println("Received data: " + request);
-
 		ScheduleDto scheduleDto = new ScheduleDto();
 		ScheduleRepeatDto scheduleRepeatDto = new ScheduleRepeatDto();
 
@@ -427,8 +425,7 @@ public class ScheduleApiController {
 			ScheduleExceptionDto dto = ScheduleExceptionDto.toDto(scheduleException);
 			scheduleExceptionDtos.add(dto);
 		}
-
-		System.out.println("scheduleExceptionDtos : " + scheduleExceptionDtos);
+ 
 		return scheduleExceptionDtos;
 	}
 	
@@ -470,7 +467,7 @@ public class ScheduleApiController {
 		scheduleExceptionDto.setSchedule_exception_allday(Boolean.TRUE.equals(request.get("allDay")) ? 1L : 0L);
 		scheduleExceptionDto.setSchedule_exception_start_time((String) request.get("startTime"));
 		scheduleExceptionDto.setSchedule_exception_end_time((String) request.get("endTime"));
-		scheduleExceptionDto.setSchedule_exception_category_no(getLongValue(request.get("category")));
+		scheduleExceptionDto.setSchedule_category_no(getLongValue(request.get("category")));
 
 		scheduleService.updateCompanyExceptionSchedule(eventId, scheduleExceptionDto);
 
@@ -601,7 +598,7 @@ public class ScheduleApiController {
 		for (Schedule schedule : schedules) {
 			ScheduleDto dto = ScheduleDto.toDto(schedule);
 			personalResult.add(dto);
-		}  
+		}   
 		return personalResult;
 	} 
 	 
@@ -912,5 +909,101 @@ public class ScheduleApiController {
 	    }
 	    return resultMap; 
 	}
+	
+	// 수정 참여자 정보
+	@GetMapping("/employee/schedule/participate/{scheduleNo}")
+	@ResponseBody
+	public Map<String, Object> getScheduleParticipant(@PathVariable("scheduleNo") Long scheduleNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByScheduleNo(scheduleNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
+	
+	// 사원 일반 수정
+	@ResponseBody
+	@PostMapping("/employee/schedule/edit/{eventId}/{scheduleEditType}")
+	public Map<String, Object> getEmployeeScheduleById(@PathVariable("eventId") Long eventId, @PathVariable("scheduleEditType") String scheduleEditType, @RequestBody Map<String, Object> request) {
 
+	    Map<String, Object> resultMap = new HashMap<>();
+	    System.out.println("eventNo : " + eventId);
+	    System.out.println("scheduleEditType : " + scheduleEditType);
+	     
+	    try {  
+	    	ScheduleDto scheduleDto = new ScheduleDto();
+	    	ScheduleRepeatDto scheduleRepeatDto = new ScheduleRepeatDto();
+ 
+	    	scheduleDto.setSchedule_no(eventId);
+	    	scheduleDto.setSchedule_title((String) request.get("title"));
+	    	scheduleDto.setSchedule_comment((String) request.get("description"));
+	    	scheduleDto.setSchedule_start_date((String) request.get("startDate"));
+	    	scheduleDto.setSchedule_end_date((String) request.get("endDate"));
+	    	scheduleDto.setSchedule_allday(Boolean.TRUE.equals(request.get("allDay")) ? 1L : 0L);
+	    	scheduleDto.setSchedule_start_time((String) request.get("startTime"));
+	    	scheduleDto.setSchedule_end_time((String) request.get("endTime"));
+	    	scheduleDto.setSchedule_category_no(getLongValue(request.get("category")));
+	    	scheduleDto.setSchedule_type(getLongValue(request.get("schedule_type")));
+	    	scheduleDto.setDepartment_no(getLongValue(request.get("department_no")));
+	    	scheduleDto.setMember_no(getLongValue(request.get("memberNo")));
+ 
+	    	Long repeatValue = getLongValue(request.get("repeat"));
+	    	scheduleDto.setSchedule_repeat(repeatValue != null && repeatValue != 0 ? 1L : 0L);
+	    	if (repeatValue != null && repeatValue != 0) {
+	    	    scheduleRepeatDto.setSchedule_repeat_type(repeatValue);
+	    	    scheduleRepeatDto.setSchedule_repeat_day(getLongValue(request.get("schedule_day_of_week")));
+	    	    scheduleRepeatDto.setSchedule_repeat_week(getLongValue(request.get("schedule_week")));
+	    	    scheduleRepeatDto.setSchedule_repeat_date(getLongValue(request.get("schedule_date")));
+	    	    scheduleRepeatDto.setSchedule_repeat_month(getLongValue(request.get("schedule_month")));
+	    	    scheduleRepeatDto.setSchedule_repeat_end_date((String) request.get("repeatEndDate"));
+	    	}
+	    	
+	    	String selectedMembers = (String) request.get("selectedMembers");
+	    	switch (scheduleEditType) {
+	    	    case "0": // 개인 일정
+	    	    case "1": // 부서 일정 
+	    	        scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
+	    	        scheduleService.updateParticipants(scheduleDto, selectedMembers); 
+	    	        break;
+
+	    	    case "2": // 참여자 일정  
+    	            scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
+    	            scheduleService.updateParticipants(scheduleDto, selectedMembers); 
+	    	        break;
+
+	    	    default:
+	    	        resultMap.put("res_code", "400");
+	    	        resultMap.put("res_msg", "잘못된 scheduleEditType 값입니다.");
+	    	        return resultMap;
+	    	}
+
+	    	resultMap.put("res_code", "200");
+	    	resultMap.put("res_msg", "성공적으로 처리되었습니다.");
+	    	return resultMap;
+
+ 
+	    } catch (Exception e) {
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "서버 오류가 발생했습니다.");
+	        e.printStackTrace();
+	    }
+
+	    return resultMap;
+	}
+
+	// 예외 일정 참여자 정보  
+	@GetMapping("/api/participate/member/schedules/exception/{scheduleExceptionNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMemberExceptionSchedules(@PathVariable("scheduleExceptionNo") Long scheduleExceptionNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleExceptionNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
+	 
 }

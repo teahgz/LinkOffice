@@ -296,6 +296,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			    document.getElementById('eventDate').dispatchEvent(new Event('change'));
     
 			    document.getElementById('eventModal').style.display = 'block';
+			    const submitButton = document.getElementById('create_modal_submit');
+				submitButton.textContent = '저장';
 		    }
         });
 
@@ -525,6 +527,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
 	// 등록 모달 열기
 	document.getElementById('addEventBtn').addEventListener('click', function() {
+		const submitButton = document.getElementById('create_modal_submit');
+		submitButton.textContent = '저장';
 		document.getElementById('eventModal').style.display = 'block';
 	});
 
@@ -539,10 +543,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			confirmButtonText: '확인',
 			cancelButtonText: '취소',
 		}).then((result) => {
-			if (result.isConfirmed) {
+			if (result.isConfirmed) { 
 				document.getElementById('eventModal').style.display = 'none';
-				resetForm(createCompanyScheduleForm);
-				document.getElementById('eventRepeatModal').style.display = 'none';
+				resetForm(createCompanyScheduleForm); 
+				document.getElementById('eventRepeatModal').style.display = 'none'; 
 			}
 		});
 	});
@@ -670,8 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 일정 등록 
 	document.getElementById('eventForm').addEventListener('submit', function(event) {
 		const type_form = document.getElementById('create_modal_submit').innerText;
-	    event.preventDefault();
-   		
+	    event.preventDefault(); 
 		
 	    const title = document.getElementById('eventTitle').value.trim();
 	    const category = document.getElementById('category').value;
@@ -788,8 +791,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		// 수정
 		else {
-			const isRecurring = document.getElementById('isRecurring').value;   
-		    
+			const isRecurring = document.getElementById('isRecurring').value;    
 		    if (isRecurring === "1") {   
 		        openEventRepeatModal();
 		    } else { 
