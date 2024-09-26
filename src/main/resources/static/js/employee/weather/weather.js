@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const weatherIcon = document.getElementById("weather_icon");
     const temp = document.getElementById("weather_now_temp");
-    const tempMaxDiv = document.getElementById("weather_temp_max_min");
-   
+    const tempMaxDiv = document.getElementById("weather_temp_max");
+    const tempMinDiv = document.getElementById("weather_temp_min");
+    
     const popDiv = document.getElementById("weather_pop");
     const humidityDiv = document.getElementById("weather_humidity");
 
@@ -69,15 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(item.fcstValue === '0'){
                         weatherInfo.forEach(innerItem => {
                             if(innerItem.category === 'SKY' && innerItem.fcstTime === currentDateTime.now) {
-                                if(innerItem.fcstValue === '0') {
+                                if(innerItem.fcstValue === '1') {
                                     weatherIcon.setAttribute('src', '/img/weather_sunny.png');
-                                } else if(innerItem.fcstValue === '3') {
+                                } else if(innerItem.fcstValue === '2' || innerItem.fcstValue === '3') {
                                     weatherIcon.setAttribute('src', '/img/weather_cloud.png');
-                                } else if(innerItem.fcstValue === '4') {
-                                    weatherIcon.setAttribute('src', '/img/weather_cloudy.png');
                                 } else{
-									weatherIcon.setAttribute('src', '/img/weather_sunny.png');
-								}
+                                    weatherIcon.setAttribute('src', '/img/weather_cloudy.png');
+                                } 
                             }
                         });
                     } else if(item.fcstValue === '1'){
@@ -93,18 +92,17 @@ document.addEventListener('DOMContentLoaded', function() {
 					popDiv.innerText = "강수확률 " + item.fcstValue + "%";
 				} else if(item.category === "REH"){
 					humidityDiv.innerText = "습도 " + item.fcstValue + "%";
-				} else if(item.category === "WSD"){
-					
-				}
-            } else if(item.category === 'TMN') { 
+				} 
+            }           
+            if(item.category === 'TMN') { 
                 tempMin = Math.floor(item.fcstValue);
             } else if(item.category === 'TMX') { 
                 tempMax = Math.floor(item.fcstValue);
             } 
         });       
         temp.innerText = temperature + "°C";
-        tempMaxDiv.innerText = tempMin + "°C / " + tempMax + "°C"; 
-         
+        tempMinDiv.innerText = "최저기온 " + tempMin + "°C";
+        tempMaxDiv.innerText = "최고기온 " + tempMax + "°C";
     }
     getWeather();
 });
