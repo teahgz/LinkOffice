@@ -117,8 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
 	        success: function(data) {
-	            parMemberNos = data.participants.map(participant => participant.member_no);
-
+	            parMemberNos = data.participants.map(participant => participant.member_no); 
 	            callback(parMemberNos);
 	        },
 	        error: function(error) {
@@ -152,7 +151,8 @@ document.addEventListener('DOMContentLoaded', function() {
             processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents);
             processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents);
 
-            initializeCalendar(allEvents);
+            initializeCalendar(allEvents); 
+            console.log(allEvents.participateSchedules);
             filterEvents();
         });
     }
@@ -215,6 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
             eventEnd.setHours(new Date(schedule.schedule_end_date).getHours());
             eventEnd.setMinutes(new Date(schedule.schedule_end_date).getMinutes());
         }  
+        
+        if (schedule.schedule_allday === 1 && eventEnd) {
+	        eventEnd.setDate(eventEnd.getDate() + 1);
+	    }
+    
         var event = {
             order: 1,
             id: schedule.schedule_no,
@@ -238,7 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 endTime: schedule.schedule_allday === 0 ? schedule.schedule_end_time : null,
                 department_no: schedule.department_no,
                 member_no: schedule.member_no,
-                participant_no: schedule.member_no ? [] : [],
+                participant_no: [],
+                participantsLoaded: false,
                 isException: schedule.isException || false
             }
         };
@@ -246,18 +252,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (type === 'participateResult') {
             searchParticipate(schedule.schedule_no, function(participantNos) {
                 event.extendedProps.participant_no = participantNos;
+                event.extendedProps.participantsLoaded = true;
+                calendar.getEventById(event.id).setExtendedProp('participant_no', participantNos);
+                calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
+                filterEvents();   
             });
-        }
-    
+        }  
         return event;
     }
 
     function createExceptionEvent(exceptionEvent, currentDate, type) {
-        const endDate = exceptionEvent.schedule_exception_end_date ? new Date(exceptionEvent.schedule_exception_end_date) : null;
-    
-        if (endDate) { 
-            endDate.setDate(endDate.getDate() + 1);
-        }
+       const startDate = new Date(exceptionEvent.schedule_exception_start_date);
+	    let endDate = exceptionEvent.schedule_exception_end_date ? new Date(exceptionEvent.schedule_exception_end_date) : null;
+	 
+	    if (!exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time && endDate) {
+	        endDate.setDate(endDate.getDate() + 1);
+	    }
     
        var event = {
             order: 1,
@@ -424,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    
 	    calendar.getEvents().forEach(function(event) {
 	        const eventDepartmentNo = event.extendedProps.department_no;
-	        const participantNos = event.extendedProps.participant_no || [];
+	        const participantNos = event.extendedProps.participant_no || []; 
 	        
 	        let shouldDisplay = false;  
 	
@@ -434,8 +444,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	        } 
 	        // 참여자 일정
 	        else if (event.extendedProps.type === 'participateResult') {
-	            shouldDisplay = participantNos.includes(parseInt(memberNo));  
-	        } 
+                if (event.extendedProps.participantsLoaded) {
+                    shouldDisplay = participantNos.includes(parseInt(memberNo));
+                } else { 
+                    shouldDisplay = true;
+                }
+            }  
 	        // 전사 일정
 	        else if (event.extendedProps.type === 'scheduleDtos') { 
 	            shouldDisplay = companyChecked; 
