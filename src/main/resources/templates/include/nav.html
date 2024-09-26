@@ -87,7 +87,7 @@
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/document/personal/{no}(no=${member.member_no})}">개인 문서함</a></li>
  							<li><a th:href="@{/employee/document/department/{no}(no=${member.department_no}, memberNo=${member.member_no})}">부서 문서함</a></li>
-							<li><a th:href="@{/employee/document/company(memberNo=${member.member_no})}">사내 문서함</a></li> 
+							<li><a th:href="@{/employee/document/company(memberNo=${member.member_no})}">사내 문서함</a></li>
 							<li><a th:href="@{/employee/document/bin/{no}(no=${member.member_no})}">휴지통</a></li>
 						</ul>
 					</div>
@@ -107,7 +107,7 @@
 					<div class="dropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/department}">부서 관리</a></li>
-							<li><a th:href="@{/position}">직위 관리</a></li> 
+							<li><a th:href="@{/position}">직위 관리</a></li>
 						</ul>
 					</div>
 				</li>

@@ -574,6 +574,7 @@ if (sendButton && messageInput) {
            }
        }
    };
+
      // chatList가 없을 경우 생성하는 함수
      function createChatListIfNotExists() {
          let chatList = document.getElementById('chatList');
@@ -613,6 +614,11 @@ if (sendButton && messageInput) {
         };
         socket.send(JSON.stringify(message));
         document.getElementById("messageInput").value = "";
+        alarmSocket.send(JSON.stringify({
+           type: 'noficationChat',
+           chat_sender_no: chat_sender_no,
+           chat_room_no: currentChatRoomNo
+        }));
 
     };
 

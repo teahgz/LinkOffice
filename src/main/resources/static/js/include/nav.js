@@ -27,6 +27,7 @@ document.querySelectorAll('#nav_wrap > ul > li > a').forEach(anchor => {
         });
 
         function handleChildClick(event) {
+            event
             event.stopPropagation();
             const childDropdown = this.nextElementSibling;
             const childLi = this.parentElement;

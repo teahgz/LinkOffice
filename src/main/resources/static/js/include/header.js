@@ -41,3 +41,63 @@ document.addEventListener('click', function(event) {
        dropdownMenu.classList.remove('show');
     }
 });
+
+//알림 모달
+const modal = document.getElementById("notification-modal");
+const closeButton = document.querySelector(".close-notification-modal");
+
+function showNotification(message) {
+    document.getElementById("notification-message").textContent = message;
+    modal.style.display = "block";
+    setTimeout(() => {
+            modal.style.display = "none"; // 모달 닫기
+        }, 5000);
+}
+
+closeButton.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+
+// 웹소켓 선언 (공용)
+// 전역 웹소켓 변수
+let alarmSocket;
+
+function connectWebSocket() {
+    if (!alarmSocket || alarmSocket.readyState === WebSocket.CLOSED) {
+        alarmSocket = new WebSocket(`ws://localhost:8080/websocket/notifications`);
+
+        alarmSocket.onopen = function() {
+            console.log("웹소켓이 연결되었습니다.");
+        };
+
+        alarmSocket.onclose = function(event) {
+            console.log("웹소켓 연결이 해제되었습니다.", event);
+            // 필요시 재연결 로직
+        };
+
+        alarmSocket.onerror = function(error) {
+            console.error("에러 발생", error);
+        };
+
+        alarmSocket.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            if (message.type === 'chatAlarm') {
+                // 알림 메시지를 처리하는 로직
+                console.log(message);
+                showNotification(message.data);
+            }
+        };
+
+
+    }
+}
+if (!alarmSocket) {
+    connectWebSocket();
+}
+//------ 수정불가 ------
