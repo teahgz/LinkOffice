@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiveLink.linkOffice.chat.service.ChatMemberService;
 import com.fiveLink.linkOffice.chat.service.ChatMessageService;
 import com.fiveLink.linkOffice.chat.service.ChatRoomService;
+import com.fiveLink.linkOffice.nofication.domain.NoficationDto;
+import com.fiveLink.linkOffice.nofication.respository.NoficationRepository;
+import com.fiveLink.linkOffice.nofication.service.NoficationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -21,10 +24,12 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
     // 모든 세션 관리
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
     private final ChatRoomService chatRoomService;
+    private final NoficationService noficationService;
 
     @Autowired
-    public NoficationWebSocketHandler(ChatRoomService chatRoomService) {
+    public NoficationWebSocketHandler(ChatRoomService chatRoomService, NoficationService noficationService) {
         this.chatRoomService = chatRoomService;
+        this.noficationService = noficationService;
 
     }
     @Override
@@ -79,24 +84,33 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 
         List<Map<String, Object>> unreadCounts = new ArrayList<>();
         List<Long> userIdsInChatRoom = chatRoomService.findChatRoomMembers(currentRoom, senderNo);
+        String nofication_content = "메신저가 도착했습니다.";
+        String nofication_title = "메신저";
+        int nofication_type = 1;
 
         for (Long memberNo : userIdsInChatRoom)  {
-            Map<String, Object> memberUnreadCount = new HashMap<>();
-            memberUnreadCount.put("memberNo", memberNo);
+            NoficationDto noficationDto = new NoficationDto();
+            noficationDto.setNofication_content(nofication_content);// 알림내용
+            noficationDto.setNofication_receive_no(memberNo);//알림 받는 사람
+            noficationDto.setNofication_title(nofication_title);//알림 제목
+            noficationDto.setNofication_type(nofication_type);//본인 기능 타입
+            noficationDto.setMember_no(senderNo);//보내는 사람
 
-            memberUnreadCount.put("chatRoomNo", currentRoom);
+            if(noficationService.insertAlarm(noficationDto) > 0){
+                Map<String, Object> memberUnreadCount = new HashMap<>();
+                memberUnreadCount.put("memberNo", memberNo);
+                memberUnreadCount.put("chatRoomNo", currentRoom);
+                unreadCounts.add(memberUnreadCount);
+            }
 
-            unreadCounts.add(memberUnreadCount);
         }
-
-
         for (WebSocketSession s : sessions.values()) {
             if (s.isOpen()) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("type", "chatAlarm");
-                responseMap.put("title", "메신저");
-                responseMap.put("content", "메시지가 도착했습니다.");
+                responseMap.put("title", nofication_title);
+                responseMap.put("content", nofication_content);
                 responseMap.put("data", unreadCounts);
                 String unreadMessage = objectMapper.writeValueAsString(responseMap);
                 s.sendMessage(new TextMessage(unreadMessage));

@@ -4,7 +4,9 @@
 
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
-
+	<div style="display:none;" th:each = "member : ${memberdto}">
+		<input type ="hidden" id="currentMember" th:value="${member.member_no}"/>
+	</div>
 	<div id="nav_wrap" >
 		<ul>
 			<li>
@@ -173,6 +175,11 @@
 
 
 	</nav>
+
+	<!-- 알림 모달  -->
+	<div id="notificationContainer">
+		<!--   동적 추가     -->
+	</div>
 	<script th:src="@{/js/include/nav.js}"></script>
 </th:block>
 
