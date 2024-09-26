@@ -98,6 +98,7 @@
                 	<a class="main_link" th:href="@{/employee/member/list}">
 	                	<img th:src="@{/img/main_address_book.png}" alt="address_book" class="address_book_img"/>
 	                	<h3>주소록</h3>
+	                	
 	                </a>
                 </div>  
             </div>
@@ -114,9 +115,27 @@
 			            <a th:href="@{/employee/approval/create}" class="approval_btn app_primary">결재 작성</a>
 			        </div>
 			        <ul class="approval-status">
-			            <li><a class="app_ata" th:href="@{/employee/approval/progress}"><span>진행함</span> <span th:text="${progressCount}"></span></a></li>
-			            <li><a class="app_ata" th:href="@{/employee/approval/history}"><span>내역함</span> <span th:text="${approvalCount}"></span></a></li>
-			            <li><a class="app_ata" th:href="@{/employee/approval/references}"><span>참조함</span> <span th:text="${referenceCount}"></span></a></li>
+			            <li>
+			            	<a class="app_ata" th:href="@{/employee/approval/progress}">
+			            	<span>진행함</span> 
+			            	<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow"/>
+			            	</a>
+			            	<span th:text="${progressCount}"></span>
+			            </li>
+			            <li>
+				            <a class="app_ata" th:href="@{/employee/approval/history}">
+				            <span>내역함</span> 
+			            	<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow"/>				            
+				            </a>
+				            <span th:text="${approvalCount}"></span>
+			            </li>
+			            <li>
+				            <a class="app_ata" th:href="@{/employee/approval/references}">
+				            <span>참조함</span>
+							<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow"/> 
+				            </a>
+				            <span th:text="${referenceCount}"></span>
+			            </li>
 			        </ul>
                 </div>
                 <div class="main_item_box custom-height-11"> 

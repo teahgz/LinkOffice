@@ -307,28 +307,35 @@ section {
         
         .app_ata{
         	text-decoration: none;
+        	display:flex;
         }
-.approval_btn_con {
-    display: flex;
-    justify-content: space-between;
-}
+		.approval_btn_con {
+		    display: flex;
+		    justify-content: space-between;
+		}
 
-.approval_btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-decoration: none;
-    margin-top:20px;
-}
+		.approval_btn {
+		    padding: 10px 20px;
+		    border: none;
+		    border-radius: 10px;
+		    font-weight: bold;
+		    cursor: pointer;
+		    transition: background-color 0.3s;
+		    text-decoration: none;
+		    margin-top:20px;
+		}
+		
+		.app_primary {
+		    background-color: #B1C2DD;
+		    color: #000000;
+		}
 
-.app_primary {
-    background-color: #B1C2DD;
-    color: #000000;
-}
-
-.app_primary:hover {
-    transform: scale(0.98);
-}
+		.app_primary:hover {
+		    transform: scale(0.98);
+		}
+		.app_arrow{
+			width: 15px;
+		    height: 15px;
+		    padding-top: 3px;
+		    margin-left: 2px;
+		}
