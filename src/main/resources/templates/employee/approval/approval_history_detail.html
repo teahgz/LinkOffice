@@ -11,11 +11,11 @@
             	<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}" >
                 <div class="main_container">
                     <div class="details_section">
+						<div class="title_button_container">
                     	<button type="button" id="previewButton" class="preview_button">미리보기</button>
-						        <div class="reject_button_container">
 						            <button type="button" class="reject_button" th:each="flow : ${approvaldto.flows}" 
 						            	th:if="${flow.approval_flow_status == 1 and flow.member_no == currentUserMemberNo and approvaldto.approval_status == 0}" onclick="approvalReject()">반려</button>
-						        </div>
+						 </div>
 						        
 						<div class="approval_line_section">
 						    <table class="approval_line_table">

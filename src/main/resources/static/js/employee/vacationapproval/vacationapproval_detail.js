@@ -64,13 +64,11 @@
 	    
 	    previewButton.addEventListener('click', function () {
 	
-	    // 미리볼 내용을 가져옵니다.
 		const approvalLineTable = document.querySelector('.approval_line_table').outerHTML.replace(/<button[^>]*>(.*?)<\/button>/g, '');
 	    const title = document.querySelector('.vacation_title').outerHTML;
 	    const field = document.querySelector('#vacationapproval_title').outerHTML;
 	    const contentSection = document.querySelector('.vacationapproval_content').outerHTML;
 	
-	    // HTML 구조를 만듭니다.
 	   			var windowW = 1000;
 			    var windowH = 900;
 			    var winHeight = document.body.clientHeight;
@@ -192,7 +190,18 @@
 							font-size:30px;
 							margin-left: 40px;
 						}
+						.reference_box {
+						    display: flex;
+						    flex-wrap: wrap;
+						    gap: 10px;
+						}
 						
+						.reference_box > div {
+						    background-color: #f2f2f2;
+						    padding: 5px 10px;
+						    border-radius: 3px;
+						    font-size: 14px;
+						}						
 			        </style>
 			    `);
 			    
