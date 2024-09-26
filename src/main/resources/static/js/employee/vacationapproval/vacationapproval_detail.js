@@ -95,49 +95,98 @@
 						    display: flex;
 						    justify-content: space-between;
 						    align-items: center;
-						    width: 700px;
 						    margin: auto;
 						    margin-bottom: 20px						
 						}
 						.approval_line_table {
-						    margin: auto;
-						    width: 700px;
 						    border-collapse: collapse;
+						    width: 75%; 
+						    margin-left: auto; 
+						}		
+
+						.approval_line_table th {
+						    background-color: #f2f2f2;
+						    font-weight: bold;
+						    width: 10%; 
+						    border: 1px solid #ccc;
+						    padding: 5px; 
+						    text-align: center;
+						    vertical-align: middle;
+						    font-size: 12px; 
 						}
-						.section_separator {
-							border: none;
-						    border-top: 1px solid #ddd;
-						    width: 700px;
-						    margin-top: 20px;
-						}					
-						.solid{
-							border: 1px solid #ddd;
+						
+						.approval_line_table td {
+						    width: 100px; 
+						    border: 1px solid #ccc;
+						    padding: 5px; 
+						    text-align: center;
+						    vertical-align: middle;
+						    font-size: 12px; 
 						}
-			            .approval_line_table th, .approval_line_table td {
-			                border: 1px solid #ccc;
-			                padding: 10px;
-			                text-align: center;
-			                vertical-align: middle;
-			            }
-			            .approval_line_table td {
-			                min-height: 50px; 
-			                width: 100px; 
-			            }
-			            .approval_line_table th {
-			                background-color: #f2f2f2;
-			                font-weight: bold;
-			                width: 100px;
-			            }
-			            #strong {
-			                background-color: #f2f2f2;
-			            }
-			            .signature_box {
-			                display: flex;
-			                flex-direction: column;
-			                align-items: center;
-			                justify-content: center;
-			                height: 60px;
-			            }
+						
+						.signature_box {
+						    height: 40px; 
+						    width: 50px;
+						    align-content: center;
+						    margin: auto;
+						}
+						
+						.signature_box img, .signature_box .currentSignature {
+						    max-height: 25px;
+						}
+						
+						.date_box {
+						    font-size: 8px; 
+						    width: 50px;
+						    margin: auto;
+						}
+						
+						.approval_status {
+						    font-size: 12px; 
+						    padding: 1px 3px; 
+						}
+						
+						
+						.reference_box {
+						    display: flex;
+						    flex-wrap: wrap;
+						    gap: 10px;
+						}
+						.approval_status.approved {
+						    background-color: #e6f3e6;
+						    color: #4CAF50;
+						}
+						
+						.approval_status {
+						    font-size: 13px;
+						    font-weight: bold;
+						    padding: 2px 5px;
+						    border-radius: 3px;
+						    display: inline-block;
+						}
+						
+						.approved {
+						    background-color: #e6f3e6;
+						    color: #4CAF50;
+						}
+						
+						.pending {
+						    background-color: #fff8e1;
+						    color: #FFC107;
+						}
+						
+						.rejected {
+						    background-color: #ffebee;
+						    color: #F44336;
+						}
+						
+						.reference_box > div {
+						    background-color: #f2f2f2;
+						    padding: 5px 10px;
+						    border-radius: 3px;
+						    font-size: 10px;
+						}
+
 			            .ck-table-resized {
 			                width: 100%;
 			                border-collapse: collapse;
@@ -173,18 +222,7 @@
 	    					width: 780px;
 						    margin-left: 10px;
 						}
-					  .signature_box {
-					    display: flex;
-					    flex-direction: column;
-					    align-items: center;
-					    justify-content: center;
-					    height: 60px;
-						}
-						
-						.signature_box img, .signature_box .currentSignature {
-						    max-width: 70%;
-						    max-height: 40px;
-						    display: block;
+
 						}
 						#vacationapproval_title{
 							font-size:30px;

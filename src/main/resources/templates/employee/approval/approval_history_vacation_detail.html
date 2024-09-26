@@ -10,9 +10,9 @@
             	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
             	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
                 <div class="main_container">
-                	<button type="button" id="previewButton" class="preview_button">미리보기</button> 
-                        <p class="vacation_title">휴가 신청서</p>
-						 <div class="reject_button_container">
+						 <div class="title_button_container">
+		                	<button type="button" id="previewButton" class="preview_button">미리보기</button> 
+                        	<p class="vacation_title">휴가 신청서</p>
 						   <button type="button" class="reject_button" th:each="flow : ${vacationapprovaldto.flows}" 
 						            	th:if="${flow.vacation_approval_flow_status == 1 and flow.member_no == currentUserMemberNo and vacationapprovaldto.vacation_approval_status == 0}" onclick="approvalReject()">반려</button>
 						 </div>                        

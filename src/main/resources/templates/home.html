@@ -19,13 +19,6 @@
 						<span class="employee-position" th:text="${member.position_name}"></span>
 					</div>
 				</div>
-				<hr class="divider">
-				<h3 class="approval-title">전자결재</h3>
-				<ul class="approval-status">
-					<li><span>진행함</span> <span th:text="${progressCount}"></span></li>
-					<li><span>내역함</span> <span th:text="${approvalCount}"></span></li>
-					<li><span>참조함</span> <span th:text="${referenceCount}"></span></li>
-				</ul>
 			</div>
 			<div class="main_item_box left-bottom custom-height-2">
             	<a class="main_link" th:href="@{/일정 링크}">
@@ -116,8 +109,15 @@
                 	<h3>통합 알림</h3>
                 </div>
                 <div class="main_item_box custom-height-10"> 
-                	<h3>점심</h3>
-                	<a class="main_link" th:href="@{/organizationChart}">조직도</a>
+			        <div class="approval_btn_con">
+			        <h3 class="approval-title">전자결재</h3>
+			            <a th:href="@{/employee/approval/create}" class="approval_btn app_primary">결재 작성</a>
+			        </div>
+			        <ul class="approval-status">
+			            <li><a class="app_ata" th:href="@{/employee/approval/progress}"><span>진행함</span> <span th:text="${progressCount}"></span></a></li>
+			            <li><a class="app_ata" th:href="@{/employee/approval/history}"><span>내역함</span> <span th:text="${approvalCount}"></span></a></li>
+			            <li><a class="app_ata" th:href="@{/employee/approval/references}"><span>참조함</span> <span th:text="${referenceCount}"></span></a></li>
+			        </ul>
                 </div>
                 <div class="main_item_box custom-height-11"> 
             		<h3>날씨</h3>

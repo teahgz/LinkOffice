@@ -46,7 +46,6 @@ body {
 section {
     flex: 1;
     padding: 20px;
-    background: #f0f0f0;
     gap: 15px;
     min-height: 680px;
 }

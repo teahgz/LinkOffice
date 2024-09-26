@@ -3,37 +3,130 @@
 .container {
     display: flex;
     justify-content: center;
-    width: 100%;
 }
 
 .main_container {
+	width: 60%;
     background-color: #f8f9fa;
-    border-radius: 12px;
-    max-width: 900px;
-    width: 100%;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 80px 30px;
+    padding: 40px 50px 40px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     position: relative;
 }
-
 .title_button_container{
+    justify-content: center;
+    display: flex;
+}
+.approval_line_section{
 	display: flex;
-    justify-content: space-between;   
+    justify-content: center;	
+}
+.vacation_title{
+    padding-right: 70px;
+    margin: auto;
+    font-size: 20px;
 }
 
-.vacation_title{
-	display: flex;
-    justify-content: center;
-    font-size: 30px;
+.approval_line_table {
+    border-collapse: collapse;
 }
+
+.approval_line_table td {
+	width: 150px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.approval_line_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    width: 15%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.signature_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+}
+
+.signature_box img, .signature_box .currentSignature {
+    max-width: 70%;
+    max-height: 40px;
+    display: block;
+}
+
+.date_box {
+    font-size: 12px;
+    color: #666;
+}
+
+.approval_status.approved {
+    background-color: #e6f3e6;
+    color: #4CAF50;
+}
+
+.approval_status {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.approved {
+    background-color: #e6f3e6;
+    color: #4CAF50;
+}
+
+.pending {
+    background-color: #fff8e1;
+    color: #FFC107;
+}
+
+.rejected {
+    background-color: #ffebee;
+    color: #F44336;
+}
+
+.reference_box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reference_box > div {
+    background-color: #f2f2f2;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+.field{
+    width: 100%;
+    margin: auto;
+}
+
+#vacationapproval_title{
+	font-size:20px;
+}
+
 .content_section {
+    align-content: center;
+    align-content: center;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    border:solid 1px #ddd;
+    border: solid 1px #ddd;
 }
 
 .text_field {
@@ -224,88 +317,7 @@
     font-size: 12px;
     color: #6c757d;
 }
-.approval_line_section {
-    margin-top: 20px;
-}
 
-.approval_line_table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-.approval_line_table th, .approval_line_table td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.approval_line_table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    width: 100px;
-}
-
-.signature_box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 60px;
-}
-
-.signature_box img, .signature_box .currentSignature {
-    max-width: 70%;
-    max-height: 40px;
-    display: block;
-}
-
-.date_box {
-    font-size: 12px;
-    color: #666;
-}
-
-.approval_status.approved {
-    background-color: #e6f3e6;
-    color: #4CAF50;
-}
-
-.approval_status {
-    font-size: 14px;
-    font-weight: bold;
-    padding: 2px 5px;
-    border-radius: 3px;
-    display: inline-block;
-}
-
-.approved {
-    background-color: #e6f3e6;
-    color: #4CAF50;
-}
-
-.pending {
-    background-color: #fff8e1;
-    color: #FFC107;
-}
-
-.rejected {
-    background-color: #ffebee;
-    color: #F44336;
-}
-
-.reference_box {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.reference_box > div {
-    background-color: #f2f2f2;
-    padding: 5px 10px;
-    border-radius: 3px;
-    font-size: 14px;
-}
 
 #vacationapproval_flow_reject_reason {
     text-align: center; 
@@ -482,9 +494,7 @@
 	font-size: 17px;
 }
 
-#vacationapproval_title{
-	font-size:30px;
-}
+
 .preview_button {
     padding: 8px 15px;
     background-color: #f9e1e1; 
