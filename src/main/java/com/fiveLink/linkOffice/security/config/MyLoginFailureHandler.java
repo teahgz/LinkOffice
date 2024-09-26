@@ -41,10 +41,8 @@ public class MyLoginFailureHandler implements AuthenticationFailureHandler {
             errorMsg = "로그인 중 오류가 발생했습니다.";
         }
         
-        // 오류 메시지를 세션에 저장
         request.getSession().setAttribute("error", errorMsg);
 
-        // 로그인 실패 후 리다이렉트할 URL 설정
         response.sendRedirect("/");
     }
 }

@@ -3,8 +3,10 @@ package com.fiveLink.linkOffice.survey.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import com.fiveLink.linkOffice.survey.domain.SurveyDto;
 import com.fiveLink.linkOffice.survey.domain.SurveyParticipant;
 import com.fiveLink.linkOffice.survey.domain.SurveyQuestion;
 import com.fiveLink.linkOffice.survey.domain.SurveyQuestionDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyText;
 import com.fiveLink.linkOffice.survey.repository.SurveyOptionRepository;
 import com.fiveLink.linkOffice.survey.repository.SurveyParticipantRepository;
 import com.fiveLink.linkOffice.survey.repository.SurveyQuestionRepository;
@@ -51,24 +54,32 @@ public class SurveyService {
     }
 
     private List<SurveyDto> convertToDtoList(List<Object[]> surveys) {
-        return surveys.stream().map(objects -> {
-            Survey survey = (Survey) objects[0]; // 첫 번째 요소는 Survey 객체
-            Integer participantStatus = (Integer) objects[1]; // 두 번째 요소는 참여 상태 (surveyParticipantStatus)
-
-            return SurveyDto.builder()
+        Set<Long> seenSurveyNos = new HashSet<>();
+        
+        return surveys.stream()
+            .filter(objects -> {
+                Survey survey = (Survey) objects[0];
+                // 중복된 설문 번호는 제외
+                return seenSurveyNos.add(survey.getSurveyNo());
+            })
+            .map(objects -> {
+                Survey survey = (Survey) objects[0];
+                Integer participantStatus = (Integer) objects[1];
+                
+                return SurveyDto.builder()
                     .survey_no(survey.getSurveyNo())
                     .survey_title(survey.getSurveyTitle())
                     .survey_start_date(survey.getSurveyStartDate())
                     .survey_end_date(survey.getSurveyEndDate())
                     .survey_status(survey.getSurveyStatus())
                     .member_name(survey.getMember().getMemberName())
-                    .survey_participant_status(participantStatus) // 설문 참여 상태 추가
+                    .survey_participant_status(participantStatus)
                     .build();
-        }).collect(Collectors.toList());
+            }).collect(Collectors.toList());
     }
 
     public Page<SurveyDto> getAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
-        Page<Object[]> results = null;  // Survey와 surveyParticipantStatus를 함께 받음
+        Page<Object[]> results = null;  
 
         String searchText = searchDto.getSearch_text();
         if (searchText != null && !searchText.isEmpty()) {
@@ -169,9 +180,10 @@ public class SurveyService {
             .build();
     }
 
-    // 선택지 답변 포함 설문 질문 조회
+ // 설문 질문 (객관식, 주관식) 조회
     public List<SurveyQuestionDto> getSurveyQuestions(Long surveyNo) {
         List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
+
         return questions.stream().map(question -> {
             // 선택지 번호 가져오기
             List<Long> optionNo = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
@@ -185,10 +197,15 @@ public class SurveyService {
                     .map(option -> option.getSurveyOptionAnswer())
                     .collect(Collectors.toList());
 
-            // 주관식 텍스트 번호 가져오기
+            // 주관식 텍스트 번호와 답변 가져오기
             List<Long> textNo = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
-                    .map(text -> text.getSurveyTextNo())
+                    .map(SurveyText::getSurveyTextNo)
+                    .collect(Collectors.toList());
+
+            List<String> textAnswers = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
+                    .stream()
+                    .map(SurveyText::getSurveyTextAnswer)
                     .collect(Collectors.toList());
 
             return SurveyQuestionDto.builder()
@@ -197,9 +214,10 @@ public class SurveyService {
                     .survey_question_text(question.getSurveyQuestionText())
                     .survey_question_type(question.getSurveyQuestionType())
                     .survey_question_essential(question.getSurveyQuestionEssential())
-                    .survey_option_no(optionNo)  // 선택지 번호 추가
-                    .survey_option_answer(optionAnswers)  // 선택지 답변 추가
-                    .survey_text_no(textNo)  // 주관식 텍스트 번호 추가
+                    .survey_option_no(optionNo)
+                    .survey_option_answer(optionAnswers)
+                    .survey_text_no(textNo)
+                    .survey_text_answer(textAnswers)
                     .build();
         }).collect(Collectors.toList());
     }
@@ -240,17 +258,32 @@ public class SurveyService {
         return participationRates;
     }
     
- // 설문에 대한 옵션별 응답 수 계산
+    public Map<Long, List<Object[]>> getTextAnswersBySurvey(Long surveyNo) {
+       
+
+        List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
+        Map<Long, List<Object[]>> textAnswers = new HashMap<>();
+
+        for (SurveyQuestion question : questions) {
+            if (question.getSurveyQuestionType() == 1) {
+                
+                List<Object[]> answersWithParticipants = surveyTextRepository.findTextAnswersWithParticipant(question.getSurveyQuestionNo());
+
+               
+
+                textAnswers.put(question.getSurveyQuestionNo(), answersWithParticipants);
+            }
+        }
+
+        return textAnswers;
+    }
+    
+    // 설문에 대한 옵션별 응답 수 계산
     public Map<Long, List<Object[]>> getOptionAnswerCountsBySurvey(Long surveyNo) {
-        LOGGER.info("옵션별 응답 수 계산 시작 - 설문 번호: {}", surveyNo);
+       
 
         // 설문에 대한 옵션별 응답 수를 레포지토리에서 조회
         List<Object[]> result = surveyOptionRepository.countAnswersByOptionWithAnswer(surveyNo);
-
-        // 각 행의 데이터를 읽기 쉽게 출력
-        for (Object[] row : result) {
-            LOGGER.info("조회된 데이터 - 질문 번호: {}, 옵션: {}, 응답 수: {}", row[0], row[1], row[2]);
-        }
 
         // 각 질문별로 응답 수를 정리하여 맵으로 저장
         Map<Long, List<Object[]>> optionAnswerCounts = new HashMap<>();
@@ -267,7 +300,6 @@ public class SurveyService {
             StringBuilder sb = new StringBuilder();
             sb.append("질문 번호: ").append(questionNo).append(" -> ");
             options.forEach(option -> sb.append(Arrays.toString(option)).append(" "));
-            LOGGER.info("정리된 옵션 응답 수 데이터: {}", sb.toString());
         });
 
         return optionAnswerCounts;

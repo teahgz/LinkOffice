@@ -118,11 +118,28 @@ public class ChatRoomService {
         for (Long chatRoomNo : chatRoomNumbers) {
             List<Long> roomMembers = chatMapper.findMembersByChatRoom(chatRoomNo);
 
-            if (roomMembers.containsAll(selectedMembers)) {
+            if (roomMembers.containsAll(selectedMembers) && roomMembers.size() == selectedMembers.size()) {
                 return true;
             }
         }
         return false;
     }
+
+    public List<Long> findChatRoomMembers(Long roomNo, Long senderNo){
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomNo", roomNo);
+        params.put("memberNo", senderNo);
+        return chatMapper.findChatRoomMembers(params);
+    }
+
+    public int chatUnreadCount(Long currentRoom, Long memberNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomNo", currentRoom);
+        params.put("memberNo", memberNo);
+        System.out.println("service: "+ currentRoom +memberNo);
+        return chatMapper.chatRoomUnread(params);
+    }
+
+
 
 }

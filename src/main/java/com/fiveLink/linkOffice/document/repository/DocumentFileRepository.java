@@ -20,6 +20,9 @@ public interface DocumentFileRepository extends JpaRepository<DocumentFile, Long
 
 	// 파일 번호로 파일 찾기 
 	DocumentFile findByDocumentFileNo(Long documentFileNo);
+	
+	// 스케줄러를 위한 휴지통 파일 찾기
+	List<DocumentFile> findByDocumentFileStatus(Long documentFileStatus);
 
 
 }

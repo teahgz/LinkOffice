@@ -207,7 +207,7 @@
 .approval_line_table th {
     background-color: #f2f2f2;
     font-weight: bold;
-    width: 100px;
+    width: 50px;
 }
 
 .signature_box {
@@ -297,3 +297,16 @@
 	font-size: 17px;
 }
 
+.content_section{
+	border:solid 1px #ddd;
+}
+
+.preview_button {
+    padding: 8px 15px;
+    background-color: #f9e1e1; 
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    width:100px;
+}

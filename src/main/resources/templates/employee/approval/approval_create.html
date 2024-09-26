@@ -15,6 +15,7 @@
                         <div class="editor-container editor-container_classic-editor">
                             <div class="form-group">
                                 <input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
+					          <button type="button" id="previewButton" class="preview_button">미리보기</button>        
                                 <div class="field">
                                     <strong>제목</strong>
                                     <input type="text" id="approval_title" name="approval_title">
@@ -29,10 +30,10 @@
 								        </th:block>
 								    </select>
 								</div>
+                            </div>
                               	<div class="approve_container">
                                 	<button type="button" id="openChart" class="btn btn-primary approve_button">결재선 지정</button>
                             	</div>
-                            </div>
                             
 							<table id="approvalLineTable" class="approval_line_table">
 						        <tr>
@@ -139,7 +140,7 @@
                                 <input type="file" id="approval_file" name="approval_file">
                             </div>
                             <div class="button_container">
-                                <button type="submit" class="submit_button">신청</button>
+                                <button type="submit" class="submit_button">작성</button>
                                 <button type="button" class="cancel_button" onclick="location.href='/employee/approval/progress'">취소</button>
                             </div>
                         </div>
@@ -203,6 +204,7 @@
 			        </div>
 			    </div>
 			</div>
+			
 
         <script th:src="@{/js/employee/approval/approval.js}"></script>
         </section>
