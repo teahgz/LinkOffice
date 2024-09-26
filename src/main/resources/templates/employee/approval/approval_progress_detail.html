@@ -5,7 +5,6 @@
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/approval/approval_progress_detail.css}" rel="stylesheet" type="text/css">
         	<section>
-            	<h1>결재 진행 상세 조회</h1>
 		            <div class="container">
 		            	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
 		            	<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}" >
@@ -86,12 +85,11 @@
 								        </tr>
 								    </table>
 								</div>
-								
+		                    </div>
 								 <div class="field title_row">
 								     <div id="approval_title" th:text="${approvaldto.approval_title}"></div>
 								 </div>
 								 
-		                    </div>
 		
 		                    <div class="content_section">
 		                        <div class="approval_content">

@@ -12,11 +12,6 @@
     margin:auto;
 }
 
-.container {
-    display: flex;
-    justify-content: center;
-}
-
 .title_button_container{
     justify-content: center;
     display: flex;

@@ -122,6 +122,7 @@
 
 .content_section {
     align-content: center;
+    align-content: center;
     display: flex;
     flex-direction: column;
     gap: 20px;

@@ -5,7 +5,6 @@
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/approval/approval_references_detail.css}" rel="stylesheet" type="text/css">
 	        <section>
-	            <h1>결재 참조 상세 조회</h1>
 		            <div class="container">
 		            	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
 		            	<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}" >
