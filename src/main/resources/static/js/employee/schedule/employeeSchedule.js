@@ -124,8 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            parMemberNos = data.participants.map(participant => participant.member_no); 
 	            callback(parMemberNos);
 	        },
-	        error: function(error) {
-	            console.error("Error fetching participants:", error);
+	        error: function(error) { 
 	            callback([]);
 	        }
 	    });
@@ -426,7 +425,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 return { domNodes: [] };
             },
-            dayMaxEvents: 3 
+            dayMaxEvents: 3 ,
+            dateClick: function(info) {
+			    selectedDate = info.dateStr;   
+			    $('#eventDate').val(selectedDate);   
+			    document.getElementById('eventDate').dispatchEvent(new Event('change'));
+    
+			    document.getElementById('eventModal').style.display = 'block';
+			    const submitButton = document.getElementById('create_modal_submit');
+				submitButton.textContent = '저장';
+		    }
         });
         filterEvents();
         calendar.render();
@@ -977,10 +985,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	 	const department_schedule = document.getElementById('department_schedule').checked; 
 	 	const selectedMembers = document.getElementById('selectedMembers').value;
 	 	var schedule_type = 0;
-	 	var departmentNo;
-	 	
-	 	console.log("selectedMembers : " + selectedMembers);
-	 	console.log("department_schedule : " + department_schedule);
+	 	var departmentNo; 
 	 	
 	 	if (selectedMembers) { 
 		    schedule_type = 2;
@@ -1047,10 +1052,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		// 수정
 		else {
 			const isRecurring = document.getElementById('isRecurring').value;    
+			const schedule_edit_type = eventData.schedule_type; 
+			
+			// 예외 일정
 		    if (isRecurring === "1") {   
 		        openEventRepeatModal();
 		    } else { 
-		        submitEventUpdate(); 
+		        submitEventUpdate(schedule_edit_type); 
 		    }
 		}
 	});
@@ -1252,7 +1260,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            
 	            if (data.schedule.schedule_type === 2) { 
 		            $('#department_schedule').prop('disabled', true); 
-		            findParticipants(eventNo); 	            
+		            findParticipants(eventNo);            
 	            }       
 	        },
 	        error: function(xhr, status, error) {
@@ -1359,14 +1367,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 
 	// 일정 수정 확인
-	function submitEventUpdate() {
+	function submitEventUpdate(schedule_edit_type) {
 	    const eventData = getEventFormData();
-    	const isException = $('#isRecurring').val() === '0';
-		const url = isException ? '/company/schedule/exception/edit/' : '/company/schedule/edit/';
-	    console.log(document.getElementById('eventId').value);
+    	const isException = $('#isRecurring').val() === '0'; 
+		const url = isException ? `/employee/schedule/edit/${document.getElementById('eventId').value}/${schedule_edit_type}`
+					: `/employee/schedule/exception/edit/${document.getElementById('eventId').value}/${schedule_edit_type}`;
+	   
+	    console.log(eventData);
 	    $.ajax({
 	        type: "POST",
-	        url: url + document.getElementById('eventId').value,
+	        url: url,
 	        contentType: 'application/json',
 	        data: JSON.stringify(eventData),
 	        headers: {
@@ -1406,13 +1416,27 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const repeatWeek = repeatOption === "4" ? getWeekNumber() : null; // 주차
 	    const repeatDate = repeatOption === "3" || repeatOption === "5" ? new Date(repeat_insert_date).getDate() : null; // 특정 일
 	    const repeatMonth = repeatOption === "5" ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
-	
+		
+		const department_schedule = document.getElementById('department_schedule').checked; 
+	 	const selectedMembers = document.getElementById('selectedMembers').value;
+	 	var schedule_type = 0;
+	 	var departmentNo; 
+	 	
+	 	if (selectedMembers) { 
+		    schedule_type = 2;
+		} else if (department_schedule) { 
+		    schedule_type = 1;
+		    departmentNo = userDepartmentNo; 
+		} else { 
+		    schedule_type = 0;
+		}
+		
 	    return {
 	        title: title,
 	        category: category,
 	        startDate: startDate,
-	        endDate: allDay ? endDate : null,
-	        startTime: allDay ? null : startTime,
+	        endDate : allDay ? endDate : null, 
+	        startTime: allDay ? null : startTime,  
 	        endTime: allDay ? null : endTime,
 	        allDay: allDay,
 	        repeat: repeatOption,
@@ -1421,7 +1445,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	        schedule_day_of_week: repeatDayOfWeek,
 	        schedule_week: repeatWeek,
 	        schedule_date: repeatDate,
-	        schedule_month: repeatMonth
+	        schedule_month: repeatMonth,
+	        schedule_type : schedule_type,
+	        department_no : departmentNo,
+	        selectedMembers: selectedMembers,
+	        memberNo : memberNo
 	    };
 	}
 	
@@ -1431,16 +1459,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	        url: '/employee/schedule/participate/' + scheduleNo,
 	        type: 'GET',
 	        dataType: 'json',
-	        success: function(data) {  
-	            console.log(data); 
-	       
-	            let selectedParticipants = data.participants.map(p => `<span class="selected-participants">${p.memberName} ${p.positionName}`).join(' </span>');
+	        success: function(data) {   
+	       		let filteredParticipants = data.participants.filter(p => (p.member_no).toString() !== memberNo);
+	       		
+	       		let selectedParticipants = filteredParticipants
+	                .map(p => `<span class="selected-participants">${p.memberName} ${p.positionName}</span>`)
+	                .join(' ');
 	            $('.selected-participants-container').html(selectedParticipants);
-	             
-	        	participantMembers = data.participants.map(p => p.member_no); 
+	        	participantMembers = filteredParticipants.map(p => p.member_no); 
+	            $('#selectedMembers').val(participantMembers.join(',')); 
 	    		 
-	            setSelectedParticipants(data.participants); 
-	            
+	            setSelectedParticipants(data.participants);  
 	            var jstree = $('#organization-chart').jstree(true);
 			    if (jstree) {
 			        participants.forEach(function(memberNo) {
