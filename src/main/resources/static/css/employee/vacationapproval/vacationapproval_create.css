@@ -198,3 +198,7 @@ input:focus, select:focus {
     justify-content: center;
     font-size: 30px;
 }
+
+#vacationapproval_file{
+	margin-top:10px;
+}
