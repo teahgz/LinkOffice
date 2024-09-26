@@ -1,9 +1,11 @@
 package com.fiveLink.linkOffice.schedule.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
-import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
+import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
@@ -36,7 +38,7 @@ public class ScheduleApiController {
 	private final MemberService memberService;
 	private final ScheduleCategoryService scheduleCategoryService;
 	private final ScheduleService scheduleService;
-	private final DepartmentService departmentService; 
+	private final DepartmentService departmentService;  
 	
 	@Autowired
 	public ScheduleApiController(MemberService memberService, ScheduleCategoryService scheduleCategoryService,
@@ -675,5 +677,240 @@ public class ScheduleApiController {
         );
     }
 
+    
+    // 조직도
+    @GetMapping("/schedule/chart")
+    @ResponseBody
+	public List<Map<String, Object>> getOrganizationChart() {
+		List<DepartmentDto> departments = departmentService.getAllDepartments();
+		List<MemberDto> members = memberService.getAllMembersChartOut();
+		return buildTree(departments, members);
+	}
+
+    private List<Map<String, Object>> buildTree(List<DepartmentDto> departments, List<MemberDto> members) {
+        Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
+        Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
+        
+        // 부서별 구성원 그룹화
+        for (MemberDto member : members) {
+            List<MemberDto> departmentMembers = membersByDepartment.get(member.getDepartment_no());
+            if (departmentMembers == null) {
+                departmentMembers = new ArrayList<>();
+                membersByDepartment.put(member.getDepartment_no(), departmentMembers);
+            }
+            departmentMembers.add(member);
+        } 
+        
+        // 부서 노드
+        for (DepartmentDto dept : departments) {
+            Map<String, Object> node = new HashMap<>();
+            node.put("id", "dept_" + dept.getDepartment_no());
+            node.put("text", dept.getDepartment_name());
+            node.put("type", "department");
+            node.put("children", new ArrayList<>());
+            departmentMap.put(dept.getDepartment_no(), node);
+        }
+        
+        // 부서 계층 구조
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (DepartmentDto dept : departments) {
+            if (dept.getDepartment_high() == 0) {
+                Map<String, Object> departmentNode = buildDepartmentHierarchy(dept, departmentMap, membersByDepartment);
+                if (departmentNode != null) {
+                    result.add(departmentNode);
+                }
+            }
+        }
+        
+        return result;
+    }
+
+    private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept,
+			Map<Long, Map<String, Object>> departmentMap, Map<Long, List<MemberDto>> membersByDepartment) {
+		Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
+		List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
+
+		boolean hasSubDepartments = false;
+		boolean hasMembers = false;
+
+		if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
+			for (DepartmentDto subDept : dept.getSubDepartments()) {
+				List<MemberDto> subDeptMembers = membersByDepartment.get(subDept.getDepartment_no());
+				boolean hasSubDeptMembers = subDeptMembers != null && !subDeptMembers.isEmpty();
+				if (hasSubDeptMembers || (subDept.getSubDepartments() != null && !subDept.getSubDepartments().isEmpty())) {
+					Map<String, Object> subDeptNode = new HashMap<>();
+					subDeptNode.put("id", "subdept_" + subDept.getDepartment_no());
+					subDeptNode.put("text", subDept.getDepartment_name());
+					subDeptNode.put("type", "subdepartment");
+					subDeptNode.put("children", new ArrayList<>());
+
+					// 하위 부서에 속한 구성원 추가
+					if (hasSubDeptMembers) {
+                        for (MemberDto member : subDeptMembers) {
+                            Map<String, Object> memberNode = createMemberNode(member);
+                            ((List<Map<String, Object>>) subDeptNode.get("children")).add(memberNode);
+                        }
+                    }
+                     
+                    children.add(subDeptNode);
+                    hasSubDepartments = true;
+                }
+            }
+		}
+ 
+		List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
+		if (deptMembers != null && !deptMembers.isEmpty()) {
+			hasMembers = true;
+			for (MemberDto member : deptMembers) {
+				Map<String, Object> memberNode = createMemberNode(member);
+				children.add(memberNode);
+			}
+		}
+
+		// 부서에 하위 부서나 구성원이 있는 경우에만 노드 반환
+		if (hasMembers || hasSubDepartments) {
+			return node;
+		} else {
+			return null;
+		}
+	}
+
+    private Map<String, Object> createMemberNode(MemberDto member) {
+        Map<String, Object> memberNode = new HashMap<>();
+        memberNode.put("id", "member_" + member.getMember_no());
+        memberNode.put("text", member.getMember_name() + " " + member.getPosition_name());
+        memberNode.put("type", "member");
+        return memberNode;
+    }  
+    
+    
+    // 조직도 확인 버튼 -> 예약 모달 출력
+	@PostMapping("/api/schedule/saveSelectedMembers")
+	@ResponseBody
+	public Map<String, Object> saveSelectedMembers(@RequestBody Map<String, List<String>> selectedMembers) {
+		List<String> memberNumbers = selectedMembers.get("members"); 
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("status", "success");
+		response.put("message", "선택한 사원이 성공적으로 저장되었습니다.");
+		return response;
+	}
+	
+    // 일정 등록
+	@PostMapping("/employee/schedule/save/{memberNo}")
+	@ResponseBody
+	public Map<String, String> saveEmployeeSchedule(
+	        @RequestBody Map<String, Object> request,
+	        @PathVariable("memberNo") Long memberNo) {
+
+	    Map<String, String> resultMap = new HashMap<>();
+	    resultMap.put("res_code", "404");
+	    resultMap.put("res_msg", "일정 등록 중 오류가 발생했습니다.");
+
+	    try {
+	        ScheduleDto scheduleDto = new ScheduleDto();
+	        ScheduleRepeatDto scheduleRepeatDto = new ScheduleRepeatDto();
+
+	        // 일정 기본 정보 설정
+	        scheduleDto.setMember_no(memberNo);
+	        scheduleDto.setSchedule_title((String) request.get("title"));
+	        scheduleDto.setSchedule_comment((String) request.get("description"));
+	        scheduleDto.setSchedule_start_date((String) request.get("startDate"));
+	        scheduleDto.setSchedule_allday((Boolean) request.get("allDay") ? 1L : 0L);
+	        scheduleDto.setSchedule_end_date((String) request.get("endDate")); 
+	        Object scheduleTypeObj = request.get("schedule_type");
+	        if (scheduleTypeObj != null) {
+	            scheduleDto.setSchedule_type(Long.valueOf(scheduleTypeObj.toString()));
+	        }
+	         
+	        Object departmentNoObj = request.get("department_no");
+	        if (departmentNoObj != null) {
+	            scheduleDto.setDepartment_no(Long.valueOf(departmentNoObj.toString()));
+	        }
+
+	        // 반복 설정
+	        if (request.get("repeat") != null) {
+	            Object repeatValue = request.get("repeat");
+	            long repeat = repeatValue instanceof Integer ? ((Integer) repeatValue).longValue()
+	                    : Long.parseLong(repeatValue.toString());
+	            scheduleDto.setSchedule_repeat(repeat != 0 ? 1L : 0L);
+
+	            if (repeat != 0) {
+	                scheduleRepeatDto.setSchedule_repeat_type(repeat);
+	            }
+	        }
+
+	        // 카테고리 설정
+	        if (request.get("category") != null) {
+	            Object category = request.get("category");
+	            scheduleDto.setSchedule_category_no(
+	                    category instanceof Integer ? ((Integer) category).longValue() : Long.parseLong((String) category));
+	        }
+
+	        // 시간 설정
+	        scheduleDto.setSchedule_start_time((String) request.get("startTime"));
+	        scheduleDto.setSchedule_end_time((String) request.get("endTime"));
+
+	        // 반복 설정 상세
+	        if (request.get("schedule_day_of_week") != null) {
+	            Object scheduleDayOfWeek = request.get("schedule_day_of_week");
+	            scheduleRepeatDto.setSchedule_repeat_day(
+	                    scheduleDayOfWeek instanceof Integer ? ((Integer) scheduleDayOfWeek).longValue()
+	                            : Long.parseLong((String) scheduleDayOfWeek));
+	        }
+	        if (request.get("schedule_week") != null) {
+	            Object scheduleWeek = request.get("schedule_week");
+	            scheduleRepeatDto
+	                    .setSchedule_repeat_week(scheduleWeek instanceof Integer ? ((Integer) scheduleWeek).longValue()
+	                            : Long.parseLong((String) scheduleWeek));
+	        }
+	        if (request.get("schedule_date") != null) {
+	            Object scheduleDate = request.get("schedule_date");
+	            scheduleRepeatDto
+	                    .setSchedule_repeat_date(scheduleDate instanceof Integer ? ((Integer) scheduleDate).longValue()
+	                            : Long.parseLong((String) scheduleDate));
+	        }
+	        if (request.get("schedule_month") != null) {
+	            Object scheduleMonth = request.get("schedule_month");
+	            scheduleRepeatDto
+	                    .setSchedule_repeat_month(scheduleMonth instanceof Integer ? ((Integer) scheduleMonth).longValue()
+	                            : Long.parseLong((String) scheduleMonth));
+	        }
+	        if (request.get("repeatEndDate") != null) {
+	            scheduleRepeatDto.setSchedule_repeat_end_date((String) request.get("repeatEndDate"));
+	        }
+ 
+	        // 참여자 일정
+	        String selectedMembers = (String) request.get("selectedMembers");
+	        if(selectedMembers != null && !selectedMembers.isEmpty()) {  
+		        List<String> memberList = (selectedMembers != null && !selectedMembers.isEmpty()) 
+			            ? new ArrayList<>(Arrays.asList(selectedMembers.split(","))) 
+			            : new ArrayList<>();
+		        
+		        memberList.add(String.valueOf(memberNo));
+		        
+		        List<ScheduleParticipantDto> participants = memberList.stream()
+		            .map(membersNo -> ScheduleParticipantDto.builder()
+		                .member_no(Long.parseLong(membersNo.trim()))
+		                .schedule_participant_status(0L)  
+		                .build())
+		            .toList();
+	 
+		        scheduleService.saveScheduleAndParticipants(scheduleDto, scheduleRepeatDto, participants);
+	        }
+	        // 개인, 부서
+	        else { 
+	        	scheduleService.saveEmployeeSchedule(scheduleDto, scheduleRepeatDto);
+	        }
+	        
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "일정이 저장되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("res_code", "404");
+	        resultMap.put("res_msg", "일정 등록 중 오류가 발생했습니다.");
+	    }
+	    return resultMap; 
+	}
 
 }

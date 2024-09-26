@@ -98,6 +98,16 @@ input[type=checkbox] {
     width : 418px;
 }
 
+.plus_detail_option_2 {
+	margin-left: 67px;
+	flex: 1;  
+    padding: 5px; 
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+    font-size: 14px; 
+    width : 418px;
+}
+
 textarea {
     resize: none;
     height: 100px;
