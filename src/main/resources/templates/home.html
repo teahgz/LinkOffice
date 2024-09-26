@@ -121,6 +121,23 @@
                 </div>
                 <div class="main_item_box custom-height-11"> 
             		<h3>날씨</h3>
+            		<div class="weather_div">
+            			<div class="weather_left_div">
+            				<img id="weather_icon"/>
+           				    <div class="weather_location">
+           						<img th:src="@{/img/map_location.png}" alt="map_location_icon" id="map_location_icon"/>
+           						<div id="weather_location_text">금천구 가산동</div>
+           					</div>
+            			</div>
+            			<div class="weather_right_div">
+            				<div class="weather_temp">
+            					<div id="weather_now_temp"></div>
+            				</div>           
+            				<div id="weather_temp_max_min"></div>
+            				<div id="weather_pop"></div>
+            				<div id="weather_humidity"></div>
+            			</div>
+            		</div>
                 </div>
             </div>
         </div>
@@ -129,5 +146,6 @@
     hello
     </section>
     <script src="/js/employee/attendance/attendance.js"></script>
+    <script src="/js/employee/weather/weather.js"></script>
      </th:block>
 </html>
