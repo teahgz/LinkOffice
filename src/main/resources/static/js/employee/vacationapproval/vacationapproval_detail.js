@@ -1,14 +1,14 @@
 // 모달 창 기안 취소
 
-    const modal = document.getElementById("myModal");
+    const cancelModal = document.getElementById("cancelModal");
     const closeModal = document.querySelector(".close");
 
     closeModal.addEventListener('click', function() {
-        modal.style.display = "none";
+        cancelModal.style.display = "none";
     });
     
 	function vacationCancel(){
-	  modal.style.display = "flex";
+	  cancelModal.style.display = "flex";
 	        
 	    document.getElementById('confirm_cancel_button').addEventListener('click', function() {
 	        const cancelReason = document.getElementById('cancel_reason').value;
@@ -60,7 +60,7 @@
 	  
 	    };
 	    
-	       const previewButton = document.getElementById('previewButton');
+	  const previewButton = document.getElementById('previewButton');
 	    
 	    previewButton.addEventListener('click', function () {
 	
