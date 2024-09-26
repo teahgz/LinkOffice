@@ -94,3 +94,44 @@ header {
     text-decoration: none;
     font-size: 14px;
 }
+
+
+/* 알림 css */
+#notification-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    right: 20px;
+    bottom: 20px;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+#notificationContainer {
+    position: fixed;
+    z-index: 1000;
+    right: 20px;
+    bottom: 20px;
+}
+
+.notification-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* 모달 폭 */
+}
+
+.close-notification-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-notification-modal:hover,
+.close-notification-modal:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
