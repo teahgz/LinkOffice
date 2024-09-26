@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
@@ -225,8 +226,7 @@ public class ScheduleApiController {
 			ScheduleRepeatDto dto = ScheduleRepeatDto.toDto(scheduleRepeat);
 			scheduleRepeatDtos.add(dto);
 		}
-
-		System.out.println("scheduleRepeatDtos : " + scheduleRepeatDtos);
+ 
 		return scheduleRepeatDtos;
 	}
 
@@ -427,8 +427,7 @@ public class ScheduleApiController {
 			ScheduleExceptionDto dto = ScheduleExceptionDto.toDto(scheduleException);
 			scheduleExceptionDtos.add(dto);
 		}
-
-		System.out.println("scheduleExceptionDtos : " + scheduleExceptionDtos);
+ 
 		return scheduleExceptionDtos;
 	}
 	
@@ -601,7 +600,7 @@ public class ScheduleApiController {
 		for (Schedule schedule : schedules) {
 			ScheduleDto dto = ScheduleDto.toDto(schedule);
 			personalResult.add(dto);
-		}  
+		}   
 		return personalResult;
 	} 
 	 
@@ -912,5 +911,18 @@ public class ScheduleApiController {
 	    }
 	    return resultMap; 
 	}
-
+	
+	// 수정 참여자 정보
+	@GetMapping("/employee/schedule/participate/{scheduleNo}")
+	@ResponseBody
+	public Map<String, Object> getScheduleParticipant(@PathVariable("scheduleNo") Long scheduleNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByScheduleNo(scheduleNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
+	 
 }

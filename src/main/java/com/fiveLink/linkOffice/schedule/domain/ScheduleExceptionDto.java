@@ -28,6 +28,7 @@ public class ScheduleExceptionDto {
     private String schedule_exception_end_time;
     private Long schedule_exception_allday;
     private Long schedule_exception_category_no;
+    private Long schedule_exception_type;
     private LocalDateTime schedule_exception_create_date;
     private Long schedule_exception_status;
 
@@ -44,6 +45,7 @@ public class ScheduleExceptionDto {
                 .scheduleExceptionEndTime(schedule_exception_end_time)
                 .scheduleExceptionAllday(schedule_exception_allday)
                 .scheduleExceptionCategoryNo(schedule_exception_category_no)
+                .scheduleExceptionType(schedule_exception_type)
                 .scheduleExceptionCreateDate(schedule_exception_create_date)
                 .scheduleExceptionStatus(schedule_exception_status)
                 .build();
@@ -62,6 +64,7 @@ public class ScheduleExceptionDto {
                 .schedule_exception_end_time(scheduleException.getScheduleExceptionEndTime())
                 .schedule_exception_allday(scheduleException.getScheduleExceptionAllday())
                 .schedule_exception_category_no(scheduleException.getScheduleExceptionCategoryNo())
+                .schedule_exception_type(scheduleException.getScheduleExceptionType())
                 .schedule_exception_create_date(scheduleException.getScheduleExceptionCreateDate())
                 .schedule_exception_status(scheduleException.getScheduleExceptionStatus())
                 .build();

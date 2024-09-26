@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipant;
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
@@ -240,6 +241,7 @@ public class ScheduleService {
                 .scheduleExceptionStartTime(scheduleDto.getSchedule_start_time())
                 .scheduleExceptionEndTime(scheduleDto.getSchedule_end_time())
                 .scheduleExceptionCategoryNo(scheduleDto.getSchedule_category_no()) 
+                .scheduleExceptionType(3L) 
                 .scheduleExceptionAllday(scheduleDto.getSchedule_allday())
                 .scheduleExceptionStatus(0L)
                 .build();
@@ -305,7 +307,7 @@ public class ScheduleService {
     
     // 예외 일정 가져오기
     public List<ScheduleException> getAllExceptionSchedules() { 
-	    return scheduleExceptionRepository.findAll();
+	    return scheduleExceptionRepository.findAll(); 
 	}
     
     // 예외 일정 상세
@@ -686,4 +688,37 @@ public class ScheduleService {
 	    }
     }
 
+    // 참여자 정보 
+    public List<ScheduleParticipantDto> getParticipantsByScheduleNo(Long scheduleNo) { 
+        List<ScheduleParticipant> participants = scheduleParticipantRepository.findParticipantsByScheduleNo(scheduleNo);
+ 
+        return participants.stream().map(participant -> { 
+            String memberName = memberRepository.findById(participant.getMemberNo())
+                                               .map(Member::getMemberName)
+                                               .orElse("사원");
+            String positionName = "직위";
+            String departmentName = "부서";
+            
+            Long memberNo = participant.getMemberNo();
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+              
+            return ScheduleParticipantDto.builder()
+                    .schedule_participant_no(participant.getScheduleParticipantNo())
+                    .schedule_no(participant.getScheduleNo())
+                    .member_no(participant.getMemberNo())
+                    .schedule_participant_status(participant.getScheduleParticipantStatus())
+                    .memberName(memberName)  
+                    .positionName(positionName)   
+                    .departmentName(departmentName)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+    
+    
+    
 }

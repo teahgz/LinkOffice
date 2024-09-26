@@ -61,6 +61,9 @@ public class ScheduleException {
     @Column(name = "schedule_exception_category_no")
     private Long scheduleExceptionCategoryNo;
 
+    @Column(name = "schedule_exception_type")
+    private Long scheduleExceptionType; 
+    
     @CreationTimestamp
     @Column(name = "schedule_exception_create_date")
     private LocalDateTime scheduleExceptionCreateDate;
