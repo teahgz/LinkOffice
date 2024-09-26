@@ -726,12 +726,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	            return;
 	        }
 		}
-	    
-	    if (repeatOption != 0 && !repeatEndDate) {
-	        showAlert('반복 종료일을 입력해 주세요.');
-	        return;
-	    }
-	    
+	     
+		if (repeatOption != 0 && !repeatEndDate && !$('#repeatOption').is(':disabled')) {
+		    showAlert('반복 종료일을 입력해 주세요.');
+		    return;
+		} 
 	    if (!description) {
 	        showAlert('내용을 입력해 주세요.');
 	        return;
@@ -880,6 +879,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	                document.getElementById('allDay').dispatchEvent(new Event('change'));
 	
 	                $('#endDate').val(pickEndDate);
+	                document.getElementById('endDate').dispatchEvent(new Event('change'));
 	            } else {
 	                $('#allDay').prop('checked', false);
 	               document.getElementById('allDay').dispatchEvent(new Event('change')); 
@@ -891,6 +891,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	             
 	            if (data.schedule.schedule_repeat === 1) {
 		            $('#repeatOption').val(data.scheduleRepeat.schedule_repeat_type);
+		            document.getElementById('repeatOption').dispatchEvent(new Event('change'));
 	                $('#repeatEndDate').val(data.scheduleRepeat.schedule_repeat_end_date);
 	            } 		             
 		        },
@@ -1013,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        },
 	        success: function(response) {
 	            Swal.fire({
-	                text: response.res_msg,
+	                text: '일정이 수정되었습니다.',
 	                icon: 'success',
 	                confirmButtonText: '확인',
 	                confirmButtonColor: '#B1C2DD',
