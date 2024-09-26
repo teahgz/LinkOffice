@@ -276,103 +276,165 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		    
 		    previewWindow.document.write(`
 		        <style>
-		            html, body {
-		                justify-content: center;
-		                display: flex;
-		                align-content: center;
-		                margin: 0;
-		                padding: 0;
-		                align-items: center;
-		            }
-		            .title{
-					    display: flex;
-					    justify-content: space-between;
-					    align-items: center;
-					    width: 700px;
-					    margin: auto;
-					    margin-bottom: 20px						
-					}
-					.approval_line_table {
-					    margin: auto;
-					    width: 700px;
-					    border-collapse: collapse;
-					}
-					.section_separator {
-						border: none;
-					    border-top: 1px solid #ddd;
-					    width: 700px;
-					    margin-top: 20px;
-					}					
-					.solid{
-						border: 1px solid #ddd;
-					}
-		            .approval_line_table th, .approval_line_table td {
-		                border: 1px solid #ccc;
-		                padding: 10px;
-		                text-align: center;
-		                vertical-align: middle;
-		            }
-		            .approval_line_table td {
-		                min-height: 50px; 
-		                width: 100px; 
-		                vertical-align: top; 
-		            }
-		            .approval_line_table th {
-		                background-color: #f2f2f2;
-		                font-weight: bold;
-		                width: 100px;
-		            }
-		            #strong {
-		                background-color: #f2f2f2;
-		            }
-		            .signature_box {
-		                display: flex;
-		                flex-direction: column;
-		                align-items: center;
-		                justify-content: center;
-		                height: 60px;
-		            }
-		            .ck-table-resized {
-		                width: 100%;
-		                border-collapse: collapse;
-		                margin-bottom: 20px;
-		            }
-		            .ck-table-resized th, .ck-table-resized td {
-		                border: 1px solid #ccc;
-		                padding: 10px;
-		                text-align: center;
-		                vertical-align: middle;
-		            }
-		            .ck-table-resized th {
-		                background-color: #f2f2f2;
-		                font-weight: bold;
-		            }
-		            .preview_div{
-		                padding: 20px;
-		                width: 800px;
-		            }
-		            .download_button {
-						float: right;
-					    padding: 8px 15px;
-					    background-color: #B3C7EE;
-					    border: none;
-					    border-radius: 5px;
-					    cursor: pointer;
-					    text-decoration: none;
-					    font-size: 14px;
-					    color: #000000;
-		            }
-		            .editorPDF{
-					    margin: auto;
-    					width: 780px;
-					    margin-left: 10px;
-					}
-					#vacationapproval_title{
-						font-size:30px;
-					}
-					.field{
-						margin-left: 40px;
-					}					
+			            html, body {
+			                justify-content: center;
+			                display: flex;
+			                align-content: center;
+			                margin: 0;
+			                padding: 0;
+			                align-items: center;
+			            }
+			            .title{
+						    display: flex;
+						    justify-content: space-between;
+						    align-items: center;
+						    margin: auto;
+						    margin-bottom: 20px						
+						}
+						.approval_line_table {
+						    border-collapse: collapse;
+						    width: 75%; 
+						    margin-left: auto; 
+						}		
+
+						.approval_line_table th {
+						    background-color: #f2f2f2;
+						    font-weight: bold;
+						    width: 10%; 
+						    border: 1px solid #ccc;
+						    padding: 5px; 
+						    text-align: center;
+						    vertical-align: middle;
+						    font-size: 12px; 
+						}
+						
+						.approval_line_table td {
+						    width: 100px; 
+						    border: 1px solid #ccc;
+						    padding: 5px; 
+						    text-align: center;
+						    vertical-align: middle;
+						    font-size: 12px; 
+						}
+						
+						.signature_box {
+						    height: 40px; 
+						    width: 50px;
+						    align-content: center;
+						    margin: auto;
+						}
+						
+						.signature_box img, .signature_box .currentSignature {
+						    max-height: 25px;
+						}
+						
+						.date_box {
+						    font-size: 8px; 
+						    width: 50px;
+						    margin: auto;
+						}
+						
+						.approval_status {
+						    font-size: 12px; 
+						    padding: 1px 3px; 
+						}
+						
+						
+						.reference_box {
+						    display: flex;
+						    flex-wrap: wrap;
+						    gap: 10px;
+						}
+						.approval_status.approved {
+						    background-color: #e6f3e6;
+						    color: #4CAF50;
+						}
+						
+						.approval_status {
+						    font-size: 13px;
+						    font-weight: bold;
+						    padding: 2px 5px;
+						    border-radius: 3px;
+						    display: inline-block;
+						}
+						
+						.approved {
+						    background-color: #e6f3e6;
+						    color: #4CAF50;
+						}
+						
+						.pending {
+						    background-color: #fff8e1;
+						    color: #FFC107;
+						}
+						
+						.rejected {
+						    background-color: #ffebee;
+						    color: #F44336;
+						}
+						
+						.reference_box > div {
+						    background-color: #f2f2f2;
+						    padding: 5px 10px;
+						    border-radius: 3px;
+						    font-size: 10px;
+						}
+
+			            .ck-table-resized {
+			                width: 100%;
+			                border-collapse: collapse;
+			                margin-bottom: 20px;
+			            }
+			            .ck-table-resized th, .ck-table-resized td {
+			                border: 1px solid #ccc;
+			                padding: 10px;
+			                text-align: center;
+			                vertical-align: middle;
+			            }
+			            .ck-table-resized th {
+			                background-color: #f2f2f2;
+			                font-weight: bold;
+			            }
+			            .preview_div{
+			                padding: 20px;
+			                width: 800px;
+			            }
+			            .download_button {
+							float: right;
+						    padding: 8px 15px;
+						    background-color: #B3C7EE;
+						    border: none;
+						    border-radius: 5px;
+						    cursor: pointer;
+						    text-decoration: none;
+						    font-size: 14px;
+						    color: #000000;
+			            }
+			            .content_section{
+						    margin: auto;
+	    					width: 780px;
+						    margin-left: 10px;
+						}
+
+						}
+						#vacationapproval_title{
+							font-size:30px;
+							margin-left: 40px;
+						}
+						.reference_box {
+						    display: flex;
+						    flex-wrap: wrap;
+						    gap: 10px;
+						}
+			            #strong {
+			                background-color: #f2f2f2;
+			            }						
+						.reference_box > div {
+						    background-color: #f2f2f2;
+						    padding: 5px 10px;
+						    border-radius: 3px;
+						    font-size: 14px;
+						}
 		        </style>
 		    `);
 		    
