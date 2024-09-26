@@ -95,8 +95,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
                 ObjectMapper objectMapper = new ObjectMapper();
                 Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("type", "chatAlarm");
+                responseMap.put("title", "메신저");
+                responseMap.put("content", "메시지가 도착했습니다.");
                 responseMap.put("data", unreadCounts);
-                System.out.println("list: "+ unreadCounts);
                 String unreadMessage = objectMapper.writeValueAsString(responseMap);
                 s.sendMessage(new TextMessage(unreadMessage));
             }

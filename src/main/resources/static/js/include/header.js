@@ -46,18 +46,41 @@ document.addEventListener('click', function(event) {
 const modal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
-function showNotification(message) {
-    document.getElementById("notification-message").textContent = message;
-    modal.style.display = "block";
+function showNotification(title, content, memberNo) {
+    const notificationContainer = document.getElementById("notificationContainer");
+    const notificationModal = document.createElement("div");
+
+    notificationModal.classList.add("notification-modal");
+
+    notificationModal.innerHTML = `
+        <div class="notification-modal-content">
+            <strong>${title}</strong>
+            <p>${content}</p>
+            <input type="hidden" name="memberNo" value="${memberNo}">
+            <span class="close-notification-modal">&times;</span>
+        </div>
+    `;
+
+    notificationContainer.appendChild(notificationModal);
+
     setTimeout(() => {
-            modal.style.display = "none"; // 모달 닫기
-        }, 5000);
-}
+        notificationModal.classList.add("show");
+    }, 10);
 
-closeButton.onclick = function() {
-    modal.style.display = "none";
-}
+    setTimeout(() => {
+        notificationModal.classList.remove("show");
+        setTimeout(() => {
+            notificationModal.remove();
+        }, 400);
+    }, 5000);
 
+    notificationModal.querySelector('.close-notification-modal').addEventListener('click', function() {
+        notificationModal.classList.remove("show");
+        setTimeout(() => {
+            notificationModal.remove();
+        }, 400);
+    });
+}
 window.onclick = function(event) {
     if (event.target === modal) {
         modal.style.display = "none";
@@ -90,7 +113,15 @@ function connectWebSocket() {
             if (message.type === 'chatAlarm') {
                 // 알림 메시지를 처리하는 로직
                 console.log(message);
-                showNotification(message.data);
+                const title = message.title;
+                const content = message.content;
+                console.log("Title:", title);
+                console.log("Content:", content);
+                message.data.forEach(function(item) {
+                    console.log("멤버 번호:", item.memberNo);
+                    showNotification(title, content, item.memberNo);
+                });
+
             }
         };
 
