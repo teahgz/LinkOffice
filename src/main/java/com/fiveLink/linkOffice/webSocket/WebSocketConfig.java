@@ -9,16 +9,21 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocket
 //@EnableWebSocketMessageBroker //STOMP 사용
 public class WebSocketConfig implements WebSocketConfigurer {
-//      기존 사용한 config
+
     private final ChatWebSocketHandler chatWebSocketHandler;
+    private final NoficationWebSocketHandler noficationWebSocketHandler;
     @Autowired
-    public WebSocketConfig(ChatWebSocketHandler chatWebSocketHandler) {
+    public WebSocketConfig(ChatWebSocketHandler chatWebSocketHandler, NoficationWebSocketHandler noficationWebSocketHandler) {
         this.chatWebSocketHandler = chatWebSocketHandler;
+        this.noficationWebSocketHandler = noficationWebSocketHandler;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        // 채팅용 핸들러
         registry.addHandler(chatWebSocketHandler, "/websocket/chat").setAllowedOrigins("*");
+        // 알림용 핸들러
+        registry.addHandler(noficationWebSocketHandler, "/websocket/notifications").setAllowedOrigins("*");
     }
 
 

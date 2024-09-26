@@ -239,3 +239,56 @@ section {
     color: #333;
     display: block;
 }
+
+/* 날씨 css */
+.weather_div{
+	display: flex;
+}
+.weather_left_div{
+	text-align: center;
+	width: 50%;
+}
+.weather_right_div{
+	font-size: 15px;
+	margin-top: 5px;
+}
+.weather_location{
+	display: flex;
+	justify-content: center;
+	font-size: 14px;
+	margin-top: 5px;
+}
+#weather_location_text{
+	color: #666;
+}
+#weather_icon{
+	width: 120px;
+}
+#weather_now_temp{
+	font-size: 27px;
+	font-weight: bolder;
+	margin-bottom: 10px;
+}
+#map_location_icon{
+	width: 15px;
+	height: 15px;
+	margin-right: 2px;
+}
+.weather_temp{
+	display: flex;
+	justify-content: space-between;
+}
+#weather_temp_max{
+	margin-top: 5px;
+}
+#weather_temp_min{
+	margin-top: 5px;
+}
+#weather_pop{
+	margin-top: 5px;
+}
+#weather_humidity{
+	margin-top: 5px;
+}
+
+

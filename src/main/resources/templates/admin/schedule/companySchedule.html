@@ -3,23 +3,20 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/admin/schedule/companySchedule.css}"
-		rel="stylesheet" type="text/css">
-	<script
-		src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-	<script
-		src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js'></script>
+	<link th:href="@{/css/admin/schedule/companySchedule.css}" rel="stylesheet" type="text/css">
+	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+	<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js'></script>
 	<section>
-		<h1>사내 일정</h1>
-		<div>
-			<button id="addEventBtn">등록</button>
-			<div id="calendar"></div>
-		</div>
-	</section>
+        <div id="header">
+            <h1>사내 일정</h1>
+            <button id="addEventBtn">등록</button>
+        </div>
+        <div id="calendar"></div>
+    </section>
 
 	<!-- 등록 모달 -->
 	<div id="eventModal" class="modal">
-	    <div class="modal-content">
+	    <div class="modal-content" id="create_company_schedule">
 	        <span class="add_close close" id="closeModalBtn">&times;</span>
 	        <h2 class="modal-title">사내 일정 등록</h2>
 	        <hr class="create_hr">
@@ -82,9 +79,9 @@
 	                <textarea id="description" name="description"></textarea>
 	            </div>  
 	            
-	            <div class="form-group">
+	            <div class="form-group button-group">
 	                <button type="submit" class="modal_in_btn" id="create_modal_submit">저장</button>
-	                <button type="button" id="closeModalBtn2">취소</button>
+	                <button type="button" id="closeModalBtn2" class="cancel_in_btn">취소</button>
 	            </div>
 	        </form>
 	    </div>
@@ -134,8 +131,10 @@
 			    <input type="radio" id="editAllEvents" name="repeatEditOption" value=3>
 			    <label for="editAllEvents">모든 일정</label>
 		    </div>
-		    <button id="event_repeat_modal_btn">확인</button>
-		    <button id="event_repeat_close_btn">취소</button>
+		    <div class="event_repeat_btns">
+		    	<button id="event_repeat_modal_btn">확인</button>
+		    	<button id="event_repeat_close_btn">취소</button>
+		    </div> 
 	    </div>
 	</div>
 

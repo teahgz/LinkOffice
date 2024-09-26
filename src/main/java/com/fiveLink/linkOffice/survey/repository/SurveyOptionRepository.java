@@ -21,5 +21,5 @@ public interface SurveyOptionRepository extends JpaRepository<SurveyOption, Long
     	       "    FROM SurveyQuestion sq " +
     	       "    WHERE sq.survey.surveyNo = :surveyNo) " +
     	       "GROUP BY so.surveyQuestion.surveyQuestionNo, so.surveyOptionAnswer")
-    	List<Object[]> countAnswersByOptionWithAnswer(@Param("surveyNo") Long surveyNo);
+    List<Object[]> countAnswersByOptionWithAnswer(@Param("surveyNo") Long surveyNo);
 }

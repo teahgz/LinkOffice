@@ -4,7 +4,9 @@
 
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
-
+	<div style="display:none;" th:each = "member : ${memberdto}">
+		<input type ="hidden" id="currentMember" th:value="${member.member_no}"/>
+	</div>
 	<div id="nav_wrap" >
 		<ul>
 			<li>
@@ -33,7 +35,7 @@
 					</div>
 				</li>
 				<li>
-					<a>일정</a>
+					<a th:href="@{/employee/schedule}">일정</a>
 				</li>
 
 
@@ -87,7 +89,7 @@
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/document/personal/{no}(no=${member.member_no})}">개인 문서함</a></li>
  							<li><a th:href="@{/employee/document/department/{no}(no=${member.department_no}, memberNo=${member.member_no})}">부서 문서함</a></li>
-							<li><a th:href="@{/employee/document/company(memberNo=${member.member_no})}">사내 문서함</a></li> 
+							<li><a th:href="@{/employee/document/company(memberNo=${member.member_no})}">사내 문서함</a></li>
 							<li><a th:href="@{/employee/document/bin/{no}(no=${member.member_no})}">휴지통</a></li>
 						</ul>
 					</div>
@@ -107,7 +109,7 @@
 					<div class="dropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/department}">부서 관리</a></li>
-							<li><a th:href="@{/position}">직위 관리</a></li> 
+							<li><a th:href="@{/position}">직위 관리</a></li>
 						</ul>
 					</div>
 				</li>
@@ -173,6 +175,11 @@
 
 
 	</nav>
+
+	<!-- 알림 모달  -->
+	<div id="notificationContainer">
+		<!--   동적 추가     -->
+	</div>
 	<script th:src="@{/js/include/nav.js}"></script>
 </th:block>
 

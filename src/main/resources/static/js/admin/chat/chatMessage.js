@@ -305,6 +305,97 @@ if (sendButton && messageInput) {
                               }
                    });
        }
+        else if (message.type === "unreadCountMember") {
+            let currentMemberNo = parseInt(currentMember);
+            const chatList = document.querySelector('.chatList-container');
+            const chatItems = document.querySelectorAll('.chatItem');
+
+            if (message.data && Array.isArray(message.data)) {
+                message.data.forEach(item => {
+                    const chatRoomNo = item.chatRoomNo;
+                    const unreadCount = item.unreadCount;
+                    const memberNo = item.memberNo;
+
+                    const inputElement = document.querySelector(`input[value="${chatRoomNo}"]`);
+
+                    if (inputElement) {
+                        const chatItem = inputElement.closest('.chatItem');
+                        if (chatItem) {
+
+                            const unreadCountContainer = chatItem.querySelector('.unread-count-container');
+                            let unreadCountElement = unreadCountContainer.querySelector('.unread-count');
+
+                            // 현재 멤버 번호와 비교하여 읽지 않은 메시지 수를 업데이트
+                            if (memberNo === currentMemberNo) {
+                                // 현재 채팅방과 비교
+                                if (currentChatRoomNo === chatRoomNo) {
+                                    // 현재 채팅방인 경우 읽음 개수 표시하지 않음
+                                    if (unreadCountElement) {
+                                        unreadCountElement.style.display = 'none'; // 읽음 개수 숨김
+                                    }
+                                } else {
+                                    // 현재 채팅방이 아닐 경우 읽음 개수 업데이트
+                                    if (unreadCountElement) {
+                                        unreadCountElement.innerText = unreadCount;
+
+                                        if (unreadCount > 0) {
+                                            unreadCountElement.style.display = 'block';
+                                            unreadCountElement.style.backgroundColor = 'red';
+                                            unreadCountElement.style.color = 'white';
+                                            unreadCountElement.style.width = '24px';
+                                            unreadCountElement.style.height = '24px';
+                                            unreadCountElement.style.lineHeight = '24px';
+                                            unreadCountElement.style.textAlign = 'center';
+                                            unreadCountElement.style.borderRadius = '50%';
+                                        } else {
+                                            unreadCountElement.style.display = 'none';
+                                        }
+                                    } else {
+                                        if (unreadCount > 0) {
+                                            unreadCountElement = document.createElement('span');
+                                            unreadCountElement.classList.add('unread-count');
+                                            unreadCountElement.innerText = unreadCount;
+
+                                            unreadCountElement.style.backgroundColor = 'red';
+                                            unreadCountElement.style.color = 'white';
+                                            unreadCountElement.style.width = '24px';
+                                            unreadCountElement.style.height = '24px';
+                                            unreadCountElement.style.lineHeight = '24px';
+                                            unreadCountElement.style.textAlign = 'center';
+                                            unreadCountElement.style.borderRadius = '50%';
+
+                                            // Append to unread-count-container
+                                            unreadCountContainer.appendChild(unreadCountElement);
+                                        }
+                                    }
+                                }
+
+                                // 채팅방 리스트에서 채팅방 위치 조정
+                                for (let i = 0; i < chatItems.length; i++) {
+                                    const currentChatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10);
+                                    if (currentChatRoomNo === chatRoomNo) {
+                                        const isPinned = chatItems[i].querySelector('.fa-thumbtack') !== null;
+                                        if (!isPinned) {
+                                            const pinnedItems = document.querySelectorAll('.chatItem .fa-thumbtack');
+                                            if (pinnedItems.length > 0) {
+                                                const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                                                lastPinnedItem.after(chatItems[i]);
+                                            } else {
+                                                chatList.insertBefore(chatItems[i], chatList.firstChild);
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                console.error("데이터를 찾을 수 없다", message);
+            }
+        }
+
       else if (message.type === "chatRoomCreation") {
           if (message.chatRoomNo && message.memberInfoList) {
               const currentMemberNo = parseInt(document.getElementById('currentMember').value, 10);
@@ -423,7 +514,8 @@ if (sendButton && messageInput) {
                  }
       }
       else {
-           if (message.chat_room_no === currentChatRoomNo) { // 메시지가 현재 채팅방에 속하는지 확인
+           if (message.chat_room_no === currentChatRoomNo) {
+                markAllMessagesAsRead(currentChatRoomNo);
                const messageElement = document.createElement("div");
                const now = new Date();
                const formattedTime = formatDateTime(now);
@@ -459,25 +551,22 @@ if (sendButton && messageInput) {
                chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
                // 채팅방 목록에서 해당 채팅방을 찾고, 이동시키기
                 const chatItems = document.getElementsByClassName('chatItem');
-                const chatList = document.getElementById('chatList');
+                const chatList = document.querySelector('.chatList-container');
 
                 for (let i = 0; i < chatItems.length; i++) {
-                    const chatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10); // 채팅방 번호 가져오기
-                    console.log(chatRoomNo);
-                    // 현재 채팅방 번호와 메시지의 채팅방 번호가 일치하는지 확인
+                    const chatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10);
                     if (chatRoomNo === message.chat_room_no) {
-                        const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
+                        const isPinned = chatItems[i].querySelector('.fa-thumbtack') !== null;
+                        if (!isPinned) {
+                            const pinnedItems = document.querySelectorAll('.chatItem .fa-thumbtack');
+                            if (pinnedItems.length > 0) {
+                                const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                                 lastPinnedItem.after(chatItems[i]);
 
-                        // 고정된 채팅방이 있는 경우
-                        if (pinnedItems.length > 0) {
-                            const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                            chatList.insertBefore(chatItems[i], lastPinnedItem.nextSibling); // 마지막 고정 채팅방 아래로 이동
-                        } else {
-                            // 고정된 채팅방이 없다면 최상위로 이동
-                            chatList.insertBefore(chatItems[i], chatList.firstChild);
+                            } else {
+                                chatList.insertBefore(chatItems[i], chatList.firstChild);
+                            }
                         }
-
-                        // 채팅방 이동 후 루프 종료
                         break;
                     }
                 }
@@ -525,6 +614,11 @@ if (sendButton && messageInput) {
         };
         socket.send(JSON.stringify(message));
         document.getElementById("messageInput").value = "";
+        alarmSocket.send(JSON.stringify({
+           type: 'noficationChat',
+           chat_sender_no: chat_sender_no,
+           chat_room_no: currentChatRoomNo
+        }));
 
     };
 
@@ -884,10 +978,18 @@ function formatDateTime(date) {
 
         chatContentDiv.scrollTop = chatContentDiv.scrollHeight;
     }
-
+    let previousChatRoomNo = null;
     window.handleChatRoomClick = function(element) {
             document.getElementById("messageInput").value = "";
             currentChatRoomNo = element;
+            console.log(previousChatRoomNo);
+         // 처음 클릭하거나 이전 채팅방과 다를 때 읽음 처리
+           if (previousChatRoomNo === null || previousChatRoomNo !== currentChatRoomNo) {
+               // 읽음 처리
+               markAllMessagesAsRead(currentChatRoomNo);
+           }
+            // 현재 채팅방 번호를 이전 채팅방 번호로 업데이트
+            previousChatRoomNo = element;
 
             let chatItems = document.getElementsByClassName('chatItem');
             for (let i = 0; i < chatItems.length; i++) {
@@ -952,7 +1054,7 @@ function formatDateTime(date) {
                  });
 
                 // 읽음 처리
-                markAllMessagesAsRead(element);
+                //markAllMessagesAsRead(element);
 
     }
 
@@ -1198,7 +1300,7 @@ function formatDateTime(date) {
                     const name = await getMemberChatRoomName(currentChatRoomNo);
 
                     if (name) {
-                        console.log("채팅방 이름:", name);
+
                         addChatRoom(currentChatRoomNo, newMembers, name);
                     } else {
                         console.error("채팅방 이름을 가져오는 데 실패했습니다.");
@@ -1209,7 +1311,6 @@ function formatDateTime(date) {
 
         };
         function addChatRoom(currentChatRoomNo, newMembers, name) {
-            console.log(typeof(newMembers));
 
             const add = {
                 type: "chatRoomAdd",

@@ -237,4 +237,10 @@ public class DepartmentService {
 	   
        return mapToDto(subDepartments);
    }
+   
+   // [서혜원] 일정 부서 조회
+   public List<DepartmentDto> getSecondDepartments() {
+       List<Department> departments = departmentRepository.findAllByDepartmentStatusAndDepartmentHighNotOrderByDepartmentHighAscDepartmentNameAsc(0L, 0L);
+       return mapToDto(departments);
+   } 
 } 

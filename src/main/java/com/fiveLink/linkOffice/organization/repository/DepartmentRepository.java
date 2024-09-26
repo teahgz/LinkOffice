@@ -37,4 +37,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     // [박혜선] 폴더 생성 (부서번호 조회)
     Department findByDepartmentNo(Long departmentNo);
+    
+    // [서혜원] 일정 부서 조회
+    List<Department> findAllByDepartmentStatusAndDepartmentHighNotOrderByDepartmentHighAscDepartmentNameAsc(Long departmentStatus, Long departmentHigh);
 }
