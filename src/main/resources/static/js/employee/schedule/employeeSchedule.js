@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar;
     
+	const startInput = document.getElementById('startTime');
+    const endInput = document.getElementById('endTime'); 
+    
     var categoryColors = {};
     var categoryNames = {};
    
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     $.ajax({
-        url: '/employee/categories',
+        url: '/categories',
         method: 'GET',
         headers: {
             'X-CSRF-TOKEN': csrfToken
@@ -528,4 +531,511 @@ document.addEventListener('DOMContentLoaded', function() {
 	        cancelButtonText: '취소'
 	    });
 	}
+	
+    // 일정 등록
+    function roundToNearest30Minutes(timeStr) {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        const roundedMinutes = Math.round(minutes / 30) * 30;
+        const adjustedHours = hours + Math.floor(roundedMinutes / 60);
+        const adjustedMinutes = roundedMinutes % 60;
+        return `${String(adjustedHours).padStart(2, '0')}:${String(adjustedMinutes).padStart(2, '0')}`;
+    }
+
+    function handleTimeChange(event) {
+        const input = event.target;
+        const originalValue = input.value;
+        if (originalValue) {
+            input.value = roundToNearest30Minutes(originalValue);
+        }
+    }
+    
+    startInput.addEventListener('change', handleTimeChange);
+    endInput.addEventListener('change', handleTimeChange); 
+    
+	// 등록 모달 열기
+	document.getElementById('addEventBtn').addEventListener('click', function() {
+		document.getElementById('eventModal').style.display = 'block';
+	});
+
+	// 등록 모달 닫기 
+	document.getElementById('closeModalBtn').addEventListener('click', function() {
+		Swal.fire({
+			text: '작성한 내용이 저장되지 않습니다.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#B1C2DD',
+			cancelButtonColor: '#C0C0C0',
+			confirmButtonText: '확인',
+			cancelButtonText: '취소',
+		}).then((result) => {
+			if (result.isConfirmed) {
+				document.getElementById('eventModal').style.display = 'none';
+				resetForm(createCompanyScheduleForm);
+				resetCreateModal();
+				document.getElementById('eventRepeatModal').style.display = 'none';
+			}
+		});
+	});
+	 
+	function resetCreateModal() { 
+	    reservation_form[0].reset();
+	     
+	    $('#reservationModal').modal('hide');
+	 
+	    $('#organization-chart').jstree("uncheck_all");
+	 
+	    const reservationArea = $('.selected-participants-container');  
+	    reservationArea.find('.selected-participants').remove(); 
+	    
+	    selectedMembers = [];
+	    localStorage.removeItem('selectedMembers');  
+	    $('#selectedMembers').val('');
+	}
+	
+	document.getElementById('closeModalBtn2').addEventListener('click', function() {
+		Swal.fire({
+			text: '작성한 내용이 저장되지 않습니다.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#B1C2DD',
+			cancelButtonColor: '#C0C0C0',
+			confirmButtonText: '확인',
+			cancelButtonText: '취소',
+		}).then((result) => {
+			if (result.isConfirmed) {
+				document.getElementById('eventModal').style.display = 'none';
+				resetForm(createCompanyScheduleForm);
+			}
+		});
+	});
+	
+	document.getElementById('eventDate').addEventListener('change', function() {
+        const selectedDate = this.value;
+        const endDateInput = document.getElementById('endDate');
+        endDateInput.value = '';
+        endDateInput.min = selectedDate; 
+    });
+    
+	// 반복 옵션
+	document.getElementById('eventDate').addEventListener('change', function() {
+	    const selectedDate = new Date(this.value);
+	    const repeatOption = document.getElementById('repeatOption');
+	     
+	    const dayOfWeek = selectedDate.toLocaleString('ko-KR', { weekday: 'long' });
+	    const weekOfMonth = Math.ceil(selectedDate.getDate() / 7);
+	 
+	    repeatOption.innerHTML = `
+	        <option value="0">반복 없음</option>
+	        <option value="1">매일</option>
+	        <option value="2">매주 ${dayOfWeek}</option>
+	        <option value="3">매월 ${selectedDate.getDate()}일</option>
+	        <option value="4">매월 ${weekOfMonth}번째 ${dayOfWeek}</option>
+	        <option value="5">매년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일</option>
+	    `;
+	});
+    
+	// 종일 체크박스 선택  
+	document.getElementById('allDay').addEventListener('change', function() {
+	    const isChecked = this.checked;
+	
+	    const timeGroup = document.getElementById('timeGroup');
+	    const startTimeInput = timeGroup.querySelector('input');
+	
+	    const endTimeGroup = document.getElementById('endTimeGroup');
+	    const endTimeInput = endTimeGroup.querySelector('input');
+	
+	    const endDateGroup = document.getElementById('endDateGroup');
+	    const endDateInput = endDateGroup.querySelector('input');
+	
+	    timeGroup.style.display = isChecked ? 'none' : 'block';
+	    endTimeGroup.style.display = isChecked ? 'none' : 'block';
+	    endDateGroup.style.display = isChecked ? 'block' : 'none';
+	
+	    // 클래스 추가 및 제거
+	    if (timeGroup.style.display === 'block') {
+	        startTimeInput.classList.add('plus_detail_option');
+	    } else {
+	        startTimeInput.classList.remove('plus_detail_option');  
+	    }
+	
+	    if (endTimeGroup.style.display === 'block') {
+	        endTimeInput.classList.add('plus_detail_option');
+	    } else {
+	        endTimeInput.classList.remove('plus_detail_option');  
+	    }
+	
+	    if (endDateGroup.style.display === 'block') {
+	        endDateInput.classList.add('plus_detail_option');
+	    } else {
+	        endDateInput.classList.remove('plus_detail_option');  
+	    }
+	}); 
+
+	 
+	// 카테고리 옵션
+	$.ajax({
+        url: '/employee/categories', 
+        method: 'GET',
+        success: function(data) {
+			const categorySelect = $('#category');
+            data.forEach(category => {
+                categorySelect.append(`<option value="${category.schedule_category_no}">${category.schedule_category_name}</option>`);
+            });
+        } 
+    });
+    
+    // 반복 종료  
+	document.getElementById('eventDate').addEventListener('change', function() {
+	    const eventDate = this.value;   
+	    const repeatEndDate = document.getElementById('repeatEndDate');
+	     
+	    if (eventDate) {
+	        repeatEndDate.min = eventDate;
+	        repeatEndDate.value = '';   
+	    }
+	});
+	
+	document.getElementById('endDate').addEventListener('change', function() {
+	    const endDate = this.value;   
+	    const repeatEndDate = document.getElementById('repeatEndDate');
+	     
+	    if (endDate) {
+	        repeatEndDate.min = endDate;
+	        repeatEndDate.value = '';   
+	    }
+	});
+	
+	document.getElementById('allDay').addEventListener('change', function() {
+	    const repeatEndDate = document.getElementById('repeatEndDate');
+	    
+	    repeatEndDate.value = ''; 
+	});
+
+	document.getElementById('repeatOption').addEventListener('change', function() {
+	    const repeatEndGroup = document.getElementById('repeatEndGroup'); 
+	    const repeatEndDate = document.getElementById('repeatEndDate');
+	
+	    if (this.value != 0) {
+	        repeatEndGroup.style.display = 'block';
+	        repeatEndDate.classList.add('plus_detail_option_2');
+	    } else {
+	        repeatEndGroup.style.display = 'none';  
+	        repeatEndDate.classList.remove('plus_detail_option_2');  
+	        repeatEndDate.value = '';   
+	    } 
+	});
+	
+	
+	// 부서 체크박스, 참여자 버튼
+	const departmentScheduleCheckbox = document.getElementById('department_schedule');
+    const openOrganizationChartButton = document.getElementById('openOrganizationChartButton');
+ 
+    departmentScheduleCheckbox.addEventListener('change', function () { 
+        if (this.checked) {
+            openOrganizationChartButton.disabled = true;
+        } else {
+            openOrganizationChartButton.disabled = false;
+        }
+    });
+ 
+    openOrganizationChartButton.addEventListener('click', function () {
+        departmentScheduleCheckbox.disabled = true;
+    });
+	
+	$('#openOrganizationChartButton').on('click', function() {
+        openOrganizationChartModal();
+    });
+	
+	function openOrganizationChartModal() {
+	    selectedMembers = [];   
+	
+	    $('#organizationChartModal').modal('show');
+	
+	    loadOrganizationChart();
+	}
+
+    // 조직도 로딩
+    function loadOrganizationChart() {
+        $.ajax({
+            url: '/schedule/chart',
+            method: 'GET',
+            success: function(data) {
+                console.log('조직도 데이터:', data);
+                $('#organization-chart').jstree({ 
+                    'core': {
+                        'data': data,
+                        'themes': { 
+                            'icons': true,
+                            'dots': false,
+                            
+                        }
+                    },
+                    'plugins': ['checkbox', 'types', 'search'],
+                    'types': {
+                        'default': {
+                            'icon': 'fa fa-users'
+                        },
+                        'department': {
+                            'icon': 'fa fa-users'
+                        }, 
+                        'member': {
+			            	'icon': 'fa fa-user'  
+			        	}
+                    }
+                }).on('ready.jstree', function (e, data) {
+                    restoreSelection(data.instance);
+                });
+
+                // 체크박스 변경 시 선택된 사원 업데이트
+                $('#organization-chart').on('changed.jstree', function (e, data) {
+                    updateSelectedMembers(data.selected, data.instance);
+                });
+                
+                // 검색  
+                $('#organization_search').on('keyup', function() { 
+                    const searchString = $(this).val();
+
+                    $('#organization-chart').jstree(true).search(searchString); 
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('조직도 로딩 오류:', error);
+            }
+        });
+    }
+
+    // 선택된 사원 업데이트
+    function updateSelectedMembers(selectedIds, instance) {
+        const selectedMembersContainer = $('#selected-members');
+        const permissionPickList = $('.permission_pick_list');
+        selectedMembersContainer.empty();
+        permissionPickList.empty();
+
+        const selectedNodes = instance.get_selected(true);
+        let selectedMembers = [];
+
+        selectedNodes.forEach(function(node) {
+            if (node.original.type === 'member') {
+                const memberId = node.id;
+                const memberNumber = memberId.replace('member_', ''); // 사원 번호
+                const memberElement = $('<div class="selected-member"></div>');
+                const memberName = $('<span></span>').text(node.text);
+                const removeButton = $('<button class="remove-member">&times;</button>');
+
+                memberElement.append(memberName).append(removeButton);
+                selectedMembersContainer.append(memberElement);
+
+                selectedMembers.push(memberNumber);
+
+                removeButton.click(function() {
+                    instance.uncheck_node(node);
+                    memberElement.remove();
+                    const index = selectedMembers.indexOf(memberNumber);
+                    if (index !== -1) {
+                        selectedMembers.splice(index, 1);
+                    }
+
+                    localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+
+                    permissionPickList.find(`.permission-item[data-name="${node.text}"]`).remove();
+                });
+
+                const permissionItem = $(`<div class="permission-item" data-name="${node.text}"></div>`);
+                permissionItem.text(node.text);
+                permissionPickList.append(permissionItem);
+            }
+        });
+
+        $('#selectedMembers').val(selectedMembers.join(','));
+
+        localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
+    }  
+    
+    // 조직도 확인 -> 예약 모달 사원 출력 
+	$('#participate_confirmButton').click(function()  {
+	    const reservationArea = $('.selected-participants-container');  
+	    const selectedMembersContainer = $('#selected-members');  
+	    const selectedMembersList = selectedMembersContainer.find('.selected-member');
+	    
+	    reservationArea.find('.selected-participants').remove();  
+	    
+	    selectedMembersList.each(function() {
+	        const memberName = $(this).find('span').text();
+	        const participantItem = $('<span class="selected-participants"></span>');
+	        participantItem.text(memberName);
+	        reservationArea.append(participantItem);
+	    }); 
+	    $('#organizationChartModal').modal('hide');
+	 });
+	 
+	// 요일 
+	function getDayOfWeek() {
+	    const selectedDate = new Date(document.getElementById('eventDate').value);
+	    return selectedDate.getDay();  
+	}
+	
+	// 주차 
+	function getWeekNumber() {
+	    const selectedDate = new Date(document.getElementById('eventDate').value);
+	    return Math.ceil(selectedDate.getDate() / 7);  
+	} 
+	
+	function showAlert(message) {
+	    Swal.fire({
+	        text: message,
+	        icon: 'warning',
+	        confirmButtonColor: '#B1C2DD',
+	        confirmButtonText: '확인',
+	    });
+	}
+	 
+	  
+	
+	// 일정 등록 
+	document.getElementById('eventForm').addEventListener('submit', function(event) {
+		const type_form = document.getElementById('create_modal_submit').innerText;
+	    event.preventDefault();
+   		 
+	    const title = document.getElementById('eventTitle').value.trim();
+	    const category = document.getElementById('category').value;
+	    const startDate = document.getElementById('eventDate').value;
+	    const description = document.getElementById('description').value.trim();
+	    const allDay = document.getElementById('allDay').checked; 
+	    const endDate = document.getElementById('endDate').value;
+	    const startTime = document.getElementById('startTime').value;
+	    const endTime = document.getElementById('endTime').value;
+	    const repeatOption = document.getElementById('repeatOption').value;
+	    const repeatEndDate = document.getElementById('repeatEndDate').value;
+	
+	    if (!title) {
+	        showAlert('일정 제목을 입력해 주세요.');
+	        return;
+	    }
+	
+	    if (!category) {
+	        showAlert('카테고리를 선택해 주세요.');
+	        return;
+	    }
+	
+	    if (!startDate) {
+	        showAlert('날짜를 선택해 주세요.');
+	        return;
+	    }
+	 
+	    if (!allDay) {
+	        if (!startTime) {
+	            showAlert('시작 시간을 입력해 주세요.');
+	            return;
+	        }
+	        
+	        if (!endTime) {
+	            showAlert('종료 시간을 입력해 주세요.');
+	            return;
+	        }
+	
+	        if (endTime < startTime) {
+	            showAlert('종료 시간은 시작 시간 이후로 설정해 주세요.');
+	            return;
+	        }
+	    }
+	    
+	    if(allDay) {
+			if (!startDate) {
+	            showAlert('시작 날짜를 입력해 주세요.');
+	            return;
+	        }
+	        
+			if (!endDate) {
+	            showAlert('종료 날짜를 입력해 주세요.');
+	            return;
+	        }
+		}
+	     
+		if (repeatOption != 0 && !repeatEndDate && !$('#repeatOption').is(':disabled')) {
+		    showAlert('반복 종료일을 입력해 주세요.');
+		    return;
+		} 
+	    if (!description) {
+	        showAlert('내용을 입력해 주세요.');
+	        return;
+	    } 
+	
+	    // 반복 옵션 값 
+	    const repeat_insert_date = document.getElementById('eventDate').value;
+	    const repeat = parseInt(document.getElementById('repeatOption').value);
+	    const repeatDayOfWeek = repeat === 2 ||  repeat ===  4 ? getDayOfWeek() : null; // 요일
+	    const repeatWeek = repeat === 4 ? getWeekNumber() : null; // 주차
+	    const repeatDate = repeat === 3 ||  repeat ===  5 ? new Date(repeat_insert_date).getDate() : null; // 특정 일
+	    const repeatMonth = repeat === 5 ? new Date(repeat_insert_date).getMonth() + 1 : null; // 특정 월
+	 
+	 	const department_schedule = document.getElementById('department_schedule').checked; 
+	 	const selectedMembers = document.getElementById('selectedMembers').value;
+	 	var schedule_type = 0;
+	 	var departmentNo;
+	 	
+	 	if(selectedMembers != null) {
+			schedule_type = 2;
+		} else if(department_schedule) {
+			schedule_type = 1;
+			departmentNo = userDepartmentNo;
+		} else {
+			schedule_type = 0;
+		}
+	 	
+	    const eventData = {
+	        title: title,
+	        category: category,
+	        startDate: startDate,
+	        endDate : allDay ? endDate : null,
+	        repeatEndDate : repeatEndDate,
+	        startTime: allDay ? null : startTime,  
+	        endTime: allDay ? null : endTime,
+	        allDay: allDay,
+	        repeat: repeat,
+	        description: description,
+	        repeatEndDate: repeatEndDate,
+	        schedule_day_of_week: repeatDayOfWeek,
+	        schedule_week: repeatWeek,
+	        schedule_date: repeatDate,
+	        schedule_month: repeatMonth,
+	        schedule_type : schedule_type,
+	        department_no : departmentNo,
+	        selectedMembers: selectedMembers
+	    };
+	  
+		if(type_form === "저장") {     
+			console.log(eventData);
+		    $.ajax({
+		        type: "POST",
+		        url: '/employee/schedule/save/' + memberNo,   
+		        contentType: 'application/json',
+		        data: JSON.stringify(eventData),
+		        headers: {
+		            'X-CSRF-TOKEN': csrfToken
+		        },
+		        success: function(response) {
+					if (response.res_code === "200") {
+		                Swal.fire({
+		                    text: response.res_msg,
+		                    icon: 'success',
+		                    confirmButtonColor: '#B1C2DD',
+		                    confirmButtonText: '확인'
+		                }).then(() => {
+		                  	window.location.reload();  
+		                	document.getElementById('eventModal').style.display = 'none';
+		                });
+		            } else {
+		                Swal.fire({
+		                    text: response.res_msg,
+		                    icon: 'error',
+		                    confirmButtonColor: '#B1C2DD',
+		                    confirmButtonText: '확인'
+		                });
+		            } 
+		        } 
+		    }); 
+	    	
+		} 
+	});
+	
 });

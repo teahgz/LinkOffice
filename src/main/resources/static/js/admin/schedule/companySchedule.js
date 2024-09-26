@@ -573,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedDate = this.value;
         const endDateInput = document.getElementById('endDate');
         endDateInput.value = '';
-        endDateInput.min = selectedDate; 
+        endDateInput.min = selectedDate;  
     });
     
 	// 종일 체크박스 선택  
@@ -592,8 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    timeGroup.style.display = isChecked ? 'none' : 'block';
 	    endTimeGroup.style.display = isChecked ? 'none' : 'block';
 	    endDateGroup.style.display = isChecked ? 'block' : 'none';
-	
-	    // 클래스 추가 및 제거
+	 
 	    if (timeGroup.style.display === 'block') {
 	        startTimeInput.classList.add('plus_detail_option');
 	    } else {
@@ -659,10 +658,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	    if (this.value != 0) {
 	        repeatEndGroup.style.display = 'block';
+	        repeatEndDate.classList.add('plus_detail_option_2');
 	    } else {
 	        repeatEndGroup.style.display = 'none';  
+	        repeatEndDate.classList.remove('plus_detail_option_2');  
 	        repeatEndDate.value = '';   
-	    }
+	    } 
 	});
 	  
 

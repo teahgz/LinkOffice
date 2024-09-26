@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
@@ -603,5 +605,85 @@ public class ScheduleService {
         }).collect(Collectors.toList());
     }
     
+	// 참여자 일정 저장
+    @Transactional
+    public void saveScheduleAndParticipants(ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto, List<ScheduleParticipantDto> participants) { 
+	    Schedule schedule = Schedule.builder()
+	    		.memberNo(scheduleDto.getMember_no())
+	            .scheduleTitle(scheduleDto.getSchedule_title())
+	            .scheduleComment(scheduleDto.getSchedule_comment())
+	            .scheduleStartDate(scheduleDto.getSchedule_start_date())
+	            .scheduleAllday(scheduleDto.getSchedule_allday())
+	            .scheduleEndDate(scheduleDto.getSchedule_end_date())
+	            .scheduleStartTime(scheduleDto.getSchedule_start_time())
+	            .scheduleEndTime(scheduleDto.getSchedule_end_time())
+	            .scheduleCategoryNo(scheduleDto.getSchedule_category_no())
+	            .scheduleRepeat(scheduleDto.getSchedule_repeat())
+	            .scheduleType(scheduleDto.getSchedule_type())
+	            .departmentNo(scheduleDto.getDepartment_no())
+	            .scheduleStatus(0L)
+	            .build();
+
+	    scheduleRepository.save(schedule);
+
+	    // 반복 일정 저장
+	    if (scheduleDto.getSchedule_repeat() != 0) {
+	        ScheduleRepeat repeat = ScheduleRepeat.builder()
+	                .scheduleNo(schedule.getScheduleNo())
+	                .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
+	                .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
+	                .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
+	                .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
+	                .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
+	                .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
+	                .build();
+
+	        scheduleRepeatRepository.save(repeat);
+	    }
+	    
+        // 참가자 정보 저장
+        participants.forEach(participantDto -> {
+            participantDto.setSchedule_no(schedule.getScheduleNo());
+            System.out.println(participantDto.toEntity());
+            scheduleParticipantRepository.save(participantDto.toEntity());  
+        });
+         
+    }
+	
+    // 사원 일정 저장
+    public void saveEmployeeSchedule(ScheduleDto scheduleDto, ScheduleRepeatDto scheduleRepeatDto) {
+    	Schedule schedule = Schedule.builder()
+	    		.memberNo(scheduleDto.getMember_no())
+	            .scheduleTitle(scheduleDto.getSchedule_title())
+	            .scheduleComment(scheduleDto.getSchedule_comment())
+	            .scheduleStartDate(scheduleDto.getSchedule_start_date())
+	            .scheduleAllday(scheduleDto.getSchedule_allday())
+	            .scheduleEndDate(scheduleDto.getSchedule_end_date())
+	            .scheduleStartTime(scheduleDto.getSchedule_start_time())
+	            .scheduleEndTime(scheduleDto.getSchedule_end_time())
+	            .scheduleCategoryNo(scheduleDto.getSchedule_category_no())
+	            .scheduleRepeat(scheduleDto.getSchedule_repeat())
+	            .scheduleType(scheduleDto.getSchedule_type())
+	            .departmentNo(scheduleDto.getDepartment_no())
+	            .scheduleStatus(0L)
+	            .build();
+
+	    scheduleRepository.save(schedule);
+
+	    // 반복 일정 저장
+	    if (scheduleDto.getSchedule_repeat() != 0) {
+	        ScheduleRepeat repeat = ScheduleRepeat.builder()
+	                .scheduleNo(schedule.getScheduleNo())
+	                .scheduleRepeatType(scheduleRepeatDto.getSchedule_repeat_type())
+	                .scheduleRepeatDay(determineRepeatDay(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_day())) // 요일
+	                .scheduleRepeatWeek(determineRepeatWeek(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_week())) // 주차
+	                .scheduleRepeatDate(determineRepeatDate(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_date())) // 일자
+	                .scheduleRepeatMonth(determineRepeatMonth(scheduleRepeatDto.getSchedule_repeat_type(), scheduleRepeatDto.getSchedule_repeat_month())) // 월
+	                .scheduleRepeatEndDate(scheduleRepeatDto.getSchedule_repeat_end_date()) 
+	                .build();
+
+	        scheduleRepeatRepository.save(repeat);
+	    }
+    }
 
 }
