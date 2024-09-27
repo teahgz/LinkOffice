@@ -47,7 +47,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         //}
 
         if("noficationChat".equals(type)){
-            System.out.println("testings");
             handleChatAlarm(jsonMap, session, type);
         }
 
