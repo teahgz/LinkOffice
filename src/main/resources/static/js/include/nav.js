@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
-                saveDropdownState(dropdownId); /
+                saveDropdownState(dropdownId); 
             }
         });
     });
@@ -164,6 +164,12 @@ function connectWebSocket() {
 		                showNotification(title, content, item.memberNo);
 			        }
                 });
+			} else if(message.type === 'vacationApprovalAlarm'){
+                const title = message.title;
+                const content = message.content;
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo);
+                });				
 			}
         };
 
