@@ -28,7 +28,7 @@
 		<div id="eventModal" class="modal">
 		    <div class="modal-content" id="create_employee_schedule">
 		        <span class="add_close close" id="closeModalBtn">&times;</span>
-		        <h2 class="modal-title">일정 등록</h2>
+		        <h2 class="modal-title" id="modal-title"> 일정 등록</h2>
 		        <hr class="create_hr">
 		        <form id="eventForm">
 		            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -139,6 +139,7 @@
 		    <div class="event_modal-content"> 
 		    	<input type="hidden" id="eventId">
 		    	<input type="hidden" id="isException">
+		    	 <input type="hidden" id="isRecurring_view">
 			    <div class="modal-schedule-button">
 			    	<span class="modal-schedule-button-two">
 			            <button id="editEventBtn"><i class="fa-solid fa-pencil"></i></button> 

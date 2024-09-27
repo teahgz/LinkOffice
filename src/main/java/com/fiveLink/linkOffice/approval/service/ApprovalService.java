@@ -303,14 +303,13 @@ public class ApprovalService {
 	            Long approvalNo = (Long) result[0];
 	            Long memberNo = (Long) result[1];
 	            String approvalTitle = (String) result[2];
-	            String approvalEffectiveDate = (String) result[3];
-	            String approvalContent = (String) result[4];
-	            Long approvalStatus = (Long) result[5];
-	            Timestamp approvalCreateDate = (Timestamp) result[6];
-	            Timestamp approvalUpdateDate = (Timestamp) result[7];
-	            String approvalCancelReason = (String) result[8];
-	            Long approvalFlowRole = (Long) result[9];
-	            String approvalType = (String) result[10];
+	            String approvalContent = (String) result[3];
+	            Long approvalStatus = (Long) result[4];
+	            Timestamp approvalCreateDate = (Timestamp) result[5];
+	            Timestamp approvalUpdateDate = (Timestamp) result[6];
+	            String approvalCancelReason = (String) result[7];
+	            Long approvalFlowRole = (Long) result[8];
+	            String approvalType = (String) result[9];
 
 	            LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
 	            LocalDateTime updateDateTime = approvalUpdateDate.toLocalDateTime();
@@ -323,7 +322,6 @@ public class ApprovalService {
 	            dto.setMember_name(member.getMemberName());
 	            dto.setApproval_title(approvalTitle);
 	            dto.setApproval_content(approvalContent);
-	            dto.setApproval_effective_date(approvalEffectiveDate);
 	            dto.setApproval_status(approvalStatus);
 	            dto.setApproval_create_date(createDateTime);
 	            dto.setApproval_update_date(updateDateTime);
@@ -379,14 +377,13 @@ public class ApprovalService {
 			            Long approvalNo = (Long) result[0];
 			            Long memberNo = (Long) result[1];
 			            String approvalTitle = (String) result[2];
-			            String approvalEffectiveDate = (String) result[3];
-			            String approvalContent = (String) result[4];
-			            Long approvalStatus = (Long) result[5];
-			            Timestamp approvalCreateDate = (Timestamp) result[6];
-			            Timestamp approvalUpdateDate = (Timestamp) result[7];
-			            String approvalCancelReason = (String) result[8];
-			            Long approvalFlowRole = (Long) result[9];
-			            String approvalType = (String) result[10];
+			            String approvalContent = (String) result[3];
+			            Long approvalStatus = (Long) result[4];
+			            Timestamp approvalCreateDate = (Timestamp) result[5];
+			            Timestamp approvalUpdateDate = (Timestamp) result[6];
+			            String approvalCancelReason = (String) result[7];
+			            Long approvalFlowRole = (Long) result[8];
+			            String approvalType = (String) result[9];
 
 			            LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
 			            LocalDateTime updateDateTime = approvalUpdateDate.toLocalDateTime();
@@ -399,7 +396,6 @@ public class ApprovalService {
 			            dto.setMember_name(member.getMemberName());
 			            dto.setApproval_title(approvalTitle);
 			            dto.setApproval_content(approvalContent);
-			            dto.setApproval_effective_date(approvalEffectiveDate);
 			            dto.setApproval_status(approvalStatus);
 			            dto.setApproval_create_date(createDateTime);
 			            dto.setApproval_update_date(updateDateTime);

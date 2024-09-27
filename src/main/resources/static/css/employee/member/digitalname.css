@@ -1,10 +1,12 @@
 @charset "UTF-8";
 
 #digital_name{
- 	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+    margin: auto;
+    height: 100%;
+    width: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .digital_form {

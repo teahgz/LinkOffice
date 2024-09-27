@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    }) 
 	}
 	
-	// 예외
+	// 예외 일정
 	function createExceptionEvent(exceptionEvent, currentDate) {
 	    const endDate = exceptionEvent.schedule_exception_end_date ? new Date(exceptionEvent.schedule_exception_end_date) : null;
 	
@@ -111,18 +111,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	        start: exceptionEvent.schedule_exception_start_date + (exceptionEvent.schedule_exception_start_time ? 'T' + exceptionEvent.schedule_exception_start_time : ''),
 	        end: endDate ? formatDate(endDate) + (exceptionEvent.schedule_exception_end_time ? 'T' + exceptionEvent.schedule_exception_end_time : '') : null,
 	        allDay: !exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time,
-	        backgroundColor: categoryColors[exceptionEvent.schedule_exception_category_no] || '#3788d8',
-	        borderColor: categoryColors[exceptionEvent.schedule_exception_category_no] || '#3788d8',
+	        backgroundColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
+	        borderColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
 	        textColor: '#000000',
 	        extendedProps: {
-	            categoryName: categoryNames[exceptionEvent.schedule_exception_category_no],
+	            categoryName: categoryNames[exceptionEvent.schedule_category_no],
 	            comment: exceptionEvent.schedule_exception_comment,
 	            createDate: exceptionEvent.schedule_exception_create_date,
 	            endDate: exceptionEvent.schedule_exception_end_date ? exceptionEvent.schedule_exception_end_date : null,
 	            startTime: exceptionEvent.schedule_exception_allday === 0 ? exceptionEvent.schedule_exception_start_time : null,
 	            endTime: exceptionEvent.schedule_exception_allday === 0 ? exceptionEvent.schedule_exception_end_time : null,
 	            exceptionNo: exceptionEvent.schedule_exception_no,
-	            isException: true 
+	            isException: true
 	        }
 	    };
 	}
@@ -417,6 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 예외 상세 모달
 	function showExceptionEventModal(event) {
+		console.log(event);
 	    const modal = document.getElementById('eventViewModal');
 	    const title = document.getElementById('eventViewTitle');
 	    const dateRange = document.getElementById('eventViewDateRange');
@@ -859,6 +860,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    modal.style.display = 'block';
 	    document.getElementById('eventViewModal').style.display = 'none';
 		
+	    const editTitle = document.getElementById('modal-title');
+	    editTitle.textContent = '일정 수정';
+	    
 		const submitButton = document.getElementById('create_modal_submit');
    		submitButton.textContent = '수정';
     
@@ -909,7 +913,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	    var modal = document.getElementById('eventModal');
 	    modal.style.display = 'block';
 	    document.getElementById('eventViewModal').style.display = 'none';
-			
+		
+	    const editTitle = document.getElementById('modal-title');
+	    editTitle.textContent = '일정 수정';
+	    
 	    const submitButton = document.getElementById('create_modal_submit');
 	    submitButton.textContent = '수정';
 	    
@@ -920,7 +927,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        success: function(data) { 
 	            $('#eventId').val(eventId);  
 	            $('#isRecurring').val('0');   
-	            $('#category').val(data.schedule.schedule_exception_category_no);
+	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_exception_title);
 	            $('#eventDate').val(data.schedule.schedule_exception_start_date);
 	            document.getElementById('eventDate').dispatchEvent(new Event('change'));
