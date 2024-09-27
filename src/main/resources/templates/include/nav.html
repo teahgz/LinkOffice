@@ -10,8 +10,8 @@
 	<div id="nav_wrap" >
 		<ul>
 			<li>
-				<a href="#">마이페이지</a>
-				<div class="dropdown">
+				<a href="#" class="dropdown-toggle">마이페이지</a>
+				<div class="dropdown" id="mypageDropdown">
 					<ul th:each = "member : ${memberdto}">
 						<li><a th:href="@{/employee/member/mypage}">내 정보</a></li>
 						<li><a th:href="@{/employee/member/myedit}">정보 수정</a></li>
@@ -26,8 +26,8 @@
    				 <a th:href="@{/admin/notice/list}">공지사항</a>
 				</li>
 				<li>
-					<a href="#">휴가</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">휴가</a>
+					<div class="dropdown" id="vacationapprovalDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/vacationapproval/create}">휴가 신청</a></li>
 							<li><a th:href="@{/employee/vacationapproval/list}">휴가 신청함</a></li>
@@ -40,8 +40,8 @@
 
 
 				<li>
-					<a href="#">회의실</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">회의실</a>
+					<div class="dropdown" id="meetingDropdown">
 						<ul>
 							<li><a th:href="@{/employee/meeting/reservation}">회의실 예약</a></li>
 							<li><a th:href="@{/employee/meeting/reservation/list}">예약 내역</a></li>
@@ -49,25 +49,25 @@
 					</div>
 				</li>
 				<li>
-					<a href="#">전자결재</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">전자결재</a>
+					<div class="dropdown" id="approvalDropdown">
 						<ul >
 							<li><a th:href="@{/employee/approval/create}">결재 작성</a></li>
 							<li>
-								<a href="#">결재 상신함</a>
-								<div class="dropdown">
+								<a href="#" class="dropdown-toggle">결재 상신함</a>
+								<div class="dropdown" id="approvalDropdown2">
 									<ul>
-										<li><a th:href="@{/employee/approval/progress}">결재 진행함</a></li>
-										<li><a th:href="@{/employee/approval/reject}">결재 반려함</a></li>
+										<li><a th:href="@{/employee/approval/progress}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 진행함</a></li>
+										<li><a th:href="@{/employee/approval/reject}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 반려함</a></li>
 									</ul>
 								</div>
 							</li>
 							<li>
-								<a href="#">결재 수신함</a>
-								<div class="dropdown">
+								<a href="#" class="dropdown-toggle">결재 수신함</a>
+								<div class="dropdown" id="approvalDropdown3">
 									<ul>
-										<li><a th:href="@{/employee/approval/history}">결재 내역함</a></li>
-										<li><a th:href="@{/employee/approval/references}">결재 참조함</a></li>
+										<li><a th:href="@{/employee/approval/history}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 내역함</a></li>
+										<li><a th:href="@{/employee/approval/references}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 참조함</a></li>
 									</ul>
 								</div>
 							</li>
@@ -84,8 +84,8 @@
 				<li th:each = "member : ${memberdto}"><a th:href="@{/employee/member/list}">주소록</a></li>
 
 				<li>
-					<a href="#">문서함</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">문서함</a>
+					<div class="dropdown" id="documentDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/document/personal/{no}(no=${member.member_no})}">개인 문서함</a></li>
  							<li><a th:href="@{/employee/document/department/{no}(no=${member.department_no}, memberNo=${member.member_no})}">부서 문서함</a></li>
@@ -95,8 +95,8 @@
 					</div>
 				</li>
 				<li>
-					<a href="#">설문</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">설문</a>
+					<div class="dropdown" id="Dropdown">
 						<ul>
 							<li><a href="#">설문 작성</a></li>
 							<li><a href="#">진행중인 설문</a></li>
@@ -105,8 +105,8 @@
 					</div>
 				</li>
 				<li>
-					<a href="#">조직 관리</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">조직 관리</a>
+					<div class="dropdown" id="departmentDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/department}">부서 관리</a></li>
 							<li><a th:href="@{/position}">직위 관리</a></li>
@@ -114,8 +114,8 @@
 					</div>
 				</li>
 			<li>
-				<a href="#">비품 관리</a>
-				<div class="dropdown">
+				<a href="#" class="dropdown-toggle">비품 관리</a>
+				<div class="dropdown" id="inventoryDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/inventory/list/{no}(no=${member.member_no})}">비품 목록</a></li>
 							<li><a th:href="@{/inventory/create/{no}(no=${member.member_no})}">비품 등록</a></li>
@@ -123,8 +123,8 @@
 				</div>
 			</li>
 				<li>
-					<a href="#">사원 관리</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">사원 관리</a>
+					<div class="dropdown" id="memberDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/admin/member/create}">사원 등록</a></li>
 <!--							<li><a th:href="@{/admin/member/edit}">사원 수정</a></li>-->
@@ -133,8 +133,8 @@
 					</div>
 				</li>
 				<li>
-					<a href="#">일정 관리</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">일정 관리</a>
+					<div class="dropdown" id="scheduleDropdown">
 						<ul>
 							<li><a href="#">사내 일정 목록</a></li>
 							<li><a th:href="@{/schedule/company}">월간 사내 일정</a></li>
@@ -143,8 +143,8 @@
 					</div>
 				</li>
 				<li>
-					<a href="#">전자 결재 양식 관리</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">전자 결재 양식 관리</a>
+					<div class="dropdown" id="approvalFormDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/admin/approval/create}">결재 양식 등록</a></li>
 							<li><a th:href="@{/admin/approval/form}">결재 양식함</a></li>
@@ -152,8 +152,8 @@
 					</div>
 				</li>
 				<li>
-					<a href="#">휴가 관리</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">휴가 관리</a>
+					<div class="dropdown" id="vacationDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
 							<li><a th:href="@{/vacation/vacationStandard/{no}(no=${member.member_no})}">휴가 기준</a></li>
@@ -161,8 +161,8 @@
 					</div>
 				</li> 
 				<li>
-					<a href="#">회의실 관리</a>
-					<div class="dropdown">
+					<a href="#" class="dropdown-toggle">회의실 관리</a>
+					<div class="dropdown" id="reservationDropdown">
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/meetingroomList}">회의실 관리</a></li>
 							<li><a th:href="@{/meeting/reservation/list}">예약 관리</a></li>
