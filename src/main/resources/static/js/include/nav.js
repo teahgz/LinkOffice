@@ -177,15 +177,7 @@ function connectWebSocket() {
                     showNotification(title, content, item.memberNo);
                 });
 
-            } else if(message.type === 'documentAlarm'){
-				const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-			        if (Number(item.memberNo) === currentMember) {
-		                showNotification(title, content, item.memberNo);
-			        }
-                });
-			}
+            }
         };
 
 
