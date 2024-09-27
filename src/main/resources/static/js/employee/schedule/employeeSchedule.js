@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function searchExceptionParticipate(scheduleExceptionNo, callback) {
 	    $.ajax({
-	        url: '/api/participate/member/schedules/exception' + scheduleExceptionNo,
+	        url: '/api/participate/member/schedules/exception/' + scheduleExceptionNo,
 	        method: 'GET',
 	        dataType: 'json',
 	        headers: {
@@ -295,8 +295,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	   if (!exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time && endDate) {
 	       endDate.setDate(endDate.getDate() + 1);
 	   } 
-    
-    	console.log(exceptionEvent);
+       
+       console.log(exceptionEvent);
        var event = {
             order: 1,
             id: exceptionEvent.schedule_exception_no,
@@ -304,13 +304,13 @@ document.addEventListener('DOMContentLoaded', function() {
             start: exceptionEvent.schedule_exception_start_date + (exceptionEvent.schedule_exception_start_time ? 'T' + exceptionEvent.schedule_exception_start_time : ''),
             end: endDate ? formatDate(endDate) + (exceptionEvent.schedule_exception_end_time ? 'T' + exceptionEvent.schedule_exception_end_time : '') : null,
             allDay: !exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time,
-            backgroundColor: categoryColors[exceptionEvent.schedule_exception_category_no] || '#3788d8',
-            borderColor: categoryColors[exceptionEvent.schedule_exception_category_no] || '#3788d8',
+            backgroundColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
+            borderColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
             textColor: '#000000',
             className: type + '-event',
             extendedProps: {
 				type: type,
-                categoryName: categoryNames[exceptionEvent.schedule_exception_category_no],
+                categoryName: categoryNames[exceptionEvent.schedule_category_no],
                 comment: exceptionEvent.schedule_exception_comment,
                 createDate: exceptionEvent.schedule_exception_create_date,
                 endDate: exceptionEvent.schedule_exception_end_date ? exceptionEvent.schedule_exception_end_date : null,
@@ -320,9 +320,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 isException: true,
                 exceptionType: exceptionEvent.schedule_exception_type,
                 originNo : exceptionEvent.schedule_no,
-                member_no: ori_memberNo
+                member_no: ori_memberNo,
+                department_no : exceptionEvent.department_no
             }
         };
+        
+        if (exceptionEvent.schedule_exception_type === 2) { 
+            searchExceptionParticipate(exceptionEvent.schedule_exception_no, function(participantNos) {
+                event.extendedProps.participant_no = participantNos;
+                event.extendedProps.participantsLoaded = true;
+                calendar.getEventById(event.id).setExtendedProp('participant_no', participantNos);
+                calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
+                filterEvents();   
+            });
+        }  
+        console.log(event);
         return event;
     }
 
@@ -610,6 +622,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 	});
+	
+	document.getElementById('event_repeat_close_btn').addEventListener('click', function() { 
+		document.getElementById('eventRepeatModal').style.display = 'none'; 
+	});
 	 
 	function resetCreateModal() { 
 	    reservation_form[0].reset();
@@ -779,9 +795,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
 	function updateCheckboxState() {
 	    if (document.getElementById('selectedMembers').value.trim() === '') {
-	        departmentScheduleCheckbox.disabled = false; // 빈 경우 체크박스 활성화
+	        departmentScheduleCheckbox.disabled = false; 
 	    } else {
-	        departmentScheduleCheckbox.disabled = true; // 값이 있는 경우 체크박스 비활성화
+	        departmentScheduleCheckbox.disabled = true; 
 	    }
 	}
 	
@@ -1316,7 +1332,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        success: function(data) { 
 	            $('#eventId').val(eventId);  
 	            $('#isRecurring').val('0');   
-	            $('#category').val(data.schedule.schedule_exception_category_no);
+	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_exception_title);
 	            $('#eventDate').val(data.schedule.schedule_exception_start_date);
 	            document.getElementById('eventDate').dispatchEvent(new Event('change'));
@@ -1350,12 +1366,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
 	document.getElementById('event_repeat_modal_btn').addEventListener('click', function() {
-	    const eventId = document.getElementById('eventId').value;
+	    const eventId = document.getElementById('eventId').value; 
 	    const repeatEditOption = document.querySelector('input[name="repeatEditOption"]:checked').value;
-	 	const typeEventRepeat = document.getElementById('event_repeat_title').innerText;
+	 	const typeEventRepeat = document.getElementById('event_repeat_title').innerText; 
+ 
+	 	const department_schedule = document.getElementById('department_schedule').checked; 
+	 	const selectedMembers = document.getElementById('selectedMembers').value;
+	 	var schedule_edit_type = 0; 
 	 	
+	 	if (selectedMembers) { 
+		    schedule_edit_type = 2;
+		} else if (department_schedule) { 
+		    schedule_edit_type = 1; 
+		} else { 
+		    schedule_edit_type = 0;
+		}
+		
 	 	if(typeEventRepeat === "반복 일정 수정") {
-		    handleRecurringEventUpdate(eventId, repeatEditOption);			
+		    handleRecurringEventUpdate(eventId, repeatEditOption, schedule_edit_type);			
 		} else {
 			repeatDelete(eventId, repeatEditOption);
 		}
@@ -1364,14 +1392,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	}); 
 	
 	// 반복 일정 수정  
-	function handleRecurringEventUpdate(eventId, repeatEditOption) {
+	function handleRecurringEventUpdate(eventId, repeatEditOption, schedule_edit_type) {
 	    const eventData = getEventFormData();   
 	    
 	    console.log("eventData : ", eventData); 
 	    
 	    $.ajax({
 	        type: "POST",
-	        url: '/company/schedule/edit/recurring/' + eventId + '?editOption=' + repeatEditOption + '&pickStartDate=' + pickStartDate + '&pickEndDate=' + pickEndDate,
+	        url: '/employee/schedule/edit/recurring/' + eventId + '/' + schedule_edit_type + '?editOption=' + repeatEditOption + '&pickStartDate=' + pickStartDate + '&pickEndDate=' + pickEndDate,
 	        contentType: 'application/json',
 	        data: JSON.stringify(eventData),
 	        headers: {
