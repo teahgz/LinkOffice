@@ -841,7 +841,14 @@ $(function () {
 		                        text: response.res_msg,
 		                        confirmButtonText: '확인'
 		                    });
-				                  
+		                    
+		                    // 알림 전송 
+		                    alarmSocket.send(JSON.stringify({
+					           	type: 'noficationDocument',
+					           	deptNo: deptNo,
+					           	memberNo: memberNo
+					        }));
+					        				                  
 		                    $('.modal_div').hide();
 		                    $('#file_input').val('');
 		                    $('.file_upload_modal').hide();

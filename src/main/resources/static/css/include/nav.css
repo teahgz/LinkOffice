@@ -2,17 +2,19 @@
 
 nav {
     width: 200px;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    border-right: 1px solid #00000024;
+    height: 100vh;
 }
 
 #nav_wrap {
     width: 100%;
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
+    background-color: #ffffff;
+     box-sizing: border-box;
 }
 
 #nav_wrap > ul {
@@ -23,8 +25,7 @@ nav {
 
 #nav_wrap > ul > li {
     position: relative;
-    border-bottom: 1px solid #ddd;
-
+   /* border-bottom: 1px solid #ddd;*/
 
 }
 
@@ -50,7 +51,8 @@ nav {
     margin-left: 5%;
     text-decoration: none;
     color: #333;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
+    padding: 13px;
 }
 
 #nav_wrap > ul > li > a:hover {
@@ -68,10 +70,12 @@ nav {
     margin: 0;
 }
 
-.dropdown li {
+/*.dropdown li {
     border-bottom: 1px solid #ddd;
+}*/
+.dropdown.show {
+    display: block; /* show 클래스를 가진 드롭다운만 표시 */
 }
-
 .dropdown li:hover,
 .dropdown li:hover > a {
     background-color: #ddd;
@@ -83,7 +87,8 @@ nav {
     margin-left: 15%;
     text-decoration: none;
     color: #333;
-    background-color: #f9f9f9;
+    background-color: #ffffff
+    padding: 13px;
 }
 
 .dropdown li a:hover {
@@ -96,11 +101,11 @@ nav {
 
 .dropdown .dropdown li {
     border-bottom: none;
-    border-top: 1px solid #ddd;
 }
 
 .dropdown .dropdown li a {
     margin-left: 25%;
+    padding: 13px;
 }
 
 .dropdown .dropdown li:hover > a {

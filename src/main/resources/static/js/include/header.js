@@ -12,7 +12,7 @@ function formatTime(seconds) {
 function updateSessionTime() {
     remainingTime--;
     const formattedTime = formatTime(remainingTime);
-    document.getElementById('session-time').innerText = `남은 시간: ${formattedTime}`;
+    document.getElementById('session-time').innerText = `${formattedTime}`;
 
     if (remainingTime <= 0) {
         alert('세션이 만료되었습니다. 로그인 페이지로 이동합니다.');

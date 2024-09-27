@@ -1,53 +1,93 @@
 let currentMember = parseInt(document.getElementById("currentMember").value, 10);
 //알림 출력을 위한 멤버값
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    const links = document.querySelectorAll('.link');
 
-document.querySelectorAll('#nav_wrap > ul > li > a').forEach(anchor => {
-    anchor.addEventListener('click', function(event) {
-
-        const dropdown = this.nextElementSibling;
-        const parentLi = this.parentElement;
-        const isParentActive = parentLi.classList.contains('active');
-
-        closeDropdowns();
-
-        if (!isParentActive) {
-            parentLi.classList.add('active');
-
-            if (dropdown) {
-                dropdown.style.display = 'block';
-            }
-        } else {
-            parentLi.classList.remove('active');
-            if (dropdown) {
-                dropdown.style.display = 'none';
-            }
-        }
-
-        const childAnchors = dropdown?.querySelectorAll('li > a') || [];
-        childAnchors.forEach(childAnchor => {
-            childAnchor.removeEventListener('click', handleChildClick);
-            childAnchor.addEventListener('click', handleChildClick);
-        });
-
-        function handleChildClick(event) {
-            event
-            event.stopPropagation();
-            const childDropdown = this.nextElementSibling;
-            const childLi = this.parentElement;
-            const isChildDropdownOpen = childDropdown && childDropdown.style.display === 'block';
-
-            if (childDropdown) {
-                childDropdown.style.display = isChildDropdownOpen ? 'none' : 'block';
-            }
-
-            if (!isChildDropdownOpen) {
-                childLi.classList.add('active');
-            } else {
-                childLi.classList.remove('active');
-            }
+    // 페이지 로드 시 드롭다운 상태 복원
+    dropdownToggles.forEach(toggle => {
+        const dropdownId = toggle.nextElementSibling ? toggle.nextElementSibling.id : null;
+        if (dropdownId && sessionStorage.getItem(dropdownId) === 'open') {
+            toggle.nextElementSibling.classList.add('show'); // 드롭다운 열기
         }
     });
+
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', (event) => {
+            event.preventDefault(); // 링크 기본 동작 방지
+            const dropdown = toggle.nextElementSibling; // 해당 드롭다운 찾기
+
+            // 현재 클릭한 드롭다운 열기
+            if (dropdown) {
+                dropdown.classList.toggle('show'); // 드롭다운 토글
+                const dropdownId = dropdown.id;
+
+                // 현재 드롭다운 상태 저장
+                if (dropdown.classList.contains('show')) {
+                    sessionStorage.setItem(dropdownId, 'open'); // 드롭다운 열림
+                } else {
+                    sessionStorage.removeItem(dropdownId); // 드롭다운 닫힘
+                }
+
+                // 부모 드롭다운이 열린 상태에서 클릭한 경우
+                if (!dropdown.classList.contains('show')) {
+                    // 열린 드롭다운 모두 닫기
+                    dropdownToggles.forEach(otherToggle => {
+                        const otherDropdown = otherToggle.nextElementSibling;
+                        if (otherDropdown && otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('show'); // 닫기
+                            sessionStorage.removeItem(otherDropdown.id); // 상태 삭제
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    // 전체 문서에 클릭 이벤트 추가
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+        let isDropdown = false;
+
+        dropdownToggles.forEach(toggle => {
+            const dropdown = toggle.nextElementSibling;
+            if (dropdown && dropdown.contains(target)) {
+                isDropdown = true; // 드롭다운 내부 클릭
+            }
+            if (toggle.contains(target)) {
+                isDropdown = true; // 드롭다운 토글 클릭
+            }
+        });
+
+        if (!isDropdown) {
+            // 열린 드롭다운 모두 닫기
+            dropdownToggles.forEach(toggle => {
+                const dropdown = toggle.nextElementSibling;
+                if (dropdown) {
+                    dropdown.classList.remove('show'); // 닫기
+                    sessionStorage.removeItem(dropdown.id); // 상태 삭제
+                }
+            });
+        }
+    });
+
+    // 홈으로 이동할 때 모든 드롭다운 닫기
+    links.forEach(link => {
+        link.addEventListener('click', (event) => {
+            if (link.classList.contains('home-link')) { // 홈 링크 클래스 확인
+                dropdownToggles.forEach(toggle => {
+                    const dropdown = toggle.nextElementSibling;
+                    if (dropdown) {
+                        dropdown.classList.remove('show'); // 닫기
+                        sessionStorage.removeItem(dropdown.id); // 상태 삭제
+                    }
+                });
+            }
+        });
+    });
 });
+
+
 
 document.addEventListener('click', function(event) {
     if (!event.target.closest('#nav_wrap')) {
@@ -146,7 +186,15 @@ function connectWebSocket() {
                     showNotification(title, content, item.memberNo);
                 });
 
-            }
+            } else if(message.type === 'documentAlarm'){
+				const title = message.title;
+                const content = message.content;
+                message.data.forEach(function(item) {
+			        if (Number(item.memberNo) === currentMember) {
+		                showNotification(title, content, item.memberNo);
+			        }
+                });
+			}
         };
 
 
