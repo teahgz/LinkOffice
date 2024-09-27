@@ -19,19 +19,22 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     }
-
     function openDropdown(dropdown) {
         closeAllDropdowns();
         dropdown.style.display = "block";
+        dropdown.closest('li').classList.add('active');
         currentDropdown = dropdown;
     }
-
     function closeAllDropdowns() {
-        dropdowns.forEach(function (dropdown) {
-            dropdown.style.display = "none";
-        });
-        currentDropdown = null;
-    }
+           dropdowns.forEach(function (dropdown) {
+               dropdown.style.display = "none";
+           });
+           dropdownToggles.forEach(function (toggle) {
+               toggle.closest('li').classList.remove('active');
+           });
+           currentDropdown = null;
+       }
+
 
     dropdownToggles.forEach(function (toggle) {
         toggle.addEventListener("click", function (e) {
@@ -49,6 +52,23 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const nestedDropdownToggles = document.querySelectorAll(".dropdown > .dropdown-toggle");
+    nestedDropdownToggles.forEach(function (toggle) {
+        toggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const dropdownId = this.nextElementSibling.getAttribute("data-dropdown-id");
+            const nestedDropdown = document.querySelector(`.dropdown[data-dropdown-id="${dropdownId}"]`);
+
+            if (nestedDropdown.style.display === "block") {
+                nestedDropdown.style.display = "none";
+            } else {
+                nestedDropdown.style.display = "block";
+            }
+        });
+    });
+
     document.addEventListener("click", function (e) {
         if (!e.target.closest(".dropdown-toggle") && !e.target.closest(".dropdown")) {
             closeAllDropdowns();
@@ -58,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadDropdownState();
 });
+
 
 
 document.addEventListener('click', function(event) {
