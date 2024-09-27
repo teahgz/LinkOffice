@@ -65,6 +65,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         	handleApprovalAlarm(jsonMap, session, type);
         } else if("notificationAppApprove".equals(type)) {
         	handleAppApproveAlarm(jsonMap, session, type);
+        } else if("notificationAppReject".equals(type)) {
+        	handleAppRejectAlarm(jsonMap, session, type);
         }
 
     }
@@ -562,7 +564,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 
 
 	}
-
+	
+	// 다음 결재자 
 	public Long findNextApproverMemberNo(List<ApprovalFlowDto> approvalDtos, Long senderNo) {
 		for (int i = 0; i < approvalDtos.size(); i++) {
 			ApprovalFlowDto currentApproval = approvalDtos.get(i);
@@ -580,7 +583,77 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		return null;
 	}
 				
-				
+	// [전주영] 전자결재 승인 알림
+	private void handleAppRejectAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
+			throws Exception {
+
+		// 결재자
+		Object sendNoObj = jsonMap.get("memberNo");
+		// 기안자
+		Object approvalMemberObj = jsonMap.get("appprovalMemberNo");
+
+		Long senderNo;
+		Long approvalMemberNo;
+
+		if (sendNoObj instanceof String) {
+			senderNo = Long.parseLong((String) sendNoObj);
+		} else if (sendNoObj instanceof Integer) {
+			senderNo = ((Integer) sendNoObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+		if (approvalMemberObj instanceof String) {
+			approvalMemberNo = Long.parseLong((String) approvalMemberObj);
+		} else if (approvalMemberObj instanceof Integer) {
+			approvalMemberNo = ((Integer) approvalMemberObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+
+
+		System.out.println("결재자 : " + senderNo);
+		System.out.println("기안자 : " + approvalMemberNo);
+
+
+		String nofication_content = "결재 문서가 반려됐습니다.";
+		String nofication_title = "전자결재";
+		int nofication_type = 8;
+
+		NoficationDto noficationDto = new NoficationDto();
+
+		List<Map<String, Object>> unreadCounts = new ArrayList<>();
+
+		noficationDto.setNofication_content(nofication_content);
+		noficationDto.setNofication_receive_no(approvalMemberNo);
+		noficationDto.setNofication_title(nofication_title);
+		noficationDto.setNofication_type(nofication_type);
+		noficationDto.setMember_no(senderNo);
+
+		if (noficationService.insertAlarm(noficationDto) > 0) {
+			Map<String, Object> memberUnreadCount = new HashMap<>();
+			memberUnreadCount.put("memberNo", approvalMemberNo);
+			unreadCounts.add(memberUnreadCount);
+		}
+
+
+		for (WebSocketSession s : sessions.values()) {
+			if (s.isOpen()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, Object> responseMap = new HashMap<>();
+				responseMap.put("type", "appRejectAlarm");
+				responseMap.put("title", nofication_title);
+				responseMap.put("content", noficationDto.getNofication_content());
+				responseMap.put("data", unreadCounts);
+				String unreadMessage = objectMapper.writeValueAsString(responseMap);
+				s.sendMessage(new TextMessage(unreadMessage));
+			}
+		}
+
+	}
+	
+	
 
 	@Override
     public void afterConnectionEstablished(WebSocketSession session) {

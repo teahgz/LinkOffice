@@ -32,9 +32,6 @@ function approveRequest(){
 	
     const appprovalMemberNo = document.getElementById('approval_member_no').value;
     const memberNo = document.getElementById('member_no').value;
-    console.log(appprovalMemberNo);
-    console.log(memberNo);
-    
 
 	alarmSocket.send(JSON.stringify({
 		type: 'notificationAppApprove',
@@ -125,6 +122,15 @@ function cancelApproval(){
 					});
 				}
 			});
+			
+    const appprovalMemberNo = document.getElementById('approval_member_no').value;
+    const memberNo = document.getElementById('member_no').value;
+
+	alarmSocket.send(JSON.stringify({
+		type: 'notificationAppReject',
+		appprovalMemberNo :appprovalMemberNo,
+		memberNo : memberNo
+	}));			
 		});
 	}
 	
