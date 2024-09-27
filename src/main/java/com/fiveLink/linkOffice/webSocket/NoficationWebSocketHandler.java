@@ -21,6 +21,8 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.nofication.domain.NoficationDto;
 import com.fiveLink.linkOffice.nofication.service.NoficationService;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
+import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 @Component
 public class NoficationWebSocketHandler extends TextWebSocketHandler {
@@ -30,15 +32,18 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
     private final NoficationService noficationService;
     private final MemberRepository memberRepository;
     private final ApprovalService approvalService;
+    private final VacationApprovalService vacationApprovalService;
 
     @Autowired
     public NoficationWebSocketHandler(ChatRoomService chatRoomService, NoficationService noficationService,
     		MemberRepository memberRepository,
-    		ApprovalService approvalService) {
+    		ApprovalService approvalService,
+    		VacationApprovalService vacationApprovalService) {
         this.chatRoomService = chatRoomService;
         this.noficationService = noficationService;
         this.memberRepository = memberRepository;
         this.approvalService = approvalService;
+        this.vacationApprovalService = vacationApprovalService;
     }
     
     @Override
@@ -61,6 +66,10 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         	handleDocumentAlarm(jsonMap, session, type);
         } else if("notificationVacationApproval".equals(type)) {
         	handleVacationApprovalAlarm(jsonMap, session, type);
+        } else if("notificationVacationAppApprove".equals(type)) {
+        	handleVacationAppApproveAlarm(jsonMap, session, type);
+        } else if("notificationVacationAppReject".equals(type)) {
+        	handleVacationAppRejectAlarm(jsonMap, session, type);
         } else if("notificationApproval".equals(type)) {
         	handleApprovalAlarm(jsonMap, session, type);
         } else if("notificationAppApprove".equals(type)) {
@@ -265,7 +274,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		        .collect(Collectors.toList());
 		}
 
-	     String nofication_content = "결재 문서가 도착했습니다.";
 	     String nofication_title = "휴가결재"; 
 	     int nofication_type = 3;
 	     
@@ -276,7 +284,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	 // References가 있을 경우, 첫 번째 reference에게만 알림 전송
 	    if (references != null && !references.isEmpty()) {
 	        Long firstReference = references.get(0); 
-	        noficationDto.setNofication_content(nofication_content);
+	        noficationDto.setNofication_content("합의 문서가 도착했습니다.");
 	        noficationDto.setNofication_receive_no(firstReference);
 	        noficationDto.setNofication_title(nofication_title);
 	        noficationDto.setNofication_type(nofication_type);
@@ -290,7 +298,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    } else if (approvers != null && !approvers.isEmpty()) {
 	        // Reference가 없을 경우, 첫 번째 approver에게 알림 전송
 	        Long firstApprover = approvers.get(0); 
-	        noficationDto.setNofication_content(nofication_content);
+	        noficationDto.setNofication_content("결재 문서가 도착했습니다.");
 	        noficationDto.setNofication_receive_no(firstApprover);
 	        noficationDto.setNofication_title(nofication_title);
 	        noficationDto.setNofication_type(nofication_type);
@@ -326,7 +334,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    		Map<String, Object> responseMap = new HashMap<>();
 	    		responseMap.put("type", "vacationApprovalAlarm");
 	    		responseMap.put("title", nofication_title);
-	    		responseMap.put("content", nofication_content);
+	    		responseMap.put("content", noficationDto.getNofication_content());
 	    		responseMap.put("data", unreadCounts);
 	    		String unreadMessage = objectMapper.writeValueAsString(responseMap);
 	    		s.sendMessage(new TextMessage(unreadMessage));
@@ -334,6 +342,179 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    }
 	}
 	
+	// [전주영] 휴가결재 승인 알림
+	private void handleVacationAppApproveAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
+			throws Exception {
+
+		// 결재자
+		Object sendNoObj = jsonMap.get("memberNo");
+		// 기안자
+		Object vaAppMemberObj = jsonMap.get("vaAppprovalMemberNo");
+		// 문서 번호
+		Object vaAppNoObj = jsonMap.get("vacationapprovalNo");
+
+		Long senderNo;
+		Long vaAppMemberNo;
+		Long vaAppNo;
+
+		if (sendNoObj instanceof String) {
+			senderNo = Long.parseLong((String) sendNoObj);
+		} else if (sendNoObj instanceof Integer) {
+			senderNo = ((Integer) sendNoObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+		if (vaAppMemberObj instanceof String) {
+			vaAppMemberNo = Long.parseLong((String) vaAppMemberObj);
+		} else if (vaAppMemberObj instanceof Integer) {
+			vaAppMemberNo = ((Integer) vaAppMemberObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+		if (vaAppNoObj instanceof String) {
+			vaAppNo = Long.parseLong((String) vaAppNoObj);
+		} else if (vaAppNoObj instanceof Integer) {
+			vaAppNo = ((Integer) vaAppNoObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+
+		List<VacationApprovalFlowDto> approvalDtos = vacationApprovalService.getVacationApprovalFlows(vaAppNo);
+		Long nextApproverNo = findNextVacationApproverMemberNo(approvalDtos, senderNo);
+
+		String nofication_content = "결재 문서가 도착했습니다.";
+		String nofication_title = "휴가결재";
+		int nofication_type = 4;
+
+		NoficationDto noficationDto = new NoficationDto();
+
+		List<Map<String, Object>> unreadCounts = new ArrayList<>();
+
+		if (nextApproverNo != null) {
+	         noficationDto.setNofication_content(nofication_content);
+	         noficationDto.setNofication_receive_no(nextApproverNo);
+	         noficationDto.setNofication_title(nofication_title);
+	         noficationDto.setNofication_type(nofication_type);
+	         noficationDto.setMember_no(senderNo);
+
+	         if (noficationService.insertAlarm(noficationDto) > 0) {
+	            Map<String, Object> memberUnreadCount = new HashMap<>();
+	            memberUnreadCount.put("memberNo", nextApproverNo);
+	            unreadCounts.add(memberUnreadCount);
+	         }
+
+		} else {
+	         noficationDto.setNofication_content("문서가 결재 완료되었습니다.");
+	         noficationDto.setNofication_receive_no(vaAppMemberNo);
+	         noficationDto.setNofication_title(nofication_title);
+	         noficationDto.setNofication_type(nofication_type);
+	         noficationDto.setMember_no(senderNo);
+
+	         if (noficationService.insertAlarm(noficationDto) > 0) {
+	            Map<String, Object> memberUnreadCount = new HashMap<>();
+	            memberUnreadCount.put("memberNo", vaAppMemberNo);
+	            unreadCounts.add(memberUnreadCount);
+	         }
+		}
+		
+	      for (WebSocketSession s : sessions.values()) {
+	          if (s.isOpen()) {
+	             ObjectMapper objectMapper = new ObjectMapper();
+	             Map<String, Object> responseMap = new HashMap<>();
+	             responseMap.put("type", "vacationAppApproveAlarm");
+	             responseMap.put("title", nofication_title);
+	             responseMap.put("content", noficationDto.getNofication_content());
+	             responseMap.put("data", unreadCounts);
+	             String unreadMessage = objectMapper.writeValueAsString(responseMap);
+	             s.sendMessage(new TextMessage(unreadMessage));
+	          }
+	       }
+	}	
+
+	// 다음 결재자 
+	public Long findNextVacationApproverMemberNo(List<VacationApprovalFlowDto> approvalDtos, Long senderNo) {
+		for (int i = 0; i < approvalDtos.size(); i++) {
+			VacationApprovalFlowDto currentApproval = approvalDtos.get(i);
+
+			if (currentApproval.getMember_no().equals(senderNo)) {
+				for (int j = i + 1; j < approvalDtos.size(); j++) {
+					VacationApprovalFlowDto nextApproval = approvalDtos.get(j);
+					if (nextApproval.getVacation_approval_flow_order() != null) {
+						return nextApproval.getMember_no();
+					}
+				}
+				return null;
+			}
+		}
+		return null;
+	}	
+
+	// [전주영] 휴가결재 반려 알림
+	private void handleVacationAppRejectAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
+			throws Exception {
+
+		// 결재자
+		Object sendNoObj = jsonMap.get("memberNo");
+		// 기안자
+		Object vaApprovalMemberObj = jsonMap.get("vaAppprovalMemberNo");
+
+		Long senderNo;
+		Long vaAppprovalMemberNo;
+
+		if (sendNoObj instanceof String) {
+			senderNo = Long.parseLong((String) sendNoObj);
+		} else if (sendNoObj instanceof Integer) {
+			senderNo = ((Integer) sendNoObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+		if (vaApprovalMemberObj instanceof String) {
+			vaAppprovalMemberNo = Long.parseLong((String) vaApprovalMemberObj);
+		} else if (vaApprovalMemberObj instanceof Integer) {
+			vaAppprovalMemberNo = ((Integer) vaApprovalMemberObj).longValue();
+		} else {
+			throw new IllegalArgumentException("타입 오류");
+		}
+
+		String nofication_content = "결재 문서가 반려됐습니다.";
+		String nofication_title = "전자결재";
+		int nofication_type = 8;
+
+		NoficationDto noficationDto = new NoficationDto();
+
+		List<Map<String, Object>> unreadCounts = new ArrayList<>();
+
+		noficationDto.setNofication_content(nofication_content);
+		noficationDto.setNofication_receive_no(vaAppprovalMemberNo);
+		noficationDto.setNofication_title(nofication_title);
+		noficationDto.setNofication_type(nofication_type);
+		noficationDto.setMember_no(senderNo);
+
+		if (noficationService.insertAlarm(noficationDto) > 0) {
+			Map<String, Object> memberUnreadCount = new HashMap<>();
+			memberUnreadCount.put("memberNo", vaAppprovalMemberNo);
+			unreadCounts.add(memberUnreadCount);
+		}
+
+		for (WebSocketSession s : sessions.values()) {
+			if (s.isOpen()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, Object> responseMap = new HashMap<>();
+				responseMap.put("type", "appRejectAlarm");
+				responseMap.put("title", nofication_title);
+				responseMap.put("content", noficationDto.getNofication_content());
+				responseMap.put("data", unreadCounts);
+				String unreadMessage = objectMapper.writeValueAsString(responseMap);
+				s.sendMessage(new TextMessage(unreadMessage));
+			}
+		}
+
+	}
+		
 	// [전주영] 전자결재 등록 알림
 	private void handleApprovalAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
 			throws Exception {
@@ -464,7 +645,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			}
 		}
 	}
-
+	
 	// [전주영] 전자결재 승인 알림
 	private void handleAppApproveAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
 			throws Exception {
@@ -504,12 +685,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			throw new IllegalArgumentException("타입 오류");
 		}
 
-		List<ApprovalFlowDto> approvaldto = approvalService.getApprovalFlows(approvalNo);
-
-		System.out.println("결재자 : " + senderNo);
-		System.out.println("기안자 : " + approvalMemberNo);
-		System.out.println("문서번호 : " + approvalNo);
-		System.out.println("문서흐름 : " + approvaldto);
 
 		List<ApprovalFlowDto> approvalDtos = approvalService.getApprovalFlows(approvalNo);
 		Long nextApproverNo = findNextApproverMemberNo(approvalDtos, senderNo);
@@ -561,8 +736,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	             s.sendMessage(new TextMessage(unreadMessage));
 	          }
 	       }
-
-
 	}
 	
 	// 다음 결재자 
@@ -583,7 +756,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		return null;
 	}
 				
-	// [전주영] 전자결재 승인 알림
+	// [전주영] 전자결재 반려 알림
 	private void handleAppRejectAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
 			throws Exception {
 
@@ -611,12 +784,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			throw new IllegalArgumentException("타입 오류");
 		}
 
-
-
-		System.out.println("결재자 : " + senderNo);
-		System.out.println("기안자 : " + approvalMemberNo);
-
-
 		String nofication_content = "결재 문서가 반려됐습니다.";
 		String nofication_title = "전자결재";
 		int nofication_type = 8;
@@ -636,7 +803,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			memberUnreadCount.put("memberNo", approvalMemberNo);
 			unreadCounts.add(memberUnreadCount);
 		}
-
 
 		for (WebSocketSession s : sessions.values()) {
 			if (s.isOpen()) {

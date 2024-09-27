@@ -336,4 +336,16 @@ public class VacationApprovalService {
 
 	        return vacationApproval;
 	 }
+	 // 결재 흐름 조회
+	 @Transactional
+	 public List<VacationApprovalFlowDto> getVacationApprovalFlows(Long vaAppNo){
+		 List<VacationApprovalFlow> approvalFlows = vacationApprovalFlowRepository.findByVacationApprovalVacationApprovalNo(vaAppNo);
+		 List<VacationApprovalFlowDto> approvalFlowsdto = new ArrayList<>();
+		 
+		 for(VacationApprovalFlow appFlow : approvalFlows) {
+			 VacationApprovalFlowDto dto = appFlow.toDto();
+			 approvalFlowsdto.add(dto);
+		 }
+		 return approvalFlowsdto;
+	 }
 }

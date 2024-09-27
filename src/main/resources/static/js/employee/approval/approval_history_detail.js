@@ -39,7 +39,6 @@ function approveRequest(){
 		appprovalMemberNo :appprovalMemberNo,
 		memberNo : memberNo
 	}));
-
 }
 
 

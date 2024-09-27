@@ -515,6 +515,7 @@ public class ApprovalService {
 	        return approvalRepository.countApprovalProgress(memberNo, approvalStatus);
 	    }
 	    
+	    // 결재 흐름 조회
 	    @Transactional
 	    public List<ApprovalFlowDto> getApprovalFlows(Long approvalNo) {
 	        List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApprovalApprovalNo(approvalNo);
