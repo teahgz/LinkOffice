@@ -56,7 +56,6 @@
 								        <tr>
 								            <td>
 								                <div  th:text="${approvaldto.member_name}"></div>
-								               
 								            </td>
 								            <td th:each="flow : ${approvaldto.flows}" th:if="${flow.approval_flow_role == 2}">
 								                <div th:text="${flow.member_name}"></div>
@@ -85,13 +84,10 @@
 								        </tr>
 								    </table>
 								</div>
-								
 								<div class="field title_row">
 									<div id="vacationapproval_title" th:text="${approvaldto.approval_title}"></div>
 								</div>
 		                    </div>
-		                    
-								    
 			                    <div class="content_section">
 			                        <div class="vacationapproval_content">
 			                            <div class="table_container" th:utext="${approvaldto.approval_content}"></div>
@@ -107,8 +103,6 @@
 									 <strong>반려 사유</strong>
 									<div th:text="${flow.approval_flow_reject_reason}"></div>
 								</div>		
-								
-										                                       
 		                        <div class="field">
 		                            <div th:if="${approvaldto != null and !#lists.isEmpty(approvaldto.files)}">
 		                                <div th:each="file : ${approvaldto.files}" class="file_item">
@@ -130,8 +124,6 @@
 		                                <p>등록된 파일이 없습니다.</p>
 		                            </div>
 		                        </div>
-
-		
 		                    <div class="button_container">
 		                        <button type="button" class="list_button" onclick="location.href='/employee/approval/references'">목록</button>
 		                    </div>

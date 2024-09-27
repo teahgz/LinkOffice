@@ -1,53 +1,64 @@
 let currentMember = parseInt(document.getElementById("currentMember").value, 10);
 //알림 출력을 위한 멤버값
 
-document.querySelectorAll('#nav_wrap > ul > li > a').forEach(anchor => {
-    anchor.addEventListener('click', function(event) {
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
+    const dropdowns = document.querySelectorAll(".dropdown");
+    let currentDropdown = null;
 
-        const dropdown = this.nextElementSibling;
-        const parentLi = this.parentElement;
-        const isParentActive = parentLi.classList.contains('active');
+    function saveDropdownState(dropdownId) {
+        localStorage.setItem("activeDropdown", dropdownId);
+    }
 
-        closeDropdowns();
-
-        if (!isParentActive) {
-            parentLi.classList.add('active');
-
-            if (dropdown) {
-                dropdown.style.display = 'block';
-            }
-        } else {
-            parentLi.classList.remove('active');
-            if (dropdown) {
-                dropdown.style.display = 'none';
+    function loadDropdownState() {
+        const activeDropdownId = localStorage.getItem("activeDropdown");
+        if (activeDropdownId) {
+            const activeDropdown = document.querySelector(`.dropdown[data-dropdown-id="${activeDropdownId}"]`);
+            if (activeDropdown) {
+                openDropdown(activeDropdown);
             }
         }
+    }
 
-        const childAnchors = dropdown?.querySelectorAll('li > a') || [];
-        childAnchors.forEach(childAnchor => {
-            childAnchor.removeEventListener('click', handleChildClick);
-            childAnchor.addEventListener('click', handleChildClick);
+    function openDropdown(dropdown) {
+        closeAllDropdowns();
+        dropdown.style.display = "block";
+        currentDropdown = dropdown;
+    }
+
+    function closeAllDropdowns() {
+        dropdowns.forEach(function (dropdown) {
+            dropdown.style.display = "none";
         });
+        currentDropdown = null;
+    }
 
-        function handleChildClick(event) {
-            event
-            event.stopPropagation();
-            const childDropdown = this.nextElementSibling;
-            const childLi = this.parentElement;
-            const isChildDropdownOpen = childDropdown && childDropdown.style.display === 'block';
+    dropdownToggles.forEach(function (toggle) {
+        toggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            const dropdownId = this.nextElementSibling.getAttribute("data-dropdown-id");
+            const dropdown = document.querySelector(`.dropdown[data-dropdown-id="${dropdownId}"]`);
 
-            if (childDropdown) {
-                childDropdown.style.display = isChildDropdownOpen ? 'none' : 'block';
-            }
-
-            if (!isChildDropdownOpen) {
-                childLi.classList.add('active');
+            if (dropdown === currentDropdown) {
+                closeAllDropdowns();
+                localStorage.removeItem("activeDropdown");
             } else {
-                childLi.classList.remove('active');
+                openDropdown(dropdown);
+                saveDropdownState(dropdownId); /
             }
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest(".dropdown-toggle") && !e.target.closest(".dropdown")) {
+            closeAllDropdowns();
+            localStorage.removeItem("activeDropdown");
         }
     });
+
+    loadDropdownState();
 });
+
 
 document.addEventListener('click', function(event) {
     if (!event.target.closest('#nav_wrap')) {
@@ -69,8 +80,7 @@ const modal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
 function showNotification(title, content, memberNo) {
-    console.log(typeof(currentMember));
-    console.log(typeof(memberNo));
+
     if(memberNo === currentMember){
         const notificationContainer = document.getElementById("notificationContainer");
         const notificationModal = document.createElement("div");
@@ -146,7 +156,15 @@ function connectWebSocket() {
                     showNotification(title, content, item.memberNo);
                 });
 
-            }
+            } else if(message.type === 'documentAlarm'){
+				const title = message.title;
+                const content = message.content;
+                message.data.forEach(function(item) {
+			        if (Number(item.memberNo) === currentMember) {
+		                showNotification(title, content, item.memberNo);
+			        }
+                });
+			}
         };
 
 

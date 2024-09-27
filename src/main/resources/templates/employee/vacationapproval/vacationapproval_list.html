@@ -4,7 +4,6 @@
   <th:block layout:fragment="content">
     <link th:href="@{/css/employee/vacationapproval/vacationapproval_list.css}" rel="stylesheet" type="text/css">
 	    <section th:each="member : ${memberdto}">
-	      <h1>휴가 신청함</h1>
 	      <div class="vacationapproval_list">
 	        <div class="search_sort_container">
 				<div class="search_container">
@@ -22,9 +21,7 @@
 				        </select>
 				    </form>
 				</div>
-				
 				</div>
-	
 		        <table class="vacationapproval_list_table">
 		        	<colgroup>
 						<col width="20%">
@@ -41,13 +38,11 @@
 		            </tr>
 		          </thead>
 		      	  <tbody>
-		      	  
 		          <th:block th:if="${#lists.isEmpty(vacationapprovalList)}">
 		          <tr>
 					<td colspan="5">조회된 목록이 없습니다.</td>
 				  </tr>
 		          </th:block>
-		          
 		          <th:block th:if="${!#lists.isEmpty(vacationapprovalList)}">
 				    <tr th:each="vapp ,vappStat : ${vacationapprovalList}" th:data_vacationapproval_no="${vapp.vacation_approval_no}" class="vacationapproval_row">
 				        <td th:text="${(page.pageable.pageSize*page.pageable.pageNumber)+vappStat.count}"></td>
@@ -62,7 +57,6 @@
 				  </th:block>
 				  </tbody>
 		        </table>
-
 				<div class="pagination">
 				  <th:block th:if="${page.totalElements > 1}"> 
 				    <button th:if="${page.number > 0}"
@@ -96,10 +90,8 @@
 				    <button class="active">1</button>
 				  </th:block>
 				</div>
-
 	      </div>
 	    </section>
-
     <script th:src="@{/js/employee/vacationapproval/vacationapproval_list.js}"></script>
   </th:block>
 </html>

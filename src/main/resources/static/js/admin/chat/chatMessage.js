@@ -409,6 +409,7 @@ if (sendButton && messageInput) {
                   newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
                   newChatItem.innerHTML = `
+                        <i class="fa-regular fa-user" style="margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
                       <h3><p>${memberInfo.roomName}</p></h3>
                       <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
                       <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
@@ -440,6 +441,7 @@ if (sendButton && messageInput) {
 
                               // 그룹 채팅의 경우 그룹 이름을 사용
                               newChatItem.innerHTML = `
+                                  <i class="fa-regular fa-user" style="margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
                                   <h3><p>${message.names}</p></h3>
                                  <input type="hidden" id="memberNo" value="${currentMember}"/>
                                   <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
@@ -1004,6 +1006,10 @@ function formatDateTime(date) {
 
             const countParticipant = document.getElementById('countParticipant');
             countParticipant.style.display = 'block';
+
+         // 검색 버튼 보이기
+            const searchDiv = document.getElementById('chatInput');
+            searchDiv.style.display = 'flex';
 
             getChatRoomName(element).then(chatRoomName => {
                 if (chatRoomName) {

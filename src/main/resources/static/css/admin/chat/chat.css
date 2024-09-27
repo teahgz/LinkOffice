@@ -1,7 +1,6 @@
 .chatArea {
     display: flex;
     flex-direction: row;
-    gap: 4vw;
     justify-content: center;
     margin-top: 2vw;
     margin-bottom: 5vw;
@@ -17,11 +16,11 @@
 .chatElement {
     border: none;
     width: 45%;
-    border-radius: 10px;
     background-color: white;
     display: flex;
     flex-direction: column;
     height: 85vh;
+    border-left: 1px solid #ddd;
 }
 .chatHeader {
        border-bottom: 1px solid #ddd;
@@ -29,7 +28,6 @@
        align-items: center;
        padding: 1vw;
        background-color: #f9f9f9;
-       border-radius: 10px 10px 0 0 ;
        height: 100px;
        box-sizing: border-box;
        justify-content: space-between;
@@ -49,7 +47,6 @@
 .chatContainer {
     border: none;
     width: 25%;
-    border-radius: 10px;
     background-color: white;
     height: 85vh;
 }
@@ -58,9 +55,8 @@
        display: flex;
        align-items: center;
        background-color: #f9f9f9;
-       border-radius: 10px 10px 0 0 ;
        gap: 10px;
-       height: 100px;
+       height: 93.94px;
        box-sizing: border-box;
     padding: 1vw;
 }
@@ -73,12 +69,11 @@
     padding : 1vw;
 }
 .chatContent {
-    border-radius: 0;
     background-color: white;
     display: flex;
     flex-direction: column;
     padding: 10px;
-    height: calc(100% - 100px);
+    height: calc(100% - 180px);
     overflow-y: auto;
 }
 .chatContent::-webkit-scrollbar {
@@ -91,7 +86,6 @@
 
 .chatContent::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 10px;
 }
 
 .chatContent::-webkit-scrollbar-thumb:hover {
@@ -106,7 +100,7 @@
     width: 80%;
     padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 10px;
+
 }
 
 #searchChatButton, #addChatButton {
@@ -124,11 +118,11 @@
     overflow-y: auto;
 }
 .chatList-container {
-    max-height: 870px;
+    max-height: 880px;
     overflow-y: auto;
 }
 .chatList-container::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
+    width: 8px;
 }
 
 .chatList-container::-webkit-scrollbar-track {
@@ -137,7 +131,6 @@
 
 .chatList-container::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 10px;
 }
 
 .chatList-container::-webkit-scrollbar-thumb:hover {
@@ -168,10 +161,9 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 0 0 10px 10px;
     gap: 10px;
     height: 60px;
+    margin-top:3px;
     box-sizing: border-box;
 }
 .pin{
@@ -194,7 +186,6 @@
 .message-input {
     flex-grow: 1;
     border: 1px solid #ccc;
-    border-radius: 20px;
     padding: 10px 15px;
     font-size: 1rem;
     outline: none;
@@ -211,7 +202,6 @@
    background-color: #B1C2DD;
     color: black;
     padding: 10px 20px;
-    border-radius: 20px;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -260,7 +250,6 @@
 .messageItem {
     margin-bottom: 10px;
     padding: 5px;
-    border-radius: 5px;
     max-width: 100%;
 }
 
@@ -285,7 +274,6 @@
     background-color: #B1C2DD;
     padding: 10px;
     margin: 5px;
-    border-radius: 10px;
     max-width: 50%;
     margin-left: auto;
     display: inline-block;
@@ -307,7 +295,6 @@
     background-color: #e3e3e3;
     padding: 10px;
     margin: 5px;
-    border-radius: 10px;
     max-width: 50%;
     display: inline-block;
     margin-right: 10px;
