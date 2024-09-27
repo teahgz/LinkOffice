@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
-                saveDropdownState(dropdownId); /
+                saveDropdownState(dropdownId);
             }
         });
     });
