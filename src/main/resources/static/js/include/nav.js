@@ -6,12 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdowns = document.querySelectorAll(".dropdown");
     let currentDropdown = null;
 
-    // 드롭다운 상태를 로컬 스토리지에 저장
     function saveDropdownState(dropdownId) {
         localStorage.setItem("activeDropdown", dropdownId);
     }
 
-    // 드롭다운 상태를 로컬 스토리지에서 로드
     function loadDropdownState() {
         const activeDropdownId = localStorage.getItem("activeDropdown");
         if (activeDropdownId) {
@@ -22,14 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 드롭다운 열기
     function openDropdown(dropdown) {
         closeAllDropdowns();
         dropdown.style.display = "block";
         currentDropdown = dropdown;
     }
 
-    // 드롭다운 닫기
     function closeAllDropdowns() {
         dropdowns.forEach(function (dropdown) {
             dropdown.style.display = "none";
@@ -37,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
         currentDropdown = null;
     }
 
-    // 드롭다운 토글 클릭 이벤트
     dropdownToggles.forEach(function (toggle) {
         toggle.addEventListener("click", function (e) {
             e.preventDefault();
@@ -46,15 +41,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dropdown === currentDropdown) {
                 closeAllDropdowns();
-                localStorage.removeItem("activeDropdown"); // 드롭다운 닫으면 저장 상태 삭제
+                localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
-                saveDropdownState(dropdownId); // 드롭다운 상태 저장
+                saveDropdownState(dropdownId); /
             }
         });
     });
 
-    // 다른 메뉴를 클릭하면 기존 드롭다운 닫기
     document.addEventListener("click", function (e) {
         if (!e.target.closest(".dropdown-toggle") && !e.target.closest(".dropdown")) {
             closeAllDropdowns();
@@ -62,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 페이지가 로드될 때 드롭다운 상태 복원
     loadDropdownState();
 });
 
