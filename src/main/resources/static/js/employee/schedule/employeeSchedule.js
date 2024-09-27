@@ -1100,12 +1100,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		else {
 			const isRecurring = document.getElementById('isRecurring').value;    
 			const schedule_edit_type = eventData.schedule_type; 
-			
+			 
 			// 예외 일정
 		    if (isRecurring === "1") {   
 		        openEventRepeatModal();
-		    } else { 
-		        submitEventUpdate(schedule_edit_type); 
+		    } else {  
+		        submitEventUpdate(schedule_edit_type, isRecurring); 
 		    }
 		}
 	});
@@ -1175,7 +1175,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const repeatInfo = document.getElementById('eventViewRepeatInfo'); 
 	    const hiddenEventId = document.getElementById('eventId'); 
 		const hiddenIsException = document.getElementById('isException'); 
-		
+		document.getElementById('isRecurring').value = 2;
+		hiddenIsException.value = 0;
 	    title.textContent = event.title;
 	    category.textContent = `[${event.extendedProps.categoryName}]`;
 	   
@@ -1183,8 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const endDate = pickEndDate;
 	    const startTime = event.extendedProps.startTime;
 	    const endTime = event.extendedProps.endTime;
-	    
-	    hiddenIsException.value = 0;
+	     
 	    
 	    if(startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
@@ -1263,15 +1263,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		const submitButton = document.getElementById('create_modal_submit');
    		submitButton.textContent = '수정';
-    	 
+    	
+    	const editTitle = document.getElementById('modal-title');
+	    editTitle.textContent = '일정 수정'; 
+	    
 	    $.ajax({
 	        url: '/schedule/edit/' + eventNo,
 	        type: 'GET',
 	        dataType: 'json',
 	        success: function(data) {
 				console.log("scheduleDto : ", data.schedule);  
-        		console.log("scheduleRepeat : ", data.scheduleRepeat);
-				
+        		console.log("scheduleRepeat : ", data.scheduleRepeat);  
+ 				 
 	            $('#eventId').val(data.schedule.schedule_no);  
 	            $('#isRecurring').val(data.schedule.schedule_repeat);  
 	            $('#category').val(data.schedule.schedule_category_no);
@@ -1321,17 +1324,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	    var modal = document.getElementById('eventModal');
 	    modal.style.display = 'block';
 	    document.getElementById('eventViewModal').style.display = 'none';
-			
+		
+	    const editTitle = document.getElementById('modal-title');
+	    editTitle.textContent = '일정 수정';
+	    
 	    const submitButton = document.getElementById('create_modal_submit');
 	    submitButton.textContent = '수정';
+	     
+	    document.getElementById('isRecurring').value = 2;
 	    
 	    $.ajax({
 	        url: '/schedule/exception/edit/' + eventId,
 	        type: 'GET',
 	        dataType: 'json',
-	        success: function(data) { 
-	            $('#eventId').val(eventId);  
-	            $('#isRecurring').val('0');   
+	        success: function(data) {
+				console.log("exception scheduleDto : ", data.schedule);  
+        		console.log("exception scheduleRepeat : ", data.scheduleRepeat);
+        		 
+	            $('#eventId').val(eventId);    
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_exception_title);
 	            $('#eventDate').val(data.schedule.schedule_exception_start_date);
@@ -1349,12 +1359,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	            }
 	
 	            $('#description').val(data.schedule.schedule_exception_comment);
-	             
-	            $('#repeatOption').val('0');
+	            
+    	        $('#repeatOption').val('0');
 	            $('#repeatOption').prop('disabled', true).hide();
 	            $('label[for="repeatOption"]').hide();
 	            $('#repeatEndDate').val('');
 	            $('#repeatEndDate').prop('disabled', true).hide();
+	            
+	            if (data.schedule.schedule_exception_type === 1) {
+		            $('#department_schedule').prop('checked', true); 
+		             document.getElementById('department_schedule').dispatchEvent(new Event('change'));
+	            }  
+	            
+	            if (data.schedule.schedule_exception_type === 2) {  
+		            $('#department_schedule').prop('disabled', true); 
+		            findExceptionParticipants(eventId);            
+	            }  
+	             
 	        } 
 	    });
 	}
@@ -1372,6 +1393,7 @@ document.addEventListener('DOMContentLoaded', function() {
  
 	 	const department_schedule = document.getElementById('department_schedule').checked; 
 	 	const selectedMembers = document.getElementById('selectedMembers').value;
+	 	 
 	 	var schedule_edit_type = 0; 
 	 	
 	 	if (selectedMembers) { 
@@ -1426,13 +1448,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	} 
 
 	// 일정 수정 확인
-	function submitEventUpdate(schedule_edit_type) {
+	function submitEventUpdate(schedule_edit_type, isRecurring) {
 	    const eventData = getEventFormData();
-    	const isException = $('#isRecurring').val() === '0'; 
+    	const isException = isRecurring === '0'; 
 		const url = isException ? `/employee/schedule/edit/${document.getElementById('eventId').value}/${schedule_edit_type}`
 					: `/employee/schedule/exception/edit/${document.getElementById('eventId').value}/${schedule_edit_type}`;
-	   
-	    console.log(eventData);
+	     
 	    $.ajax({
 	        type: "POST",
 	        url: url,
@@ -1529,6 +1550,40 @@ document.addEventListener('DOMContentLoaded', function() {
 	            $('#selectedMembers').val(participantMembers.join(',')); 
 	    		 
 	            setSelectedParticipants(data.participants);  
+	            var jstree = $('#organization-chart').jstree(true);
+			    if (jstree) {
+			        participants.forEach(function(memberNo) {
+			            var nodeId = 'member_' + memberNo;
+			            if (jstree.get_node(nodeId)) { 
+			                jstree.check_node(nodeId);
+			            }
+			        });
+			    } 
+	        },
+	        error: function(xhr, status, error) {
+	            console.log(error);
+	        }
+	    });  
+	}
+	
+	// 예외 참여자 정보 가져오기
+	function findExceptionParticipants(scheduleNo) { 
+		$.ajax({
+	        url: '/employee/schedule/participate/exception/' + scheduleNo,
+	        type: 'GET',
+	        dataType: 'json',
+	        success: function(data) {   
+	       		let filteredParticipants = data.participants.filter(p => (p.member_no).toString() !== memberNo);
+	       		
+	       		let selectedParticipants = filteredParticipants
+	                .map(p => `<span class="selected-participants">${p.memberName} ${p.positionName}</span>`)
+	                .join(' ');
+	            $('.selected-participants-container').html(selectedParticipants);
+	        	participantMembers = filteredParticipants.map(p => p.member_no); 
+	            $('#selectedMembers').val(participantMembers.join(',')); 
+	    		 
+	            setSelectedParticipants(data.participants);  
+	            console.log("a :c " + data.participants);
 	            var jstree = $('#organization-chart').jstree(true);
 			    if (jstree) {
 			        participants.forEach(function(memberNo) {
