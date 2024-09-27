@@ -5,7 +5,6 @@
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/approval/approval_reject_detail.css}" rel="stylesheet" type="text/css">
         <section>
-            <h1>결재 반려 상세 조회</h1>
             <div class="container">
             	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
             	<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}" >
@@ -108,7 +107,6 @@
 							 <strong>반려 사유</strong>
 							<div th:text="${flow.approval_flow_reject_reason}"></div>
 						</div>	
-									                        
                         <div class="field">
                             <div th:if="${approvaldto != null and !#lists.isEmpty(approvaldto.files)}">
                                 <div th:each="file : ${approvaldto.files}" class="file_item">
@@ -130,8 +128,6 @@
                                 <p>등록된 파일이 없습니다.</p>
                             </div>
                         </div>
-
-
                     <div class="button_container">
                         <button type="button" class="list_button" onclick="location.href='/employee/approval/reject'">목록</button>
                     </div>

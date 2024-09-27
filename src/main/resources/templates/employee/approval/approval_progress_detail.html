@@ -119,8 +119,6 @@
 			                            </div>                                
 		                            
 		                        </div>
-		
-		
 		                    <div class="button_container">
 		                    	<button type="button" class="cancel_button" th:if="${approvaldto.approval_status == 0}">기안 취소</button>
 				                <a th:if="${#lists.size(approvaldto.flows) > 0 and approvaldto.flows[0].approval_flow_status == 1 and approvaldto.approval_status == 0}" 

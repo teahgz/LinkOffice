@@ -57,7 +57,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		@Query(value = "SELECT ap.approval_no, " + 
 		               "ap.member_no, " + 
 		               "ap.approval_title, " + 
-		               "ap.approval_effective_date, " + 
 		               "ap.approval_content, " + 
 		               "ap.approval_status, " + 
 		               "ap.approval_create_date AS approval_date, " + 
@@ -73,7 +72,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		               "SELECT va.vacation_approval_no, " + 
 		               "va.member_no, " + 
 		               "va.vacation_approval_title, " + 
-		               "NULL AS approval_effective_date, " + 
 		               "va.vacation_approval_content, " + 
 		               "va.vacation_approval_status, " + 
 		               "va.vacation_approval_create_date AS approval_date, " + 
@@ -103,7 +101,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		@Query(value = "SELECT ap.approval_no, " +
 	            "ap.member_no, " +
 	            "ap.approval_title, " +
-	            "ap.approval_effective_date, " +
 	            "ap.approval_content, " +
 	            "ap.approval_status, " +
 	            "ap.approval_create_date AS approval_date, " +
@@ -120,7 +117,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 	            "SELECT va.vacation_approval_no, " +
 	            "va.member_no, " +
 	            "va.vacation_approval_title, " +
-	            "NULL AS approval_effective_date, " +
 	            "va.vacation_approval_content, " +
 	            "va.vacation_approval_status, " +
 	            "va.vacation_approval_create_date AS approval_date, " +
@@ -153,7 +149,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		@Query(value = "SELECT ap.approval_no, " + 
 				"ap.member_no, " + 
 				"ap.approval_title, " + 
-				"ap.approval_effective_date, "+ 
 				"ap.approval_content, " + 
 				"ap.approval_status, " + 
 				"ap.approval_create_date AS approval_date, "+ 
@@ -173,7 +168,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 				"SELECT va.vacation_approval_no, " + 
 				"va.member_no, "+ 
 				"va.vacation_approval_title, " + 
-				"NULL AS approval_effective_date, " + 
 				"va.vacation_approval_content, "+ 
 				"va.vacation_approval_status, " + 
 				"va.vacation_approval_create_date AS approval_date, "+ 
@@ -215,7 +209,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		@Query(value = "SELECT ap.approval_no, " + 
 				"ap.member_no, " + 
 				"ap.approval_title, " + 
-				"ap.approval_effective_date, "+ 
 				"ap.approval_content, " + 
 				"ap.approval_status, " + 
 				"ap.approval_create_date AS approval_date, "+ 
@@ -236,7 +229,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 				"SELECT va.vacation_approval_no, " + 
 				"va.member_no, "+ 
 				"va.vacation_approval_title, " + 
-				"NULL AS approval_effective_date, " + 
 				"va.vacation_approval_content, "+ 
 				"va.vacation_approval_status, " + 
 				"va.vacation_approval_create_date AS approval_date, "+ 
@@ -281,7 +273,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		@Query(value = "SELECT ap.approval_no, " + 
 						"ap.member_no, " + 
 						"ap.approval_title, " + 
-						"ap.approval_effective_date, "+ 
 						"ap.approval_content, " + 
 						"ap.approval_status, " + 
 						"ap.approval_create_date AS approval_date, "+ 
@@ -294,7 +285,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 						"SELECT va.vacation_approval_no, " + 
 						"va.member_no, " + 
 						"va.vacation_approval_title, "+ 
-						"NULL AS approval_effective_date, " + 
 						"va.vacation_approval_content, " + "va.vacation_approval_status, "+ 
 						"va.vacation_approval_create_date AS approval_date, " + "va.vacation_approval_update_date, "+ 
 						"va.vacation_approval_cancel_reason, " + 
@@ -322,7 +312,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 		@Query(value = "SELECT ap.approval_no, " + 
 				"ap.member_no, " + 
 				"ap.approval_title, " + 
-				"ap.approval_effective_date, "+ 
 				"ap.approval_content, " + 
 				"ap.approval_status, " + 
 				"ap.approval_create_date AS approval_date, "+ 
@@ -336,7 +325,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 				"SELECT va.vacation_approval_no, " + 
 				"va.member_no, " + 
 				"va.vacation_approval_title, "+ 
-				"NULL AS approval_effective_date, " + 
 				"va.vacation_approval_content, " + "va.vacation_approval_status, "+ 
 				"va.vacation_approval_create_date AS approval_date, " + "va.vacation_approval_update_date, "+ 
 				"va.vacation_approval_cancel_reason, " + 
@@ -368,7 +356,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 			@Query(value = "SELECT ap.approval_no, " + 
 					"ap.member_no, " + 
 					"ap.approval_title, " + 
-					"ap.approval_effective_date, "+ 
 					"ap.approval_content, " + 
 					"ap.approval_status, " + 
 					"ap.approval_create_date AS approval_date, "+ 
@@ -388,7 +375,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 					"SELECT va.vacation_approval_no, " + 
 					"va.member_no, "+ 
 					"va.vacation_approval_title, " + 
-					"NULL AS approval_effective_date, " + 
 					"va.vacation_approval_content, "+ 
 					"va.vacation_approval_status, " + 
 					"va.vacation_approval_create_date AS approval_date, "+ 
@@ -431,7 +417,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 			@Query(value = "SELECT ap.approval_no, " + 
 					"ap.member_no, " + 
 					"ap.approval_title, " + 
-					"ap.approval_effective_date, "+ 
 					"ap.approval_content, " + 
 					"ap.approval_status, " + 
 					"ap.approval_create_date AS approval_date, "+ 
@@ -452,7 +437,6 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 					"SELECT va.vacation_approval_no, " + 
 					"va.member_no, "+ 
 					"va.vacation_approval_title, " + 
-					"NULL AS approval_effective_date, " + 
 					"va.vacation_approval_content, "+ 
 					"va.vacation_approval_status, " + 
 					"va.vacation_approval_create_date AS approval_date, "+ 

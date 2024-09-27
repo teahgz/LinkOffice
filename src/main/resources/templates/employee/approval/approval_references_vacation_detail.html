@@ -5,7 +5,6 @@
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/approval/approval_references_detail.css}" rel="stylesheet" type="text/css">
 	        <section>
-	            <h1>결재 참조 상세 조회</h1>
 	            <div class="container">
 	            	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
 	            	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
@@ -86,7 +85,6 @@
 							        </tr>
 							    </table>
 							</div>
-							
 							 <div class="field title_row">
 							 	<div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
 							 </div>							
@@ -130,8 +128,6 @@
 	                                <p>등록된 파일이 없습니다.</p>
 	                            </div>
 	                        </div>
-
-	
 	                    <div class="button_container">
 	                        <button type="button" class="list_button" onclick="location.href='/employee/approval/references'">목록</button>
 	                    </div>
