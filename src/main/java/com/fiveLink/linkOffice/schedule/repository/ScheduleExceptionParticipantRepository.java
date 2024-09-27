@@ -13,5 +13,5 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipant;
 @Repository
 public interface ScheduleExceptionParticipantRepository extends JpaRepository<ScheduleExceptionParticipant, Long>{
 	@Query("SELECT sp FROM ScheduleExceptionParticipant sp WHERE sp.scheduleExceptionNo = :scheduleExceptionNo AND sp.scheduleExceptionParticipantStatus = 0")
-    List<ScheduleParticipant> findParticipantsByScheduleNo(@Param("scheduleExceptionNo") Long scheduleExceptionNo);
+    List<ScheduleExceptionParticipant> findExceptionParticipantsByScheduleNo(@Param("scheduleExceptionNo") Long scheduleExceptionNo);
 }
