@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,6 @@ import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
-import com.fiveLink.linkOffice.member.service.MemberService;
 
 @Controller
 public class AttendanceApiController {
@@ -35,7 +35,21 @@ public class AttendanceApiController {
       this.attendanceService = attendanceService;
       this.memberRepository = memberRepository; 
    }
-	
+	// 출근 여부 체크
+   	@PostMapping("/attendance/check")
+   	public ResponseEntity<Map<String, String>> attendanceCheck(@RequestBody Map<String, Long> payload) {
+   		Map<String, String> resultMap = new HashMap<>();
+   		resultMap.put("result", "0");
+   		Long memberNo = payload.get("memberNo");
+   		LocalDate today = LocalDate.now();
+   		
+   		AttendanceDto attendanceDto = attendanceService.findByMemberNoAndWorkDate(memberNo, today);
+   		if(attendanceDto != null) {
+   			resultMap.put("result", "1");
+   		} 
+   		return ResponseEntity.ok(resultMap);
+   	}
+   
 	@PostMapping("/attendance/checkIn")
 	@ResponseBody
 	public Map<String, String> checkIn(@RequestBody Map<String, Long> payload){
@@ -79,7 +93,6 @@ public class AttendanceApiController {
         
         // 오늘 출근을 했는지 DB에서 조회
         AttendanceDto attendanceDto = attendanceService.findByMemberNoAndWorkDate(memberNo, today);
-        LOGGER.debug("attendanceDto: {}", attendanceDto);
         
         // 조회 성공하면 
         if(attendanceDto != null) {
