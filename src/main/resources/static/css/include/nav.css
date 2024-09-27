@@ -74,6 +74,8 @@ nav {
     border-bottom: 1px solid #ddd;
 }*/
 .dropdown.show {
+    display: block;
+}
  .dropdown li a {
     display: block;
     padding: 10px;
