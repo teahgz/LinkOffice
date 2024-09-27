@@ -1,42 +1,38 @@
 let currentMember = parseInt(document.getElementById("currentMember").value, 10);
 //알림 출력을 위한 멤버값
+
 document.addEventListener('DOMContentLoaded', () => {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     const links = document.querySelectorAll('.link');
 
-    // 페이지 로드 시 드롭다운 상태 복원
     dropdownToggles.forEach(toggle => {
         const dropdownId = toggle.nextElementSibling ? toggle.nextElementSibling.id : null;
         if (dropdownId && sessionStorage.getItem(dropdownId) === 'open') {
-            toggle.nextElementSibling.classList.add('show'); // 드롭다운 열기
+            toggle.nextElementSibling.classList.add('show');
         }
     });
 
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', (event) => {
-            event.preventDefault(); // 링크 기본 동작 방지
-            const dropdown = toggle.nextElementSibling; // 해당 드롭다운 찾기
+            event.preventDefault();
+            const dropdown = toggle.nextElementSibling;
 
-            // 현재 클릭한 드롭다운 열기
             if (dropdown) {
-                dropdown.classList.toggle('show'); // 드롭다운 토글
+                dropdown.classList.toggle('show');
                 const dropdownId = dropdown.id;
 
-                // 현재 드롭다운 상태 저장
                 if (dropdown.classList.contains('show')) {
-                    sessionStorage.setItem(dropdownId, 'open'); // 드롭다운 열림
+                    sessionStorage.setItem(dropdownId, 'open');
                 } else {
-                    sessionStorage.removeItem(dropdownId); // 드롭다운 닫힘
+                    sessionStorage.removeItem(dropdownId);
                 }
-
-                // 부모 드롭다운이 열린 상태에서 클릭한 경우
                 if (!dropdown.classList.contains('show')) {
-                    // 열린 드롭다운 모두 닫기
+
                     dropdownToggles.forEach(otherToggle => {
                         const otherDropdown = otherToggle.nextElementSibling;
                         if (otherDropdown && otherDropdown !== dropdown) {
-                            otherDropdown.classList.remove('show'); // 닫기
-                            sessionStorage.removeItem(otherDropdown.id); // 상태 삭제
+                            otherDropdown.classList.remove('show');
+                            sessionStorage.removeItem(otherDropdown.id);
                         }
                     });
                 }
@@ -44,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 전체 문서에 클릭 이벤트 추가
     document.addEventListener('click', (event) => {
         const target = event.target;
         let isDropdown = false;
@@ -52,20 +47,20 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdownToggles.forEach(toggle => {
             const dropdown = toggle.nextElementSibling;
             if (dropdown && dropdown.contains(target)) {
-                isDropdown = true; // 드롭다운 내부 클릭
+                isDropdown = true;
             }
             if (toggle.contains(target)) {
-                isDropdown = true; // 드롭다운 토글 클릭
+                isDropdown = true;
             }
         });
 
         if (!isDropdown) {
-            // 열린 드롭다운 모두 닫기
+
             dropdownToggles.forEach(toggle => {
                 const dropdown = toggle.nextElementSibling;
                 if (dropdown) {
-                    dropdown.classList.remove('show'); // 닫기
-                    sessionStorage.removeItem(dropdown.id); // 상태 삭제
+                    dropdown.classList.remove('show');
+                    sessionStorage.removeItem(dropdown.id);
                 }
             });
         }
@@ -109,8 +104,7 @@ const modal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
 function showNotification(title, content, memberNo) {
-    console.log(typeof(currentMember));
-    console.log(typeof(memberNo));
+
     if(memberNo === currentMember){
         const notificationContainer = document.getElementById("notificationContainer");
         const notificationModal = document.createElement("div");
