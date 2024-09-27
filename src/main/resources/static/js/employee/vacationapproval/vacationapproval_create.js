@@ -582,31 +582,29 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			        }
 			    })
 			}
+
+			let notificationData = {};
 			
-		
-
-let notificationData = {};
-
-if (approvers !== null) {
-    notificationData.approvers = approvers;
-}
-
-if (references !== null) {
-    notificationData.references = references;
-}
-
-if (reviewers !== null) {
-    notificationData.reviewers = reviewers;
-}
-
-
-alarmSocket.send(JSON.stringify({
-   type: 'notificationVacationApproval',
-   notificationData : notificationData,
-   memberNo : memberNo
-}));
-
-console.log('알림:', notificationData.reviewers);
+			if (approvers !== null) {
+			    notificationData.approvers = approvers;
+			}
+			
+			if (references !== null) {
+			    notificationData.references = references;
+			}
+			
+			if (reviewers !== null) {
+			    notificationData.reviewers = reviewers;
+			}
+			
+			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationVacationApproval',
+			   notificationData : notificationData,
+			   memberNo : memberNo
+			}));
+			
+			console.log('알림:', notificationData.reviewers);
 
 	});
 });

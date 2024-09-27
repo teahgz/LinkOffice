@@ -56,6 +56,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         	handleDocumentAlarm(jsonMap, session, type);
         } else if("notificationVacationApproval".equals(type)) {
         	handleVacationApprovalAlarm(jsonMap, session, type);
+        } else if("notificationApproval".equals(type)) {
+        	handleApprovalAlarm(jsonMap, session, type);
         }
 
     }
@@ -339,6 +341,159 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    	}
 	    }
 	}
+	
+	// [전주영] 전자결재 등록 알림
+		private void handleApprovalAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type) throws Exception {
+			Map<String, Object> notificationData = (Map<String, Object>) jsonMap.get("notificationData");
+
+			Object sendNoobj = jsonMap.get("memberNo");
+
+			Long senderNo = null;
+			
+			if (sendNoobj instanceof String) {
+				senderNo = Long.parseLong((String) sendNoobj);
+			} else if (sendNoobj instanceof Integer) {
+				senderNo = ((Integer) sendNoobj).longValue();
+			} else {
+			    throw new IllegalArgumentException("타입 오류");
+			}
+
+			List<Long> approvers = null;
+			if (notificationData.get("approvers") instanceof List) {
+			    approvers = ((List<?>) notificationData.get("approvers")).stream()
+			        .map(value -> {
+			            if (value instanceof String) {
+			                return Long.parseLong((String) value);
+			            } else if (value instanceof Integer) {
+			                return ((Integer) value).longValue(); 
+			            } else if (value instanceof Long) {
+			                return (Long) value; 
+			            } else {
+			                throw new IllegalArgumentException("타입 오류");
+			            }
+			        })
+			        .collect(Collectors.toList());
+			}
+
+			List<Long> references = null;
+			if (notificationData.get("references") instanceof List) {
+			    references = ((List<?>) notificationData.get("references")).stream()
+			        .map(value -> {
+			            if (value instanceof String) {
+			                return Long.parseLong((String) value);
+			            } else if (value instanceof Integer) {
+			                return ((Integer) value).longValue();
+			            } else if (value instanceof Long) {
+			                return (Long) value;
+			            } else {
+			                throw new IllegalArgumentException("타입 오류");
+			            }
+			        })
+			        .collect(Collectors.toList());
+			}
+
+			List<Long> reviewers = null;
+			if (notificationData.get("reviewers") instanceof List) {
+			    reviewers = ((List<?>) notificationData.get("reviewers")).stream()
+			        .map(value -> {
+			            if (value instanceof String) {
+			                return Long.parseLong((String) value);
+			            } else if (value instanceof Integer) {
+			                return ((Integer) value).longValue();
+			            } else if (value instanceof Long) {
+			                return (Long) value;
+			            } else {
+			                throw new IllegalArgumentException("알 수 없는 타입: " + value.getClass().getName());
+			            }
+			        })
+			        .collect(Collectors.toList());
+			}
+
+			if (approvers != null) {
+			    for (Long approver : approvers) {
+			        System.out.println("Approver: " + approver);
+			    }
+			}
+
+			if (references != null) {
+			    for (Long reference : references) {
+			        System.out.println("Reference: " + reference);
+			    }
+			}
+
+		    if (reviewers != null) {
+		        for (Long reviewer : reviewers) {
+		            System.out.println("Reviewer: " + reviewer);
+		        }
+		    }
+		     String nofication_content = "결재 문서가 도착했습니다.";
+		     String nofication_title = "전자결재"; 
+		     int nofication_type = 3;
+		     
+		    NoficationDto noficationDto = new NoficationDto();
+		    
+		    List<Map<String, Object>> unreadCounts = new ArrayList<>();
+		    
+		 // References가 있을 경우, 첫 번째 reference에게만 알림 전송
+		    if (references != null && !references.isEmpty()) {
+		        Long firstReference = references.get(0); 
+		        noficationDto.setNofication_content(nofication_content);
+		        noficationDto.setNofication_receive_no(firstReference);
+		        noficationDto.setNofication_title(nofication_title);
+		        noficationDto.setNofication_type(nofication_type);
+		        noficationDto.setMember_no(senderNo);
+		        
+		        if (noficationService.insertAlarm(noficationDto) > 0) {
+		            Map<String, Object> memberUnreadCount = new HashMap<>();
+		            memberUnreadCount.put("memberNo", firstReference);
+		            unreadCounts.add(memberUnreadCount);
+		        }
+		    } else if (approvers != null && !approvers.isEmpty()) {
+		        // Reference가 없을 경우, 첫 번째 approver에게 알림 전송
+		        Long firstApprover = approvers.get(0); 
+		        noficationDto.setNofication_content(nofication_content);
+		        noficationDto.setNofication_receive_no(firstApprover);
+		        noficationDto.setNofication_title(nofication_title);
+		        noficationDto.setNofication_type(nofication_type);
+		        noficationDto.setMember_no(senderNo);
+		        
+		        if (noficationService.insertAlarm(noficationDto) > 0) {
+		            Map<String, Object> memberUnreadCount = new HashMap<>();
+		            memberUnreadCount.put("memberNo", firstApprover);
+		            unreadCounts.add(memberUnreadCount);
+		        }
+		    }
+
+		    // Reviewers 처리: 모든 reviewer에게 알림 전송
+		    if (reviewers != null) {
+		        for (Long reviewer : reviewers) {
+		            noficationDto.setNofication_content("참조 문서가 도착했습니다.");
+		            noficationDto.setNofication_receive_no(reviewer);
+		            noficationDto.setNofication_title(nofication_title);
+		            noficationDto.setNofication_type(nofication_type);
+		            noficationDto.setMember_no(senderNo);
+		            
+		            if (noficationService.insertAlarm(noficationDto) > 0) {
+		                Map<String, Object> memberUnreadCount = new HashMap<>();
+		                memberUnreadCount.put("memberNo", reviewer);
+		                unreadCounts.add(memberUnreadCount);
+		            }
+		        }
+		    }
+		    
+		    for (WebSocketSession s : sessions.values()) {
+		    	if (s.isOpen()) {
+		    		ObjectMapper objectMapper = new ObjectMapper();
+		    		Map<String, Object> responseMap = new HashMap<>();
+		    		responseMap.put("type", "approvalAlarm");
+		    		responseMap.put("title", nofication_title);
+		    		responseMap.put("content", nofication_content);
+		    		responseMap.put("data", unreadCounts);
+		    		String unreadMessage = objectMapper.writeValueAsString(responseMap);
+		    		s.sendMessage(new TextMessage(unreadMessage));
+		    	}
+		    }
+		}
 	
 	
     @Override

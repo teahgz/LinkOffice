@@ -398,7 +398,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			const form = document.getElementById('appCreateFrm');
 			form.addEventListener('submit', (e) => {
 	  		  e.preventDefault();
-	    
+	    	
+	    	const memberNo = document.querySelector('#member_no').value;
 		    const approvalTitle = document.querySelector('#approval_title').value;
 		    const editorData = editor.getData();
 		    const csrfToken = document.querySelector('#csrf_token').value;
@@ -463,5 +464,28 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 				        }
 				    })
 				}
-			});
+				
+			let notificationData = {};
+			
+			if (approvers !== null) {
+			    notificationData.approvers = approvers;
+			}
+			
+			if (references !== null) {
+			    notificationData.references = references;
+			}
+			
+			if (reviewers !== null) {
+			    notificationData.reviewers = reviewers;
+			}
+			
+			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationApproval',
+			   notificationData : notificationData,
+			   memberNo : memberNo
+			}));
+			console.log('알림:', notificationData.reviewers);
+			
 		});
+	});
