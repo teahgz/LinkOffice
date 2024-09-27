@@ -962,23 +962,9 @@ public class ScheduleApiController {
 	    	}
 	    	
 	    	String selectedMembers = (String) request.get("selectedMembers");
-	    	switch (scheduleEditType) {
-	    	    case "0": // 개인 일정
-	    	    case "1": // 부서 일정 
-	    	        scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
-	    	        scheduleService.updateParticipants(scheduleDto, selectedMembers); 
-	    	        break;
-
-	    	    case "2": // 참여자 일정  
-    	            scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
-    	            scheduleService.updateParticipants(scheduleDto, selectedMembers); 
-	    	        break;
-
-	    	    default:
-	    	        resultMap.put("res_code", "400");
-	    	        resultMap.put("res_msg", "일정 수정 중 오류가 발생했습니다.");
-	    	        return resultMap;
-	    	}
+	    	
+	    	scheduleService.updateEmployeeSchedule(eventId, scheduleDto, scheduleRepeatDto);
+	        scheduleService.updateParticipants(scheduleDto, selectedMembers);  
 
 	    	resultMap.put("res_code", "200");
 	    	resultMap.put("res_msg", "일정이 수정되었습니다.");
@@ -1002,8 +988,7 @@ public class ScheduleApiController {
 	     
 	    List<ScheduleExceptionParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleExceptionNo);
 	     
-	    response.put("participants", participants);
-	    
+	    response.put("participants", participants); 
 	    return response;
 	}
 	 
@@ -1086,5 +1071,59 @@ public class ScheduleApiController {
 
 	    return resultMap;
 	}
-	 
+	
+	// 예외 수정
+	@ResponseBody
+	@PostMapping("/employee/schedule/exception/edit/{eventId}/{scheduleEditType}")
+	public Map<String, Object> getExceptionEmployeeScheduleById(@PathVariable("eventId") Long eventId, @PathVariable("scheduleEditType") String scheduleEditType, @RequestBody Map<String, Object> request) {
+
+	    Map<String, Object> resultMap = new HashMap<>();
+	    System.out.println("eventNo : " + eventId);
+	    System.out.println("scheduleEditType : " + scheduleEditType);
+	     
+	    try {  
+	    	ScheduleExceptionDto scheduleExceptionDto = new ScheduleExceptionDto(); 
+ 
+	    	scheduleExceptionDto.setSchedule_exception_no(eventId);
+	    	scheduleExceptionDto.setSchedule_exception_title((String) request.get("title"));
+	    	scheduleExceptionDto.setSchedule_exception_comment((String) request.get("description"));
+	    	scheduleExceptionDto.setSchedule_exception_start_date((String) request.get("startDate"));
+	    	scheduleExceptionDto.setSchedule_exception_end_date((String) request.get("endDate"));
+	    	scheduleExceptionDto.setSchedule_exception_allday(Boolean.TRUE.equals(request.get("allDay")) ? 1L : 0L);
+	    	scheduleExceptionDto.setSchedule_exception_start_time((String) request.get("startTime"));
+	    	scheduleExceptionDto.setSchedule_exception_end_time((String) request.get("endTime"));
+	    	scheduleExceptionDto.setSchedule_category_no(getLongValue(request.get("category")));
+	    	scheduleExceptionDto.setSchedule_exception_type(getLongValue(request.get("schedule_type")));
+	    	scheduleExceptionDto.setDepartment_no(getLongValue(request.get("department_no")));
+	    	scheduleExceptionDto.setMember_no(getLongValue(request.get("memberNo")));
+   
+	    	String selectedMembers = (String) request.get("selectedMembers");
+	    	
+	    	System.out.println("selectedMembers : " + selectedMembers);
+	    	scheduleService.updateExceptionEmployeeSchedule(eventId, scheduleExceptionDto);
+	        scheduleService.updateExceptionParticipants(eventId, scheduleExceptionDto, selectedMembers);   
+	        return resultMap;  
+
+ 
+	    } catch (Exception e) {
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "서버 오류가 발생했습니다.");
+	        e.printStackTrace();
+	    }
+
+	    return resultMap;
+	}
+	
+	// 예외 일정 참여자
+	@GetMapping("/employee/schedule/participate/exception/{scheduleNo}")
+	@ResponseBody
+	public Map<String, Object> getExceptionScheduleParticipant(@PathVariable("scheduleNo") Long scheduleNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleExceptionParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
 }

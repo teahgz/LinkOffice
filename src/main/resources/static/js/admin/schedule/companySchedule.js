@@ -860,6 +860,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    modal.style.display = 'block';
 	    document.getElementById('eventViewModal').style.display = 'none';
 		
+	    const editTitle = document.getElementById('modal-title');
+	    editTitle.textContent = '일정 수정';
+	    
 		const submitButton = document.getElementById('create_modal_submit');
    		submitButton.textContent = '수정';
     
@@ -910,7 +913,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	    var modal = document.getElementById('eventModal');
 	    modal.style.display = 'block';
 	    document.getElementById('eventViewModal').style.display = 'none';
-			
+		
+	    const editTitle = document.getElementById('modal-title');
+	    editTitle.textContent = '일정 수정';
+	    
 	    const submitButton = document.getElementById('create_modal_submit');
 	    submitButton.textContent = '수정';
 	    

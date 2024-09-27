@@ -332,6 +332,7 @@ public class ScheduleService {
     private ScheduleExceptionDto convertToExceptionDto(ScheduleException scheduleException) { 
         ScheduleExceptionDto dto = new ScheduleExceptionDto(); 
         dto.setSchedule_no(scheduleException.getScheduleNo()); 
+        dto.setMember_no(scheduleException.getMemberNo());
         dto.setSchedule_exception_title(scheduleException.getScheduleExceptionTitle());
         dto.setSchedule_exception_comment(scheduleException.getScheduleExceptionComment());
         dto.setSchedule_exception_start_date(scheduleException.getScheduleExceptionStartDate());
@@ -340,6 +341,8 @@ public class ScheduleService {
         dto.setSchedule_exception_end_time(scheduleException.getScheduleExceptionEndTime());
         dto.setSchedule_exception_allday(scheduleException.getScheduleExceptionAllday());
         dto.setSchedule_category_no(scheduleException.getScheduleCategoryNo());  
+        dto.setSchedule_exception_type(scheduleException.getScheduleExceptionType()); 
+        dto.setDepartment_no(scheduleException.getDepartmentNo()); 
         dto.setSchedule_exception_create_date(scheduleException.getScheduleExceptionCreateDate());
         return dto;
     }
@@ -806,6 +809,15 @@ public class ScheduleService {
                 	scheduleParticipantService.save(newParticipant);
                 }
             }
+        } else {
+        	List<ScheduleExceptionParticipantDto> existingParticipants = scheduleParticipantService.getExceptionParticipantsByscheduleNo(scheduleDto.getSchedule_no());
+        	List<String> newMemberList = new ArrayList<>(Arrays.asList(selectedMembers.split(","))); 
+        	for (ScheduleExceptionParticipantDto participant : existingParticipants) {
+                if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
+                    participant.setSchedule_exception_participant_status(1L);  
+                    scheduleParticipantService.updateExceptionParticipantStatus(participant);
+                }
+            }
         }
     }
     
@@ -954,6 +966,82 @@ public class ScheduleService {
                 	scheduleParticipantService.saveException(newParticipant);
                 }
             }
+        } else {
+        	List<ScheduleExceptionParticipantDto> existingParticipants = scheduleParticipantService.getExceptionParticipantsByscheduleNo(scheduleDto.getSchedule_no());
+        	List<String> newMemberList = new ArrayList<>(Arrays.asList(selectedMembers.split(","))); 
+        	for (ScheduleExceptionParticipantDto participant : existingParticipants) {
+                if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
+                    participant.setSchedule_exception_participant_status(1L);  
+                    scheduleParticipantService.updateExceptionParticipantStatus(participant);
+                }
+            }
         }
     }
+    
+    // 예외 일정 수정
+    public void updateExceptionEmployeeSchedule(Long eventId, ScheduleExceptionDto scheduleExceptionDto) {
+        ScheduleException existingSchedule = scheduleExceptionRepository.findById(eventId)
+            .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+         
+        existingSchedule.setScheduleExceptionTitle(scheduleExceptionDto.getSchedule_exception_title());
+        existingSchedule.setScheduleExceptionComment(scheduleExceptionDto.getSchedule_exception_comment());
+        existingSchedule.setScheduleExceptionStartDate(scheduleExceptionDto.getSchedule_exception_start_date());
+        existingSchedule.setScheduleExceptionEndDate(scheduleExceptionDto.getSchedule_exception_end_date());
+        existingSchedule.setScheduleExceptionAllday(scheduleExceptionDto.getSchedule_exception_allday());
+        existingSchedule.setScheduleExceptionStartTime(scheduleExceptionDto.getSchedule_exception_start_time());
+        existingSchedule.setScheduleExceptionEndTime(scheduleExceptionDto.getSchedule_exception_end_time()); 
+        existingSchedule.setScheduleCategoryNo(scheduleExceptionDto.getSchedule_category_no());
+        existingSchedule.setScheduleExceptionType(scheduleExceptionDto.getSchedule_exception_type());
+        existingSchedule.setDepartmentNo(scheduleExceptionDto.getDepartment_no());
+        
+        scheduleExceptionRepository.save(existingSchedule);
+ 
+    }
+    
+    // 사원 예외 참여자 수정
+    @Transactional
+    public void updateExceptionParticipants(Long eventId, ScheduleExceptionDto scheduleExceptionDto, String selectedMembers) {
+    	
+    	// 참여자 정보 
+        if (selectedMembers != null && !selectedMembers.isEmpty()) { 
+            List<ScheduleExceptionParticipantDto> existingParticipants = scheduleParticipantService.getExceptionParticipantsByscheduleNo(eventId);
+            List<String> newMemberList = new ArrayList<>(Arrays.asList(selectedMembers.split(","))); 
+            
+            Long ownerMemberNo = scheduleExceptionDto.getMember_no();
+            if (ownerMemberNo != null && !newMemberList.contains(String.valueOf(ownerMemberNo))) {
+                newMemberList.add(String.valueOf(ownerMemberNo));  
+            } 
+            
+            for (ScheduleExceptionParticipantDto participant : existingParticipants) {
+                if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
+                    participant.setSchedule_exception_participant_status(1L);  
+                    scheduleParticipantService.updateExceptionParticipantStatus(participant);
+                }
+            }
+ 
+            for (String memberId : newMemberList) {
+                Long memberIdLong = Long.parseLong(memberId.trim());
+                boolean isExisting = existingParticipants.stream()
+                    .anyMatch(participant -> participant.getMember_no().equals(memberIdLong));
+ 
+                if (!isExisting) {
+                	ScheduleExceptionParticipantDto newParticipant = ScheduleExceptionParticipantDto.builder()
+                        .schedule_exception_no(scheduleExceptionDto.getSchedule_exception_no())
+                        .member_no(memberIdLong)
+                        .schedule_exception_participant_status(0L) 
+                        .build();
+                	scheduleParticipantService.saveException(newParticipant);
+                }
+            }
+        } else {
+        	List<ScheduleExceptionParticipantDto> existingParticipants = scheduleParticipantService.getExceptionParticipantsByscheduleNo(eventId);
+        	List<String> newMemberList = new ArrayList<>(Arrays.asList(selectedMembers.split(","))); 
+        	for (ScheduleExceptionParticipantDto participant : existingParticipants) {
+                if (!newMemberList.contains(String.valueOf(participant.getMember_no()))) {
+                    participant.setSchedule_exception_participant_status(1L);  
+                    scheduleParticipantService.updateExceptionParticipantStatus(participant);
+                }
+            }
+        }
+    } 
 }
