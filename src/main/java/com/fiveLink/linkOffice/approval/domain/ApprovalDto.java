@@ -26,7 +26,6 @@ public class ApprovalDto {
 	private Long member_no;
 	private String approval_title;
 	private String approval_content;
-	private String approval_effective_date;
 	private Long approval_status;
 	private String approval_cancel_reason;
 	private LocalDateTime approval_create_date;
@@ -54,7 +53,6 @@ public class ApprovalDto {
 					.member(member)
 					.approvalTitle(approval_title)
 					.approvalContent(approval_content)
-					.approvalEffectiveDate(approval_effective_date)
 					.approvalStatus(approval_status)
 					.approvalCancelReason(approval_cancel_reason)
 					.approvalCreateDate(approval_create_date)

@@ -6,7 +6,6 @@
 <th:block layout:fragment="content" th:each="member : ${memberdto}">
     <link th:href="@{/css/employee/member/myedit.css}" rel="stylesheet" type="text/css">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
 	<div id="myModal" class="modal">
 		<div class="modal-content">
 			<h2>비밀번호 입력</h2>
@@ -25,7 +24,6 @@
 		</div>
 	</div>
 	<section>
-      <h1>정보 수정</h1>
         <div class="my_profile">
             <form id="myeditUpdateFrm" enctype="multipart/form-data">
                 <input type="hidden" id="csrf_token" th:value="${_csrf.token}" />

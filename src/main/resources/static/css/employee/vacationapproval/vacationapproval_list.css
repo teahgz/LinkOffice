@@ -61,7 +61,7 @@ select {
 }
 
 #sort {
-	margin-left: 370px;
+	float: right;
 }
 
 .vacationapproval_list_table {
