@@ -1124,7 +1124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        console.error("일정을 찾을 수 없습니다.");
 	        return;
 	    }
-	 
+	 	console.log(event);
 	    const modal = document.getElementById('eventViewModal');
 	    const title = document.getElementById('eventViewTitle');
 	    const dateRange = document.getElementById('eventViewDateRange');
@@ -1137,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', function() {
  		hiddenIsException.value = 1;
 	    title.textContent = event.title;
 	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
-	  
+	  	
 	    const startDate = pickStartDate;
 	    const endDate = pickEndDate;
 	    const startTime = event.extendedProps.startTime;
@@ -1156,7 +1156,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		} else {
 			dateRange.textContent = `${startDate} ~ ${endDate}`; 
 		}
-		
+		 
+		if (event.extendedProps.type === 'departmentResult' && event.extendedProps.member_no !== Number(memberNo)) {  
+		    document.getElementById('editEventBtn').style.display = 'none';
+		    document.getElementById('deleteEventBtn').style.display = 'none';
+		} else if (event.extendedProps.type === 'scheduleDtos') {  
+		    document.getElementById('editEventBtn').style.display = 'none';
+		    document.getElementById('deleteEventBtn').style.display = 'none';
+		} else if (event.extendedProps.type === 'participateResult' && event.extendedProps.member_no !== Number(memberNo)) {  
+		    document.getElementById('editEventBtn').style.display = 'none';
+		    document.getElementById('deleteEventBtn').style.display = 'none';
+		}
+		else {
+		    document.getElementById('editEventBtn').style.display = 'block';
+		    document.getElementById('deleteEventBtn').style.display = 'block'; 
+		} 
+
+		document.getElementById('isRecurring_view').value = 0;
 	 	hiddenEventId.value = eventId;
 	    comment.textContent = event.extendedProps.comment; 
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
@@ -1184,7 +1200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const endDate = pickEndDate;
 	    const startTime = event.extendedProps.startTime;
 	    const endTime = event.extendedProps.endTime;
-	     
+	    document.getElementById('isRecurring_view').value = 2; 
 	    
 	    if(startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
@@ -1612,4 +1628,161 @@ document.addEventListener('DOMContentLoaded', function() {
 	        });
 	    } 
 	}
+	
+	// 삭제
+	// 일정 삭제 버튼
+	document.getElementById('deleteEventBtn').addEventListener('click', function() { 
+		const isException = document.getElementById('isException').value;
+		const isOne = document.getElementById('eventViewRepeatInfo').innerText.trim(); 
+	    const eventId = document.getElementById('eventId').value;  
+	    const isOneBoolean = !!isOne;  
+	    
+	    console.log("isException : " + isException);
+	    console.log("isOne : " + isOne);
+	    console.log("isOneBoolean : " + isOneBoolean);
+	    
+ 		
+ 		// 반복 예외
+	    if (isException === "0" && !isOneBoolean) { 
+	        exceptionDelete(eventId);
+	    } 
+	    // 기본 일정 (반복X)
+	    else if(!isOneBoolean){  
+	        basicDelete(eventId);
+	    }
+	    else {  
+			document.getElementById('event_repeat_title').innerText ='반복 일정 삭제';
+			openEventRepeatModal(); 
+		}
+	    
+	});
+ 
+ 	// 기본 삭제
+ 	function basicDelete(eventId) {
+		Swal.fire({
+            text: '일정을 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EEB3B3',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',  
+                    url: '/company/schedule/delete',   
+                    contentType: 'application/json',
+                    data: JSON.stringify({ eventId: eventId }),  
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.res_code === '200') {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'success',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            }).then(() => {
+                                 location.href = "/employee/schedule";  
+                            });
+                        } else {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'error',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('서버 오류', response.res_msg, 'error');
+                    }
+                });
+            }
+        }); 
+	}
+	
+	// 예외 삭제
+ 	function exceptionDelete(eventId) {
+		Swal.fire({
+            text: '일정을 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EEB3B3',
+            cancelButtonColor: '#C0C0C0',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',  
+                    url: '/company/schedule/exception/delete',   
+                    contentType: 'application/json',
+                    data: JSON.stringify({ eventId: eventId }),  
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.res_code === '200') {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'success',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            }).then(() => {
+                                 location.href = "/employee/schedule";  
+                            });
+                        } else {
+                            Swal.fire({
+                                text: response.res_msg,
+                                icon: 'error',
+                                confirmButtonColor: '#B1C2DD',
+                                confirmButtonText: '확인'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('서버 오류', response.res_msg, 'error');
+                    }
+                });
+            }
+        }); 
+	}
+	
+	// 반복 삭제  
+ 	function repeatDelete(eventId, repeatEditOption) {   
+        $.ajax({
+            type: 'POST',   
+            url: '/company/schedule/repeat/delete/' + eventId + '?editOption=' + repeatEditOption + '&pickStartDate=' + pickStartDate + '&pickEndDate=' + pickEndDate,   
+            contentType: 'application/json', 
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(response) {
+                if (response.res_code === '200') {
+                    Swal.fire({
+                        text: response.res_msg,
+                        icon: 'success',
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                         location.href = "/employee/schedule";  
+                    });
+                } else {
+                    Swal.fire({
+                        text: response.res_msg,
+                        icon: 'error',
+                        confirmButtonColor: '#B1C2DD',
+                        confirmButtonText: '확인'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire('서버 오류', response.res_msg, 'error');
+            }
+        });
+    } 
+     
 });
