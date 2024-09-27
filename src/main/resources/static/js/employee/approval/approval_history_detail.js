@@ -29,6 +29,20 @@ function approveRequest(){
 			});
 		}
 	})
+	
+    const appprovalMemberNo = document.getElementById('approval_member_no').value;
+    const memberNo = document.getElementById('member_no').value;
+    console.log(appprovalMemberNo);
+    console.log(memberNo);
+    
+
+	alarmSocket.send(JSON.stringify({
+		type: 'notificationAppApprove',
+		approvalNo : approvalNo,
+		appprovalMemberNo :appprovalMemberNo,
+		memberNo : memberNo
+	}));
+
 }
 
 

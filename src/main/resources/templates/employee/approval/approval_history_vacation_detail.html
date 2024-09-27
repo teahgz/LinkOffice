@@ -4,10 +4,11 @@
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/approval/approval_history_vacation_detail.css}" rel="stylesheet" type="text/css">
-        <section>
+        <section th:each="member : ${memberdto}">
             <div class="container">
             	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
             	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
+            	<input type="hidden" id="member_no" th:value="${member.member_no}" />
                 <div class="main_container">
 						 <div class="title_button_container">
 		                	<button type="button" id="previewButton" class="preview_button">미리보기</button> 

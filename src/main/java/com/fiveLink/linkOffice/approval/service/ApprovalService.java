@@ -514,5 +514,18 @@ public class ApprovalService {
 	        List<Integer> approvalStatus = Arrays.asList(0, 1); 
 	        return approvalRepository.countApprovalProgress(memberNo, approvalStatus);
 	    }
+	    
+	    @Transactional
+	    public List<ApprovalFlowDto> getApprovalFlows(Long approvalNo) {
+	        List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApprovalApprovalNo(approvalNo);
+	        List<ApprovalFlowDto> approvalFlowdto = new ArrayList<>();
+	        for (ApprovalFlow appFlow : approvalFlows) {
+	            ApprovalFlowDto dto = appFlow.toDto(); 
+	            approvalFlowdto.add(dto); 
+	        }
+	        return approvalFlowdto;
+	    }
+
+	
 
 }
