@@ -114,14 +114,13 @@
 }
 #folder_delete_button{
 	margin-left: 1vw;
-    padding: 0.6vh 0.7vw;
     background-color: #EEB3B3;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
-    width: 3.5vw;
+    width: 3.2vw;
     height: 3.3vh;
     text-align: center;
 }
@@ -132,15 +131,14 @@
     transform: scale(0.98);
 }
 #folder_add_button{
-	margin-right: 1vw;
-    padding: 0.6vh 0.7vw;
+	margin-right: 0.8vw;
     background-color: #B1C2DD;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
-    width: 3.5vw;
+    width: 3.2vw;
     height: 3.3vh;
     text-align: center;
 }
