@@ -1,6 +1,8 @@
 let currentMember = parseInt(document.getElementById("currentMember").value, 10);
 //알림 출력을 위한 멤버값
 
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
     const dropdowns = document.querySelectorAll(".dropdown");
@@ -202,12 +204,18 @@ function connectWebSocket() {
 
         alarmSocket.onmessage = function(event) {
             const message = JSON.parse(event.data);
+            const currentType = message.nofication_type;
+
             if (message.type === 'chatAlarm') {
                 const title = message.title;
                 const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });
+                if(currentType === window.functionType){
+                    markNotificationsAsRead(window.functionType);
+                }else {
+                    message.data.forEach(function(item) {
+                        showNotification(title, content, item.memberNo);
+                    });
+                }
             } else if(message.type === 'documentAlarm'){
                 const title = message.title;
                 const content = message.content;
@@ -216,56 +224,43 @@ function connectWebSocket() {
                         showNotification(title, content, item.memberNo);
                   }
                 });
-			} else if(message.type === 'vacationApprovalAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'vacationApprovalReviewsAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			}else if(message.type === 'vacationAppApproveAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'vacationAppRejectAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'approvalAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'approvalReviewsAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'appApproveAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'appRejectAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			}  
-
+            } else if(message.type === 'vacationApprovalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });
+            } else if(message.type === 'vacationAppApproveAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });
+            } else if(message.type === 'vacationAppRejectAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });
+            } else if(message.type === 'approvalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });
+            } else if(message.type === 'appApproveAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });
+            } else if(message.type === 'appRejectAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });
+            }
         };
 
 
@@ -273,5 +268,23 @@ function connectWebSocket() {
 }
 if (!alarmSocket) {
     connectWebSocket();
+
+}
+
+// 안읽음을 읽음으로 처리하는 함수(공동 사용)
+function markNotificationsAsRead(functionType) {
+    fetch(`/api/nofication/type/read/${currentMember}/${functionType}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.read) {
+                console.log('읽음 처리 완료');
+                bellUnreadCount();
+            } else {
+                console.error('읽음 처리 실패');
+            }
+        })
+        .catch(error => {
+            console.error('읽음 처리 중 오류 발생:', error);
+        });
 }
 //------ 수정불가 ------
