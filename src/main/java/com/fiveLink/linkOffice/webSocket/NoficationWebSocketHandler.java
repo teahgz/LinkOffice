@@ -1,9 +1,9 @@
 package com.fiveLink.linkOffice.webSocket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +95,12 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
     //private void handleChatAlarm(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
 
     //}
-
+	//실시간 시간
+	public String getCurrentFormattedDateTime() {
+		SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd a hh:mm");
+		Date date = new Date();
+		return formatter.format(date);
+	}
     //채팅 알림
     private void handleChatAlarm(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         Object senderNoObj = jsonMap.get("chat_sender_no");
@@ -125,6 +130,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         String nofication_content = "메신저가 도착했습니다.";
         String nofication_title = "메신저";
         int nofication_type = 1;
+		
 
         for (Long memberNo : userIdsInChatRoom)  {
             NoficationDto noficationDto = new NoficationDto();
@@ -151,6 +157,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
                 responseMap.put("title", nofication_title);
                 responseMap.put("content", nofication_content);
                 responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
+				System.out.println(currentTime);
                 String unreadMessage = objectMapper.writeValueAsString(responseMap);
                 s.sendMessage(new TextMessage(unreadMessage));
             }
@@ -213,6 +222,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	  			responseMap.put("title", nofication_title);
 	  			responseMap.put("content", nofication_content);
 	  			responseMap.put("data", msg);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 	  			String unreadMessage = objectMapper.writeValueAsString(responseMap);
 	  			s.sendMessage(new TextMessage(unreadMessage));
 	  		}
@@ -350,6 +361,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    		responseMap.put("title", nofication_title);
 	    		responseMap.put("content",nofication_content);
 	    		responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 	    		String unreadMessage = objectMapper.writeValueAsString(responseMap);
 	    		s.sendMessage(new TextMessage(unreadMessage));
 	    	}
@@ -420,6 +433,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}
@@ -515,6 +530,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	             responseMap.put("title", nofication_title);
 	             responseMap.put("content", noficationDto.getNofication_content());
 	             responseMap.put("data", unreadCounts);
+				  String currentTime = getCurrentFormattedDateTime();
+				  responseMap.put("timestamp", currentTime);
 	             String unreadMessage = objectMapper.writeValueAsString(responseMap);
 	             s.sendMessage(new TextMessage(unreadMessage));
 	          }
@@ -608,6 +625,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}
@@ -711,6 +730,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}
@@ -784,6 +805,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}
@@ -879,6 +902,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	             responseMap.put("title", nofication_title);
 	             responseMap.put("content", noficationDto.getNofication_content());
 	             responseMap.put("data", unreadCounts);
+				  String currentTime = getCurrentFormattedDateTime();
+				  responseMap.put("timestamp", currentTime);
 	             String unreadMessage = objectMapper.writeValueAsString(responseMap);
 	             s.sendMessage(new TextMessage(unreadMessage));
 	          }
@@ -972,6 +997,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}

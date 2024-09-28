@@ -179,3 +179,10 @@ nav {
 .close-notification-modal:hover {
     color: #333;
 }
+
+.notification-time {
+    float: right;
+    font-size: 10px;
+    color: gray;
+    margin-top: 5px;
+}
