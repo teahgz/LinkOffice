@@ -51,29 +51,27 @@
 				<li>
 					<a href="#" class="dropdown-toggle">전자결재</a>
 					<div class="dropdown" data-dropdown-id="approvalDropdown">
-						<ul >
+						<ul>
 							<li><a th:href="@{/employee/approval/create}">결재 작성</a></li>
 							<li>
-								<a href="#" class="dropdown-toggle">결재 상신함</a>
-								<div class="dropdown" data-dropdown-id="approvalDropdown2">
-									<ul>
-										<li><a th:href="@{/employee/approval/progress}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 진행함</a></li>
-										<li><a th:href="@{/employee/approval/reject}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 반려함</a></li>
-									</ul>
-								</div>
+								<a href="#" class="dropdown-toggle" style="pointer-events: none;" >결재 상신함</a>
+
+								<ul style="margin-left: 20px;">
+									<li><a th:href="@{/employee/approval/progress}"><i class="fa-solid fa-caret-right" style="margin-right: 10px; color : gray;"></i>결재 진행함</a></li>
+									<li><a th:href="@{/employee/approval/reject}"><i class="fa-solid fa-caret-right" style="margin-right: 10px; color : gray;"></i>결재 반려함</a></li>
+								</ul>
 							</li>
+
 							<li>
-								<a href="#" class="dropdown-toggle">결재 수신함</a>
-								<div class="dropdown" data-dropdown-id="approvalDropdown3">
-									<ul>
-										<li><a th:href="@{/employee/approval/history}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 내역함</a></li>
-										<li><a th:href="@{/employee/approval/references}"><i class="fa-solid fa-arrow-right" style="margin-right : 5px;"></i>결재 참조함</a></li>
+								<a href="#" class="dropdown-toggle" style="pointer-events: none;">결재 수신함</a>
+
+									<ul style="margin-left: 20px;">
+										<li><a th:href="@{/employee/approval/history}"><i class="fa-solid fa-caret-right" style="margin-right: 10px; color : gray;"></i>결재 내역함</a></li>
+										<li><a th:href="@{/employee/approval/references}"><i class="fa-solid fa-caret-right" style="margin-right: 10px; color : gray;"></i>결재 참조함</a></li>
 									</ul>
-								</div>
+
 							</li>
 						</ul>
-
-
 					</div>
 				</li>
 				<li th:each = "member : ${memberdto}">
