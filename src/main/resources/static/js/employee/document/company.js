@@ -222,16 +222,44 @@ $(function () {
                             <td>${file.document_ori_file_name}</td>
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + ' ' + file.position_name + "(" + file.department_name + ")")}</td>
                             <td>${formatDate(file.document_file_upload_date)}</td>
-                            <td>${file.document_ori_file_name.endsWith('.pdf') ? 
-					            `<a href="/document/file/view/${file.document_file_no}" class="file_show_button" target="_blank">미리보기</a>` : ''}
-					        </td>
+	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
+	                            `<a href="/document/file/view/${file.document_file_no}" target="_blank">
+	                            <svg class="file_show_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+	                            <path d="M64 464l48 0 0 48-48 0c-35.3 0-64-28.7-64-64L0 64C0 28.7 28.7 0 
+	                            64 0L229.5 0c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3L384 304l-48 
+	                            0 0-144-80 0c-17.7 0-32-14.3-32-32l0-80L64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 
+	                            16 16zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 
+	                            16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 
+	                            24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 
+	                            26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 
+	                            16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 
+	                            0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 
+	                            0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"/></svg></a>` 
+	                            : ''}
+	                        </td>
                             <td>${file.document_file_size}</td>
-                            <td>
-							    <a href="/document/file/download/${file.document_file_no}" class="file_down_button">다운로드</a>
+							<td>
+							    <a href="/document/file/download/${file.document_file_no}">
+							    <svg class="file_down_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							    <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 
+							    242.7-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 
+							    12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 
+							    274.7 288 32zM64 352c-35.3 0-64 28.7-64 64l0 32c0 35.3 28.7 64 64 64l384 0c35.3 
+							    0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-101.5 0-45.3 45.3c-25 25-65.5 25-90.5 
+							    0L165.5 352 64 352zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
+							    </a>
 							</td>
                             <td>
 					            ${file.member_no == memberNo ? 
-					                `<input type="button" class="delete_button" value="삭제" id="${file.document_file_no}">` : ''}
+					            `<svg class="delete_button" id="${file.document_file_no}"
+	                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+	                            <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 
+	                            17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 
+	                            64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 
+	                            512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 
+	                            16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 
+	                            8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 
+	                            16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"/></svg>` : ''}
 					        </td>                            
                         `;
                         fileTableBody.appendChild(row); 
@@ -423,7 +451,7 @@ $(function () {
     }
     
     // 폴더가 없을 때 폴더 생성 버튼 
-    $('#first_folder_add').on('click', function(event){
+    $('#first_folder_add, #document_no_folder_msg').on('click', function(event){
 		event.preventDefault();		
 		$('.modal_div').show();
 		$('.first_folder_add_modal').show();
@@ -492,7 +520,6 @@ $(function () {
 	// X 버튼 
 	$('.cancel_div').on('click', function(){
 		$('.modal_div').hide();
-		$('.first_folder_add_div').hide();
 		$('.change_name_modal').hide();
 		$('.folder_create_modal').hide();
 		$('.file_upload_modal').hide();
