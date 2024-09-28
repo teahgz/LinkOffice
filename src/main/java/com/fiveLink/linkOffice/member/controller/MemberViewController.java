@@ -50,17 +50,45 @@ public class MemberViewController {
 	
 	// 내정보 페이지
 	@GetMapping("/employee/member/mypage")
-	public String myPage(Model model) {
+	public String myPage(Model model) throws Exception {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+	    String memberNational = memberdto.get(0).getMember_national();
+	    
+	    String decryptedNational = null;
+	    
+		if (!memberdto.isEmpty()) {
+		     decryptedNational = AESUtil.decrypt(memberNational);
+		    System.out.println(decryptedNational);
+		} else {
+		    System.out.println("해당 멤버가 존재하지 않습니다.");
+		}
+		
+		memberdto.get(0).setMember_national(decryptedNational);	
+		
 	    model.addAttribute("memberdto", memberdto);
 	    return "employee/member/mypage";
 	}
 	// 정보 수정 페이지
 	@GetMapping("/employee/member/myedit")
-	public String myedit(Model model) {
+	public String myedit(Model model) throws Exception {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+	    String memberNational = memberdto.get(0).getMember_national();
+	    
+	    String decryptedNational = null;
+	    
+		if (!memberdto.isEmpty()) {
+		     decryptedNational = AESUtil.decrypt(memberNational);
+		    System.out.println(decryptedNational);
+		} else {
+		    System.out.println("해당 멤버가 존재하지 않습니다.");
+		}
+		
+		memberdto.get(0).setMember_national(decryptedNational);	
+		
 	    model.addAttribute("memberdto", memberdto);
 		return "employee/member/myedit";
 	}
@@ -272,17 +300,6 @@ public class MemberViewController {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
-		
-	    String memberNational = memberDtoList.get(0).getMember_national();
-	    
-	    String decryptedNational = null;
-	    
-		if (!memberDtoList.isEmpty()) {
-		     decryptedNational = AESUtil.decrypt(memberNational);
-		    System.out.println(decryptedNational);
-		} else {
-		    System.out.println("해당 멤버가 존재하지 않습니다.");
-		}
 		
 		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
