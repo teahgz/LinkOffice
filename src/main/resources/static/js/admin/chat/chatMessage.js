@@ -1,15 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // 페이지 로드 시 첫 번째 채팅방 자동 클릭
-//    const firstChatRoom = document.querySelector('.chatItem');
-//    if (firstChatRoom) {
-//         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
-//        if (chatRoomNo) {
-//            handleChatRoomClick(chatRoomNo);
-//        }
-//    }
 
-  const messageInput = document.getElementById('messageInput');
-  const sendButton = document.getElementById('sendButton');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
+
 if (sendButton && messageInput) {
     function toggleSendButton() {
         sendButton.disabled = messageInput.value.trim() === '';
@@ -87,31 +80,16 @@ if (sendButton && messageInput) {
           confirmEditButton.disabled = true;
           confirmEditButton.classList.add('update-button');
       });
-});
-window.onload = function() {
-    const functionType = 1;
-    console.log("현재 기능 타입"+functionType);
-    // 페이지가 로드될 때 안읽음 처리
-    if (functionType === 1) {
-        markNotificationsAsRead(functionType);
-    }
-};
-// 안읽음을 읽음으로 처리하는 함수
-function markNotificationsAsRead(functionType) {
-    fetch(`/api/nofication/type/read/${currentMember}/${functionType}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.read) {
-                console.log('읽음 처리 완료');
 
-            } else {
-                console.error('읽음 처리 실패');
-            }
-        })
-        .catch(error => {
-            console.error('읽음 처리 중 오류 발생:', error);
-        });
-}
+    //필수로 넣기
+    window.functionType = 1;
+    console.log("현재 기능 타입: " +window.functionType);
+
+    if (window.functionType === 1) {
+        markNotificationsAsRead(window.functionType);
+    }
+
+});
 
 (function() {
     let currentChatRoomNo = null;

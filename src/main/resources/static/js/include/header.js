@@ -4,11 +4,11 @@ const headerCurrentMember = document.getElementById('headerCurrentMember').value
 const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
 // 페이지 로드 시 호출
-window.onload = function() {
+document.addEventListener("DOMContentLoaded", function () {
     fetchSessionTime();
-    bellUnreadCount();
-};
 
+
+});
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -87,6 +87,8 @@ function bellUnreadCount() {
                 const notificationBell = document.getElementById('notification-bell');
 
                 const existingCount = document.getElementById('unread-bell-count');
+                console.log(data.unreadCount);
+
                 if (existingCount) {
                     notificationBell.removeChild(existingCount);
                 }
