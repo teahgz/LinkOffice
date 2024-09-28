@@ -141,7 +141,16 @@ function showNotification(title, content, memberNo) {
         `;
 
         notificationContainer.appendChild(notificationModal);
-
+        let unreadCountElement = document.getElementById('unread-bell-count');
+        if (!unreadCountElement) {
+            unreadCountElement = document.createElement('span');
+            unreadCountElement.id = 'unread-bell-count';
+            unreadCountElement.className = 'badge';
+            document.getElementById('notification-bell').appendChild(unreadCountElement);
+        }
+        // 현재 카운트 가져오기 및 증가
+        const currentCount = parseInt(unreadCountElement.textContent) || 0;
+        unreadCountElement.textContent = currentCount + 1;
         setTimeout(() => {
             notificationModal.classList.add("show");
         }, 10);

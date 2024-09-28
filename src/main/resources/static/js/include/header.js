@@ -108,13 +108,13 @@ function unreadNoficationList() {
     const notificationModal = document.getElementById('notification-bell-modal');
     const unreadCountElement = document.getElementById('unread-bell-count');
 
-    notificationModal.innerHTML = '';
+
     fetch(`/api/nofication/unread/list/${headerCurrentMember}`)
         .then(response => response.json())
         .then(data => {
             const notificationModal = document.getElementById('notification-bell-modal');
             if (data.unreadList.length === 0) {
-
+                notificationModal.innerHTML = '';
                 const noNotificationsItem = document.createElement('li');
                 noNotificationsItem.textContent = '알림이 존재하지 않습니다.';
                 noNotificationsItem.style.textAlign = 'center';
@@ -181,6 +181,10 @@ document.getElementById('mark-as-read').addEventListener('click', function() {
             console.log('읽음 처리 완료');
             document.getElementById('notification-bell-modal').innerHTML = '';
             document.getElementById('unread-bell-count').textContent = '0';
+            const unreadCountElement = document.getElementById('unread-bell-count');
+            if (unreadCountElement) {
+                 unreadCountElement.remove();
+            }
         } else {
             console.error('읽음 처리 실패');
         }
