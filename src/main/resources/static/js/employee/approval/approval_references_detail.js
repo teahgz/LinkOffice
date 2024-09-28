@@ -227,37 +227,4 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
-		
-	window.functionType = 4;
-    console.log("현재 기능 타입: " +window.functionType);
-
-    if (window.functionType === 4) {
-        markNotificationsAsRead(window.functionType);
-    } 
-    
-    if (currentType === window.functionType) {
-                    markNotificationsAsRead(window.functionType);
-                } else {
-                    if (notificationModal.children.length <= 1) {
-                        notificationModal.innerHTML = `
-                           <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
-                        `;
-                        addMarkAsReadListener();
-                    }
-                    message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp);
-                        const listItem = document.createElement('li');
-
-                        listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
-                        listItem.innerHTML = `
-                            <strong style="margin-bottom: 5px;">${title}</strong>
-                            <p>${content}</p>
-                            <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
-                            <hr style="border: none; margin: 10px 0;">
-                        `;
-
-                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
-                    });
-                }
-
 });
