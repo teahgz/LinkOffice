@@ -30,14 +30,39 @@ window.onload = function() {
 };
 
 document.getElementById('userImage').addEventListener('click', function(event) {
-   var dropdownMenu = document.getElementById('dropdownMenu');
-   dropdownMenu.classList.toggle('show');
-   event.stopPropagation();
+    var dropdownMenu = document.getElementById('dropdownMenu');
+    var notificationModal = document.getElementById('notification-bell-modal');
+
+    if (notificationModal.classList.contains('show')) {
+        notificationModal.classList.remove('show');
+    }
+    dropdownMenu.classList.toggle('show');
+    event.stopPropagation();
 });
 
+document.getElementById('notification-bell').addEventListener('click', function(event) {
+    var notificationModal = document.getElementById('notification-bell-modal');
+    var dropdownMenu = document.getElementById('dropdownMenu');
+
+
+    if (dropdownMenu.classList.contains('show')) {
+        dropdownMenu.classList.remove('show');
+    }
+
+    notificationModal.classList.toggle('show');
+    event.stopPropagation();
+});
+
+
 document.addEventListener('click', function(event) {
-   var dropdownMenu = document.getElementById('dropdownMenu');
+    var dropdownMenu = document.getElementById('dropdownMenu');
+    var notificationModal = document.getElementById('notification-bell-modal');
+
     if (!event.target.closest('.user_image')) {
-       dropdownMenu.classList.remove('show');
+        dropdownMenu.classList.remove('show');
+    }
+
+    if (!event.target.closest('.bell')) {
+        notificationModal.classList.remove('show');
     }
 });
