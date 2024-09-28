@@ -193,6 +193,15 @@ endDateInput.addEventListener("change", function() {
     }
 });
 
+
+// 오늘 이전 날짜 막기
+const today = new Date().toISOString().split("T")[0];
+
+document.getElementById("vacationapproval_start_date").setAttribute("min", today);
+document.getElementById("vacationapproval_end_date").setAttribute("min", today);
+
+
+
 // 공휴일, 주말 제외
 function calculateDateDifference() {
     const startDate = new Date(startDateInput.value);
@@ -593,18 +602,17 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    notificationData.references = references;
 			}
 			
-			if (reviewers !== null) {
-			    notificationData.reviewers = reviewers;
-			}
-			
-			
 			alarmSocket.send(JSON.stringify({
 			   type: 'notificationVacationApproval',
 			   notificationData : notificationData,
 			   memberNo : memberNo
 			}));
 			
-			console.log('알림:', notificationData.reviewers);
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationVacationApprovalReviewers',
+			   reviewers : reviewers,
+			   memberNo : memberNo
+			}));
 
 	});
 });
