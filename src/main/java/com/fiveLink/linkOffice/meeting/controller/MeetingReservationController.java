@@ -411,4 +411,11 @@ public class MeetingReservationController {
 
 	    return "admin/meeting/meetingReservationList";
 	}  
+	
+	@GetMapping("/all/reservations")
+	@ResponseBody
+	public List<MeetingReservationDto> getReservations() { 
+	    List<MeetingReservationDto> reservations = meetingReservationService.getAllReservations(); 
+	    return reservations;
+	}
 }

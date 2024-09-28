@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        handleWindowResize: true,
 	        fixedWeekCount: false,
 	        eventDidMount: function(info) {
-	            info.el.style.cursor = 'default';
+	            info.el.style.cursor = 'pointer';
 	        },
 	        googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
 	        eventSources: [

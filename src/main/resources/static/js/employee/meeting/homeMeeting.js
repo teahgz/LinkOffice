@@ -63,7 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             dateClick: function(info) {
                 displayReservations(info.dateStr, reservations);
-            }
+            },
+            eventClick: function(info) {
+	            const eventDate = new Date(info.event.start);
+	            eventDate.setDate(eventDate.getDate() + 1); 
+	            const formattedDate = eventDate.toISOString().split('T')[0]; 
+	            displayReservations(formattedDate, reservations); 
+	        }
         });
         calendar.render();
     }
@@ -82,13 +88,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (dayReservations.length === 0) {
-            reservationList.innerHTML = '<li>예약이 없습니다.</li>';
+            reservationList.innerHTML = '<div>예약이 없습니다.</div>';
         } else {
             dayReservations.forEach(function(reservation) {
-                var li = document.createElement('li');
-                li.textContent = '[' + reservation.meeting_name + '] ' +  reservation.meeting_reservation_start_time + ' ~ ' + reservation.meeting_reservation_end_time 
+                var div = document.createElement('div');
+                div.textContent = '[' + reservation.meeting_name + '] ' +  reservation.meeting_reservation_start_time + ' ~ ' + reservation.meeting_reservation_end_time 
                 + ' ' + reservation.member_name + ' ' + reservation.position_name + ' (' + reservation.participant_count + '명)';
-                reservationList.appendChild(li);
+                reservationList.appendChild(div);
             });
         }
     }
