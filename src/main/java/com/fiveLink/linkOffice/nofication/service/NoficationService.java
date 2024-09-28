@@ -33,6 +33,9 @@ public class NoficationService {
         }
         return result;
     }
+    public long insertAlarmPk() {
+        return noficationMapper.insertAlarmPk();
+    }
 
     //현재 사용자의 안읽음 개수
     public int bellCount(Long memberNo) {

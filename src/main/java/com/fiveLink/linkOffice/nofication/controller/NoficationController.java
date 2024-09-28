@@ -57,9 +57,6 @@ public class NoficationController {
                 .map(member -> Long.parseLong(member.toString()))
                 .toList();
 
-        System.out.println("test : "+ notificationNos);
-        System.out.println("test : "+ memberNo);
-
         boolean read = noficationService.readNotification(memberNo, notificationNos);
 
         Map<String, Object> response = new HashMap<>();
