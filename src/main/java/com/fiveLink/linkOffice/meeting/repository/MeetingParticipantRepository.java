@@ -16,5 +16,8 @@ public interface MeetingParticipantRepository extends JpaRepository<MeetingParti
 	
 	@Query("SELECT mp FROM MeetingParticipant mp WHERE mp.meetingReservationNo = :reservationNo AND mp.meetingParticipantStatus = 0")
     List<MeetingParticipant> findParticipantsByReservationNo(@Param("reservationNo") Long reservationNo); 
+	
+	@Query("SELECT mp FROM MeetingParticipant mp WHERE mp.meetingReservationNo = :meetingReservationNo AND mp.meetingParticipantStatus = 0 AND mp.memberNo NOT IN (:memberNo)")
+    List<MeetingParticipant> findParticipantsByMeetingReservationNoExcludingMember(@Param("meetingReservationNo") Long meetingReservationNo, @Param("memberNo") Long memberNo);
 }
 

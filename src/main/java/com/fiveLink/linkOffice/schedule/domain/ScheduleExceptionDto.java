@@ -33,6 +33,10 @@ public class ScheduleExceptionDto {
     private Long department_no;
     private LocalDateTime schedule_exception_create_date;
     private Long schedule_exception_status;
+    
+    private String member_name;
+    private String position_name;
+    private String department_name;
 
     public ScheduleException toEntity() {
         return ScheduleException.builder()

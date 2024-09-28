@@ -137,9 +137,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 참여자 정보 
 	var parMemberNos = [];
 
-	function searchParticipate(scheduleNo, callback) {
+	function searchParticipate(memberNo, scheduleNo, callback) {
 	    $.ajax({
-	        url: '/api/participate/member/schedules/' + scheduleNo,
+	        url: '/api/participate/member/schedules/' + scheduleNo + '/' + memberNo,
 	        method: 'GET',
 	        dataType: 'json',
 	        headers: {
@@ -147,42 +147,64 @@ document.addEventListener('DOMContentLoaded', function() {
 	        },
 	        success: function(data) {
 	            parMemberNos = data.participants.map(participant => participant.member_no); 
-	            callback(parMemberNos);
-	        },
-	        error: function(error) { 
-	            callback([]);
-	        }
+	            parMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName); 
+	            callback(parMemberNos, parMemberNames);
+	        } 
 	    });
 	} 
 	
 	// 예외 일정 참여자 정보 
 	var exceptionParMemberNos = [];
-
-	function searchExceptionParticipate(scheduleExceptionNo, callback) {
+	var exceptionParMemberNames = [];  
+	
+	function searchExceptionParticipate(memberNo, scheduleExceptionNo, callback) {
 	    $.ajax({
-	        url: '/api/participate/member/schedules/exception/' + scheduleExceptionNo,
+	        url: '/api/participate/member/schedules/exception/' + scheduleExceptionNo + '/' + memberNo,
 	        method: 'GET',
 	        dataType: 'json',
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
 	        success: function(data) {
+				console.log(data.participants);
 	            exceptionParMemberNos = data.participants.map(participant => participant.member_no); 
-	            callback(exceptionParMemberNos);
-	        },
-	        error: function(error) { 
-	            callback([]);
+	            exceptionParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName); 
+	            callback(exceptionParMemberNos, exceptionParMemberNames); 
 	        }
 	    });
 	} 
 	
-    function fetchAllSchedules() { 
+	// 회의 일정 참여자 정보 
+	var meetingParMemberNos = [];
+	var meetingParMemberNames = [];
+	
+	function searchMeetingParticipate(memberNo, meetingNo, callback) {
+	    $.ajax({
+	        url: '/api/employee/meeting/schedules/' + meetingNo + '/' + memberNo,
+	        method: 'GET',
+	        dataType: 'json',
+	        headers: {
+	            'X-CSRF-TOKEN': csrfToken
+	        },
+	        success: function(data) {
+	            console.log(data.participants); 
+	            if (data.participants) {
+	                meetingParMemberNos = data.participants.map(participant => participant.member_no);
+	                meetingParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName);
+	            }
+	            callback(meetingParMemberNos, meetingParMemberNames);
+	        }
+	    });
+	}
+	
+    function fetchAllSchedules() {
 	    Promise.all([
 	        fetchSchedules('/api/personal/schedules/' + memberNo, 'personalResult'),
 	        fetchSchedules('/api/department/schedules', 'departmentResult'),
 	        fetchSchedules('/api/company/schedules', 'scheduleDtos'),
 	        fetchSchedules('/api/participate/schedules', 'participateResult'),
 	        fetchSchedules('/api/employee/vacation/schedules', 'vacationResult'),
+	        fetchSchedules('/api/employee/meeting/schedules', 'meetingResult'),
 	        $.ajax({
 	            url: '/api/repeat/schedules',
 	            method: 'GET',
@@ -193,18 +215,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	            method: 'GET',
 	            headers: { 'X-CSRF-TOKEN': csrfToken }
 	        })
-	    ]).then(function([personalSchedules, departmentSchedules, companySchedules, participateSchedules, vacationSchedules, repeats, exceptions]) {
-	        const allEvents = [];  
+	    ]).then(function([personalSchedules, departmentSchedules, companySchedules, participateSchedules, vacationSchedules, meetingSchedules, repeats, exceptions]) {
+	        const allEvents = [];
 	
-	        processSchedules(personalSchedules.personalResult, 'personalResult', repeats, exceptions, allEvents);
-	        processSchedules(departmentSchedules.departmentResult, 'departmentResult', repeats, exceptions, allEvents);
-	        processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents);
-	        processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents);
-	 
-	        processVacationSchedules(vacationSchedules.vacationResult, allEvents);  
-	         
-	        initializeCalendar(allEvents);  
-	        filterEvents();
+	        Promise.all([
+	            processSchedules(personalSchedules.personalResult, 'personalResult', repeats, exceptions, allEvents),
+	            processSchedules(departmentSchedules.departmentResult, 'departmentResult', repeats, exceptions, allEvents),
+	            processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents),
+	            processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents),
+	            processVacationSchedules(vacationSchedules.vacationResult, allEvents),
+	            processMeetingSchedules(meetingSchedules.meetingResult, allEvents)  
+	        ]).then(() => {
+	            initializeCalendar(allEvents);
+	            filterEvents();
+	        });
 	    });
 	}
 
@@ -253,17 +277,75 @@ document.addEventListener('DOMContentLoaded', function() {
 	                end: lastValidEnd.toISOString().split('T')[0]
 	            });
 	        }
-	    });
-	 
+	    }); 
 	}
-
+	
+	function processMeetingSchedules(meetingSchedules, allEvents) { 
+	    if (meetingSchedules && meetingSchedules.meetingSchedules) {
+	        meetingSchedules.meetingSchedules.forEach(function(meeting) {
+	            const event = createMeetingEvent(meeting);
+	            allEvents.push(event);
+	        });
+	    }
+	}
+	
+	function createMeetingEvent(meeting) {
+	    console.log(meeting);
+		var event = {
+		    order: 1,
+		    id: 'meeting' + meeting.meeting_no,
+		    title: meeting.meeting_name  + ' 회의', 
+		    start: meeting.meeting_reservation_date + 'T' + meeting.meeting_reservation_start_time,
+		    end: meeting.meeting_reservation_date + 'T' + meeting.meeting_reservation_end_time,
+		    allDay: false,
+		    backgroundColor: '#fff8db',
+		    borderColor: '#fff8db',
+		    textColor: '#000000',
+		    className: 'meeting-event',
+		    extendedProps: {
+		        type: 'meetingResult',
+		        categoryName: '회의',  
+		        positionName: meeting.position_name,
+		        departmentName: meeting.department_name,
+		        member_no: meeting.member_no,
+		        meeting_no: meeting.meeting_no,
+		        participant_no: [],
+		        participant_name: [],
+		        participantsLoaded: false,
+		        member_name : meeting.member_name,
+		        meeting_reservation_purpose : meeting.meeting_reservation_purpose,
+		        meeting_name : meeting.meeting_name,
+		        meeting_date : meeting.meeting_reservation_date,
+		        meeting_start_time : meeting.meeting_reservation_start_time,
+		        meeting_end_time : meeting.meeting_reservation_end_time, 
+		    }
+		}; 
+	     
+	    searchMeetingParticipate(event.extendedProps.member_no, event.extendedProps.meeting_no, function(participantNos, participantNames) {
+	        event.extendedProps.participant_no = participantNos;
+	        event.extendedProps.participant_name = participantNames;
+	        event.extendedProps.participantsLoaded = true;
+	         
+	        const calendarEvent = calendar.getEventById(event.id);
+	        if (calendarEvent) {
+	            calendarEvent.setExtendedProp('participant_no', participantNos);
+	            calendarEvent.setExtendedProp('participant_name', participantNames);
+	            calendarEvent.setExtendedProp('participantsLoaded', true);
+	        }
+	        
+	        filterEvents();   
+	    });
+	
+	    return event;
+	}
+	
 	function createVacationEvent(vacation) {  
 	    var eventEnd = new Date(vacation.vacation_approval_end_date);
 	      
 	    var vacation_name = vacation.vacation_type_name === "반차" ? "반차" : "휴가";
 	    
 	    return {
-	        order: 1,
+	        order: -1,
 	        id: 'vacation_' + vacation.vacation_approval_no,
 	        title: vacation.member_name + ' ' + vacation.position_name + ' ' + vacation_name,
 	        start: vacation.vacation_approval_start_date,
@@ -282,59 +364,59 @@ document.addEventListener('DOMContentLoaded', function() {
 	        }
 	    };
 	}
- 
-    function fetchSchedules(url, type) {
-        return $.ajax({
-            url: url,
-            method: 'GET',
-            headers: { 'X-CSRF-TOKEN': csrfToken }
-        }).then(function(response) {
-            var result = {};
-            result[type] = response;
-            return result;
-        });
-    }
-
-    function processSchedules(schedules, type, repeats, exceptions, allEvents) { 
-        if (!Array.isArray(schedules)) { 
-            return;
-        }
-
-        schedules.forEach(function(schedule) {
-            if (schedule.schedule_repeat === 0) { 
-                allEvents.push(createEvent(schedule, type));
-            } else {
-                var repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
-                if (repeatInfo) {
-                    var startDate = new Date(schedule.schedule_start_date);
-                    var endDate = repeatInfo.schedule_repeat_end_date ? new Date(repeatInfo.schedule_repeat_end_date) : new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
-                    var currentDate = new Date(startDate);
-                    
-                    while (currentDate <= endDate) {
-                        var exceptionEvent = exceptions.find(e => 
-                            e.schedule_no === schedule.schedule_no && 
-                            e.schedule_exception_date === formatDate(currentDate)
-                        );
-
-                        if (exceptionEvent && exceptionEvent.schedule_exception_status === 0) { 
-                            allEvents.push(createExceptionEvent(exceptionEvent, currentDate, type, schedules[0].member_no)); 
-                        } else if (exceptionEvent && exceptionEvent.schedule_exception_status === 1) {
-                           
-                        } else {  
-                            allEvents.push(createEvent(schedule, type, currentDate, repeatInfo));
-                        }
-                         
-                        currentDate = calculateNextRepeatDate(currentDate, repeatInfo);
-                    }
-                }
-            }
-        });  
-    }
-
+  
+    function processSchedules(schedules, type, repeats, exceptions, allEvents) {
+	    if (!Array.isArray(schedules)) {
+	        return Promise.resolve();
+	    }
+	
+	    const eventPromises = schedules.flatMap(function(schedule) {
+	        if (schedule.schedule_repeat === 0) {
+	            return createEvent(schedule, type);
+	        } else {
+	            const repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
+	            if (repeatInfo) {
+	                const startDate = new Date(schedule.schedule_start_date);
+	                const endDate = repeatInfo.schedule_repeat_end_date ? new Date(repeatInfo.schedule_repeat_end_date) : new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
+	                let currentDate = new Date(startDate);
+	
+	                const datePromises = [];
+	
+	                while (currentDate <= endDate) {
+	                    const exceptionEvent = exceptions.find(e =>
+	                        e.schedule_no === schedule.schedule_no &&
+	                        e.schedule_exception_date === formatDate(currentDate)
+	                    );
+	
+	                    if (exceptionEvent && exceptionEvent.schedule_exception_status === 0) {
+	                        datePromises.push(createExceptionEvent(exceptionEvent, currentDate, type, schedules[0].member_no));
+	                    } else if (exceptionEvent && exceptionEvent.schedule_exception_status === 1) {
+	                         
+	                    } else {
+	                        datePromises.push(createEvent(schedule, type, currentDate, repeatInfo));
+	                    }
+	
+	                    currentDate = calculateNextRepeatDate(currentDate, repeatInfo);
+	                }
+	
+	                return datePromises;
+	            }
+	        }
+	        return [];
+	    });
+	
+	    return Promise.all(eventPromises).then(events => {
+	        events.flat().forEach(event => {
+	            allEvents.push(event);
+	            calendar.addEvent(event);
+	        });
+	    });
+	}
+	
     function createEvent(schedule, type, date, repeatInfo) {
         var eventStart = date || new Date(schedule.schedule_start_date);
         var eventEnd = schedule.schedule_end_date ? new Date(schedule.schedule_end_date) : null;
-    
+    	 
         if (date) { 
             eventEnd = new Date(date);
             eventEnd.setHours(new Date(schedule.schedule_end_date).getHours());
@@ -376,14 +458,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	            repeatWeek: repeatInfo ? repeatInfo.schedule_repeat_week : null,
 	            repeatDate : repeatInfo ? repeatInfo.schedule_repeat_date : null,
 	            repeatMonth: repeatInfo ? repeatInfo.schedule_repeat_month : null,
+	            memberName : schedule.member_name,
+	            participant_name : [],
+	            positionName : schedule.position_name,
+	            departmentName : schedule.department_name
             }
         };
     
         if (type === 'participateResult') {
-            searchParticipate(schedule.schedule_no, function(participantNos) {
-                event.extendedProps.participant_no = participantNos;
+            searchParticipate(event.extendedProps.member_no, schedule.schedule_no, function(participantNos, participantNames) {
+                event.extendedProps.participant_no = participantNos; 
+                event.extendedProps.participant_name = participantNames; 
                 event.extendedProps.participantsLoaded = true;
                 calendar.getEventById(event.id).setExtendedProp('participant_no', participantNos);
+                calendar.getEventById(event.id).setExtendedProp('participant_name', participantNames);
                 calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
                 filterEvents();   
             });
@@ -391,54 +479,75 @@ document.addEventListener('DOMContentLoaded', function() {
         return event;
     }
 
-    function createExceptionEvent(exceptionEvent, currentDate, type, ori_memberNo) {
-       const startDate = new Date(exceptionEvent.schedule_exception_start_date);
-	   let endDate = exceptionEvent.schedule_exception_end_date ? new Date(exceptionEvent.schedule_exception_end_date) : null;
-	 
-	   if (!exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time && endDate) {
-	       endDate.setDate(endDate.getDate() + 1);
-	   } 
-        
-       var event = {
-            order: 1,
-            id: exceptionEvent.schedule_exception_no,
-            title: exceptionEvent.schedule_exception_title,
-            start: exceptionEvent.schedule_exception_start_date + (exceptionEvent.schedule_exception_start_time ? 'T' + exceptionEvent.schedule_exception_start_time : ''),
-            end: endDate ? formatDate(endDate) + (exceptionEvent.schedule_exception_end_time ? 'T' + exceptionEvent.schedule_exception_end_time : '') : null,
-            allDay: !exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time,
-            backgroundColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
-            borderColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
-            textColor: '#000000',
-            className: type + '-event',
-            extendedProps: {
-				type: type,
-                categoryName: categoryNames[exceptionEvent.schedule_category_no],
-                comment: exceptionEvent.schedule_exception_comment,
-                createDate: exceptionEvent.schedule_exception_create_date,
-                endDate: exceptionEvent.schedule_exception_end_date ? exceptionEvent.schedule_exception_end_date : null,
-                startTime: exceptionEvent.schedule_exception_allday === 0 ? exceptionEvent.schedule_exception_start_time : null,
-                endTime: exceptionEvent.schedule_exception_allday === 0 ? exceptionEvent.schedule_exception_end_time : null,
-                exceptionNo: exceptionEvent.schedule_exception_no,
-                isException: true,
-                exceptionType: exceptionEvent.schedule_exception_type,
-                originNo : exceptionEvent.schedule_no,
-                member_no: ori_memberNo,
-                department_no : exceptionEvent.department_no
-            }
-        };
-        
-        if (exceptionEvent.schedule_exception_type === 2) { 
-            searchExceptionParticipate(exceptionEvent.schedule_exception_no, function(participantNos) {
-                event.extendedProps.participant_no = participantNos;
-                event.extendedProps.participantsLoaded = true;
-                calendar.getEventById(event.id).setExtendedProp('participant_no', participantNos);
-                calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
-                filterEvents();   
-            });
-        }   
-        return event;
-    }
+    function createExceptionEvent(exceptionEvent, currentDate, type, ori_memberNo) { 
+	    const startDate = new Date(exceptionEvent.schedule_exception_start_date);
+	    let endDate = exceptionEvent.schedule_exception_end_date ? new Date(exceptionEvent.schedule_exception_end_date) : null;
+	
+	    if (!exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time && endDate) {
+	        endDate.setDate(endDate.getDate() + 1);
+	    }
+	
+	    var event = {
+	        order: 1,
+	        id: exceptionEvent.schedule_exception_no,
+	        title: exceptionEvent.schedule_exception_title,
+	        start: exceptionEvent.schedule_exception_start_date + (exceptionEvent.schedule_exception_start_time ? 'T' + exceptionEvent.schedule_exception_start_time : ''),
+	        end: endDate ? formatDate(endDate) + (exceptionEvent.schedule_exception_end_time ? 'T' + exceptionEvent.schedule_exception_end_time : '') : null,
+	        allDay: !exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time,
+	        backgroundColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
+	        borderColor: categoryColors[exceptionEvent.schedule_category_no] || '#3788d8',
+	        textColor: '#000000',
+	        className: type + '-event',
+	        extendedProps: {
+	            type: type,
+	            categoryName: categoryNames[exceptionEvent.schedule_category_no],
+	            comment: exceptionEvent.schedule_exception_comment,
+	            createDate: exceptionEvent.schedule_exception_create_date,
+	            endDate: exceptionEvent.schedule_exception_end_date ? exceptionEvent.schedule_exception_end_date : null,
+	            startTime: exceptionEvent.schedule_exception_allday === 0 ? exceptionEvent.schedule_exception_start_time : null,
+	            endTime: exceptionEvent.schedule_exception_allday === 0 ? exceptionEvent.schedule_exception_end_time : null,
+	            exceptionNo: exceptionEvent.schedule_exception_no,
+	            isException: true,
+	            exceptionType: exceptionEvent.schedule_exception_type,
+	            originNo: exceptionEvent.schedule_no,
+	            member_no: ori_memberNo,
+	            department_no: exceptionEvent.department_no,
+	            excepetion_participant_no: [],
+	            excepetion_participant_name: [],
+	            excepetion_participantsLoaded: false,
+	            memberName: exceptionEvent.member_name, 
+	            positionName: exceptionEvent.position_name,
+	            departmentName: exceptionEvent.department_name
+	        }
+	    };
+	
+	    return new Promise((resolve) => {
+	        if (type === 'participateResult') {  
+	            searchExceptionParticipate(exceptionEvent.member_no,exceptionEvent.schedule_exception_no, function(ExceptionparticipantNos, ExceptionparticipantNames) {
+	                event.extendedProps.excepetion_participant_no = ExceptionparticipantNos; 
+	                event.extendedProps.excepetion_participant_name = ExceptionparticipantNames; 
+	                event.extendedProps.excepetion_participantsLoaded = true;
+	                 
+	                resolve(event);
+	            });
+	        } else {
+	            resolve(event);
+	        }
+	    });
+	}
 
+	function fetchSchedules(url, type) {
+        return $.ajax({
+            url: url,
+            method: 'GET',
+            headers: { 'X-CSRF-TOKEN': csrfToken }
+        }).then(function(response) {
+            var result = {};
+            result[type] = response;
+            return result;
+        });
+    }
+    
     function calculateNextRepeatDate(currentDate, repeatInfo) {
         switch (repeatInfo.schedule_repeat_type) {
             case 1: // 매일
@@ -492,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handleWindowResize: true,
             fixedWeekCount: false,
             eventClick: function(info) {
-				console.log(info.event);
+				console.log(info.event); 
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -516,12 +625,15 @@ document.addEventListener('DOMContentLoaded', function() {
 			        showEventModalById(calendar, eventId);
 			    } else if (info.event.extendedProps.type === 'vacationResult') {
 					showVacationModal(info.event);
+				} else if (info.event.extendedProps.type === 'meetingResult') {
+					const eventId = info.event.id;
+			        showMeetingModalById(calendar, eventId);
 				} else {
 			        info.jsEvent.preventDefault();
 			    }  
             },
             eventDidMount: function(info) { 
-	            if (info.event.extendedProps.type === 'personalResult' || info.event.extendedProps.type === 'participateResult'
+	            if (info.event.extendedProps.type === 'personalResult' || info.event.extendedProps.type === 'participateResult' || info.event.extendedProps.type === 'meetingResult'
 	            	|| info.event.extendedProps.type === 'scheduleDtos' || info.event.extendedProps.type === 'departmentResult' || info.event.extendedProps.type === 'vacationResult') {
 	                info.el.style.cursor = 'pointer';  
 	            } else {
@@ -587,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	    calendar.getEvents().forEach(function(event) {
 	        const eventDepartmentNo = event.extendedProps.department_no;
-	        const participantNos = event.extendedProps.participant_no || [];
+	        const participantNos = event.extendedProps.participant_no || []; 
 	        
 	        let shouldDisplay = false;
 	
@@ -620,8 +732,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	            } else if (selectedDepartments.includes(eventDepartmentNo.toString())) {
 	                shouldDisplay = true;  
 	            }
+	            else {
+					shouldDisplay = false;  
+				}
 	        }
-	 
+	        // 회의 일정
+	        else if (event.extendedProps.type === 'meetingResult') {
+				if (event.extendedProps.member_no.toString() === memberNo || participantNos.includes(parseInt(memberNo))) {
+					shouldDisplay = true;  
+				} 
+			}
+ 
 	        event.setProp('display', shouldDisplay ? 'auto' : 'none');
 	    });
 	}
@@ -707,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
     endInput.addEventListener('change', handleTimeChange); 
     
 	// 등록 모달 열기
-	document.getElementById('addEventBtn').addEventListener('click', function() {
+	document.getElementById('addEventBtn').addEventListener('click', function() {    
 		document.getElementById('eventModal').style.display = 'block';
 	});
 
@@ -724,8 +845,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				document.getElementById('eventModal').style.display = 'none';
+			    document.getElementById('allDay').checked = false;
+                document.getElementById('allDay').dispatchEvent(new Event('change'));
 				resetForm(createEmployeeScheduleForm);
-				resetCreateModal();
+				$('#organization-chart').jstree("uncheck_all");
+	 
+			    const reservationArea = $('.selected-participants-container');  
+			    reservationArea.find('.selected-participants').remove(); 
+			    
+			    selectedMembers = [];
+			    localStorage.removeItem('selectedMembers');  
+			    $('#selectedMembers').val('');
 				document.getElementById('eventRepeatModal').style.display = 'none';
 			}
 		});
@@ -733,22 +863,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	document.getElementById('event_repeat_close_btn').addEventListener('click', function() { 
 		document.getElementById('eventRepeatModal').style.display = 'none'; 
-	});
-	 
-	function resetCreateModal() { 
-	    reservation_form[0].reset();
-	     
-	    $('#reservationModal').modal('hide');
-	 
-	    $('#organization-chart').jstree("uncheck_all");
-	 
-	    const reservationArea = $('.selected-participants-container');  
-	    reservationArea.find('.selected-participants').remove(); 
-	    
-	    selectedMembers = [];
-	    localStorage.removeItem('selectedMembers');  
-	    $('#selectedMembers').val('');
-	}
+	}); 
 	
 	document.getElementById('closeModalBtn2').addEventListener('click', function() {
 		Swal.fire({
@@ -762,7 +877,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				document.getElementById('eventModal').style.display = 'none';
+			    document.getElementById('allDay').checked = false;
+                document.getElementById('allDay').dispatchEvent(new Event('change'));
 				resetForm(createEmployeeScheduleForm);
+				$('#organization-chart').jstree("uncheck_all");
+	 
+			    const reservationArea = $('.selected-participants-container');  
+			    reservationArea.find('.selected-participants').remove(); 
+			    
+			    selectedMembers = [];
+			    localStorage.removeItem('selectedMembers');  
+			    $('#selectedMembers').val('');
+				document.getElementById('eventRepeatModal').style.display = 'none';
 			}
 		});
 	});
@@ -808,8 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    timeGroup.style.display = isChecked ? 'none' : 'block';
 	    endTimeGroup.style.display = isChecked ? 'none' : 'block';
 	    endDateGroup.style.display = isChecked ? 'block' : 'none';
-	
-	    // 클래스 추가 및 제거
+	 
 	    if (timeGroup.style.display === 'block') {
 	        startTimeInput.classList.add('plus_detail_option');
 	    } else {
@@ -917,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    loadOrganizationChart();
 	}
 	 
-	document.getElementById('chart_close').addEventListener('click', function() { 
+	document.getElementById('chart_close').addEventListener('click', function() {  
 		$('#organizationChartModal').modal('hide');	 
 	});
 	
@@ -1256,7 +1381,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('eventViewCreatedDate').style.display = 'block';
 	    document.getElementById('event_repeat_title').style.display = 'block';  
 	    document.getElementById('editEventBtn').style.display = 'block';
-	    document.getElementById('deleteEventBtn').style.display = 'block';   
+	    document.getElementById('deleteEventBtn').style.display = 'block';  
+	    document.getElementById('eventViewHr').style.display = 'block';  
 	 	  
 	    if(allDay && startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
@@ -1287,6 +1413,39 @@ document.addEventListener('DOMContentLoaded', function() {
 		} 
 		
 		document.getElementById('event_modal_vacation').style.height = '300px'; 
+		
+		if (event.extendedProps.type === 'participateResult') {
+			document.getElementById('event_modal_vacation').style.height = '500px'; 
+			document.getElementById('par_join').style.display = 'block'; 
+			document.getElementById('par_create_name').style.display = 'block'; 
+			document.getElementById('par_create_name').style.display = 'block'; 
+		    const createName = document.getElementById('par_create_name');
+		    createName.textContent = `[등록자] ${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+		
+		    const joinName = document.getElementById('par_join_name');
+		 
+		    if (event.extendedProps.participant_name && Array.isArray(event.extendedProps.participant_name)) {
+			    joinName.innerHTML = event.extendedProps.participant_name
+			        .map(name => `${name}`).join('<br>');
+			} 
+		    
+		    document.getElementById('event_modal_vacation').style.height = '500px'; 
+		}
+		else if (event.extendedProps.type === 'departmentResult') {
+			document.getElementById('par_join').style.display = 'none'; 
+			document.getElementById('par_create_name').style.display = 'none'; 
+			document.getElementById('par_join_name').style.display = 'none'; 
+			document.getElementById('meeting_name').style.display = 'block'; 
+			const departmentName = document.getElementById('departmentName');
+			departmentName.textContent = event.extendedProps.departmentName;
+		}
+		else {
+			 document.getElementById('par_join').style.display = 'none'; 
+		     document.getElementById('par_create_name').style.display = 'none'; 
+			 document.getElementById('meeting_name').style.display = 'none'; 
+			 document.getElementById('departmentName').style.display = 'none';
+		}
+ 
 		
 		document.getElementById('isRecurring_view').value = 0;
 	 	hiddenEventId.value = eventId;
@@ -1326,7 +1485,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('event_repeat_title').style.display = 'block';  
 	    document.getElementById('editEventBtn').style.display = 'block';
 	    document.getElementById('deleteEventBtn').style.display = 'block'; 
-	    
+	    document.getElementById('eventViewHr').style.display = 'block'; 
+	     
 	    if(startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
 		} else if(endDate === null) {
@@ -1339,7 +1499,35 @@ document.addEventListener('DOMContentLoaded', function() {
 		} else {
 			dateRange.textContent = `${startDate} ~ ${endDate}`; 
 		}
-			
+		
+		if (event.extendedProps.type === 'participateResult') { 
+			document.getElementById('event_modal_vacation').style.height = '500px'
+		    const createName = document.getElementById('par_create_name');
+		    createName.textContent = `[등록자] ${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+		
+		    const joinName = document.getElementById('par_join_name');
+		 	 
+			if (event.extendedProps.excepetion_participant_name && Array.isArray(event.extendedProps.excepetion_participant_name)) {
+			    joinName.innerHTML = event.extendedProps.excepetion_participant_name
+			        .map(name => `${name}`).join('<br>');
+			}
+
+		} 
+		else if (event.extendedProps.type === 'departmentResult') {
+			document.getElementById('par_join').style.display = 'none'; 
+			document.getElementById('par_create_name').style.display = 'none'; 
+			document.getElementById('par_join_name').style.display = 'none'; 
+			document.getElementById('meeting_name').style.display = 'block'; 
+			const departmentName = document.getElementById('departmentName');
+			departmentName.textContent = event.extendedProps.departmentName;
+		}
+		else {
+			 document.getElementById('par_join').style.display = 'none'; 
+		     document.getElementById('par_create_name').style.display = 'none'; 
+			 document.getElementById('meeting_name').style.display = 'none'; 
+			 document.getElementById('departmentName').style.display = 'none';
+		}
+  
 	    hiddenEventId.value = event.extendedProps.exceptionNo; 
 	    comment.textContent = event.extendedProps.comment; 
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
@@ -1909,10 +2097,72 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('event_repeat_title').style.display = 'none';  
 	    document.getElementById('editEventBtn').style.display = 'none';
 	    document.getElementById('deleteEventBtn').style.display = 'none'; 
-		
+		document.getElementById('departmentName').style.display = 'none';
 		document.getElementById('event_modal_vacation').style.height = '150px'; 
 		
+		
+		document.getElementById('par_join').style.display = 'none'; 
+	    document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+			 
 	    modal.style.display = 'block';  
 	}
-     
+    
+	document.getElementById('closeScheduleModalBtn').addEventListener('click', function() {    
+		document.getElementById('eventViewModal').style.display = 'none';
+	});
+	
+	// 회의실 상세 모달
+	function showMeetingModalById(calendar, eventId) {
+	    const event = calendar.getEventById(eventId);   
+	    if (!event) {
+	        console.error("일정을 찾을 수 없습니다.");
+	        return;
+	    }
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle'); 
+	    const category = document.getElementById('eventViewCategory');
+	    const comment = document.getElementById('eventViewComment');   
+	    const dateRange = document.getElementById('eventViewDateRange');  
+	    title.textContent = event.title;
+	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
+	  	comment.textContent = event.extendedProps.meeting_reservation_purpose;
+	    
+		dateRange.textContent = `${event.extendedProps.meeting_date} ${event.extendedProps.meeting_start_time} ~ ${event.extendedProps.meeting_end_time}`;
+
+		document.getElementById('eventViewDateRange').style.display = 'block';
+		document.getElementById('eventViewComment').style.display = 'block';
+	    document.getElementById('eventViewHr').style.display = 'block';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'block';
+	    document.getElementById('eventViewCreatedDate').style.display = 'block';
+	    document.getElementById('event_repeat_title').style.display = 'block';  
+	    document.getElementById('editEventBtn').style.display = 'block';
+	    document.getElementById('deleteEventBtn').style.display = 'block';   
+	 	  
+	    document.getElementById('event_modal_vacation').style.height = '500px'; 
+		document.getElementById('par_join').style.display = 'block'; 
+		document.getElementById('par_create_name').style.display = 'block'; 
+		document.getElementById('par_create_name').style.display = 'block'; 
+		document.getElementById('meeting_name').style.display = 'block'; 
+	    const createName = document.getElementById('par_create_name');
+	    createName.textContent = `[예약자] ${event.extendedProps.member_name} ${event.extendedProps.positionName}`;
+	
+	    const joinName = document.getElementById('par_join_name');
+	 
+	    if (event.extendedProps.participant_name && Array.isArray(event.extendedProps.participant_name)) {
+		    joinName.innerHTML = event.extendedProps.participant_name
+		        .map(name => `${name}`).join('<br>');
+		} 
+		
+		const meetingName = document.getElementById('meeting_name');
+		meetingName.textContent = `[회의실] ${event.extendedProps.meeting_name}`;
+	    
+	    document.getElementById('eventViewHr').style.display = 'none';
+	    document.getElementById('editEventBtn').style.display = 'none';
+	    document.getElementById('deleteEventBtn').style.display = 'none';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'none';
+	    document.getElementById('eventViewCreatedDate').style.display = 'none';
+	    document.getElementById('event_modal_vacation').style.height = '500px'; 
+   		modal.style.display = 'block';  
+	}  
 });

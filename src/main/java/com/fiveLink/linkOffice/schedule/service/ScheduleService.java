@@ -1044,4 +1044,66 @@ public class ScheduleService {
             }
         }
     } 
+    
+    public List<ScheduleExceptionParticipantDto> getParticipantsByExceptionReservationNo(Long scheduleExceptionNo, Long memberNo) { 
+        List<ScheduleExceptionParticipant> participants = scheduleExceptionParticipantRepository.findExceptionParticipantsByScheduleNo(scheduleExceptionNo, memberNo);
+ 
+        return participants.stream().map(participant -> { 
+            String memberName = memberRepository.findById(participant.getMemberNo())
+                                               .map(Member::getMemberName)
+                                               .orElse("사원");
+            String positionName = "직위";
+            String departmentName = "부서";
+            
+            Long member_No = participant.getMemberNo();
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(member_No); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+             
+             
+            return ScheduleExceptionParticipantDto.builder()
+                    .schedule_exception_participant_no(participant.getScheduleExceptionParticipantNo())
+                    .schedule_exception_no(participant.getScheduleExceptionNo())
+                    .member_no(participant.getMemberNo())
+                    .schedule_exception_participant_status(participant.getScheduleExceptionParticipantStatus())
+                    .memberName(memberName)  
+                    .positionName(positionName)   
+                    .departmentName(departmentName)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+    
+    public List<ScheduleParticipantDto> getParticipantsByReservationNoOwn(Long scheduleNo, Long memberNo) { 
+        List<ScheduleParticipant> participants = scheduleParticipantRepository.findParticipantsByScheduleNo(scheduleNo, memberNo);
+ 
+        return participants.stream().map(participant -> { 
+            String memberName = memberRepository.findById(participant.getMemberNo())
+                                               .map(Member::getMemberName)
+                                               .orElse("사원");
+            String positionName = "직위";
+            String departmentName = "부서";
+            
+            Long member_No = participant.getMemberNo();
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(member_No); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+             
+             
+            return ScheduleParticipantDto.builder()
+                    .schedule_participant_no(participant.getScheduleParticipantNo())
+                    .schedule_no(participant.getScheduleNo())
+                    .member_no(participant.getMemberNo())
+                    .schedule_participant_status(participant.getScheduleParticipantStatus())
+                    .memberName(memberName)  
+                    .positionName(positionName)   
+                    .departmentName(departmentName)
+                    .build();
+        }).collect(Collectors.toList());
+    }
 }

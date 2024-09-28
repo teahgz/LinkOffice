@@ -15,7 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
+import com.fiveLink.linkOffice.meeting.service.MeetingReservationService;
+import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
@@ -41,16 +46,19 @@ public class ScheduleApiController {
 	private final ScheduleService scheduleService;
 	private final DepartmentService departmentService;  
 	private final VacationApprovalService vacationApprovalService; 
-	
+	private final MemberRepository memberRepository;
+	private final MeetingReservationService meetingReservationService;
 	
 	@Autowired
 	public ScheduleApiController(MemberService memberService, ScheduleCategoryService scheduleCategoryService,
-			ScheduleService scheduleService, DepartmentService departmentService, VacationApprovalService vacationApprovalService) {
+			ScheduleService scheduleService, DepartmentService departmentService, VacationApprovalService vacationApprovalService, MemberRepository memberRepository, MeetingReservationService meetingReservationService) {
 		this.memberService = memberService;
 		this.scheduleCategoryService = scheduleCategoryService;
 		this.scheduleService = scheduleService;
 		this.departmentService = departmentService;
 		this.vacationApprovalService = vacationApprovalService;
+		this.memberRepository = memberRepository;
+		this.meetingReservationService = meetingReservationService;
 	}
 
 	@GetMapping("/schedule/category/get/{categoryId}")
@@ -421,16 +429,37 @@ public class ScheduleApiController {
 	@ResponseBody
 	@GetMapping("/api/company/exception/schedules")
 	public List<ScheduleExceptionDto> getExceptionSchedules() {
-		List<ScheduleException> exceptionSchedules = scheduleService.getAllExceptionSchedules();
+	    List<ScheduleException> exceptionSchedules = scheduleService.getAllExceptionSchedules();
 
-		List<ScheduleExceptionDto> scheduleExceptionDtos = new ArrayList<>();
-		for (ScheduleException scheduleException : exceptionSchedules) {
-			ScheduleExceptionDto dto = ScheduleExceptionDto.toDto(scheduleException);
-			scheduleExceptionDtos.add(dto);
-		}
- 
-		return scheduleExceptionDtos;
+	    List<ScheduleExceptionDto> scheduleExceptionDtos = new ArrayList<>();
+	    for (ScheduleException scheduleException : exceptionSchedules) {
+	        ScheduleExceptionDto dto = ScheduleExceptionDto.toDto(scheduleException);
+	         
+	        String memberName = memberRepository.findById(scheduleException.getMemberNo())
+	                .map(Member::getMemberName)
+	                .orElse("사원");
+
+	        String positionName = "직위";
+	        String departmentName = "부서";
+	         
+	        List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(scheduleException.getMemberNo());
+	        
+	        if (!memberInfo.isEmpty()) {
+	            Object[] row = memberInfo.get(0);
+	            positionName = (String) row[1];
+	            departmentName = (String) row[2];
+	        }
+	         
+	        dto.setMember_name(memberName);
+	        dto.setDepartment_name(departmentName);
+	        dto.setPosition_name(positionName);
+
+	        scheduleExceptionDtos.add(dto);
+	    }
+
+	    return scheduleExceptionDtos;
 	}
+
 	
 	// 예외 상세
 	@ResponseBody
@@ -614,38 +643,66 @@ public class ScheduleApiController {
 		List<ScheduleDto> departmentResult = new ArrayList<>();
 		for (Schedule schedule : schedules) {
 			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			
+            String positionName = "직위";
+            String departmentName = "부서"; 
+			List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(schedule.getMemberNo()); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+              
+	        dto.setDepartment_name(departmentName);
+	        dto.setPosition_name(positionName);
 			departmentResult.add(dto);
 		} 
 		return departmentResult;
 	} 
 	
-	// 참여자 일정
+	// 참여자 일정 
 	@ResponseBody
 	@GetMapping("/api/participate/schedules")
 	public List<ScheduleDto> getparticipateSchedules() {
-		List<Schedule> schedules = scheduleService.getAllparticipateSchedules();
+	    List<Schedule> schedules = scheduleService.getAllparticipateSchedules();
+	    
+	    List<ScheduleDto> participateResult = new ArrayList<>(); 
+	    for (Schedule schedule : schedules) { 
+	        ScheduleDto dto = ScheduleDto.toDto(schedule);
+	         
+	        String memberName = memberRepository.findById(schedule.getMemberNo())
+	                .map(Member::getMemberName)
+	                .orElse("사원"); 
+	        
+            String positionName = "직위";
+            String departmentName = "부서"; 
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(schedule.getMemberNo()); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+            
+	        dto.setMember_name(memberName); 
+	        dto.setDepartment_name(departmentName);
+	        dto.setPosition_name(positionName);
+	        
+	        participateResult.add(dto);
+	    }  
+	    return participateResult;
+	}
 
-		List<ScheduleDto> participateResult = new ArrayList<>();
-		for (Schedule schedule : schedules) {
-			ScheduleDto dto = ScheduleDto.toDto(schedule);
-			participateResult.add(dto);
-		} 
-		return participateResult;
-	} 
 	
 	// 참여자 정보  
-	@GetMapping("/api/participate/member/schedules/{scheduleNo}")
+	@GetMapping("/api/participate/member/schedules/{scheduleNo}/{memberNo}")
 	@ResponseBody
-	public Map<String, Object> getparticipateMemberSchedules(@PathVariable("scheduleNo") Long scheduleNo) {
+	public Map<String, Object> getparticipateMemberSchedules(@PathVariable("scheduleNo") Long scheduleNo, @PathVariable("memberNo") Long memberNo) {
 	    Map<String, Object> response = new HashMap<>();
 	     
-	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByReservationNo(scheduleNo);
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByReservationNoOwn(scheduleNo, memberNo);
 	     
-	    response.put("participants", participants);
-	    
+	    response.put("participants", participants); 
 	    return response;
-	}
-	
+	} 
 	
 	// 부서 정보
     @ResponseBody
@@ -983,14 +1040,14 @@ public class ScheduleApiController {
 	}
 
 	// 예외 일정 참여자 정보  
-	@GetMapping("/api/participate/member/schedules/exception/{scheduleExceptionNo}")
+	@GetMapping("/api/participate/member/schedules/exception/{scheduleExceptionNo}/{memberNo}")
 	@ResponseBody
-	public Map<String, Object> getparticipateMemberExceptionSchedules(@PathVariable("scheduleExceptionNo") Long scheduleExceptionNo) {
+	public Map<String, Object> getparticipateMemberExceptionSchedules(@PathVariable("scheduleExceptionNo") Long scheduleExceptionNo, @PathVariable("memberNo") Long memberNo) {
 	    Map<String, Object> response = new HashMap<>();
 	     
-	    List<ScheduleExceptionParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleExceptionNo);
+	    List<ScheduleExceptionParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleExceptionNo, memberNo);
 	     
-	    response.put("participants", participants); 
+	    response.put("participants", participants);  
 	    return response;
 	}
 	 
@@ -1141,5 +1198,30 @@ public class ScheduleApiController {
         
         return response;
     }
-
+	
+	// 회의 정보
+	@GetMapping("/api/employee/meeting/schedules")
+	@ResponseBody
+	public Map<String, Object> getMeetingSchedules() {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    List<MeetingReservationDto> meetingSchedules = meetingReservationService.getMeetingSchedules();
+	    
+	    response.put("meetingSchedules", meetingSchedules);
+	    
+	    return response;
+	} 
+	
+	// 회의실 참여자
+	@GetMapping("/api/employee/meeting/schedules/{scheduleNo}/{memberNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMeeting(@PathVariable("scheduleNo") Long scheduleNo, @PathVariable("memberNo") Long memberNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<MeetingParticipantDto> participants = meetingReservationService.getParticipantsByMeetingNoOwn(scheduleNo, memberNo);
+	    
+	    System.out.println("participants" + participants);
+	    response.put("participants", participants); 
+	    return response;
+	} 
 }
