@@ -16,4 +16,11 @@
         WHERE nofication_status = 0 AND nofication_receive_no = #{memberNo}
         ORDER BY nofication_create_date DESC
     </select>
+
+    <update id="readNofication"  parameterType="java.util.Map">
+        UPDATE fl_nofication SET
+        nofication_status = 1
+        WHERE nofication_receive_no = #{memberNo}
+        AND nofication_no = #{notificationNo}
+    </update>
 </mapper>

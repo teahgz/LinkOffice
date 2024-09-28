@@ -1,6 +1,7 @@
 // 초기 세션 시간 (초) 설정
 let remainingTime = 1800;
 const headerCurrentMember = document.getElementById('headerCurrentMember').value; //현재 로그인한 사용자 정보
+const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
 // 페이지 로드 시 호출
 window.onload = function() {
@@ -83,48 +84,68 @@ function bellUnreadCount() {
        fetch(`/api/nofication/unread/${headerCurrentMember}`)
            .then(response => response.json())
            .then(data => {
-               const unreadBellCount = document.createElement('span');
-               unreadBellCount.id = 'unread-bell-count';
-               unreadBellCount.className = 'badge';
-               unreadBellCount.textContent = data.unreadCount;
+                const notificationBell = document.getElementById('notification-bell');
 
-               const notificationBell = document.getElementById('notification-bell');
-               notificationBell.appendChild(unreadBellCount);
+                const existingCount = document.getElementById('unread-bell-count');
+                if (existingCount) {
+                    notificationBell.removeChild(existingCount);
+                }
+
+                if (data.unreadCount > 0) {
+                    const unreadBellCount = document.createElement('span');
+                    unreadBellCount.id = 'unread-bell-count';
+                    unreadBellCount.className = 'badge';
+                    unreadBellCount.textContent = data.unreadCount;
+
+                    notificationBell.appendChild(unreadBellCount);
+                }
            });
 }
 
 
 //통합 알림 리스트
 function unreadNoficationList() {
+    const notificationModal = document.getElementById('notification-bell-modal');
+    const unreadCountElement = document.getElementById('unread-bell-count');
+
+    notificationModal.innerHTML = '';
     fetch(`/api/nofication/unread/list/${headerCurrentMember}`)
         .then(response => response.json())
         .then(data => {
             const notificationModal = document.getElementById('notification-bell-modal');
+            if (data.unreadList.length === 0) {
 
-            data.unreadList.forEach(notification => {
-                const listItem = document.createElement('li');
+                const noNotificationsItem = document.createElement('li');
+                noNotificationsItem.textContent = '알림이 존재하지 않습니다.';
+                noNotificationsItem.style.textAlign = 'center';
+                notificationModal.appendChild(noNotificationsItem);
+            } else {
+                data.unreadList.forEach(notification => {
+                    const listItem = document.createElement('li');
+                    listItem.setAttribute('data-notification-no', notification.nofication_no);
+                    listItem.setAttribute('data-notification-no', notification.nofication_no);
+                    const date = new Date(notification.nofication_create_date);
+                    const formattedDate = date.toLocaleDateString('ko-KR', {
+                        year: '2-digit',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                    const formattedTime = date.toLocaleTimeString('ko-KR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                    listItem.innerHTML = `
+                        <strong style="margin-bottom: 5px;">${notification.nofication_title}</strong>
+                        <p>${notification.nofication_content}</p>
+                        <em style="display: block; margin-bottom: 5px; float: right;">${formattedDate} ${formattedTime}</em>
+                        <hr style="border: none; margin: 10px 0;">
+                    `;
 
-                const date = new Date(notification.nofication_create_date);
-                const formattedDate = date.toLocaleDateString('ko-KR', {
-                    year: '2-digit',
-                    month: '2-digit',
-                    day: '2-digit'
+                    notificationModal.appendChild(listItem);
+
                 });
-                const formattedTime = date.toLocaleTimeString('ko-KR', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
-                listItem.innerHTML = `
-                    <strong style="margin-bottom: 5px;">${notification.nofication_title}</strong>
-                    <p>${notification.nofication_content}</p>
-                    <em style="display: block; margin-bottom: 5px; float: right;">${formattedDate} ${formattedTime}</em>
-                    <hr style="border: none; margin: 10px 0;">
-                `;
-
-                notificationModal.appendChild(listItem);
-
-            });
+            }
         })
         .catch(error => {
             console.error('알림을 가져오는 중 오류 발생:', error);
@@ -132,6 +153,39 @@ function unreadNoficationList() {
 }
 
 document.getElementById('mark-as-read').addEventListener('click', function() {
-    // 읽음 처리 로직 추가
-    console.log('읽음 처리 완료');
+    const memberNo = headerCurrentMember;
+    const notificationNos = [];
+
+    const notificationItems = document.querySelectorAll('#notification-bell-modal li');
+    notificationItems.forEach(item => {
+        const notificationNo = item.getAttribute('data-notification-no');
+        if (notificationNo) {
+            notificationNos.push(notificationNo);
+        }
+    });
+
+    fetch(`/api/notification/read`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN':csrfToken
+        },
+        body: JSON.stringify({
+            memberNo: memberNo,
+            notificationNos: notificationNos
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.read) {
+            console.log('읽음 처리 완료');
+            document.getElementById('notification-bell-modal').innerHTML = '';
+            document.getElementById('unread-bell-count').textContent = '0';
+        } else {
+            console.error('읽음 처리 실패');
+        }
+    })
+    .catch(error => {
+        console.error('읽음 처리 중 오류 발생:', error);
+    });
 });
