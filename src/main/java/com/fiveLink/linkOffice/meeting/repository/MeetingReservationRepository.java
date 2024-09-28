@@ -53,5 +53,7 @@ public interface MeetingReservationRepository extends JpaRepository<MeetingReser
  	       "CASE WHEN :sortBy = 'oldest' THEN mr.meetingReservationDate END ASC")
     Page<MeetingReservation> allReservations(@Param("meetingNo") Long meetingNo, @Param("searchText") String searchText, @Param("startDate") String startDate, 
  											@Param("endDate") String endDate, @Param("sortBy") String sortBy, Pageable pageable);
-
+    
+    @Query("SELECT mr FROM MeetingReservation mr WHERE mr.meetingReservationStatus = 0")
+    List<MeetingReservation> findMeetingReservationsByStatusZero();
 } 

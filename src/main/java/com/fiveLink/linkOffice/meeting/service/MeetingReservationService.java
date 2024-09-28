@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,14 +12,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fiveLink.linkOffice.meeting.domain.Meeting;
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipant;
 import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservation;
 import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.meeting.repository.MeetingParticipantRepository;
+import com.fiveLink.linkOffice.meeting.repository.MeetingRepository;
 import com.fiveLink.linkOffice.meeting.repository.MeetingReservationRepository;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipant;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipantDto;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 
 @Service
 public class MeetingReservationService {
@@ -29,16 +36,18 @@ public class MeetingReservationService {
     private final MeetingParticipantRepository meetingParticipantRepository;
     private final MemberRepository memberRepository;
     private final MeetingParticipantService meetingParticipantService;
+    private final MeetingRepository meetingRepository;
     
     @Autowired
     public MeetingReservationService(MeetingReservationRepository meetingReservationRepository, MeetingService meetingService, MemberService memberService, 
-    		                         MeetingParticipantRepository meetingParticipantRepository, MemberRepository memberRepository, MeetingParticipantService meetingParticipantService) {
+    		                         MeetingParticipantRepository meetingParticipantRepository, MemberRepository memberRepository, MeetingParticipantService meetingParticipantService, MeetingRepository meetingRepository) {
         this.meetingReservationRepository = meetingReservationRepository;
         this.meetingService = meetingService;
         this.memberService = memberService;
         this.meetingParticipantRepository = meetingParticipantRepository;
         this.memberRepository = memberRepository;
         this.meetingParticipantService = meetingParticipantService;
+        this.meetingRepository = meetingRepository; 
     }
 
     // 해당 날짜 예약 정보 
@@ -252,5 +261,81 @@ public class MeetingReservationService {
                     .build();
         });
     } 
+    
+    public List<MeetingReservationDto> getMeetingSchedules() {
+        List<MeetingReservation> meetingReservations = meetingReservationRepository.findMeetingReservationsByStatusZero();
 
+        return meetingReservations.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private MeetingReservationDto convertToDto(MeetingReservation meetingReservation) {
+        MeetingReservationDto dto = new MeetingReservationDto();
+         
+        dto.setMeeting_reservation_no(meetingReservation.getMeetingReservationNo());
+        dto.setMeeting_no(meetingReservation.getMeetingNo());
+        dto.setMember_no(meetingReservation.getMemberNo());
+        dto.setMeeting_reservation_date(meetingReservation.getMeetingReservationDate());
+        dto.setMeeting_reservation_start_time(meetingReservation.getMeetingReservationStartTime());
+        dto.setMeeting_reservation_end_time(meetingReservation.getMeetingReservationEndTime());
+        dto.setMeeting_reservation_purpose(meetingReservation.getMeetingReservationPurpose());
+        dto.setMeeting_reservation_create_date(meetingReservation.getMeetingReservationCreateDate());
+        dto.setMeeting_reservation_update_date(meetingReservation.getMeetingReservationUpdateDate());
+        dto.setMeeting_reservation_status(meetingReservation.getMeetingReservationStatus());
+ 
+        Long memberNo = meetingReservation.getMemberNo();
+        String memberName = memberRepository.findById(memberNo)
+            .map(Member::getMemberName)
+            .orElse("사원");  
+        dto.setMember_name(memberName);
+ 
+        List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+        if (!memberInfo.isEmpty()) {
+            Object[] memberPositionDepartment = memberInfo.get(0);
+            dto.setPosition_name((String) memberPositionDepartment[1]);
+            dto.setDepartment_name((String) memberPositionDepartment[2]);
+        } else {
+            dto.setPosition_name("직위");  
+            dto.setDepartment_name("부서");  
+        }
+        
+        Long meetingNo = meetingReservation.getMeetingNo();
+        String meetingName = meetingRepository.findById(meetingNo)
+                .map(Meeting::getMeetingName)
+                .orElse("회의실");  
+        dto.setMeeting_name(meetingName);
+
+        return dto;
+    } 
+    
+    public List<MeetingParticipantDto> getParticipantsByMeetingNoOwn(Long meetingReservationNo, Long memberNo) {
+        List<MeetingParticipant> participants = meetingParticipantRepository.findParticipantsByMeetingReservationNoExcludingMember(meetingReservationNo, memberNo);
+
+        return participants.stream().map(participant -> {
+            String memberName = memberRepository.findById(participant.getMemberNo())
+                                                .map(Member::getMemberName)
+                                                .orElse("사원");
+            String positionName = "직위";
+            String departmentName = "부서";
+
+            Long member_No = participant.getMemberNo();
+
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(member_No);
+
+            Object[] row = memberInfo.get(0);
+            positionName = (String) row[1];
+            departmentName = (String) row[2];
+
+            return MeetingParticipantDto.builder()
+                    .meeting_participant_no(participant.getMeetingParticipantNo())
+                    .meeting_reservation_no(participant.getMeetingReservationNo()) 
+                    .member_no(participant.getMemberNo())
+                    .meeting_participant_status(participant.getMeetingParticipantStatus())
+                    .memberName(memberName)
+                    .positionName(positionName)
+                    .departmentName(departmentName)
+                    .build();
+        }).collect(Collectors.toList());
+    } 
 }
