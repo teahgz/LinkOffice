@@ -13,8 +13,34 @@ document.addEventListener('DOMContentLoaded', function() {
     var memberNo = document.getElementById('memberNo').value; 
     var userDepartmentNo = document.getElementById('departmentNo').value; 
     var createEmployeeScheduleForm = document.getElementById("eventForm");
-    fetchDepartmentInfo();  
-     
+    fetchDepartmentInfo();   
+    
+    var allEvents = [];  
+        
+    var googleHolidayDates = [];  
+ 
+	calendar = new FullCalendar.Calendar(calendarEl, {  
+	    googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
+	    eventSources: [
+	        {
+	            googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+	            color: 'transparent',
+	            textColor: 'red',
+	            className: 'google-holiday',
+	            allDay: true,
+	            order: -1,
+	            success: function(googleEvents) { 
+	                googleHolidayDates = googleEvents.map(event => {
+	                    const holidayDate = new Date(event.start);
+	                    return holidayDate.toISOString().split('T')[0]; 
+	                }); 
+	                 
+	                fetchAllSchedules();
+	            }
+	        }
+	    ]   
+	});
+       
     function fetchDepartmentInfo() {
         $.ajax({
             url: '/api/schedule/department/list',
@@ -104,8 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             categories.forEach(function(category) {
                 categoryColors[category.schedule_category_no] = '#' + category.schedule_category_color;
                 categoryNames[category.schedule_category_no] = category.schedule_category_name;
-            });
-            fetchAllSchedules();
+            }); 
         }
     });
 	
@@ -151,35 +176,113 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	} 
 	
-    function fetchAllSchedules() {
-        var allEvents = [];  
+    function fetchAllSchedules() { 
+	    Promise.all([
+	        fetchSchedules('/api/personal/schedules/' + memberNo, 'personalResult'),
+	        fetchSchedules('/api/department/schedules', 'departmentResult'),
+	        fetchSchedules('/api/company/schedules', 'scheduleDtos'),
+	        fetchSchedules('/api/participate/schedules', 'participateResult'),
+	        fetchSchedules('/api/employee/vacation/schedules', 'vacationResult'),
+	        $.ajax({
+	            url: '/api/repeat/schedules',
+	            method: 'GET',
+	            headers: { 'X-CSRF-TOKEN': csrfToken }
+	        }),
+	        $.ajax({
+	            url: '/api/company/exception/schedules',
+	            method: 'GET',
+	            headers: { 'X-CSRF-TOKEN': csrfToken }
+	        })
+	    ]).then(function([personalSchedules, departmentSchedules, companySchedules, participateSchedules, vacationSchedules, repeats, exceptions]) {
+	        const allEvents = [];  
+	
+	        processSchedules(personalSchedules.personalResult, 'personalResult', repeats, exceptions, allEvents);
+	        processSchedules(departmentSchedules.departmentResult, 'departmentResult', repeats, exceptions, allEvents);
+	        processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents);
+	        processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents);
+	 
+	        processVacationSchedules(vacationSchedules.vacationResult, allEvents);  
+	         
+	        initializeCalendar(allEvents);  
+	        filterEvents();
+	    });
+	}
 
-        Promise.all([
-            fetchSchedules('/api/personal/schedules/' + memberNo, 'personalResult'),
-            fetchSchedules('/api/department/schedules', 'departmentResult'),
-            fetchSchedules('/api/company/schedules', 'scheduleDtos'),
-            fetchSchedules('/api/participate/schedules', 'participateResult'),
-            $.ajax({
-                url: '/api/repeat/schedules',
-                method: 'GET',
-                headers: { 'X-CSRF-TOKEN': csrfToken }
-            }),
-            $.ajax({
-                url: '/api/company/exception/schedules',
-                method: 'GET',
-                headers: { 'X-CSRF-TOKEN': csrfToken }
-            })
-        ]).then(function([personalSchedules, departmentSchedules, companySchedules, participateSchedules, repeats, exceptions]) {
-            processSchedules(personalSchedules.personalResult, 'personalResult', repeats, exceptions, allEvents);
-            processSchedules(departmentSchedules.departmentResult, 'departmentResult', repeats, exceptions, allEvents);
-            processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents);
-            processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents);
+    
+    function processVacationSchedules(vacationSchedules, allEvents) {
+	    vacationSchedules.vacationSchedules.forEach(function(vacation) {
+	        const event = createVacationEvent(vacation);
+	 
+	        const startDate = new Date(event.start);
+	        const endDate = new Date(event.end);
+	        let currentDate = new Date(startDate);
+	 
+	        let lastValidStart = null;
+	        let lastValidEnd = null;
+	
+	        while (currentDate <= endDate) {
+	            const dayOfWeek = currentDate.getUTCDay();  
+	            const currentDateString = currentDate.toISOString().split('T')[0];
+	 
+	            if (dayOfWeek === 0 || dayOfWeek === 6 || googleHolidayDates.includes(currentDateString)) {
+	               
+	                if (lastValidStart) {
+	                    allEvents.push({
+	                        ...event,
+	                        start: lastValidStart.toISOString().split('T')[0],
+	                        end: lastValidEnd.toISOString().split('T')[0]
+	                    }); 
+	                    lastValidStart = null;
+	                    lastValidEnd = null;
+	                }
+	            } else { 
+	                if (!lastValidStart) {
+	                    lastValidStart = new Date(currentDate);
+	                }
+	                lastValidEnd = new Date(currentDate);
+	                lastValidEnd.setDate(lastValidEnd.getDate() + 1);
+	            }
+	
+	            currentDate.setDate(currentDate.getDate() + 1); 
+	        }
+	 
+	        if (lastValidStart) {
+	            allEvents.push({
+	                ...event,
+	                start: lastValidStart.toISOString().split('T')[0],
+	                end: lastValidEnd.toISOString().split('T')[0]
+	            });
+	        }
+	    });
+	 
+	}
 
-            initializeCalendar(allEvents);  
-            filterEvents();
-        });
-    }
-
+	function createVacationEvent(vacation) {  
+	    var eventEnd = new Date(vacation.vacation_approval_end_date);
+	      
+	    var vacation_name = vacation.vacation_type_name === "반차" ? "반차" : "휴가";
+	    
+	    return {
+	        order: 1,
+	        id: 'vacation_' + vacation.vacation_approval_no,
+	        title: vacation.member_name + ' ' + vacation.position_name + ' ' + vacation_name,
+	        start: vacation.vacation_approval_start_date,
+	        end: eventEnd,
+	        allDay: true,
+	        backgroundColor: '#d9d9d9',
+	        borderColor: '#d9d9d9',
+	        textColor: '#000000',
+	        className: 'vacation-event',
+	        extendedProps: {
+	            type: 'vacationResult',
+	            categoryName: vacation.vacation_type_name,
+	            department_no: vacation.department_no,
+	            positionName: vacation.position_name,
+	            departmentName: vacation.department_name
+	        }
+	    };
+	}
+ 
     function fetchSchedules(url, type) {
         return $.ajax({
             url: url,
@@ -295,8 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	   if (!exceptionEvent.schedule_exception_start_time && !exceptionEvent.schedule_exception_end_time && endDate) {
 	       endDate.setDate(endDate.getDate() + 1);
 	   } 
-       
-       console.log(exceptionEvent);
+        
        var event = {
             order: 1,
             id: exceptionEvent.schedule_exception_no,
@@ -333,8 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
                 filterEvents();   
             });
-        }  
-        console.log(event);
+        }   
         return event;
     }
 
@@ -366,8 +467,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.getFullYear() + '-' + 
                String(date.getMonth() + 1).padStart(2, '0') + '-' + 
                String(date.getDate()).padStart(2, '0');
-    }
- 
+    } 
+ 	
     function initializeCalendar(events) {
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -391,6 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handleWindowResize: true,
             fixedWeekCount: false,
             eventClick: function(info) {
+				console.log(info.event);
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -412,13 +514,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	            	|| info.event.extendedProps.type === 'scheduleDtos' || info.event.extendedProps.type === 'departmentResult') {
 			        const eventId = info.event.id;
 			        showEventModalById(calendar, eventId);
-			    } else {
+			    } else if (info.event.extendedProps.type === 'vacationResult') {
+					showVacationModal(info.event);
+				} else {
 			        info.jsEvent.preventDefault();
 			    }  
             },
             eventDidMount: function(info) { 
 	            if (info.event.extendedProps.type === 'personalResult' || info.event.extendedProps.type === 'participateResult'
-	            	|| info.event.extendedProps.type === 'scheduleDtos' || info.event.extendedProps.type === 'departmentResult') {
+	            	|| info.event.extendedProps.type === 'scheduleDtos' || info.event.extendedProps.type === 'departmentResult' || info.event.extendedProps.type === 'vacationResult') {
 	                info.el.style.cursor = 'pointer';  
 	            } else {
 	                info.el.style.cursor = 'default'; 
@@ -433,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     className: 'google-holiday',
                     allDay: true,
                     order: -1
-                },
+                },  
                 {
                     events: events
                 }
@@ -476,44 +580,48 @@ document.addEventListener('DOMContentLoaded', function() {
  
     function filterEvents() {
 	    const companyChecked = document.getElementById('all_company_schedule').checked;
-	     
+	
 	    const selectedDepartments = $('.department-checkbox:checked').map(function() {
-	        return $(this).data('department-no').toString(); 
-	    }).get(); 
-	    
+	        return $(this).data('department-no').toString();
+	    }).get();
+	
 	    calendar.getEvents().forEach(function(event) {
 	        const eventDepartmentNo = event.extendedProps.department_no;
-	        const participantNos = event.extendedProps.participant_no || []; 
+	        const participantNos = event.extendedProps.participant_no || [];
 	        
-	        let shouldDisplay = false;  
-			 
+	        let shouldDisplay = false;
+	
 	        // 개인 일정
 	        if (event.extendedProps.type === 'personalResult' && (event.extendedProps.member_no.toString() === memberNo)) {
-	            shouldDisplay = true;  
-	        } 
+	            shouldDisplay = true;
+	        }
 	        // 참여자 일정
 	        else if (event.extendedProps.type === 'participateResult') {
-                if (event.extendedProps.participantsLoaded) {
-                    shouldDisplay = participantNos.includes(parseInt(memberNo));
-                } else { 
-                    shouldDisplay = true;
-                }
-            }  
-	        // 전사 일정
-	        else if (event.extendedProps.type === 'scheduleDtos') { 
-	            shouldDisplay = companyChecked; 
-	        } 
-	        // 부서 일정  
-	        else if (event.extendedProps.type === 'departmentResult') {
-	            if (eventDepartmentNo.toString() === userDepartmentNo) { 
-	                shouldDisplay = true;  
-	            }  
-	            else if (selectedDepartments.includes(eventDepartmentNo.toString())) { 
-	                shouldDisplay = true; 
+	            if (event.extendedProps.participantsLoaded) {
+	                shouldDisplay = participantNos.includes(parseInt(memberNo));
+	            } else {
+	                shouldDisplay = true;
 	            }
 	        }
-	
-	        // 일정 표시 설정
+	        // 전사 일정
+	        else if (event.extendedProps.type === 'scheduleDtos') {
+	            shouldDisplay = companyChecked;  
+	        }
+	        // 휴가 
+	        else if (event.extendedProps.type === 'vacationResult') {
+	            if (companyChecked || selectedDepartments.includes(eventDepartmentNo.toString())) {
+	                shouldDisplay = true;  
+	            }
+	        }
+	        // 부서 일정
+	        else if (event.extendedProps.type === 'departmentResult') {
+	            if (eventDepartmentNo.toString() === userDepartmentNo) {
+	                shouldDisplay = true;  
+	            } else if (selectedDepartments.includes(eventDepartmentNo.toString())) {
+	                shouldDisplay = true;  
+	            }
+	        }
+	 
 	        event.setProp('display', shouldDisplay ? 'auto' : 'none');
 	    });
 	}
@@ -819,7 +927,6 @@ document.addEventListener('DOMContentLoaded', function() {
             url: '/schedule/chart',
             method: 'GET',
             success: function(data) {
-                console.log('조직도 데이터:', data);
                 $('#organization-chart').jstree({ 
                     'core': {
                         'data': data,
@@ -1065,7 +1172,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	    };
 	  
 		if(type_form === "저장") {     
-			console.log(eventData);
 		    $.ajax({
 		        type: "POST",
 		        url: '/employee/schedule/save/' + memberNo,   
@@ -1124,7 +1230,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	        console.error("일정을 찾을 수 없습니다.");
 	        return;
 	    }
-	 	console.log(event);
 	    const modal = document.getElementById('eventViewModal');
 	    const title = document.getElementById('eventViewTitle');
 	    const dateRange = document.getElementById('eventViewDateRange');
@@ -1144,6 +1249,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const endTime = event.extendedProps.endTime;
 	 	const allDay = event.allDay; 
 	 	
+		document.getElementById('eventViewDateRange').style.display = 'block';
+		document.getElementById('eventViewComment').style.display = 'block';
+	    document.getElementById('eventViewHr').style.display = 'block';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'block';
+	    document.getElementById('eventViewCreatedDate').style.display = 'block';
+	    document.getElementById('event_repeat_title').style.display = 'block';  
+	    document.getElementById('editEventBtn').style.display = 'block';
+	    document.getElementById('deleteEventBtn').style.display = 'block';   
+	 	  
 	    if(allDay && startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
 		} else if(!allDay) {  
@@ -1171,7 +1285,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		    document.getElementById('editEventBtn').style.display = 'block';
 		    document.getElementById('deleteEventBtn').style.display = 'block'; 
 		} 
-
+		
+		document.getElementById('event_modal_vacation').style.height = '300px'; 
+		
 		document.getElementById('isRecurring_view').value = 0;
 	 	hiddenEventId.value = eventId;
 	    comment.textContent = event.extendedProps.comment; 
@@ -1202,6 +1318,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const endTime = event.extendedProps.endTime;
 	    document.getElementById('isRecurring_view').value = 2; 
 	    
+		document.getElementById('eventViewDateRange').style.display = 'block';
+		document.getElementById('eventViewComment').style.display = 'block';
+	    document.getElementById('eventViewHr').style.display = 'block';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'block';
+	    document.getElementById('eventViewCreatedDate').style.display = 'block';
+	    document.getElementById('event_repeat_title').style.display = 'block';  
+	    document.getElementById('editEventBtn').style.display = 'block';
+	    document.getElementById('deleteEventBtn').style.display = 'block'; 
+	    
 	    if(startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
 		} else if(endDate === null) {
@@ -1219,7 +1344,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    comment.textContent = event.extendedProps.comment; 
 	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
 	    repeatInfo.textContent = '';
-	
+		
+		document.getElementById('event_modal_vacation').style.height = '300px'; 
 	    modal.style.display = 'block';  
 	}
 	
@@ -1287,9 +1413,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        url: '/schedule/edit/' + eventNo,
 	        type: 'GET',
 	        dataType: 'json',
-	        success: function(data) {
-				console.log("scheduleDto : ", data.schedule);  
-        		console.log("scheduleRepeat : ", data.scheduleRepeat);  
+	        success: function(data) { 
  				 
 	            $('#eventId').val(data.schedule.schedule_no);  
 	            $('#isRecurring').val(data.schedule.schedule_repeat);  
@@ -1328,9 +1452,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		            $('#department_schedule').prop('disabled', true); 
 		            findParticipants(eventNo);            
 	            }       
-	        },
-	        error: function(xhr, status, error) {
-	            console.log("일정 정보를 불러오는 중 오류 발생: " + error);
 	        }
 	    });
 	} 
@@ -1353,9 +1474,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        url: '/schedule/exception/edit/' + eventId,
 	        type: 'GET',
 	        dataType: 'json',
-	        success: function(data) {
-				console.log("exception scheduleDto : ", data.schedule);  
-        		console.log("exception scheduleRepeat : ", data.scheduleRepeat);
+	        success: function(data) {;
         		 
 	            $('#eventId').val(eventId);    
 	            $('#category').val(data.schedule.schedule_category_no);
@@ -1432,8 +1551,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 반복 일정 수정  
 	function handleRecurringEventUpdate(eventId, repeatEditOption, schedule_edit_type) {
 	    const eventData = getEventFormData();   
-	    
-	    console.log("eventData : ", eventData); 
 	    
 	    $.ajax({
 	        type: "POST",
@@ -1575,9 +1692,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			            }
 			        });
 			    } 
-	        },
-	        error: function(xhr, status, error) {
-	            console.log(error);
 	        }
 	    });  
 	}
@@ -1599,7 +1713,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            $('#selectedMembers').val(participantMembers.join(',')); 
 	    		 
 	            setSelectedParticipants(data.participants);  
-	            console.log("a :c " + data.participants);
+
 	            var jstree = $('#organization-chart').jstree(true);
 			    if (jstree) {
 			        participants.forEach(function(memberNo) {
@@ -1609,9 +1723,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			            }
 			        });
 			    } 
-	        },
-	        error: function(xhr, status, error) {
-	            console.log(error);
 	        }
 	    });  
 	}
@@ -1637,11 +1748,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const eventId = document.getElementById('eventId').value;  
 	    const isOneBoolean = !!isOne;  
 	    
-	    console.log("isException : " + isException);
-	    console.log("isOne : " + isOne);
-	    console.log("isOneBoolean : " + isOneBoolean);
-	    
- 		
  		// 반복 예외
 	    if (isException === "0" && !isOneBoolean) { 
 	        exceptionDelete(eventId);
@@ -1784,5 +1890,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     } 
+
+	// 휴가 모달
+	function showVacationModal(event) {
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle'); 
+	    const category = document.getElementById('eventViewCategory'); 
+	    
+	    const categoryname = event.extendedProps.categoryName === "반차" ? "반차" : "휴가";
+	    title.textContent = event.extendedProps.departmentName + ' '+ event.title;
+	    category.textContent = `[` + categoryname + `]`; 
+	    
+		document.getElementById('eventViewDateRange').style.display = 'none';
+		document.getElementById('eventViewComment').style.display = 'none';
+	    document.getElementById('eventViewHr').style.display = 'none';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'none';
+	    document.getElementById('eventViewCreatedDate').style.display = 'none';
+	    document.getElementById('event_repeat_title').style.display = 'none';  
+	    document.getElementById('editEventBtn').style.display = 'none';
+	    document.getElementById('deleteEventBtn').style.display = 'none'; 
+		
+		document.getElementById('event_modal_vacation').style.height = '150px'; 
+		
+	    modal.style.display = 'block';  
+	}
      
 });
