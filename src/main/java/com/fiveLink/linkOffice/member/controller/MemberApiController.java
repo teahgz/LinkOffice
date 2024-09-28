@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberFileService;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.util.AESUtil;
 
 @Controller
 public class MemberApiController {
@@ -173,21 +174,25 @@ public class MemberApiController {
 			dto.setMember_name(name);
 			
 			dto.setMember_pw("1111");
-			
+
 			List<MemberDto> memberDtoList = memberService.getAllMembers();
-			String national = nationalNumberFront + "-" + nationalNumberBack;
 			
+			String national = nationalNumberFront + "-" + nationalNumberBack;
+			String encryptedNational = AESUtil.encrypt(national);
+			
+			String decryptedNational = null;
 			for (MemberDto memberDto : memberDtoList) {
-			    String memberNational = memberDto.getMember_national();
-			    if (national.equals(memberNational)) {
-			    	response.put("res_code", "409");
-			    	response.put("res_msg", "중복 주민번호를 가진 사원이 있습니다");
-			    	return response;
-			    	
-			    }else {
-			    	dto.setMember_national(national);
+			    decryptedNational = AESUtil.decrypt(memberDto.getMember_national());
+
+			    if (decryptedNational.equals(national)) {
+			        response.put("res_code", "400");
+			        response.put("res_msg", "일치하는 주민번호가 있습니다.");
+			        return response;
 			    }
 			}
+
+			dto.setMember_national(encryptedNational);
+			
 			
 			dto.setMember_hire_date(hireDate);
 			String mobile = mobile1 + "-" + mobile2 + "-" + mobile3;
@@ -220,7 +225,7 @@ public class MemberApiController {
 			 @RequestParam("national_number_front") String national1,
 			 @RequestParam("national_number_mid") String national2,
 			 @RequestParam("national_number_back") String national3,
-			 @RequestParam("new_password") String newPw){
+			 @RequestParam("new_password") String newPw) throws Exception{
 		 Map<String, String> response = new HashMap<>();
 		    response.put("res_code", "404");
 		    response.put("res_msg", "비밀번호 변경 중 오류가 발생하였습니다.");
@@ -232,16 +237,20 @@ public class MemberApiController {
 		    String userNational = national1 +"-" + national2 + national3;
 		    
 		    boolean memberExists = false; 
-
+		    
+		    String decryptedNational = null;
+		    
 		    for (MemberDto memberDto : memberDtoList) {
+		    	
 		        String memberNumber = memberDto.getMember_number();
 		        String memberNational = memberDto.getMember_national();
+		        decryptedNational = AESUtil.decrypt(memberNational);
 
 		        if (memberNumber.equals(userId)) {
 		            memberExists = true; 
 		            dto.setMember_number(userId);
 
-		            if (!memberNational.equals(userNational)) {
+		            if (!decryptedNational.equals(userNational)) {
 		                response.put("res_code", "409");
 		                response.put("res_msg", "등록된 주민번호와 일치하지 않습니다!");
 		                return response; 

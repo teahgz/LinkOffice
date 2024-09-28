@@ -231,6 +231,12 @@ function connectWebSocket() {
                       message.data.forEach(function(item) {
                           showNotification(title, content, item.memberNo,  message.timestamp);
                       });
+            } else if(message.type === 'vacationApprovalReviewsAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo,  message.timestamp);
+                      });
             } else if(message.type === 'vacationAppApproveAlarm'){
                       const title = message.title;
                       const content = message.content;
@@ -244,6 +250,12 @@ function connectWebSocket() {
                           showNotification(title, content, item.memberNo, message.timestamp);
                       });
             } else if(message.type === 'approvalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo,  message.timestamp);
+                      });
+            } else if(message.type === 'approvalReviewsAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
