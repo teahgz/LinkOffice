@@ -3,16 +3,15 @@ package com.fiveLink.linkOffice.nofication.controller;
 import com.fiveLink.linkOffice.nofication.domain.NoficationDto;
 import com.fiveLink.linkOffice.nofication.service.NoficationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class NoficationController {
@@ -27,7 +26,6 @@ public class NoficationController {
     @GetMapping("/api/nofication/unread/{headerCurrentMember}")
     @ResponseBody
     public Map<String, Object> bellUnreadCount(@PathVariable("headerCurrentMember") Long headerCurrentMember) {
-        System.out.println("memberNo :"+ headerCurrentMember);
         int unreadCount =  noficationService.bellCount(headerCurrentMember);
 
         Map<String, Object> response = new HashMap<>();
@@ -41,14 +39,43 @@ public class NoficationController {
     @GetMapping("/api/nofication/unread/list/{headerCurrentMember}")
     @ResponseBody
     public Map<String, Object> selectUnreadList(@PathVariable("headerCurrentMember") Long headerCurrentMember) {
-        System.out.println("memberNo :"+ headerCurrentMember);
         List<NoficationDto> unreadList =  noficationService.selectUnreadList(headerCurrentMember);
 
         Map<String, Object> response = new HashMap<>();
-        System.out.println("list: "+unreadList);
         response.put("unreadList", unreadList);
 
         return response;
 
+    }
+
+    //읽음 처리
+    @PostMapping("/api/notification/read")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> readNotification(@RequestBody Map<String, Object> requestBody) {
+        Long memberNo = Long.parseLong(requestBody.get("memberNo").toString());
+        List<Long> notificationNos = ((List<?>) requestBody.get("notificationNos")).stream()
+                .map(member -> Long.parseLong(member.toString()))
+                .toList();
+
+        boolean read = noficationService.readNotification(memberNo, notificationNos);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("read", read);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //타입별 읽음 처리
+    @GetMapping("/api/nofication/type/read/{currentMember}/{functionType}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> readTypeNotification(@PathVariable("currentMember") Long currentMember, @PathVariable("functionType") int functionType) {
+
+
+        boolean read = noficationService.readTypeNotification(currentMember, functionType);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("read", read);
+
+        return ResponseEntity.ok(response);
     }
 }

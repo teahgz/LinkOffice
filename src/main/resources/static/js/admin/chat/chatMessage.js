@@ -1,15 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // 페이지 로드 시 첫 번째 채팅방 자동 클릭
-//    const firstChatRoom = document.querySelector('.chatItem');
-//    if (firstChatRoom) {
-//         const chatRoomNo = firstChatRoom.querySelector('input[id="chatRoomNo"]').value;
-//        if (chatRoomNo) {
-//            handleChatRoomClick(chatRoomNo);
-//        }
-//    }
 
-  const messageInput = document.getElementById('messageInput');
-  const sendButton = document.getElementById('sendButton');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
+
 if (sendButton && messageInput) {
     function toggleSendButton() {
         sendButton.disabled = messageInput.value.trim() === '';
@@ -87,6 +80,15 @@ if (sendButton && messageInput) {
           confirmEditButton.disabled = true;
           confirmEditButton.classList.add('update-button');
       });
+
+    //필수로 넣기
+    window.functionType = 1;
+    console.log("현재 기능 타입: " +window.functionType);
+
+    if (window.functionType === 1) {
+        markNotificationsAsRead(window.functionType);
+    }
+
 });
 
 (function() {

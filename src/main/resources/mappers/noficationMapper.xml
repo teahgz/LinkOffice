@@ -8,7 +8,13 @@
         SELECT count(*) FROM fl_nofication
         WHERE nofication_status = 0 AND nofication_receive_no = #{memberNo}
     </select>
-
+    <!-- pk  -->
+    <select id="insertAlarmPk" resultType="Long">
+        SELECT nofication_no
+        FROM fl_nofication
+        ORDER BY nofication_no DESC
+        LIMIT 1
+    </select>
     <!-- 현재 사용자의 안읽음 알림 목록-->
     <select id="selectUnreadList" parameterType="Long" resultType="com.fiveLink.linkOffice.nofication.domain.NoficationDto">
         SELECT *
@@ -16,4 +22,19 @@
         WHERE nofication_status = 0 AND nofication_receive_no = #{memberNo}
         ORDER BY nofication_create_date DESC
     </select>
+
+    <update id="readNofication"  parameterType="java.util.Map">
+        UPDATE fl_nofication SET
+        nofication_status = 1
+        WHERE nofication_receive_no = #{memberNo}
+        AND nofication_no = #{notificationNo}
+    </update>
+
+    <!--타입 별 읽음-->
+    <update id="readTypeNotification"  parameterType="java.util.Map">
+        UPDATE fl_nofication SET
+        nofication_status = 1
+        WHERE nofication_receive_no = #{memberNo}
+        AND nofication_type = #{functionType}
+    </update>
 </mapper>

@@ -1,6 +1,8 @@
 let currentMember = parseInt(document.getElementById("currentMember").value, 10);
 //알림 출력을 위한 멤버값
 
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
     const dropdowns = document.querySelectorAll(".dropdown");
@@ -123,7 +125,7 @@ function closeDropdowns() {
 const modal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
-function showNotification(title, content, memberNo) {
+function showNotification(title, content, memberNo, time) {
 
     if(memberNo === currentMember){
         const notificationContainer = document.getElementById("notificationContainer");
@@ -136,12 +138,22 @@ function showNotification(title, content, memberNo) {
                 <strong>${title}</strong>
                 <p>${content}</p>
                 <input type="hidden" name="memberNo" value="${memberNo}">
+                <span class="notification-time">${time}</span>
                 <span class="close-notification-modal">&times;</span>
             </div>
         `;
 
         notificationContainer.appendChild(notificationModal);
-
+        let unreadCountElement = document.getElementById('unread-bell-count');
+        if (!unreadCountElement) {
+            unreadCountElement = document.createElement('span');
+            unreadCountElement.id = 'unread-bell-count';
+            unreadCountElement.className = 'badge';
+            document.getElementById('notification-bell').appendChild(unreadCountElement);
+        }
+        // 현재 카운트 가져오기 및 증가
+        const currentCount = parseInt(unreadCountElement.textContent) || 0;
+        unreadCountElement.textContent = currentCount + 1;
         setTimeout(() => {
             notificationModal.classList.add("show");
         }, 10);
@@ -193,70 +205,257 @@ function connectWebSocket() {
 
         alarmSocket.onmessage = function(event) {
             const message = JSON.parse(event.data);
+            const currentType = message.nofication_type;
+            const notificationModal = document.getElementById('notification-bell-modal');
+
             if (message.type === 'chatAlarm') {
                 const title = message.title;
                 const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });
+                if (currentType === window.functionType) {
+                    markNotificationsAsRead(window.functionType);
+                } else {
+                    if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
+                           <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                        `;
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        showNotification(title, content, item.memberNo, message.timestamp);
+                        const listItem = document.createElement('li');
+
+                        listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                        listItem.innerHTML = `
+                            <strong style="margin-bottom: 5px;">${title}</strong>
+                            <p>${content}</p>
+                            <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                            <hr style="border: none; margin: 10px 0;">
+                        `;
+
+                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    });
+                }
             } else if(message.type === 'documentAlarm'){
                 const title = message.title;
                 const content = message.content;
-                message.data.forEach(function(item) {
-                  if (Number(item.memberNo) === currentMember) {
-                        showNotification(title, content, item.memberNo);
-                  }
-                });
-			} else if(message.type === 'vacationApprovalAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'vacationApprovalReviewsAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			}else if(message.type === 'vacationAppApproveAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'vacationAppRejectAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'approvalAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'approvalReviewsAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'appApproveAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'appRejectAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			}  
+                //실시간 추가를 위한
+                if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
+                           <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                        `;
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        if (Number(item.memberNo) === currentMember) {
+                             showNotification(title, content, item.memberNo,  message.timestamp);
+                            const listItem = document.createElement('li');
 
+                            listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                            listItem.innerHTML = `
+                                <strong style="margin-bottom: 5px;">${title}</strong>
+                                <p>${content}</p>
+                                <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                                <hr style="border: none; margin: 10px 0;">
+                            `;
+
+                            notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                        }
+
+                    });
+
+            } else if(message.type === 'vacationApprovalAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                    notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                    `;
+                    addMarkAsReadListener();
+                }
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo, message.timestamp);
+                    const listItem = document.createElement('li');
+
+                    listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                    listItem.innerHTML = `
+                    <strong style="margin-bottom: 5px;">${title}</strong>
+                    <p>${content}</p>
+                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                    <hr style="border: none; margin: 10px 0;">
+                    `;
+
+                    notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                });
+            } else if(message.type === 'vacationApprovalReviewsAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
+                           <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                        `;
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        if (Number(item.memberNo) === currentMember) {
+                             showNotification(title, content, item.memberNo,  message.timestamp);
+                            const listItem = document.createElement('li');
+
+                            listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                            listItem.innerHTML = `
+                                <strong style="margin-bottom: 5px;">${title}</strong>
+                                <p>${content}</p>
+                                <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                                <hr style="border: none; margin: 10px 0;">
+                            `;
+
+                            notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                        }
+
+                    });
+
+            } else if(message.type === 'vacationAppApproveAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                    notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                    `;
+                    addMarkAsReadListener();
+                }
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo, message.timestamp);
+                    const listItem = document.createElement('li');
+
+                    listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                    listItem.innerHTML = `
+                    <strong style="margin-bottom: 5px;">${title}</strong>
+                    <p>${content}</p>
+                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                    <hr style="border: none; margin: 10px 0;">
+                    `;
+
+                    notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                });
+            } else if(message.type === 'vacationAppRejectAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                    notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                    `;
+                    addMarkAsReadListener();
+                }
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo, message.timestamp);
+                    const listItem = document.createElement('li');
+
+                    listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                    listItem.innerHTML = `
+                    <strong style="margin-bottom: 5px;">${title}</strong>
+                    <p>${content}</p>
+                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                    <hr style="border: none; margin: 10px 0;">
+                    `;
+
+                    notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                });
+            } else if(message.type === 'approvalAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                    notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                    `;
+                    addMarkAsReadListener();
+                }
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo, message.timestamp);
+                    const listItem = document.createElement('li');
+
+                    listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                    listItem.innerHTML = `
+                    <strong style="margin-bottom: 5px;">${title}</strong>
+                    <p>${content}</p>
+                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                    <hr style="border: none; margin: 10px 0;">
+                    `;
+
+                    notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                });
+            } else if(message.type === 'approvalReviewsAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
+                           <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                        `;
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        if (Number(item.memberNo) === currentMember) {
+                             showNotification(title, content, item.memberNo,  message.timestamp);
+                            const listItem = document.createElement('li');
+
+                            listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                            listItem.innerHTML = `
+                                <strong style="margin-bottom: 5px;">${title}</strong>
+                                <p>${content}</p>
+                                <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                                <hr style="border: none; margin: 10px 0;">
+                            `;
+
+                            notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                        }
+
+                    });
+
+            } else if(message.type === 'appApproveAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                    notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                    `;
+                    addMarkAsReadListener();
+                }
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo, message.timestamp);
+                    const listItem = document.createElement('li');
+
+                    listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                    listItem.innerHTML = `
+                    <strong style="margin-bottom: 5px;">${title}</strong>
+                    <p>${content}</p>
+                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                    <hr style="border: none; margin: 10px 0;">
+                    `;
+
+                    notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                });
+            } else if(message.type === 'appRejectAlarm'){
+                const title = message.title;
+                const content = message.content;
+                if (notificationModal.children.length <= 1) {
+                    notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                    `;
+                    addMarkAsReadListener();
+                }
+                message.data.forEach(function(item) {
+                    showNotification(title, content, item.memberNo, message.timestamp);
+                    const listItem = document.createElement('li');
+
+                    listItem.setAttribute('data-notification-no', item.nofication_pk + 1);
+                    listItem.innerHTML = `
+                    <strong style="margin-bottom: 5px;">${title}</strong>
+                    <p>${content}</p>
+                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+                    <hr style="border: none; margin: 10px 0;">
+                    `;
+
+                    notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                });
+            }
         };
 
 
@@ -264,5 +463,23 @@ function connectWebSocket() {
 }
 if (!alarmSocket) {
     connectWebSocket();
+
+}
+
+// 안읽음을 읽음으로 처리하는 함수(공동 사용)
+function markNotificationsAsRead(functionType) {
+    fetch(`/api/nofication/type/read/${currentMember}/${functionType}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.read) {
+                console.log('읽음 처리 완료');
+                bellUnreadCount();
+            } else {
+                console.error('읽음 처리 실패');
+            }
+        })
+        .catch(error => {
+            console.error('읽음 처리 중 오류 발생:', error);
+        });
 }
 //------ 수정불가 ------
