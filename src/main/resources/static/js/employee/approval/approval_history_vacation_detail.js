@@ -367,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	alarmSocket.send(JSON.stringify({
 		type: 'notificationVacationAppReject',
+		vacationapprovalNo : vacationapprovalNo,
 		vaAppprovalMemberNo :vaAppprovalMemberNo,
 		memberNo : memberNo
 	}));						

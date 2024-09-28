@@ -164,6 +164,7 @@ public class ApprovalService {
 	}
 	
 	// 결재 상세 조회
+	@Transactional
 	public ApprovalDto selectApprovalOne(Long approvalNo) {
 	    Approval origin = approvalRepository.findByApprovalNo(approvalNo);
 	    

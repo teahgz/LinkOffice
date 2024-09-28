@@ -475,17 +475,16 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    notificationData.references = references;
 			}
 			
-			if (reviewers !== null) {
-			    notificationData.reviewers = reviewers;
-			}
-			
-			
 			alarmSocket.send(JSON.stringify({
 			   type: 'notificationApproval',
 			   notificationData : notificationData,
 			   memberNo : memberNo
 			}));
-			console.log('알림:', notificationData.reviewers);
 			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationApprovalReviewers',
+			   reviewers : reviewers,
+			   memberNo : memberNo
+			}));
 		});
 	});
