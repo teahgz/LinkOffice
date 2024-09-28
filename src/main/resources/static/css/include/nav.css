@@ -87,27 +87,40 @@ nav {
 }
 
 .dropdown li a:hover {
-    background-color: #ddd;
+    color: #007BFF;
+}
+.dropdown a.active {
+    color:  #007BFF;
+}
+.active-link {
+    color: #ff5722;
+}
+.dropdown-toggle.active-toggle {
+    color: yourActiveColor;
+    font-weight: bold;
 }
 
+
+.active-link {
+    color: #007bff;
+
+}
 #nav_wrap > ul > li.active {
     border-bottom: none;
 }
-
-.dropdown .dropdown li {
-    border-bottom: none;
+.dropdown-toggle {
+    padding: 10px;
+    display: block;
 }
 
-.dropdown .dropdown li a {
-    margin-left: 25%;
-    padding: 13px;
+.dropdown-toggle:hover,
+.dropdown > ul > li:hover > .dropdown-toggle {
+   color: #007BFF;
 }
 
-.dropdown .dropdown li:hover > a {
-    background-color: #ddd;
-
+.dropdown > ul > li:hover > ul {
+    display: block;
 }
-
 #notificationContainer {
     position: fixed;
     z-index: 1000;

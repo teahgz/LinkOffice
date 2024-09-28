@@ -5,8 +5,8 @@
     <header>
          <div id="header_wrap">
             <div class="header_logo">
-                <a th:href="@{/}">
-                    <img th:src="@{/img/linkoffice_logo.png}" alt="LinkOffice Logo" class="header_logo_img"/>
+                <a th:href="@{/}"> 
+                    <div class="header_logo_text">LINK OFFICE</div>
                 </a>
             </div>
              <div class="user_session_container">
@@ -24,9 +24,17 @@
                         <li><a href="#">서명 등록</a></li>
                     </ul>
                 </div>
-                <div class="bell">
+                <div class="bell" id="notification-bell">
                     <i class="fa-regular fa-bell" style ="marin-right: 20px; font-size: 20px; color:#0000007a;"></i>
+<!--                     통합 알림 모달-->
+                        <ul id="notification-bell-modal" class="notification-bell-modal">
+                            <li>Notification 1</li>
+                            <li>Notification 2</li>
+                            <li>Notification 3</li>
+                        </ul>
+
                 </div>
+
 
                 <form method="post" th:action="@{/logout}" class="logout_form">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -38,6 +46,7 @@
 
         </div>
     </header>
+
     <script th:src="@{/js/include/header.js}"></script>
 </th:block>
 </html>

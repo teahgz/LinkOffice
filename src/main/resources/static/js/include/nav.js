@@ -4,6 +4,7 @@ let currentMember = parseInt(document.getElementById("currentMember").value, 10)
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
     const dropdowns = document.querySelectorAll(".dropdown");
+    const links = document.querySelectorAll(".dropdown a"); // Select all links in dropdowns
     let currentDropdown = null;
 
     function saveDropdownState(dropdownId) {
@@ -23,12 +24,19 @@ document.addEventListener("DOMContentLoaded", function () {
     function openDropdown(dropdown) {
         closeAllDropdowns();
         dropdown.style.display = "block";
+        dropdown.closest('li').classList.add('active');
         currentDropdown = dropdown;
+        const toggle = dropdown.previousElementSibling;
+        toggle.classList.add('active-toggle');
     }
 
     function closeAllDropdowns() {
         dropdowns.forEach(function (dropdown) {
             dropdown.style.display = "none";
+        });
+        dropdownToggles.forEach(function (toggle) {
+            toggle.closest('li').classList.remove('active');
+            toggle.classList.remove('active-toggle');
         });
         currentDropdown = null;
     }
@@ -44,7 +52,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
-                saveDropdownState(dropdownId); 
+
+                saveDropdownState(dropdownId);
+            }
+        });
+    });
+
+    const nestedDropdownToggles = document.querySelectorAll(".dropdown > .dropdown-toggle");
+    nestedDropdownToggles.forEach(function (toggle) {
+        toggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const dropdownId = this.nextElementSibling.getAttribute("data-dropdown-id");
+            const nestedDropdown = document.querySelector(`.dropdown[data-dropdown-id="${dropdownId}"]`);
+
+            if (nestedDropdown.style.display === "block") {
+                nestedDropdown.style.display = "none";
+            } else {
+                nestedDropdown.style.display = "block";
             }
         });
     });
@@ -57,8 +83,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     loadDropdownState();
-});
 
+    links.forEach(function (link) {
+        link.addEventListener("click", function () {
+
+            links.forEach(l => l.classList.remove('active-link'));
+            this.classList.add('active-link');
+
+            localStorage.setItem("activeLink", this.getAttribute("href"));
+        });
+    });
+
+    const activeLinkHref = localStorage.getItem("activeLink");
+    if (activeLinkHref) {
+        const activeLink = document.querySelector(`.dropdown a[href="${activeLinkHref}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active-link'); // Add active class to the saved link
+        }
+    }
+});
 
 document.addEventListener('click', function(event) {
     if (!event.target.closest('#nav_wrap')) {
@@ -74,6 +117,7 @@ function closeDropdowns() {
         li.classList.remove('active');
     });
 }
+
 
 //알림 모달
 const modal = document.getElementById("notification-modal");
@@ -155,14 +199,13 @@ function connectWebSocket() {
                 message.data.forEach(function(item) {
                     showNotification(title, content, item.memberNo);
                 });
-
             } else if(message.type === 'documentAlarm'){
-				const title = message.title;
+                const title = message.title;
                 const content = message.content;
                 message.data.forEach(function(item) {
-			        if (Number(item.memberNo) === currentMember) {
-		                showNotification(title, content, item.memberNo);
-			        }
+                  if (Number(item.memberNo) === currentMember) {
+                        showNotification(title, content, item.memberNo);
+                  }
                 });
 			} else if(message.type === 'vacationApprovalAlarm'){
                 const title = message.title;
@@ -213,6 +256,7 @@ function connectWebSocket() {
                     showNotification(title, content, item.memberNo);
                 });				
 			}  
+
         };
 
 
