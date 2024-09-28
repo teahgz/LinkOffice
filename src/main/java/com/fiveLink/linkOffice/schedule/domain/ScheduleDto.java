@@ -34,6 +34,10 @@ public class ScheduleDto {
     private LocalDateTime schedule_update_date;
     private Long schedule_status; 
     
+    private String member_name; 
+    private String department_name; 
+    private String position_name; 
+    
     public Schedule toEntity() {
         return Schedule.builder()
                 .scheduleNo(schedule_no)
