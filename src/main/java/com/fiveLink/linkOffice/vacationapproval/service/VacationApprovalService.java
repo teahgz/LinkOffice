@@ -81,7 +81,7 @@ public class VacationApprovalService {
     }
 	
 	// 사용자 휴가신청함 상세 조회 
-	
+	@Transactional
 	public VacationApprovalDto selectVacationApprovalOne(Long vacationApprovalNo) {
 	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
 	    

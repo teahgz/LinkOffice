@@ -414,7 +414,10 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             if (approvalTitle.trim() === "") {  
                 vali_text += '결재 제목을 입력해주세요.';
                 document.querySelector('#approval_title').focus();
-            } else {
+            } else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
+				 vali_text += '결재자를 지정해주세요.';
+                document.querySelector('#openChart').focus();
+			} else {
                 vali_check = true;
             }
 			
@@ -475,17 +478,16 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    notificationData.references = references;
 			}
 			
-			if (reviewers !== null) {
-			    notificationData.reviewers = reviewers;
-			}
-			
-			
 			alarmSocket.send(JSON.stringify({
 			   type: 'notificationApproval',
 			   notificationData : notificationData,
 			   memberNo : memberNo
 			}));
-			console.log('알림:', notificationData.reviewers);
 			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationApprovalReviewers',
+			   reviewers : reviewers,
+			   memberNo : memberNo
+			}));
 		});
 	});
