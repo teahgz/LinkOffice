@@ -178,7 +178,6 @@ document.getElementById('mark-as-read').addEventListener('click', function() {
     .then(response => response.json())
     .then(data => {
         if (data.read) {
-            console.log('읽음 처리 완료');
             document.getElementById('notification-bell-modal').innerHTML = '';
             document.getElementById('unread-bell-count').textContent = '0';
             const unreadCountElement = document.getElementById('unread-bell-count');

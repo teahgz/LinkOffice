@@ -14,4 +14,6 @@ public interface NoficationMapper {
     List<NoficationDto> selectUnreadList(Long memberNo);
 
     void readNofication(Map<String, Object> params);
+
+    void readTypeNotification(Map<String, Object> params);
 }

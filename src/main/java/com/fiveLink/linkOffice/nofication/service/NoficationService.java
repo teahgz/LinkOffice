@@ -65,4 +65,20 @@ public class NoficationService {
             return false;
         }
     }
+
+    //타입별 읽음 처리
+    public boolean readTypeNotification(Long memberNo, int functionType) {
+        try {
+                Map<String, Object> params = new HashMap<>();
+                params.put("functionType", functionType);
+                params.put("memberNo", memberNo);
+                noficationMapper.readTypeNotification(params);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
