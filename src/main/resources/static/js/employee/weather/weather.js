@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return {
             date: `${baseDate.getFullYear()}${(baseDate.getMonth() + 1).toString().padStart(2, '0')}${baseDate.getDate().toString().padStart(2, '0')}`,
             time: '2300',
-            now: `${hours}00`
+            now: hours === '24' ? `0000` : `${hours}00`
         };
     }
 
