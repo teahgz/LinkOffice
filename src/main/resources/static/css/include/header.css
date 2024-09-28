@@ -9,13 +9,20 @@ header {
     justify-content: space-between;
     padding: 10px 20px;
 }
-
-.header_logo_img {
-	margin-top:10px;
-	margin-bottom:10px;
-    max-height: 40px;
+ 
+.header_logo_text {
+	font-weight: 800;
+	font-size: 26px;
+	color:#4d72b0;
+	margin-left: 5px;
+	margin-top:5px;
+	margin-bottom:5px;
+    max-height: 40px
 }
 
+a { 
+	text-decoration: none;
+}
 .user_logout_container {
     display: flex;
     align-items: center;

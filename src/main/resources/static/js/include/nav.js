@@ -19,19 +19,22 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     }
-
     function openDropdown(dropdown) {
         closeAllDropdowns();
         dropdown.style.display = "block";
+        dropdown.closest('li').classList.add('active');
         currentDropdown = dropdown;
     }
-
     function closeAllDropdowns() {
-        dropdowns.forEach(function (dropdown) {
-            dropdown.style.display = "none";
-        });
-        currentDropdown = null;
-    }
+           dropdowns.forEach(function (dropdown) {
+               dropdown.style.display = "none";
+           });
+           dropdownToggles.forEach(function (toggle) {
+               toggle.closest('li').classList.remove('active');
+           });
+           currentDropdown = null;
+       }
+
 
     dropdownToggles.forEach(function (toggle) {
         toggle.addEventListener("click", function (e) {
@@ -44,7 +47,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
-                saveDropdownState(dropdownId); 
+
+                saveDropdownState(dropdownId);
+            }
+        });
+    });
+
+    const nestedDropdownToggles = document.querySelectorAll(".dropdown > .dropdown-toggle");
+    nestedDropdownToggles.forEach(function (toggle) {
+        toggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const dropdownId = this.nextElementSibling.getAttribute("data-dropdown-id");
+            const nestedDropdown = document.querySelector(`.dropdown[data-dropdown-id="${dropdownId}"]`);
+
+            if (nestedDropdown.style.display === "block") {
+                nestedDropdown.style.display = "none";
+            } else {
+                nestedDropdown.style.display = "block";
             }
         });
     });
@@ -58,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadDropdownState();
 });
+
 
 
 document.addEventListener('click', function(event) {
@@ -155,52 +177,51 @@ function connectWebSocket() {
                 message.data.forEach(function(item) {
                     showNotification(title, content, item.memberNo);
                 });
-
             } else if(message.type === 'documentAlarm'){
-				const title = message.title;
+                const title = message.title;
                 const content = message.content;
                 message.data.forEach(function(item) {
-			        if (Number(item.memberNo) === currentMember) {
-		                showNotification(title, content, item.memberNo);
-			        }
+                  if (Number(item.memberNo) === currentMember) {
+                        showNotification(title, content, item.memberNo);
+                  }
                 });
-			} else if(message.type === 'vacationApprovalAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'vacationAppApproveAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'vacationAppRejectAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'approvalAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'appApproveAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			} else if(message.type === 'appRejectAlarm'){
-                const title = message.title;
-                const content = message.content;
-                message.data.forEach(function(item) {
-                    showNotification(title, content, item.memberNo);
-                });				
-			}  
+            } else if(message.type === 'vacationApprovalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'vacationAppApproveAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'vacationAppRejectAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'approvalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'appApproveAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'appRejectAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            }  
         };
 
 
