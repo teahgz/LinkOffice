@@ -88,6 +88,30 @@ if (sendButton && messageInput) {
           confirmEditButton.classList.add('update-button');
       });
 });
+window.onload = function() {
+    const functionType = 1;
+    console.log("현재 기능 타입"+functionType);
+    // 페이지가 로드될 때 안읽음 처리
+    if (functionType === 1) {
+        markNotificationsAsRead(functionType);
+    }
+};
+// 안읽음을 읽음으로 처리하는 함수
+function markNotificationsAsRead(functionType) {
+    fetch(`/api/nofication/type/read/${currentMember}/${functionType}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.read) {
+                console.log('읽음 처리 완료');
+
+            } else {
+                console.error('읽음 처리 실패');
+            }
+        })
+        .catch(error => {
+            console.error('읽음 처리 중 오류 발생:', error);
+        });
+}
 
 (function() {
     let currentChatRoomNo = null;

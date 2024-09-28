@@ -23,4 +23,11 @@
         WHERE nofication_receive_no = #{memberNo}
         AND nofication_no = #{notificationNo}
     </update>
+    <!--타입 별 읽음-->
+    <update id="readTypeNotification"  parameterType="java.util.Map">
+        UPDATE fl_nofication SET
+        nofication_status = 1
+        WHERE nofication_receive_no = #{memberNo}
+        AND nofication_type = #{functionType}
+    </update>
 </mapper>
