@@ -16,4 +16,5 @@ public interface NoficationMapper {
     void readNofication(Map<String, Object> params);
 
     void readTypeNotification(Map<String, Object> params);
+    Long insertAlarmPk();
 }

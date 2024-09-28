@@ -121,9 +121,13 @@ function unreadNoficationList() {
                 noNotificationsItem.style.textAlign = 'center';
                 notificationModal.appendChild(noNotificationsItem);
             } else {
+                notificationModal.innerHTML = `
+                    <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                `;
+                addMarkAsReadListener();
                 data.unreadList.forEach(notification => {
+
                     const listItem = document.createElement('li');
-                    listItem.setAttribute('data-notification-no', notification.nofication_no);
                     listItem.setAttribute('data-notification-no', notification.nofication_no);
                     const date = new Date(notification.nofication_create_date);
                     const formattedDate = date.toLocaleDateString('ko-KR', {
@@ -152,44 +156,52 @@ function unreadNoficationList() {
             console.error('알림을 가져오는 중 오류 발생:', error);
         });
 }
-
-document.getElementById('mark-as-read').addEventListener('click', function() {
-    const memberNo = headerCurrentMember;
-    const notificationNos = [];
-
-    const notificationItems = document.querySelectorAll('#notification-bell-modal li');
-    notificationItems.forEach(item => {
-        const notificationNo = item.getAttribute('data-notification-no');
-        if (notificationNo) {
-            notificationNos.push(notificationNo);
-        }
-    });
-
-    fetch(`/api/notification/read`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN':csrfToken
-        },
-        body: JSON.stringify({
-            memberNo: memberNo,
-            notificationNos: notificationNos
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.read) {
-            document.getElementById('notification-bell-modal').innerHTML = '';
-            document.getElementById('unread-bell-count').textContent = '0';
-            const unreadCountElement = document.getElementById('unread-bell-count');
-            if (unreadCountElement) {
-                 unreadCountElement.remove();
+function addMarkAsReadListener() {
+    const markAsReadButton = document.getElementById('mark-as-read');
+    if (markAsReadButton) {
+        markAsReadButton.removeEventListener('click', handleMarkAsRead); // 기존 리스너 제거
+        markAsReadButton.addEventListener('click', handleMarkAsRead); // 새로운 리스너 추가
+    }
+}
+function handleMarkAsRead() {
+        const memberNo = headerCurrentMember;
+        const notificationNos = [];
+        console.log("멤버 : "+memberNo);
+        const notificationItems = document.querySelectorAll('#notification-bell-modal li');
+        notificationItems.forEach(item => {
+            const notificationNo = item.getAttribute('data-notification-no');
+            if (notificationNo) {
+                notificationNos.push(notificationNo);
             }
-        } else {
-            console.error('읽음 처리 실패');
-        }
-    })
-    .catch(error => {
-        console.error('읽음 처리 중 오류 발생:', error);
-    });
-});
+        });
+
+        fetch(`/api/notification/read`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN':csrfToken
+            },
+            body: JSON.stringify({
+                memberNo: memberNo,
+                notificationNos: notificationNos
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.read) {
+                document.getElementById('notification-bell-modal').innerHTML = '';
+                document.getElementById('unread-bell-count').textContent = '0';
+                const unreadCountElement = document.getElementById('unread-bell-count');
+                if (unreadCountElement) {
+                     unreadCountElement.remove();
+                }
+            } else {
+                console.error('읽음 처리 실패');
+            }
+        })
+        .catch(error => {
+            console.error('읽음 처리 중 오류 발생:', error);
+        });
+
+
+}
