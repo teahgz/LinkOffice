@@ -3,6 +3,9 @@
 <th:block th:fragment="headerLayout">
     <link th:href="@{/css/include/header.css}" rel="stylesheet" type="text/css">
     <header>
+        <div style="display:none;" th:each = "member : ${memberdto}">
+            <input type ="hidden" id="headerCurrentMember" th:value="${member.member_no}"/>
+        </div>
          <div id="header_wrap">
             <div class="header_logo">
                 <a th:href="@{/}"> 
@@ -24,9 +27,20 @@
                         <li><a href="#">서명 등록</a></li>
                     </ul>
                 </div>
-                <div class="bell">
+                <div class="bell" id="notification-bell">
                     <i class="fa-regular fa-bell" style ="marin-right: 20px; font-size: 20px; color:#0000007a;"></i>
+<!--                    <span id="unread-bell-count" class="badge"></span>-->
+                    <!--통합 알림 모달-->
+                    <div class="notification-bell-wrapper">
+
+                        <ul id="notification-bell-modal" class="notification-bell-modal">
+                            <!-- 알림 내용 동적 -->
+                            <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+                        </ul>
+
+                    </div>
                 </div>
+
 
                 <form method="post" th:action="@{/logout}" class="logout_form">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -38,6 +52,7 @@
 
         </div>
     </header>
+
     <script th:src="@{/js/include/header.js}"></script>
 </th:block>
 </html>

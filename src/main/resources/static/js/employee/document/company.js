@@ -155,7 +155,7 @@ $(function () {
     }
 
     // 선택된 폴더의 파일 목록을 불러오기
-    function loadFiles(folderNo, searchInput = '', searchOption = 'file_name') {
+    function loadFiles(folderNo, searchInput = '', searchOption = 'search_all') {
         $.ajax({
             type: 'GET',
             url: '/folder/file',
@@ -177,8 +177,11 @@ $(function () {
 	                const fileDate = new Date(file.document_file_upload_date);
 	                const isDateInRange = fileDate >= startDate && fileDate <= endDate;
 	                const normalizedFileName = file.document_ori_file_name.normalize('NFC');
+	                const allName = normalizedFileName+file.member_name.toLowerCase()+file.department_name.toLowerCase();
 	                let isSearchMatch = false;
-	                if(searchOption === 'file_name'){
+	                if(searchOption === 'search_all'){
+						isSearchMatch = allName.includes(searchInput.toLowerCase().trim());
+					} else if(searchOption === 'file_name'){
 						isSearchMatch = normalizedFileName.includes(searchInput.toLowerCase().trim());					
 					} else if(searchOption === 'member_name'){
 						isSearchMatch = file.member_name.toLowerCase().includes(searchInput.toLowerCase().trim());
@@ -217,7 +220,7 @@ $(function () {
                         row.innerHTML = `
                         	<td><input type="checkbox" class="file_checkbox" id="${file.member_no}"></td>
                             <td>${file.document_ori_file_name}</td>
-                            <td>${file.member_no == memberNo ? '본인' : (file.member_name + file.position_name + "(" + file.department_name + ")")}</td>
+                            <td>${file.member_no == memberNo ? '본인' : (file.member_name + ' ' + file.position_name + "(" + file.department_name + ")")}</td>
                             <td>${formatDate(file.document_file_upload_date)}</td>
                             <td>${file.document_ori_file_name.endsWith('.pdf') ? 
 					            `<a href="/document/file/view/${file.document_file_no}" class="file_show_button" target="_blank">미리보기</a>` : ''}
