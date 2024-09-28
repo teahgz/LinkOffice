@@ -205,7 +205,7 @@ function connectWebSocket() {
 
         alarmSocket.onmessage = function(event) {
             const message = JSON.parse(event.data);
-            const currentType = message.nofication_type;
+            let currentType = message.nofication_type;
             const notificationModal = document.getElementById('notification-bell-modal');
 
             if (message.type === 'chatAlarm') {
