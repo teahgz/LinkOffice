@@ -338,4 +338,40 @@ public class MeetingReservationService {
                     .build();
         }).collect(Collectors.toList());
     } 
+    
+    public List<MeetingReservationDto> getAllReservations() { 
+        List<MeetingReservation> reservations = meetingReservationRepository.findAll();
+ 
+        return reservations.stream().map(reservation -> {
+        	String memberName = memberRepository.findById(reservation.getMemberNo())
+                    .map(Member::getMemberName)
+                    .orElse("사원");
+        	String positionName = "직위";
+            String departmentName = "부서"; 
+
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(reservation.getMemberNo());
+
+            Object[] row = memberInfo.get(0);
+            positionName = (String) row[1];
+            departmentName = (String) row[2];
+            String meetingName = meetingService.getMeetingNameById(reservation.getMeetingNo());
+            long participantCount = meetingParticipantRepository.countByMeetingReservationNoAndStatus(reservation.getMeetingReservationNo(), 0L);
+            
+            return MeetingReservationDto.builder()
+                .meeting_reservation_no(reservation.getMeetingReservationNo())
+                .meeting_no(reservation.getMeetingNo())
+                .meeting_name(meetingName)
+                .meeting_reservation_date(reservation.getMeetingReservationDate())
+                .meeting_reservation_purpose(reservation.getMeetingReservationPurpose())
+                .participant_count(participantCount)
+                .member_no(reservation.getMemberNo())
+                .member_name(memberName)
+                .meeting_reservation_start_time(reservation.getMeetingReservationStartTime())
+                .meeting_reservation_end_time(reservation.getMeetingReservationEndTime()) 
+                .department_name(departmentName)
+                .position_name(positionName)
+                .build();
+        }).collect(Collectors.toList());
+    }
+
 }

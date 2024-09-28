@@ -4,7 +4,8 @@
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
 		<link th:href="@{/css/employee/attendance/attendance.css}" rel="stylesheet" type="text/css">
-       	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+       	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+		<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js'></script>
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
 			<div class="main_item_box left-top custom-height-1 employee-info">
@@ -21,16 +22,7 @@
 					</div>
 					</div>
 				</div>
-			</div>
-			<div class="main_item_box left-bottom custom-height-2">
-            	<a class="main_link" th:href="@{/일정 링크}">
-	         	    <span class="main_box_title">
-	            		일정
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-            	<h3>일정</h3>
-            </div>
+			</div> 
         </div>
         <div class="middle-column">
             <div class="main_item_box custom-height-3">
@@ -91,10 +83,15 @@
         <div class="right-column">
             <div class="right-top"> 
                 <div class="main_item_box custom-height-7">
-                	<a class="main_link" th:href="@{/회의실 링크}">
-	                	<img th:src="@{/img/main_meeting_reservation.png}" alt="meeting reservation" class="meeting_reservation_img"/>
-	                	<h3>회의실 예약</h3>
+                	<a class="main_link" th:href="@{/employee/meeting/reservation}">
+	                	 <h3>회의실 예약</h3>
 	                </a>
+	                <div id="meeting_calendar"></div> 
+					<div id="meeting_reservation_list">
+					    <div id="meeting_home_date"></div>
+					    <ul id="meeting_selected_date_list"></ul> 
+					</div> 
+	                
                 </div> 
                 <div class="main_item_box custom-height-8">
                 	<a class="main_link" th:href="@{/employee/member/list}">
@@ -104,6 +101,23 @@
 	                </a>
                 </div>  
             </div>
+       		<div class="main_item_box left-bottom custom-height-2">
+				<input type="hidden" id="schedule_memberNo" th:value="${member.member_no}"> 
+				<input type="hidden" id="schedule_departmentNo" th:value="${member.department_no}"> 
+			    <a class="main_link" th:href="@{/employee/schedule}">
+			        <span class="main_box_title">
+			            일정
+			            <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+			        </span>
+			    </a>  
+			    <div id="calendar"></div>
+				<div id="schedule_list">
+				    <div id="schedule_home_date"></div>
+				    <ul id="schedule_selected_date_list"></ul>
+				</div>
+			    
+			</div>
+			
             <div class="right-bottom">
                 <div class="main_item_box custom-height-9">
                 <div class="main_box_title">
@@ -169,5 +183,7 @@
     </section>
     <script src="/js/employee/attendance/attendance.js"></script>
     <script src="/js/employee/weather/weather.js"></script>
+    <script src="/js/employee/schedule/homeSchedule.js"></script>
+    <script src="/js/employee/meeting/homeMeeting.js"></script>
      </th:block>
 </html>

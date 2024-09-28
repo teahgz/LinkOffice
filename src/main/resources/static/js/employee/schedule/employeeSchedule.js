@@ -601,8 +601,7 @@ document.addEventListener('DOMContentLoaded', function() {
             contentHeight: 'auto',
             handleWindowResize: true,
             fixedWeekCount: false,
-            eventClick: function(info) {
-				console.log(info.event); 
+            eventClick: function(info) { 
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			

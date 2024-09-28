@@ -199,7 +199,7 @@ textarea {
 .event_view_modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 999;
     left: 0;
     top: 0;
     width: 100%;
@@ -208,8 +208,12 @@ textarea {
     padding: 0;
     justify-content: center;
     align-items: center;
-}  
+}   
 
+#eventModal, .modal-content{
+	 z-index: 999;
+}
+ 
 .event_modal-content {
 	z-index:100; 
 	position: fixed;
@@ -245,7 +249,7 @@ textarea {
 .event_repeat_modal {
     display: none;
     position: fixed;
-    z-index: 300;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
