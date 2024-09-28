@@ -289,7 +289,6 @@ function connectWebSocket() {
             } else if(message.type === 'vacationApprovalReviewsAlarm'){
                 const title = message.title;
                 const content = message.content;
-                //실시간 추가를 위한
                 if (notificationModal.children.length <= 1) {
                         notificationModal.innerHTML = `
                            <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
@@ -386,7 +385,6 @@ function connectWebSocket() {
             } else if(message.type === 'approvalReviewsAlarm'){
                 const title = message.title;
                 const content = message.content;
-                //실시간 추가를 위한
                 if (notificationModal.children.length <= 1) {
                         notificationModal.innerHTML = `
                            <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
