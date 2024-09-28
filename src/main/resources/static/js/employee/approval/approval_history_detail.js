@@ -29,6 +29,16 @@ function approveRequest(){
 			});
 		}
 	})
+	
+    const appprovalMemberNo = document.getElementById('approval_member_no').value;
+    const memberNo = document.getElementById('member_no').value;
+
+	alarmSocket.send(JSON.stringify({
+		type: 'notificationAppApprove',
+		approvalNo : approvalNo,
+		appprovalMemberNo :appprovalMemberNo,
+		memberNo : memberNo
+	}));
 }
 
 
@@ -111,6 +121,15 @@ function cancelApproval(){
 					});
 				}
 			});
+			
+    const appprovalMemberNo = document.getElementById('approval_member_no').value;
+    const memberNo = document.getElementById('member_no').value;
+
+	alarmSocket.send(JSON.stringify({
+		type: 'notificationAppReject',
+		appprovalMemberNo :appprovalMemberNo,
+		memberNo : memberNo
+	}));			
 		});
 	}
 	

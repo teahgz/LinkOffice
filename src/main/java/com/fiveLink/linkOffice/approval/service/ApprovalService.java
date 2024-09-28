@@ -300,15 +300,15 @@ public class ApprovalService {
 	        }
 
 	        for (Object[] result : list) {
-	            Long approvalNo = (Long) result[0];
-	            Long memberNo = (Long) result[1];
+	            Long approvalNo = ((Number) result[0]).longValue();
+	            Long memberNo = ((Number) result[1]).longValue();
 	            String approvalTitle = (String) result[2];
 	            String approvalContent = (String) result[3];
-	            Long approvalStatus = (Long) result[4];
+	            Long approvalStatus = ((Number) result[4]).longValue();
 	            Timestamp approvalCreateDate = (Timestamp) result[5];
 	            Timestamp approvalUpdateDate = (Timestamp) result[6];
 	            String approvalCancelReason = (String) result[7];
-	            Long approvalFlowRole = (Long) result[8];
+	            Long approvalFlowRole = ((Number) result[8]).longValue();
 	            String approvalType = (String) result[9];
 
 	            LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
@@ -374,15 +374,15 @@ public class ApprovalService {
 			        }
 
 			        for (Object[] result : list) {
-			            Long approvalNo = (Long) result[0];
-			            Long memberNo = (Long) result[1];
+			            Long approvalNo = ((Number) result[0]).longValue();
+			            Long memberNo = ((Number) result[1]).longValue();
 			            String approvalTitle = (String) result[2];
 			            String approvalContent = (String) result[3];
-			            Long approvalStatus = (Long) result[4];
+			            Long approvalStatus = ((Number) result[4]).longValue();
 			            Timestamp approvalCreateDate = (Timestamp) result[5];
 			            Timestamp approvalUpdateDate = (Timestamp) result[6];
 			            String approvalCancelReason = (String) result[7];
-			            Long approvalFlowRole = (Long) result[8];
+			            Long approvalFlowRole = ((Number) result[8]).longValue();
 			            String approvalType = (String) result[9];
 
 			            LocalDateTime createDateTime = approvalCreateDate.toLocalDateTime();
@@ -514,5 +514,19 @@ public class ApprovalService {
 	        List<Integer> approvalStatus = Arrays.asList(0, 1); 
 	        return approvalRepository.countApprovalProgress(memberNo, approvalStatus);
 	    }
+	    
+	    // 결재 흐름 조회
+	    @Transactional
+	    public List<ApprovalFlowDto> getApprovalFlows(Long approvalNo) {
+	        List<ApprovalFlow> approvalFlows = approvalFlowRepository.findByApprovalApprovalNo(approvalNo);
+	        List<ApprovalFlowDto> approvalFlowdto = new ArrayList<>();
+	        for (ApprovalFlow appFlow : approvalFlows) {
+	            ApprovalFlowDto dto = appFlow.toDto(); 
+	            approvalFlowdto.add(dto); 
+	        }
+	        return approvalFlowdto;
+	    }
+
+	
 
 }

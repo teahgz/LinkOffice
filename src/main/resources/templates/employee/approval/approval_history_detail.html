@@ -6,11 +6,12 @@
 	<link
 		th:href="@{/css/employee/approval/approval_history_vacation_detail.css}"
 		rel="stylesheet" type="text/css">
-	<section>
+	<section th:each="member : ${memberdto}">
 		<div class="container">
-			<input type="hidden" id="csrf_token" th:value="${_csrf.token}"
-				name="_csrf" /> <input type="hidden" id="approval_no"
-				th:value="${approvaldto.approval_no}">
+			<input type="hidden" id="approval_member_no" th:value="${approvaldto.member_no}" />
+			<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" /> 
+			<input type="hidden" id="approval_no" th:value="${approvaldto.approval_no}">
+			<input type="hidden" id="member_no" th:value="${member.member_no}" />
 			<div class="main_container">
 				<div class="details_section">
 					<div class="title_button_container">

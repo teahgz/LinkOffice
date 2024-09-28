@@ -17,6 +17,8 @@ public interface ApprovalFlowRepository extends JpaRepository<ApprovalFlow, Long
 	
 	List<ApprovalFlow> findByApproval(Approval approval);
 	
+	List<ApprovalFlow> findByApprovalApprovalNo(Long approval_no);
+	
 	void deleteByApproval(Approval approval);
 	
 	//결재 참조함 조회

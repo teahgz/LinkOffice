@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
+
                 saveDropdownState(dropdownId);
             }
         });
@@ -176,8 +177,51 @@ function connectWebSocket() {
                 message.data.forEach(function(item) {
                     showNotification(title, content, item.memberNo);
                 });
-
-            }
+            } else if(message.type === 'documentAlarm'){
+                const title = message.title;
+                const content = message.content;
+                message.data.forEach(function(item) {
+                  if (Number(item.memberNo) === currentMember) {
+                        showNotification(title, content, item.memberNo);
+                  }
+                });
+            } else if(message.type === 'vacationApprovalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'vacationAppApproveAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'vacationAppRejectAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'approvalAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'appApproveAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            } else if(message.type === 'appRejectAlarm'){
+                      const title = message.title;
+                      const content = message.content;
+                      message.data.forEach(function(item) {
+                          showNotification(title, content, item.memberNo);
+                      });				
+            }  
         };
 
 

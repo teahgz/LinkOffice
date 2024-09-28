@@ -29,6 +29,17 @@ function approveRequest(){
 			});
 		}
 	})
+	
+    const vaAppprovalMemberNo = document.getElementById('vacationapproval_member_no').value;
+    const memberNo = document.getElementById('member_no').value;
+
+	alarmSocket.send(JSON.stringify({
+		type: 'notificationVacationAppApprove',
+		vacationapprovalNo : vacationapprovalNo,
+		vaAppprovalMemberNo :vaAppprovalMemberNo,
+		memberNo : memberNo
+	}));	
+	
 }
 
 
@@ -350,5 +361,15 @@ document.addEventListener('DOMContentLoaded', function() {
 					});
 				}
 			});
+			
+    const vaAppprovalMemberNo = document.getElementById('vacationapproval_member_no').value;
+    const memberNo = document.getElementById('member_no').value;
+
+	alarmSocket.send(JSON.stringify({
+		type: 'notificationVacationAppReject',
+		vaAppprovalMemberNo :vaAppprovalMemberNo,
+		memberNo : memberNo
+	}));						
+			
 		});
 	}	

@@ -502,7 +502,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 	  		  e.preventDefault();
 	    
 		    const editorData = editor.getData();
-		    const vacationapprovalTitle = document.querySelector('#vacationapproval_title').value;
+		    const vacationapproval_title = document.querySelector('#vacationapproval_title').value;
 		    const vacationtype = document.querySelector('select[name="vacationtype"]').value;
 		    const csrfToken = document.querySelector('#csrf_token').value;
 		    const memberNo = document.querySelector('#member_no').value;
@@ -517,7 +517,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		 	let vali_check = false;
             let vali_text = "";
 			
-            if (vacationapprovalTitle.trim() === "") {  
+            if (vacationapproval_title.trim() === "") {  
                 vali_text += '결재 제목을 입력해주세요.';
                 document.querySelector('#vacationapproval_title').focus();
             } else if(startDate.trim() === ""){
@@ -540,7 +540,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             } else {
 				const payload = new FormData();
 			    payload.append('vacationapprovalContent', editorData);
-			    payload.append('vacationapprovalTitle', vacationapprovalTitle);
+			    payload.append('vacationapprovalTitle', vacationapproval_title);
 			    payload.append('vacationtype', vacationtype);
 			    payload.append('memberNo', memberNo);
 			    payload.append('startDate', startDate);
@@ -582,7 +582,30 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			        }
 			    })
 			}
+
+			let notificationData = {};
+			
+			if (approvers !== null) {
+			    notificationData.approvers = approvers;
+			}
+			
+			if (references !== null) {
+			    notificationData.references = references;
+			}
+			
+			if (reviewers !== null) {
+			    notificationData.reviewers = reviewers;
+			}
+			
+			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationVacationApproval',
+			   notificationData : notificationData,
+			   memberNo : memberNo
+			}));
+			
+			console.log('알림:', notificationData.reviewers);
+
 	});
-
-
 });
+
