@@ -125,7 +125,7 @@ function closeDropdowns() {
 const modal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
-function showNotification(title, content, memberNo) {
+function showNotification(title, content, memberNo, time) {
 
     if(memberNo === currentMember){
         const notificationContainer = document.getElementById("notificationContainer");
@@ -138,6 +138,7 @@ function showNotification(title, content, memberNo) {
                 <strong>${title}</strong>
                 <p>${content}</p>
                 <input type="hidden" name="memberNo" value="${memberNo}">
+                <span class="notification-time">${time}</span>
                 <span class="close-notification-modal">&times;</span>
             </div>
         `;
@@ -205,7 +206,6 @@ function connectWebSocket() {
         alarmSocket.onmessage = function(event) {
             const message = JSON.parse(event.data);
             const currentType = message.nofication_type;
-
             if (message.type === 'chatAlarm') {
                 const title = message.title;
                 const content = message.content;
@@ -213,7 +213,8 @@ function connectWebSocket() {
                     markNotificationsAsRead(window.functionType);
                 }else {
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo);
+                        showNotification(title, content, item.memberNo, message.timestamp);
+
                     });
                 }
             } else if(message.type === 'documentAlarm'){
@@ -221,44 +222,44 @@ function connectWebSocket() {
                 const content = message.content;
                 message.data.forEach(function(item) {
                   if (Number(item.memberNo) === currentMember) {
-                        showNotification(title, content, item.memberNo);
+                        showNotification(title, content, item.memberNo,  message.timestamp);
                   }
                 });
             } else if(message.type === 'vacationApprovalAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
-                          showNotification(title, content, item.memberNo);
+                          showNotification(title, content, item.memberNo,  message.timestamp);
                       });
             } else if(message.type === 'vacationAppApproveAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
-                          showNotification(title, content, item.memberNo);
+                          showNotification(title, content, item.memberNo,  message.timestamp);
                       });
             } else if(message.type === 'vacationAppRejectAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
-                          showNotification(title, content, item.memberNo);
+                          showNotification(title, content, item.memberNo, message.timestamp);
                       });
             } else if(message.type === 'approvalAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
-                          showNotification(title, content, item.memberNo);
+                          showNotification(title, content, item.memberNo,  message.timestamp);
                       });
             } else if(message.type === 'appApproveAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
-                          showNotification(title, content, item.memberNo);
+                          showNotification(title, content, item.memberNo,  message.timestamp);
                       });
             } else if(message.type === 'appRejectAlarm'){
                       const title = message.title;
                       const content = message.content;
                       message.data.forEach(function(item) {
-                          showNotification(title, content, item.memberNo);
+                          showNotification(title, content, item.memberNo,  message.timestamp);
                       });
             }
         };

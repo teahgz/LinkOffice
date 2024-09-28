@@ -6,8 +6,7 @@ const csrfToken = document.querySelector('input[name="_csrf"]').value;
 // 페이지 로드 시 호출
 document.addEventListener("DOMContentLoaded", function () {
     fetchSessionTime();
-
-
+    bellUnreadCount();
 });
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -110,7 +109,7 @@ function unreadNoficationList() {
     const notificationModal = document.getElementById('notification-bell-modal');
     const unreadCountElement = document.getElementById('unread-bell-count');
 
-
+    notificationModal.innerHTML = '';
     fetch(`/api/nofication/unread/list/${headerCurrentMember}`)
         .then(response => response.json())
         .then(data => {
