@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
-import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
@@ -34,6 +31,8 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
 import com.fiveLink.linkOffice.schedule.service.ScheduleService;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 @Controller
 public class ScheduleApiController {
@@ -41,14 +40,17 @@ public class ScheduleApiController {
 	private final ScheduleCategoryService scheduleCategoryService;
 	private final ScheduleService scheduleService;
 	private final DepartmentService departmentService;  
+	private final VacationApprovalService vacationApprovalService; 
+	
 	
 	@Autowired
 	public ScheduleApiController(MemberService memberService, ScheduleCategoryService scheduleCategoryService,
-			ScheduleService scheduleService, DepartmentService departmentService) {
+			ScheduleService scheduleService, DepartmentService departmentService, VacationApprovalService vacationApprovalService) {
 		this.memberService = memberService;
 		this.scheduleCategoryService = scheduleCategoryService;
 		this.scheduleService = scheduleService;
 		this.departmentService = departmentService;
+		this.vacationApprovalService = vacationApprovalService;
 	}
 
 	@GetMapping("/schedule/category/get/{categoryId}")
@@ -1126,5 +1128,18 @@ public class ScheduleApiController {
 	    
 	    return response;
 	}
-	 
+	
+	// 휴가 정보
+	@GetMapping("/api/employee/vacation/schedules")
+	@ResponseBody
+	public Map<String, Object> getVacationSchedules() {
+        Map<String, Object> response = new HashMap<>();
+         
+        List<VacationApprovalDto> vacationSchedules = vacationApprovalService.getApprovedVacationSchedules();
+         
+        response.put("vacationSchedules", vacationSchedules);
+        
+        return response;
+    }
+
 }

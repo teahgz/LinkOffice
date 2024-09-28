@@ -164,6 +164,7 @@ public class ApprovalService {
 	}
 	
 	// 결재 상세 조회
+	@Transactional
 	public ApprovalDto selectApprovalOne(Long approvalNo) {
 	    Approval origin = approvalRepository.findByApprovalNo(approvalNo);
 	    
@@ -320,6 +321,7 @@ public class ApprovalService {
 	            dto.setApproval_no(approvalNo);
 	            dto.setMember_no(memberNo);
 	            dto.setMember_name(member.getMemberName());
+	            dto.setMember_position(member.getPosition().getPositionName());
 	            dto.setApproval_title(approvalTitle);
 	            dto.setApproval_content(approvalContent);
 	            dto.setApproval_status(approvalStatus);
@@ -394,6 +396,7 @@ public class ApprovalService {
 			            dto.setApproval_no(approvalNo);
 			            dto.setMember_no(memberNo);
 			            dto.setMember_name(member.getMemberName());
+			            dto.setMember_position(member.getPosition().getPositionName());
 			            dto.setApproval_title(approvalTitle);
 			            dto.setApproval_content(approvalContent);
 			            dto.setApproval_status(approvalStatus);

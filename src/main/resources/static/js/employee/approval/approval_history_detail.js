@@ -127,6 +127,7 @@ function cancelApproval(){
 
 	alarmSocket.send(JSON.stringify({
 		type: 'notificationAppReject',
+		approvalNo : approvalNo,		
 		appprovalMemberNo :appprovalMemberNo,
 		memberNo : memberNo
 	}));			

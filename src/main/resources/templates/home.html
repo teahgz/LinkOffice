@@ -14,9 +14,11 @@
 				<div class="employee-profile">
 				<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}" alt="사원 사진" class="user_photo">
 					<div class="employee-details">
+						<span class="employee-department" th:text="${member.department_name}"></span> 
+					<div>
 						<span class="employee-name" th:text="${member.member_name}"></span>
-						<span class="employee-position" th:text="${member.department_name}"></span> 
 						<span class="employee-position" th:text="${member.position_name}"></span>
+					</div>
 					</div>
 				</div>
 			</div>

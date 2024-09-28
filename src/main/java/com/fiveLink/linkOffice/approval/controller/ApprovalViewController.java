@@ -156,7 +156,7 @@ public class ApprovalViewController {
 	    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 	    
 	    Page<ApprovalDto> approvals = approvalService.getAllApprovalHistory(memberNo, searchdto, sortedPageable);
-
+	    
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		approvals.forEach(vapp -> {
 			if (vapp.getApproval_create_date() != null) {
@@ -165,6 +165,7 @@ public class ApprovalViewController {
 			}
 		});
 		
+		System.out.println(approvals.getContent());
 		
 	    model.addAttribute("approvals", approvals.getContent());
 	    model.addAttribute("page", approvals);

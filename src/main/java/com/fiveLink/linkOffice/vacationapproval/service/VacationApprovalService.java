@@ -81,7 +81,7 @@ public class VacationApprovalService {
     }
 	
 	// 사용자 휴가신청함 상세 조회 
-	
+	@Transactional
 	public VacationApprovalDto selectVacationApprovalOne(Long vacationApprovalNo) {
 	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
 	    
@@ -348,4 +348,46 @@ public class VacationApprovalService {
 		 }
 		 return approvalFlowsdto;
 	 }
+  
+  // [서혜원] 사원 일정 휴가 조회
+	 public List<VacationApprovalDto> getApprovedVacationSchedules() {
+	        List<Object[]> vacationApprovals = vacationApprovalRepository.findApprovedVacationSchedules(1);
+
+	        // Object[] 데이터를 VacationApprovalDto로 변환
+	        return vacationApprovals.stream()
+	                .map(this::convertToDto)
+	                .collect(Collectors.toList());
+	    }
+
+	// [서혜원] 사원 일정 휴가 조회
+	 private VacationApprovalDto convertToDto(Object[] row) {
+	    VacationApprovalDto dto = new VacationApprovalDto();
+	    dto.setMember_no(((Number) row[0]).longValue());  
+	    dto.setVacation_type_no(((Number) row[1]).longValue()); 
+	    dto.setVacation_approval_start_date((String) row[2]);  
+	    dto.setVacation_approval_end_date((String) row[3]);  
+	    dto.setVacation_type_name((String) row[4]);  
+	    dto.setDepartment_no(((Number) row[5]).longValue());   
+	    dto.setVacation_approval_no(((Number) row[6]).longValue());  
+ 
+	    Long memberNo = ((Number) row[0]).longValue();
+	    String memberName = memberRepository.findById(memberNo)
+	                                         .map(Member::getMemberName)
+	                                         .orElse("사원");  
+
+	    dto.setMember_name(memberName);  
+	    
+		String positionName = "직위";
+		String departmentName = "부서";
+		
+		List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+		
+		Object[] memberpositionDepartment = memberInfo.get(0);  
+		positionName = (String) memberpositionDepartment[1];   
+		departmentName = (String) memberpositionDepartment[2]; 
+		dto.setPosition_name(positionName);
+		dto.setDepartment_name(departmentName);
+
+	    return dto;
+	}
 }

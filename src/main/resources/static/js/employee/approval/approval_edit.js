@@ -125,8 +125,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (targetId === 'approver-list') {
             const currentApproverCount = array.length;
-
+			const totalSelected = selectedNodes.length;
             if (currentApproverCount > 5) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: '결재자는 최대 6명까지 선택할 수 있습니다.',
+                });
+                return;
+            } else if(totalSelected  > 6) {
                 Swal.fire({
                     icon: 'warning',
                     text: '결재자는 최대 6명까지 선택할 수 있습니다.',
