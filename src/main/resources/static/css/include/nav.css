@@ -89,18 +89,33 @@ nav {
 .dropdown li a:hover {
     color: #007BFF;
 }
+.dropdown a.active {
+    color:  #007BFF;
+}
+.active-link {
+    color: #ff5722;
+}
+.dropdown-toggle.active-toggle {
+    color: yourActiveColor;
+    font-weight: bold;
+}
 
+
+.active-link {
+    color: #007bff;
+
+}
 #nav_wrap > ul > li.active {
     border-bottom: none;
 }
 .dropdown-toggle {
-    padding: 10px; /* 패딩을 추가하여 클릭 영역을 늘립니다. */
-    display: block; /* 전체 영역을 클릭할 수 있도록 설정합니다. */
+    padding: 10px;
+    display: block;
 }
 
 .dropdown-toggle:hover,
 .dropdown > ul > li:hover > .dropdown-toggle {
-   color: #007BFF; /* 호버 시 배경색 설정 */
+   color: #007BFF;
 }
 
 .dropdown > ul > li:hover > ul {

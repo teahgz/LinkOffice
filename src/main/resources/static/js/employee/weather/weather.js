@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     const response = JSON.parse(this.responseText);
-                    console.log(response);
                     updateWeather(response);
                 } else {
                     console.error('날씨 데이터를 가져오는 데 실패했습니다.');

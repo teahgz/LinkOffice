@@ -81,7 +81,7 @@ public class VacationApprovalService {
     }
 	
 	// 사용자 휴가신청함 상세 조회 
-	
+	@Transactional
 	public VacationApprovalDto selectVacationApprovalOne(Long vacationApprovalNo) {
 	    VacationApproval origin = vacationApprovalRepository.findByVacationApprovalNo(vacationApprovalNo);
 	    
@@ -336,8 +336,20 @@ public class VacationApprovalService {
 
 	        return vacationApproval;
 	 }
-	 
-	 // [서혜원] 사원 일정 휴가 조회
+	 // 결재 흐름 조회
+	 @Transactional
+	 public List<VacationApprovalFlowDto> getVacationApprovalFlows(Long vaAppNo){
+		 List<VacationApprovalFlow> approvalFlows = vacationApprovalFlowRepository.findByVacationApprovalVacationApprovalNo(vaAppNo);
+		 List<VacationApprovalFlowDto> approvalFlowsdto = new ArrayList<>();
+		 
+		 for(VacationApprovalFlow appFlow : approvalFlows) {
+			 VacationApprovalFlowDto dto = appFlow.toDto();
+			 approvalFlowsdto.add(dto);
+		 }
+		 return approvalFlowsdto;
+	 }
+  
+  // [서혜원] 사원 일정 휴가 조회
 	 public List<VacationApprovalDto> getApprovedVacationSchedules() {
 	        List<Object[]> vacationApprovals = vacationApprovalRepository.findApprovedVacationSchedules(1);
 

@@ -57,7 +57,7 @@
 							th:data-type="${approval.approvalType}" class="approval_row">
 							<td th:text="${stat.count}"></td>
 							<td th:text="${approval.approval_title}"></td>
-							<td th:text="${approval.member_name}"></td>
+							<td th:text="${approval.member_name} + ' '+${approval.member_position}"></td>
 							<td th:text="${approval.format_approval_create_date}"></td>
 							<td th:switch="${approval.approval_flow_role}">
 								<span th:case="1">합의</span> 

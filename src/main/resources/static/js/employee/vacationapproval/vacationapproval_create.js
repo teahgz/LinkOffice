@@ -193,6 +193,15 @@ endDateInput.addEventListener("change", function() {
     }
 });
 
+
+// 오늘 이전 날짜 막기
+const today = new Date().toISOString().split("T")[0];
+
+document.getElementById("vacationapproval_start_date").setAttribute("min", today);
+document.getElementById("vacationapproval_end_date").setAttribute("min", today);
+
+
+
 // 공휴일, 주말 제외
 function calculateDateDifference() {
     const startDate = new Date(startDateInput.value);
@@ -502,7 +511,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 	  		  e.preventDefault();
 	    
 		    const editorData = editor.getData();
-		    const vacationapprovalTitle = document.querySelector('#vacationapproval_title').value;
+		    const vacationapproval_title = document.querySelector('#vacationapproval_title').value;
 		    const vacationtype = document.querySelector('select[name="vacationtype"]').value;
 		    const csrfToken = document.querySelector('#csrf_token').value;
 		    const memberNo = document.querySelector('#member_no').value;
@@ -517,7 +526,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		 	let vali_check = false;
             let vali_text = "";
 			
-            if (vacationapprovalTitle.trim() === "") {  
+            if (vacationapproval_title.trim() === "") {  
                 vali_text += '결재 제목을 입력해주세요.';
                 document.querySelector('#vacationapproval_title').focus();
             } else if(startDate.trim() === ""){
@@ -526,6 +535,9 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			} else if(endDate.trim() === ""){
 				 vali_text += '휴가 기간을 입력해주세요.';
                 document.querySelector('#vacationapproval_end_date').focus();
+			} else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
+				 vali_text += '결재자를 지정해주세요.';
+                document.querySelector('#openChart').focus();
 			} else {
                 vali_check = true;
             }
@@ -540,7 +552,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             } else {
 				const payload = new FormData();
 			    payload.append('vacationapprovalContent', editorData);
-			    payload.append('vacationapprovalTitle', vacationapprovalTitle);
+			    payload.append('vacationapprovalTitle', vacationapproval_title);
 			    payload.append('vacationtype', vacationtype);
 			    payload.append('memberNo', memberNo);
 			    payload.append('startDate', startDate);
@@ -582,7 +594,29 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			        }
 			    })
 			}
+
+			let notificationData = {};
+			
+			if (approvers !== null) {
+			    notificationData.approvers = approvers;
+			}
+			
+			if (references !== null) {
+			    notificationData.references = references;
+			}
+			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationVacationApproval',
+			   notificationData : notificationData,
+			   memberNo : memberNo
+			}));
+			
+			alarmSocket.send(JSON.stringify({
+			   type: 'notificationVacationApprovalReviewers',
+			   reviewers : reviewers,
+			   memberNo : memberNo
+			}));
+
 	});
-
-
 });
+
