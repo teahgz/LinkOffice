@@ -121,17 +121,62 @@ a {
     display: none;
     position: absolute;
     top: 28px;
-    left: 50%;
+    left: -20px;
     transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: white;
+    max-height: 200px;
+    overflow-y: auto;
     list-style: none;
     padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    min-width: 130px;
+    min-width: 200px;
     z-index: 1000;
     color: #fff;
 
 }
+.mark-as-read {
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
 .notification-bell-modal.show {
     display: block;
+}
+.notification-bell-modal li {
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border-top: 1px solid #ddd;
+    color: gray;
+}
+
+.notification-bell-modal li:last-child {
+    border-bottom: none;
+}
+.notification-bell-modal li:first-child {
+    border: none;
+}
+.notification-bell-modal li strong {
+    color: gray;
+}
+.notification-bell-modal li p {
+    color: gray;
+}
+.notification-bell-modal li em {
+    color: gray;
+    font-size: 0.85em;
+}
+.badge {
+    position: absolute;
+    top: -10px;
+    right: -12px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
 }
