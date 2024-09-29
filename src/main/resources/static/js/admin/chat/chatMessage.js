@@ -325,68 +325,70 @@ if (sendButton && messageInput) {
                         if (chatItem) {
 
                             const unreadCountContainer = chatItem.querySelector('.unread-count-container');
-                            let unreadCountElement = unreadCountContainer.querySelector('.unread-count');
+                            if (unreadCountContainer) {
+                                let unreadCountElement = unreadCountContainer.querySelector('.unread-count');
 
-                            // 현재 멤버 번호와 비교하여 읽지 않은 메시지 수를 업데이트
-                            if (memberNo === currentMemberNo) {
-                                // 현재 채팅방과 비교
-                                if (currentChatRoomNo === chatRoomNo) {
-                                    // 현재 채팅방인 경우 읽음 개수 표시하지 않음
-                                    if (unreadCountElement) {
-                                        unreadCountElement.style.display = 'none'; // 읽음 개수 숨김
-                                    }
-                                } else {
-                                    // 현재 채팅방이 아닐 경우 읽음 개수 업데이트
-                                    if (unreadCountElement) {
-                                        unreadCountElement.innerText = unreadCount;
-
-                                        if (unreadCount > 0) {
-                                            unreadCountElement.style.display = 'block';
-                                            unreadCountElement.style.backgroundColor = 'red';
-                                            unreadCountElement.style.color = 'white';
-                                            unreadCountElement.style.width = '24px';
-                                            unreadCountElement.style.height = '24px';
-                                            unreadCountElement.style.lineHeight = '24px';
-                                            unreadCountElement.style.textAlign = 'center';
-                                            unreadCountElement.style.borderRadius = '50%';
-                                        } else {
-                                            unreadCountElement.style.display = 'none';
+                                // 현재 멤버 번호와 비교하여 읽지 않은 메시지 수를 업데이트
+                                if (memberNo === currentMemberNo) {
+                                    // 현재 채팅방과 비교
+                                    if (currentChatRoomNo === chatRoomNo) {
+                                        // 현재 채팅방인 경우 읽음 개수 표시하지 않음
+                                        if (unreadCountElement) {
+                                            unreadCountElement.style.display = 'none'; // 읽음 개수 숨김
                                         }
                                     } else {
-                                        if (unreadCount > 0) {
-                                            unreadCountElement = document.createElement('span');
-                                            unreadCountElement.classList.add('unread-count');
+                                        // 현재 채팅방이 아닐 경우 읽음 개수 업데이트
+                                        if (unreadCountElement) {
                                             unreadCountElement.innerText = unreadCount;
 
-                                            unreadCountElement.style.backgroundColor = 'red';
-                                            unreadCountElement.style.color = 'white';
-                                            unreadCountElement.style.width = '24px';
-                                            unreadCountElement.style.height = '24px';
-                                            unreadCountElement.style.lineHeight = '24px';
-                                            unreadCountElement.style.textAlign = 'center';
-                                            unreadCountElement.style.borderRadius = '50%';
-
-                                            // Append to unread-count-container
-                                            unreadCountContainer.appendChild(unreadCountElement);
-                                        }
-                                    }
-                                }
-
-                                // 채팅방 리스트에서 채팅방 위치 조정
-                                for (let i = 0; i < chatItems.length; i++) {
-                                    const currentChatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10);
-                                    if (currentChatRoomNo === chatRoomNo) {
-                                        const isPinned = chatItems[i].querySelector('.fa-thumbtack') !== null;
-                                        if (!isPinned) {
-                                            const pinnedItems = document.querySelectorAll('.chatItem .fa-thumbtack');
-                                            if (pinnedItems.length > 0) {
-                                                const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                                                lastPinnedItem.after(chatItems[i]);
+                                            if (unreadCount > 0) {
+                                                unreadCountElement.style.display = 'block';
+                                                unreadCountElement.style.backgroundColor = 'red';
+                                                unreadCountElement.style.color = 'white';
+                                                unreadCountElement.style.width = '24px';
+                                                unreadCountElement.style.height = '24px';
+                                                unreadCountElement.style.lineHeight = '24px';
+                                                unreadCountElement.style.textAlign = 'center';
+                                                unreadCountElement.style.borderRadius = '50%';
                                             } else {
-                                                chatList.insertBefore(chatItems[i], chatList.firstChild);
+                                                unreadCountElement.style.display = 'none';
+                                            }
+                                        } else {
+                                            if (unreadCount > 0) {
+                                                unreadCountElement = document.createElement('span');
+                                                unreadCountElement.classList.add('unread-count');
+                                                unreadCountElement.innerText = unreadCount;
+
+                                                unreadCountElement.style.backgroundColor = 'red';
+                                                unreadCountElement.style.color = 'white';
+                                                unreadCountElement.style.width = '24px';
+                                                unreadCountElement.style.height = '24px';
+                                                unreadCountElement.style.lineHeight = '24px';
+                                                unreadCountElement.style.textAlign = 'center';
+                                                unreadCountElement.style.borderRadius = '50%';
+
+                                                // Append to unread-count-container
+                                                unreadCountContainer.appendChild(unreadCountElement);
                                             }
                                         }
-                                        break;
+                                    }
+
+                                    // 채팅방 리스트에서 채팅방 위치 조정
+                                    for (let i = 0; i < chatItems.length; i++) {
+                                        const currentChatRoomNo = parseInt(chatItems[i].querySelector('input[type=hidden][id=chatRoomNo]').value, 10);
+                                        if (currentChatRoomNo === chatRoomNo) {
+                                            const isPinned = chatItems[i].querySelector('.fa-thumbtack') !== null;
+                                            if (!isPinned) {
+                                                const pinnedItems = document.querySelectorAll('.chatItem .fa-thumbtack');
+                                                if (pinnedItems.length > 0) {
+                                                    const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                                                    lastPinnedItem.after(chatItems[i]);
+                                                } else {
+                                                    chatList.insertBefore(chatItems[i], chatList.firstChild);
+                                                }
+                                            }
+                                            break;
+                                        }
                                     }
                                 }
                             }
