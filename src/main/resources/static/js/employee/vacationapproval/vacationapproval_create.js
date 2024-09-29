@@ -502,8 +502,9 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		});
 
 
-			
-			
+		//[김채영] 휴가 결재 pk
+		let vacationApprovalPk = null;
+
 			
 			// 등록  폼
 			const form = document.getElementById('vacAppCreateFrm');
@@ -592,30 +593,34 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			                confirmButtonText: "확인"
 			            });
 			        }
+			        vacationApprovalPk = data.approvalPk;
+                    let notificationData = {};
+
+                    if (approvers !== null) {
+                        notificationData.approvers = approvers;
+                    }
+
+                    if (references !== null) {
+                        notificationData.references = references;
+                    }
+                     console.log(vacationApprovalPk);
+                    alarmSocket.send(JSON.stringify({
+                       type: 'notificationVacationApproval',
+                       notificationData : notificationData,
+                       memberNo : memberNo,
+                       vacationApprovalPk : vacationApprovalPk
+                    }));
+
+                    alarmSocket.send(JSON.stringify({
+                       type: 'notificationVacationApprovalReviewers',
+                       reviewers : reviewers,
+                       memberNo : memberNo,
+                       vacationApprovalPk : vacationApprovalPk
+                    }));
 			    })
 			}
 
-			let notificationData = {};
-			
-			if (approvers !== null) {
-			    notificationData.approvers = approvers;
-			}
-			
-			if (references !== null) {
-			    notificationData.references = references;
-			}
-			
-			alarmSocket.send(JSON.stringify({
-			   type: 'notificationVacationApproval',
-			   notificationData : notificationData,
-			   memberNo : memberNo
-			}));
-			
-			alarmSocket.send(JSON.stringify({
-			   type: 'notificationVacationApprovalReviewers',
-			   reviewers : reviewers,
-			   memberNo : memberNo
-			}));
+
 
 	});
 });

@@ -39,4 +39,7 @@ public class Nofication {
 
     @Column(name="nofication_receive_no")
     private Long noficationReceiveNo;
+
+    @Column(name="nofication_type_pk")
+    private Long noficationTypePk;
 }
