@@ -19,10 +19,8 @@
         ORDER BY
         cm.chat_member_pin DESC,
         cm.chat_member_pin_time DESC,
-        CASE
-        WHEN cm.chat_member_pin = 0 THEN rm.recent_message_date
-        ELSE NULL
-        END DESC,
+        cm.chat_member_no DESC,
+        rm.recent_message_date DESC,
         cm.chat_member_join_date DESC;
     </select>
 
