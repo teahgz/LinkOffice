@@ -651,6 +651,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			throws Exception {
 		Map<String, Object> notificationData = (Map<String, Object>) jsonMap.get("notificationData");
 
+		Object approvalTitle = jsonMap.get("approvalTitle");
+		
 		Object sendNoobj = jsonMap.get("memberNo");
 
 		Long senderNo = null;
@@ -701,7 +703,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		
 		MemberDto member = memberService.selectMemberOne(senderNo);
 
-		String nofication_content = member.getMember_name()+"님이 기안한 결재 문서의 차례가 되었습니다.";
+		String nofication_content = member.getMember_name()+"님이 기안한 "+'"'+approvalTitle+'"'+" 문서의 결재 차례가 되었습니다.";
 		
 		String nofication_title = "전자결재";
 		int nofication_type = 7;
@@ -766,6 +768,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	private void handleApprovalReviewersAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
 			throws Exception {
 		
+		Object approvalTitle = jsonMap.get("approvalTitle");
+		
 		Object sendNoobj = jsonMap.get("memberNo");
 
 		Long senderNo = null;
@@ -802,7 +806,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			    	
 		MemberDto member = memberService.selectMemberOne(senderNo);
 
-		String nofication_content = member.getMember_name()+"님이 기안한 결재 문서의 참조자로 지정 되었습니다.";
+		String nofication_content = member.getMember_name()+"님이 기안한 "+'"'+approvalTitle+'"'+" 문서의 참조자로 지정 되었습니다.";
 		
 		String nofication_title = "전자결재";
 		int nofication_type = 8;
@@ -893,7 +897,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		List<ApprovalFlowDto> approvalDtos = approvalService.getApprovalFlows(approvalNo);
 		Long nextApproverNo = findNextApproverMemberNo(approvalDtos, senderNo);
 
-		String nofication_content = member.getMember_name()+"님이 기안한 결재 문서의 결재 차례가 되었습니다.";
+		String nofication_content = member.getMember_name()+"님이 기안한 "+'"'+approval.getApproval_title()+'"'+" 문서의 결재 차례가 되었습니다.";
 		String nofication_title = "전자결재";
 		int nofication_type = 9;
 
@@ -918,7 +922,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	         }
 
 		} else {
-	         noficationDto.setNofication_content('"'+approval.getApproval_title()+'"'+"문서의 결재가 완료되었습니다.");
+	         noficationDto.setNofication_content('"'+approval.getApproval_title()+'"'+" 문서의 결재가 완료되었습니다.");
 	         noficationDto.setNofication_receive_no(approvalMemberNo);
 	         noficationDto.setNofication_title(nofication_title);
 	         noficationDto.setNofication_type(nofication_type);
