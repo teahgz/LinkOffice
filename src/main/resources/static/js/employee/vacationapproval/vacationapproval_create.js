@@ -617,7 +617,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                        memberNo : memberNo,
                        vacationApprovalPk : vacationApprovalPk
                     }));
-			    })
+			    });
 			}
 
 
