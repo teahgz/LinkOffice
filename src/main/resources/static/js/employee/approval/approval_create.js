@@ -481,14 +481,16 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 						   type: 'notificationApproval',
 						   notificationData : notificationData,
 						   memberNo : memberNo,
-						   approvalPk : approvalPk
+						   approvalPk : approvalPk,
+						   approvalTitle : approvalTitle
 						}));
 						
 						alarmSocket.send(JSON.stringify({
 						   type: 'notificationApprovalReviewers',
 						   reviewers : reviewers,
 						   memberNo : memberNo,
-						   approvalPk : approvalPk
+						   approvalPk : approvalPk,
+						   approvalTitle : approvalTitle
 						}));
 				    });
 				}

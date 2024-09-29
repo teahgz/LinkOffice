@@ -608,14 +608,16 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                        type: 'notificationVacationApproval',
                        notificationData : notificationData,
                        memberNo : memberNo,
-                       vacationApprovalPk : vacationApprovalPk
+                       vacationApprovalPk : vacationApprovalPk,
+                       vacationapprovalTitle : vacationapproval_title
                     }));
 
                     alarmSocket.send(JSON.stringify({
                        type: 'notificationVacationApprovalReviewers',
                        reviewers : reviewers,
                        memberNo : memberNo,
-                       vacationApprovalPk : vacationApprovalPk
+                       vacationApprovalPk : vacationApprovalPk,
+                       vacationapprovalTitle : vacationapproval_title
                     }));
 			    });
 			}

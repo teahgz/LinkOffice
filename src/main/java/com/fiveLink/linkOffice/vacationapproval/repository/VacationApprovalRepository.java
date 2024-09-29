@@ -44,7 +44,6 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
 	 // 사원 휴가 신청 상세 조회 
 	 VacationApproval findByVacationApprovalNo(Long VacatioApprovalNo);
 	 
-	 
 	// [박혜선] 사원 휴가 신청 조회(근태 조회)
 	 List<VacationApproval> findByMemberMemberNo(Long memberNo);
 	 
@@ -56,5 +55,7 @@ public interface VacationApprovalRepository extends JpaRepository<VacationApprov
              "JOIN fl_member m ON va.member_no = m.member_no " +  
              "WHERE va.vacation_approval_status = :status", nativeQuery = true)
 List<Object[]> findApprovedVacationSchedules(@Param("status") int status);
+
+
 
 }
