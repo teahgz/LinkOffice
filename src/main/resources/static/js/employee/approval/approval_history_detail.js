@@ -1,4 +1,6 @@
 // 승인 버튼 업데이트
+let vacationApprovalPk = null;
+
 function approveRequest(){
 	 const csrfToken = document.querySelector('#csrf_token').value;
 	 const approvalNo = document.querySelector('#approval_no').value;
@@ -30,6 +32,10 @@ function approveRequest(){
 		}
 	})
 	
+	vacationApprovalPk = data.approvalPk;
+	
+	console.log("승인시"+vacationApprovalPk);
+	
     const appprovalMemberNo = document.getElementById('approval_member_no').value;
     const memberNo = document.getElementById('member_no').value;
 
@@ -37,7 +43,8 @@ function approveRequest(){
 		type: 'notificationAppApprove',
 		approvalNo : approvalNo,
 		appprovalMemberNo :appprovalMemberNo,
-		memberNo : memberNo
+		memberNo : memberNo,
+		vacationApprovalPk : vacationApprovalPk
 	}));
 }
 
