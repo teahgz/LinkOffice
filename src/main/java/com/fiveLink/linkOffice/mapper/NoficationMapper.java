@@ -25,5 +25,6 @@ public interface NoficationMapper {
     void readTypePkNotification(Map<String, Object> params);
     
     Long getApprovalPk();
+    
 
 }
