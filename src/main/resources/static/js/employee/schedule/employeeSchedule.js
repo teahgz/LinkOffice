@@ -56,8 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             departments.forEach(function(department) {
                 const checkbox = $(`
+                	<div class="department_check_row">
                     <input type="checkbox" class="department-checkbox" id="dept_${department.department_no}" data-department-no="${department.department_no}">
-                    <label for="dept_${department.department_no}">${department.department_name}</label>
+                    <label for="dept_${department.department_no}">${department.department_name}</label></div>
                 `);
                 
                 departmentCheckboxesDiv.append(checkbox); 
@@ -425,7 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }  
         
         if (schedule.schedule_allday === 1 && eventEnd) {
-	        eventEnd.setDate(eventEnd.getDate() + 1);
+	        eventEnd.setDate(eventEnd.getDate() + 2);
 	    }
 	    
         var event = {
@@ -706,8 +707,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const searchCategory = document.getElementById('searchCategory').value; 
 	
 	    // 시작일과 종료일을 가져오고 Date 객체 생성
-	    const startDateValue = document.getElementById('startDate').value; 
-	    const endDateValue = document.getElementById('endDate').value; 
+	    const startDateValue = document.getElementById('searchstartDate').value; 
+	    const endDateValue = document.getElementById('searchendDate').value; 
 	    const startDate = startDateValue ? new Date(startDateValue) : null;
 	    const endDate = endDateValue ? new Date(endDateValue) : null;
 	
@@ -2222,9 +2223,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}  
 	 
 	document.getElementById('searchButton').addEventListener('click', filterEvents);
-	document.getElementById('startDate').addEventListener('change', function () {
+	document.getElementById('searchstartDate').addEventListener('change', function () {
 	    const startDateValue = this.value; 
-	    const endDateInput = document.getElementById('endDate');  
+	    const endDateInput = document.getElementById('searchendDate');  
 	 
 	    endDateInput.value = '';
 	 
