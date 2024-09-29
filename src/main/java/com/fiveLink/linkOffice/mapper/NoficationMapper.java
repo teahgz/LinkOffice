@@ -16,5 +16,12 @@ public interface NoficationMapper {
     void readNofication(Map<String, Object> params);
 
     void readTypeNotification(Map<String, Object> params);
+
     Long insertAlarmPk();
+
+    Long getVacationApprovalPk();
+
+    //휴가 결재
+    void readTypePkNotification(Map<String, Object> params);
+
 }

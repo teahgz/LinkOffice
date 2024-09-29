@@ -78,4 +78,18 @@ public class NoficationController {
 
         return ResponseEntity.ok(response);
     }
+
+    //휴가 결재 테스트
+    @GetMapping("/api/nofication/type/Approval/read/{currentMember}/{functionType}/{noficationTypePk}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> readTypePkNotification(@PathVariable("currentMember") Long currentMember, @PathVariable("functionType") int functionType, @PathVariable("noficationTypePk") Long noficationTypePk) {
+
+
+        boolean read = noficationService.readTypePkNotification(currentMember, functionType, noficationTypePk);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("read", read);
+
+        return ResponseEntity.ok(response);
+    }
 }
