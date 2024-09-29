@@ -98,7 +98,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 int count = chatRoomService.chatUnreadCount(currentRoom, memberNo);
 
                 memberUnreadCount.put("unreadCount", count);
-
+                System.out.println("chat:"+ count);
                 unreadCounts.add(memberUnreadCount);
             }
 

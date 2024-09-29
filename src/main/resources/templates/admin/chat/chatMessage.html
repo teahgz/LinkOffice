@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 
 
-    <section th:each="member : ${memberdto}">
+    <section class="chatSection" th:each="member : ${memberdto}">
         <input type="hidden" id="currentMember" th:value="${member.member_no}"/>
         <div class="chatArea">
             <div class="chatContainer">
@@ -66,9 +66,9 @@
                     </div>
 
                     <div class ="chatHeader-buttons" id="chatHeader-buttons" style="display:none;">
-                        <button id="searchChatContent" class="btn btn-primary no-style">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
+<!--                        <button id="searchChatContent" class="btn btn-primary no-style">-->
+<!--                            <i class="fa-solid fa-magnifying-glass"></i>-->
+<!--                        </button>-->
                         <div class="chatDropdown">
                             <button id="openDrop" class="btn btn-primary no-style">
                                 <i class="fa-solid fa-bars"></i>

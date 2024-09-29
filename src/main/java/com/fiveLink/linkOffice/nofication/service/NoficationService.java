@@ -83,5 +83,21 @@ public class NoficationService {
             return false;
         }
     }
+    //휴가 결재
+    public boolean readTypePkNotification(Long memberNo, int functionType, Long noficationTypePk) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("functionType", functionType);
+            params.put("memberNo", memberNo);
+            params.put("noficationTypePk", noficationTypePk);
+            noficationMapper.readTypePkNotification(params);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

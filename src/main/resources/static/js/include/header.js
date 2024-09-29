@@ -166,7 +166,7 @@ function addMarkAsReadListener() {
 function handleMarkAsRead() {
         const memberNo = headerCurrentMember;
         const notificationNos = [];
-        console.log("멤버 : "+memberNo);
+
         const notificationItems = document.querySelectorAll('#notification-bell-modal li');
         notificationItems.forEach(item => {
             const notificationNo = item.getAttribute('data-notification-no');

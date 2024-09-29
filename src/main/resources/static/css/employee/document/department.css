@@ -332,7 +332,7 @@
     padding: 0.5vh 0.5vw;
     background-color: #B1C2DD;
     border: none;
-    border-radius: 0.65vw;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
