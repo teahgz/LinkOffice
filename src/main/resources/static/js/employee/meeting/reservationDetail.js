@@ -623,4 +623,8 @@ $(document).ready(function() {
     if (reservationDate <= today && reservationStartTime < currentTime) { 
         reservationButtons.style.display = 'none';
     }
+     
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '회의실&emsp;&gt;&emsp;예약 내역';
+ 
 });

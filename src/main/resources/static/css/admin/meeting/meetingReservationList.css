@@ -4,11 +4,7 @@
 	position: relative; 
 	max-width: 1250px;
 	margin: 40px auto;
-	padding: 30px;
-	box-sizing: border-box;
-	background-color: #ffffff;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	border-radius: 8px;
+	padding: 30px; 
 }
  
 .search_sort_container {
@@ -67,24 +63,28 @@
 }
 
 .reservation_list_table {
-	width: 100%;
-	border-collapse: separate;
-	border-spacing: 0;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	overflow: hidden;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
 }
 
 .reservation_list_table th, .reservation_list_table td {
-	padding: 15px;
-	text-align: left;
-	border-bottom: 1px solid #ddd;
+	padding: 11px 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
 }
 
 .reservation_list_table th {
-	background-color: #f2f2f2;
-	font-weight: bold;
-	color: #333;
+	background-color: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+    font-size: 13px;
 }
 
 .reservation_list_table tr:last-child td {

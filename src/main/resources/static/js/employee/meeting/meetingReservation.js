@@ -793,4 +793,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '회의실&emsp;&gt;&emsp;회의실 예약';
+
+
 });

@@ -1,10 +1,14 @@
 @charset "UTF-8";
- 
+
+section {
+	margin:0;
+	padding : 0;
+}
 #calendar {
     flex-grow: 1;
     padding: 20px;
-    height: calc(100% - 100px); /* 100px 만큼 높이를 줄여서 footer 공간 확보 */
-    overflow-y: auto; /* 세로 스크롤 가능하게 설정 */
+    height: calc(100% - 100px);  
+    overflow-y: auto;  
 }
 .checkbox-group {
     margin-bottom: 15px;
@@ -28,50 +32,57 @@
 .fc .fc-button.fc-button-primary {
     background-color: transparent; 
     border:none;
-    color: #808080;
+    color: #9d9d9d;
+    font-size : 20px;
+    font-weight: 550;
 }
 
 .fc .fc-button.fc-button-primary:hover {
     background-color: transparent; 
     border:none;
-    color: #9CAFC7;
+    color: #2692f2;
 }
  
 .fc-prev-button {
     background-color: transparent; 
     border:none;
-    color: #808080;
+    color: #9d9d9d;
 }
 
 .fc-prev-button:hover {
     background-color: transparent; 
     border:none;
-    color: #9CAFC7;
+    color: #2692f2;
 }
  
 .fc-next-button {
     background-color: transparent; 
     border:none;
-    color: #808080;
+    color: #9d9d9d; 
 } 
 .fc-daygrid-day {
     height: 150px;  
 }  
 .google-holiday {
-	text-align: right; 
-}
-
-.fc {
-    width: 70%; 
-    height: 120px;  
-}
+	text-align: right;  
+} 
 
 .fc-next-button:hover {
     background-color: transparent; 
     border:none;
-    color: #9CAFC7;
+    color: #2692f2;
+}
+.fc-button, .fc-button:focus, .fc-button:active {
+    outline: none !important; 
+    box-shadow: none !important; 
+    border: none !important;  
 }
 
+.fc-button:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
 
 .fc .fc-button.fc-button-primary.fc-button-active {
     background-color: transparent; 
@@ -79,6 +90,7 @@
     color: black;
     font-weight: 550;
 }
+
 
 /* 등록 모달 */
 .modal {
@@ -145,23 +157,25 @@ input[type=checkbox] {
 } 
 
 .plus_detail_option {
-	margin-left: 82px;
+	margin-left: 72px;
 	flex: 1;  
     padding: 5px; 
     border: 1px solid #ccc;  
     border-radius: 4px;  
     font-size: 14px; 
-    width : 418px;
+    width : 405px;
+    margin-bottom: 5px;
 }
 
 .plus_detail_option_2 {
-	margin-left: 67px;
+	margin-left: 53px;
 	flex: 1;  
     padding: 5px; 
     border: 1px solid #ccc;  
     border-radius: 4px;  
     font-size: 14px; 
-    width : 418px;
+    width : 405px;
+    margin-bottom: 5px;
 }
 
 textarea {
@@ -191,9 +205,9 @@ textarea {
 
 .participate_modal {
     display: none;  
-    position: fixed;
+    position: fixed; 
     z-index: 9999;
-    right : 20px;
+    right : 900px;
     top: 95px;
     width: 450px;
     height: 400px; 
@@ -400,13 +414,13 @@ textarea{
 
 #create_employee_schedule { 
     background-color: #fefefe;
-    margin: 70px auto;
+    margin: 130px auto;
     padding: 20px 40px;
     border: 1px solid #888;
     width: 80%; 
     max-width: 600px;
     border-radius: 8px;
-    max-height: 90%;
+    max-height: 750px;
     overflow-y: auto;
 }
 
@@ -415,8 +429,8 @@ textarea{
     display: none;
     position: fixed;
     z-index: 999;
-    left: 0;
-    top: 0;
+    left: 400px;
+    top: 50px;
     width: 100%;
     height: 100%; 
     background-color: rgba(0, 0, 0, 0.0);
@@ -580,46 +594,219 @@ textarea{
 	z-index: 1;
 }
 
+/* Main layout */
+.employee_section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+ 
 #header {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
+    padding: 20px;
+    width : 80%; 
 }
-.schedule-filters {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-    overflow-y: auto;
+
+#addEventBtn {
+    padding: 15px 30px;
+    background-color: #B1C2DD;
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+    margin-bottom: 30px;
+    width: 230px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600px; 
 }
+
+#addEventBtn:hover {
+    background-color: #9CAFC7;
+}
+.department-checkbox, .all-checkbox {
+	margin-bottom: 20px;
+	cursor:pointer;
+	margin-left: 20px;
+}
+.department-checkbox {
+	margin-left: 20px;
+} 
+
+label {
+	cursor:pointer;
+	font-size : 19px;
+	margin-left: 10px;
+}
+  
 .search-container {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
     display: flex;
     gap: 10px;
     align-items: center;
+    padding: 20px;
+    margin-left: 350px;
+}
+
+#searchCategory,
+#searchInput,
+#searchstartDate,
+#searchendDate {
+    padding: 10px;
+    font-size : 16px;
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
 } 
-#addEventBtn {
+    
+#searchButton {
     padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #B1C2DD;
+    color: black;
     border: none;
+    border-radius: 4px;  
+    font-size : 15px; 
     cursor: pointer;
 }
-.department-checkbox, .all-checkbox {
-    margin-right: 5px;
+
+#searchButton:hover { 
+    background-color: #9CAFC7; 
 }
-#searchCategory, #searchInput, #startDate, #endDate {
+ 
+.bottom_area {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+ 
+.schedule-filters {
+    width: 250px;
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+}
+
+.schedule-filters > div {
+    margin-bottom: 10px;
+}
+ 
+#calendar {
+    flex: 1;
+    padding: 20px 90px;
+    overflow-y: auto;
+}
+ 
+.fc {
+    height: 100% !important;
+}
+ 
+.department_check_row {
+    margin-bottom: 5px; 
+} 
+  
+.custom-picker {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 5px;
+  font-size: 14px;
+  overflow-y: auto; 
+}
+
+.custom-picker option {
+  padding: 5px;
+}
+
+.custom-picker option:hover {
+  background-color: #f0f0f0;
+}
+
+.fc-customYearPicker-button,
+.fc-customMonthPicker-button {
+  position: relative;
+}
+
+.fc-customYearPicker-button:after,
+.fc-customMonthPicker-button:after {
+  content: '\25BC';
+  font-size: 0.7em;
+  margin-left: 7px;
+}
+
+.fc-customYearPicker-button:hover,
+.fc-customMonthPicker-button:hover {
+  background-color: #f0f0f0;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+	margin-bottom: 30px;
+}
+
+.button-group {
+	margin-left : 70px;
+	margin-top: 10px;
+}
+
+.modal_in_btn {
+	width : 110px;
+    padding: 10px 20px;
+    background-color: #B1C2DD;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right : 5px;
+}
+
+.cancel_in_btn {
+	width : 110px;
+    padding: 10px 20px;
+    background-color: #C0C0C0;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel_in_btn:hover {
+    background-color: #9b9b9b;
+}
+
+.modal_in_btn:hover {
+    background-color: #9CAFC7;
+} 
+
+.custom-dropdown {
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.selected-option {
     padding: 5px;
 }
-#searchButton {
-    padding: 5px 10px;
-    background-color: #008CBA;
-    color: white;
-    border: none;
+
+.dropdown-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    background-color: white;
+    z-index: 1;
+}
+
+.dropdown-list li {
+    padding: 10px;
+    list-style: none;
     cursor: pointer;
 }
-.employee_section {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 20px;
-    height: 100vh;
+
+.dropdown-list li:hover {
+    background-color: #f0f0f0;
 }
