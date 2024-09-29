@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fiveLink.linkOffice.mapper.NoficationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,14 +35,17 @@ public class VacationApprovalService {
 	private final VacationTypeRepository vacationTypeRepository;
 	private final VacationApprovalFileRepository vacationApprovalFileRepository;
 	private final VacationApprovalFlowRepository vacationApprovalFlowRepository;
+	//[김채영] 테스트 알림 매퍼
+	private final NoficationMapper noficationMapper;
 	
 	@Autowired
-	public VacationApprovalService(VacationApprovalRepository vacationApprovalRepository,MemberRepository memberRepository,VacationTypeRepository vacationTypeRepository, VacationApprovalFileRepository vacationApprovalFileRepository, VacationApprovalFlowRepository vacationApprovalFlowRepository) {
+	public VacationApprovalService(VacationApprovalRepository vacationApprovalRepository,MemberRepository memberRepository,VacationTypeRepository vacationTypeRepository, VacationApprovalFileRepository vacationApprovalFileRepository, VacationApprovalFlowRepository vacationApprovalFlowRepository, NoficationMapper noficationMapper) {
         this.vacationApprovalRepository = vacationApprovalRepository;
         this.memberRepository = memberRepository;
         this.vacationTypeRepository = vacationTypeRepository;
         this.vacationApprovalFileRepository = vacationApprovalFileRepository;
         this.vacationApprovalFlowRepository = vacationApprovalFlowRepository;
+		this.noficationMapper = noficationMapper;
     }
 	
 	// 사용자 휴가신청함 목록 조회
@@ -389,5 +393,10 @@ public class VacationApprovalService {
 		dto.setDepartment_name(departmentName);
 
 	    return dto;
+	}
+
+	//[김채영] 테스트 실시간 휴가 결재 pk값
+	public Long getVacationApprovalPk(){
+		return noficationMapper.getVacationApprovalPk();
 	}
 }
