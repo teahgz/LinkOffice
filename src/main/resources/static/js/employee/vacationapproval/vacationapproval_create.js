@@ -194,11 +194,14 @@ endDateInput.addEventListener("change", function() {
 });
 
 
-// 오늘 이전 날짜 막기
-const today = new Date().toISOString().split("T")[0];
+// 오늘 이전 날짜 막기 재설정
+const today = new Date();
+today.setDate(today.getDate() + 1);  
+const minDate = today.toISOString().split("T")[0];
 
-document.getElementById("vacationapproval_start_date").setAttribute("min", today);
-document.getElementById("vacationapproval_end_date").setAttribute("min", today);
+document.getElementById("vacationapproval_start_date").setAttribute("min", minDate);
+document.getElementById("vacationapproval_end_date").setAttribute("min", minDate);
+
 
 
 
