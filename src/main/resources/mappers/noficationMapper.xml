@@ -37,4 +37,28 @@
         WHERE nofication_receive_no = #{memberNo}
         AND nofication_type = #{functionType}
     </update>
+
+<!-- 휴가 결재 pk   -->
+    <select id="getVacationApprovalPk" resultType="Long">
+        SELECT vacation_approval_no
+        FROM fl_vacation_approval
+        ORDER BY vacation_approval_no DESC
+        LIMIT 1
+    </select>
+
+    <!--휴가 결재 읽음 처리-->
+    <update id="readTypePkNotification"  parameterType="java.util.Map">
+        UPDATE fl_nofication SET
+        nofication_status = 1
+        WHERE nofication_receive_no = #{memberNo}
+        AND nofication_type = #{functionType}
+        AND nofication_type_pk = #{noficationTypePk}
+    </update>
+    
+    <select id="getApprovalPk" resultType="Long">
+        SELECT approval_no
+        FROM fl_approval
+        ORDER BY approval_no DESC
+        LIMIT 1
+    </select>    
 </mapper>

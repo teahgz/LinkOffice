@@ -1,9 +1,11 @@
+.chatSection{
+    padding : 0;
+}
 .chatArea {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin-top: 2vw;
-    margin-bottom: 5vw;
+    border-bottom: 1px solid #ddd;
 }
 .no-style {
     border: none;
@@ -15,12 +17,20 @@
 
 .chatElement {
     border: none;
-    width: 45%;
+    width: 60%;
     background-color: white;
     display: flex;
     flex-direction: column;
     height: 85vh;
     border-left: 1px solid #ddd;
+}
+
+
+.message-content p {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
+    text-align: left;
 }
 .chatHeader {
        border-bottom: 1px solid #ddd;
@@ -46,7 +56,7 @@
 }
 .chatContainer {
     border: none;
-    width: 25%;
+    width: 40%;
     background-color: white;
     height: 85vh;
 }
@@ -263,8 +273,9 @@
     display: block;
     color: #666;
 }
+
 .my-message .message-ele {
-    text-align: right;
+    text-align: left;
     margin-left: auto;
     display: flex;
     flex-direction: column-reverse;

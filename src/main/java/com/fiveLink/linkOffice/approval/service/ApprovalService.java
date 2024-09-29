@@ -22,6 +22,7 @@ import com.fiveLink.linkOffice.approval.domain.ApprovalFlowDto;
 import com.fiveLink.linkOffice.approval.repository.ApprovalFileRepository;
 import com.fiveLink.linkOffice.approval.repository.ApprovalFlowRepository;
 import com.fiveLink.linkOffice.approval.repository.ApprovalRepository;
+import com.fiveLink.linkOffice.mapper.NoficationMapper;
 import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.vacationapproval.repository.VacationApprovalRepository;
@@ -35,12 +36,14 @@ public class ApprovalService {
 	private final ApprovalRepository approvalRepository;
 	private final ApprovalFlowRepository approvalFlowRepository;
 	private final ApprovalFileRepository approvalFileRepository;
+	private final NoficationMapper noficationMapper;
 	@Autowired
-	public ApprovalService(MemberRepository memberRepository, ApprovalRepository approvalRepository, ApprovalFlowRepository approvalFlowRepository, ApprovalFileRepository approvalFileRepository, VacationApprovalRepository vacationApprovalRepository) {
+	public ApprovalService(MemberRepository memberRepository, ApprovalRepository approvalRepository, ApprovalFlowRepository approvalFlowRepository, ApprovalFileRepository approvalFileRepository, VacationApprovalRepository vacationApprovalRepository, NoficationMapper noficationMapper) {
         this.memberRepository = memberRepository;
         this.approvalRepository = approvalRepository;
         this.approvalFlowRepository = approvalFlowRepository;
         this.approvalFileRepository = approvalFileRepository;
+        this.noficationMapper = noficationMapper;
     }
 	
 	// 사용자 결재 신청 (파일 O)
@@ -530,6 +533,9 @@ public class ApprovalService {
 	        return approvalFlowdto;
 	    }
 
-	
+		// 실시간 전자 결재 pk 값
+		public Long getApprovalPk(){
+			return noficationMapper.getApprovalPk();
+		}	
 
 }

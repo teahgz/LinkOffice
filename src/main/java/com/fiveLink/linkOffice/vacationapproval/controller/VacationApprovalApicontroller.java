@@ -115,6 +115,9 @@ public class VacationApprovalApicontroller {
 	            vaFiledto.setVacation_approval_file_size(file.getSize());
 
 	            if (vacationApprovalService.createVacationApprovalFile(vappdto, vaFiledto, approvalFlowDtos) != null) {
+					Long vacationApprovalPk = vacationApprovalService.getVacationApprovalPk();
+					System.out.println("pk: "+ vacationApprovalPk);
+					response.put("approvalPk", String.valueOf(vacationApprovalPk));
 	                response.put("res_code", "200");
 	                response.put("res_msg", "휴가 신청이 완료되었습니다.");
 	                isFileUploaded = true;
@@ -124,6 +127,10 @@ public class VacationApprovalApicontroller {
 	    // 파일이 없을 떄 
 	    if (!isFileUploaded) {
 	        if (vacationApprovalService.createVacationApproval(vappdto,approvalFlowDtos) != null) {
+				//[김채영] 휴가 결재 pk값 테스트
+				Long vacationApprovalPk = vacationApprovalService.getVacationApprovalPk();
+				System.out.println("pk: "+ vacationApprovalPk);
+				response.put("approvalPk", String.valueOf(vacationApprovalPk));
 	            response.put("res_code", "200");
 	            response.put("res_msg", "휴가 신청이 완료되었습니다.");
 	        }

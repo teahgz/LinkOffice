@@ -20,6 +20,7 @@ public class NoficationDto {
     private String nofication_content;
     private int nofication_status;
     private Long nofication_receive_no;
+    private Long nofication_type_pk;
 
     public Nofication toEntity() {
         return Nofication.builder()
@@ -31,6 +32,7 @@ public class NoficationDto {
                 .noficationContent(nofication_content)
                 .noficationStatus(nofication_status)
                 .noficationReceiveNo(nofication_receive_no)
+                .noficationTypePk(nofication_type_pk)
                 .build();
     }
     public NoficationDto toDto(Nofication nofication){
@@ -43,6 +45,7 @@ public class NoficationDto {
                 .nofication_content(nofication.getNoficationContent())
                 .nofication_status(nofication.getNoficationStatus())
                 .nofication_receive_no(nofication.getNoficationReceiveNo())
+                .nofication_type_pk(nofication.getNoficationTypePk())
                 .build();
     }
 }

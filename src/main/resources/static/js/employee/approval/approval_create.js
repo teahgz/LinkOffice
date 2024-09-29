@@ -392,7 +392,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 
 		});
 
-
+			let approvalPk = null;
 			// 등록 폼
 			
 			const form = document.getElementById('appCreateFrm');
@@ -465,29 +465,32 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			                confirmButtonText: "확인"
 				            });
 				        }
-				    })
+			
+						approvalPk = data.approvalPk;	
+						let notificationData = {};
+						
+						if (approvers !== null) {
+						    notificationData.approvers = approvers;
+						}
+						
+						if (references !== null) {
+						    notificationData.references = references;
+						}
+						console.log(approvalPk);
+						alarmSocket.send(JSON.stringify({
+						   type: 'notificationApproval',
+						   notificationData : notificationData,
+						   memberNo : memberNo,
+						   approvalPk : approvalPk
+						}));
+						
+						alarmSocket.send(JSON.stringify({
+						   type: 'notificationApprovalReviewers',
+						   reviewers : reviewers,
+						   memberNo : memberNo,
+						   approvalPk : approvalPk
+						}));
+				    });
 				}
-				
-			let notificationData = {};
-			
-			if (approvers !== null) {
-			    notificationData.approvers = approvers;
-			}
-			
-			if (references !== null) {
-			    notificationData.references = references;
-			}
-			
-			alarmSocket.send(JSON.stringify({
-			   type: 'notificationApproval',
-			   notificationData : notificationData,
-			   memberNo : memberNo
-			}));
-			
-			alarmSocket.send(JSON.stringify({
-			   type: 'notificationApprovalReviewers',
-			   reviewers : reviewers,
-			   memberNo : memberNo
-			}));
 		});
 	});
