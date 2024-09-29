@@ -585,20 +585,24 @@ document.addEventListener('DOMContentLoaded', function() {
             initialView: 'dayGridMonth',
             locale: 'ko',
             headerToolbar: {
-                left: 'prev,next today yearButton,monthButton',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-            },
-            customButtons: {
-                yearButton: {
-                    text: '년도',
-                    click: showYearPicker
-                },
-                monthButton: {
-                    text: '월',
-                    click: showMonthPicker
-                }
-            },
+		      left: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth,prevYear, prev',
+		      center: 'title',
+		      right: 'next, nextYear, today, customYearPicker, customMonthPicker'
+		    },
+		    customButtons: {
+		      customYearPicker: {
+		        text: '년도',
+		        click: function(e) {
+		          togglePicker('yearPicker', e.currentTarget);
+		        }
+		      },
+		      customMonthPicker: {
+		        text: '월',
+		        click: function(e) {
+		          togglePicker('monthPicker', e.currentTarget);
+		        }
+		      }
+		    },
             contentHeight: 'auto',
             handleWindowResize: true,
             fixedWeekCount: false,
@@ -664,9 +668,10 @@ document.addEventListener('DOMContentLoaded', function() {
             eventOrder: '-order,-allDay,start',
             buttonText: {
                 today: '오늘',
-                month: '월',
-                week: '주',
-                day: '일'
+                month: '월간',
+                week: '주간',
+                day: '일간',
+                listMonth : '목록'
             },
             dayCellContent: function(info) {
                 var number = document.createElement("a");
@@ -682,7 +687,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 return { domNodes: [] };
             },
-            dayMaxEvents: 3 ,
+            dayMaxEvents: 3,
+            moreLinkContent: function(args) {
+			    return ' + ' + args.num;
+			 },	
             dateClick: function(info) {
 			    selectedDate = info.dateStr;   
 			    $('#eventDate').val(selectedDate);   
@@ -763,11 +771,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	        if (event.allDay === true) {  
 	        	eventStartDate = new Date(event.start);
 	        	eventStartDate.setDate(eventStartDate.getDate() + 1);
+	        	console.log(eventStartDate);
 	            eventEndDate = new Date(event.start);
 	            eventEndDate.setDate(eventEndDate.getDate() - 1);
 	        } else {
 				eventStartDate = new Date(event.start);
-				eventStartDate.setDate(eventStartDate.getDate() - 1);
+				eventStartDate.setDate(eventStartDate.getDate() + 1);
 	            eventEndDate = eventStartDate;  
 	        }
 	  		 
@@ -805,63 +814,74 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	}
   
-     function showYearPicker() {
-	    const currentYear = calendar.getDate().getFullYear();
-	    const yearPicker = document.createElement('select');
-	    
-	    for (let year = currentYear - 5; year <= currentYear + 5; year++) {
-	        const option = document.createElement('option');
-	        option.value = year;
-	        option.text = year;
-	        if (year === currentYear) option.selected = true;
-	        yearPicker.appendChild(option);
-	    }
-	    
-	    yearPicker.onchange = function() {
-	        const selectedYear = parseInt(this.value);
-	        const currentDate = calendar.getDate();
-	        calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
-	    };
-	    
-	    Swal.fire({
-	        title: '년도 선택',
-	        html: yearPicker,
-	        showCancelButton: true,
-	        cancelButtonColor: '#C0C0C0',
-	        confirmButtonColor: '#B1C2DD',
-	        confirmButtonText: '확인',
-	        cancelButtonText: '취소'
+    function createPicker(id, options) {
+	    const picker = document.createElement('select');
+	    picker.id = id;
+	    picker.className = 'custom-picker';
+	    picker.size = 7; 
+	    picker.style.display = 'none';
+	    options.forEach(option => {
+	      const optionEl = document.createElement('option');
+	      optionEl.value = option.value;
+	      optionEl.text = option.text;
+	      picker.appendChild(optionEl);
 	    });
-	}
+	    document.body.appendChild(picker);
+	    return picker;
+   }
 	
-	function showMonthPicker() {
-	    const currentDate = calendar.getDate();
-	    const monthPicker = document.createElement('select');
-	    const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+   function togglePicker(pickerId, button) {
+	    const picker = document.getElementById(pickerId);
+	    const otherPickerId = pickerId === 'yearPicker' ? 'monthPicker' : 'yearPicker';
+	    const otherPicker = document.getElementById(otherPickerId);
 	    
-	    months.forEach((month, index) => {
-	        const option = document.createElement('option');
-	        option.value = index;
-	        option.text = month;
-	        if (index === currentDate.getMonth()) option.selected = true;
-	        monthPicker.appendChild(option);
-	    });
-	    
-	    monthPicker.onchange = function() {
-	        const selectedMonth = parseInt(this.value);
-	        calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
-	    };
-	    
-	    Swal.fire({
-	        title: '월 선택',
-	        html: monthPicker,
-	        confirmButtonColor: '#B1C2DD',
-	        cancelButtonColor: '#C0C0C0',
-	        showCancelButton: true,
-	        confirmButtonText: '확인',
-	        cancelButtonText: '취소'
-	    });
-	}
+	    if (picker.style.display === 'none') {
+	      const rect = button.getBoundingClientRect();
+	      picker.style.display = 'block';
+	      picker.style.top = `${rect.bottom}px`;
+	      picker.style.left = `${rect.left}px`;
+	      picker.focus(); 
+	      otherPicker.style.display = 'none'; 
+	    } else {
+	      picker.style.display = 'none';
+	    }
+   }
+	
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({length: 11}, (_, i) => ({
+    value: currentYear - 5 + i,
+    text: `${currentYear - 5 + i}년`
+  }));
+	
+  const monthOptions = Array.from({length: 12}, (_, i) => ({
+    value: i,
+    text: `${i + 1}월`
+  }));
+	
+  const yearPicker = createPicker('yearPicker', yearOptions);
+  const monthPicker = createPicker('monthPicker', monthOptions);
+
+  yearPicker.onchange = function() {
+    const selectedYear = parseInt(this.value);
+    const currentDate = calendar.getDate();
+    calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
+    this.style.display = 'none';
+  };
+
+  monthPicker.onchange = function() {
+    const selectedMonth = parseInt(this.value);
+    const currentDate = calendar.getDate();
+    calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
+    this.style.display = 'none';
+  };
+ 
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.fc-customYearPicker-button') && !e.target.closest('.fc-customMonthPicker-button') && !e.target.closest('.custom-picker')) {
+      yearPicker.style.display = 'none';
+      monthPicker.style.display = 'none';
+    }
+  });
+		 
 	
     // 일정 등록
     function roundToNearest30Minutes(timeStr) {

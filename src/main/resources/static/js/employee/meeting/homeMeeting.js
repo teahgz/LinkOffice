@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
             initialView: 'dayGridMonth',
             locale: 'ko',
             headerToolbar: {
-                left: 'prev,next today',
+                left: 'prev,next',
                 center: 'title',
-                right: ''
+                right: 'today'
             },
             buttonText: {
 	            today: '오늘'
