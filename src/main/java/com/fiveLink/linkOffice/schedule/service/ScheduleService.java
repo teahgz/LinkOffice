@@ -433,8 +433,7 @@ public class ScheduleService {
             scheduleDto.setSchedule_end_date(EndDateString); 
             
             Long newScheduleId = savedeleteCompanySchedule(scheduleDto, scheduleRepeatDto);  
-            
-            System.out.println("newScheduleId : " + newScheduleId);
+             
              
         try {
             Optional<Schedule> newScheduleOptional = scheduleRepository.findById(newScheduleId);
@@ -550,23 +549,17 @@ public class ScheduleService {
 
     // 사원 부서 체크박스 상태 저장
 	public void updateScheduleCheck(Long memberNo, Long departmentNo, Long scheduleCheckStatus) { 
-	    System.out.println(departmentNo);
-	    System.out.println(scheduleCheckStatus);
-	    // 상태가 1인 기존 체크 상태 검색
+
 	    ScheduleCheck existingCheckStatusOne = scheduleCheckRepository.findByMemberNoAndDepartmentNoAndScheduleCheckStatus(memberNo, departmentNo, 1L);
 
-	    // 상태가 0인 기존 체크 상태 검색
 	    ScheduleCheck existingCheckStatusZero = scheduleCheckRepository.findByMemberNoAndDepartmentNoAndScheduleCheckStatus(
 	            memberNo, departmentNo, 0L);
 
-	    // 체크 상태를 업데이트
-	    if (scheduleCheckStatus.equals(0L)) { // 체크박스가 체크된 상태
+	    if (scheduleCheckStatus.equals(0L)) { 
 	        if (existingCheckStatusOne != null) {
-	            // 상태가 1인 경우, 상태를 0으로 업데이트
 	            existingCheckStatusOne.setScheduleCheckStatus(0L);
 	            scheduleCheckRepository.save(existingCheckStatusOne);
 	        } else if (existingCheckStatusZero == null) {
-	            // 상태가 0인 체크가 없는 경우 새 체크 생성
 	            ScheduleCheck newScheduleCheck = ScheduleCheck.builder()
 	                    .memberNo(memberNo)
 	                    .departmentNo(departmentNo)
@@ -574,9 +567,8 @@ public class ScheduleService {
 	                    .build();
 	            scheduleCheckRepository.save(newScheduleCheck);
 	        }
-	    } else { // 체크박스가 체크 해제된 상태
+	    } else { 
 	        if (existingCheckStatusZero != null) {
-	            // 상태가 0인 경우, 상태를 1로 업데이트
 	            existingCheckStatusZero.setScheduleCheckStatus(1L);
 	            scheduleCheckRepository.save(existingCheckStatusZero);
 	        }
@@ -653,8 +645,7 @@ public class ScheduleService {
 	    
         // 참가자 정보 저장
         participants.forEach(participantDto -> {
-            participantDto.setSchedule_no(schedule.getScheduleNo());
-            System.out.println(participantDto.toEntity());
+            participantDto.setSchedule_no(schedule.getScheduleNo()); 
             scheduleParticipantRepository.save(participantDto.toEntity());  
         });
          

@@ -63,8 +63,7 @@ public class ScheduleApiController {
 
 	@GetMapping("/schedule/category/get/{categoryId}")
 	@ResponseBody
-	public ScheduleCategoryDto getScheduleCategory(@PathVariable("categoryId") Long id) {
-		System.out.println(id);
+	public ScheduleCategoryDto getScheduleCategory(@PathVariable("categoryId") Long id) { 
 		return scheduleCategoryService.getScheduleCategoryById(id);
 	}
 
@@ -138,8 +137,7 @@ public class ScheduleApiController {
 	// 관리자 - 일정 등록 카테고리
 	@GetMapping("/categories")
 	@ResponseBody
-	public List<ScheduleCategoryDto> getAlladminScheduleCategory() {
-		System.out.println(scheduleCategoryService.getAlladminScheduleCategory());
+	public List<ScheduleCategoryDto> getAlladminScheduleCategory() { 
 		return scheduleCategoryService.getAlladminScheduleCategory();
 	}
 
@@ -220,9 +218,7 @@ public class ScheduleApiController {
 		for (Schedule schedule : schedules) {
 			ScheduleDto dto = ScheduleDto.toDto(schedule);
 			scheduleDtos.add(dto);
-		}
-
-		System.out.println("scheduleDtos : " + scheduleDtos);
+		} 
 		return scheduleDtos;
 	}
 
@@ -709,8 +705,7 @@ public class ScheduleApiController {
     @GetMapping("/api/schedule/department/list")
     public List<DepartmentDto> getAllDepartments() {
         List<DepartmentDto> departments = departmentService.getSecondDepartments();
-        
-        System.out.println("departments information : " + departments);
+         
         return departments;
     }
     
@@ -719,7 +714,7 @@ public class ScheduleApiController {
     @GetMapping("/api/schedule/checks/{memberNo}")
     public List<ScheduleCheckDto> getScheduleChecks(@PathVariable("memberNo") Long memberNo) {
         List<ScheduleCheckDto> scheduleChecks = scheduleService.getScheduleChecksByMemberNo(memberNo);
-        System.out.println("scheduleChecks : " + scheduleChecks);
+
         return scheduleChecks;
     }
 
@@ -988,9 +983,7 @@ public class ScheduleApiController {
 	@PostMapping("/employee/schedule/edit/{eventId}/{scheduleEditType}")
 	public Map<String, Object> getEmployeeScheduleById(@PathVariable("eventId") Long eventId, @PathVariable("scheduleEditType") String scheduleEditType, @RequestBody Map<String, Object> request) {
 
-	    Map<String, Object> resultMap = new HashMap<>();
-	    System.out.println("eventNo : " + eventId);
-	    System.out.println("scheduleEditType : " + scheduleEditType);
+	    Map<String, Object> resultMap = new HashMap<>(); 
 	     
 	    try {  
 	    	ScheduleDto scheduleDto = new ScheduleDto();
@@ -1136,9 +1129,7 @@ public class ScheduleApiController {
 	@PostMapping("/employee/schedule/exception/edit/{eventId}/{scheduleEditType}")
 	public Map<String, Object> getExceptionEmployeeScheduleById(@PathVariable("eventId") Long eventId, @PathVariable("scheduleEditType") String scheduleEditType, @RequestBody Map<String, Object> request) {
 
-	    Map<String, Object> resultMap = new HashMap<>();
-	    System.out.println("eventNo : " + eventId);
-	    System.out.println("scheduleEditType : " + scheduleEditType);
+	    Map<String, Object> resultMap = new HashMap<>(); 
 	     
 	    try {  
 	    	ScheduleExceptionDto scheduleExceptionDto = new ScheduleExceptionDto(); 
@@ -1157,8 +1148,7 @@ public class ScheduleApiController {
 	    	scheduleExceptionDto.setMember_no(getLongValue(request.get("memberNo")));
    
 	    	String selectedMembers = (String) request.get("selectedMembers");
-	    	
-	    	System.out.println("selectedMembers : " + selectedMembers);
+	    	 
 	    	scheduleService.updateExceptionEmployeeSchedule(eventId, scheduleExceptionDto);
 	        scheduleService.updateExceptionParticipants(eventId, scheduleExceptionDto, selectedMembers);   
 	        return resultMap;  
@@ -1219,8 +1209,7 @@ public class ScheduleApiController {
 	    Map<String, Object> response = new HashMap<>();
 	     
 	    List<MeetingParticipantDto> participants = meetingReservationService.getParticipantsByMeetingNoOwn(scheduleNo, memberNo);
-	    
-	    System.out.println("participants" + participants);
+	     
 	    response.put("participants", participants); 
 	    return response;
 	} 

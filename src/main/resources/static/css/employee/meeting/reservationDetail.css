@@ -457,19 +457,15 @@ hr {
 
 .reservation_detail {
     max-width: 800px;
-    margin: 20px auto;
-    padding: 40px 40px;
-    border-radius: 8px;
-    background-color: #ffffff; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
-    border: 1px solid #dcdcdc;  
+    margin: 0 auto;
+    padding: 40px;
+    border: 1px solid #e0e0e0;
 }
 
 .info-row {
     display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px 0;
 }
 
 .info-row:last-child {
@@ -477,18 +473,27 @@ hr {
 }
 
 .info-label {
+    flex: 0 0 120px;
     font-weight: bold;
-    color: #555;
-    font-size : 18px;  
+    color: #333;
 }
 
 .info-value {
-    text-align: right;
+    flex: 1;
     color: #000000;
 }
 
 .info-participant-row {
-    margin-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.info-participant-value {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
 }
 
 .bottom-btn-three {
