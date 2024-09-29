@@ -878,7 +878,8 @@ document.addEventListener('DOMContentLoaded', function() {
         		console.log("scheduleRepeat : ", data.scheduleRepeat);
 				
 	            $('#eventId').val(data.schedule.schedule_no);  
-	            $('#isRecurring').val(data.schedule.schedule_repeat);  
+	            const repeatValue = data.schedule.schedule_repeat;
+	            $('#isRecurring').val(data.schedule.schedule_repeat); 
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_title);
 	            $('#eventDate').val(pickStartDate);
@@ -897,9 +898,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	                $('#endTime').val(data.schedule.schedule_end_time);
 	            }
 	
-	            $('#description').val(data.schedule.schedule_comment);
-	             
-	            if (data.schedule.schedule_repeat === 1) {
+	            $('#description').val(data.schedule.schedule_comment); 
+	            
+	            if (repeatValue === 1) { 
 		            $('#repeatOption').val(data.scheduleRepeat.schedule_repeat_type);
 		            document.getElementById('repeatOption').dispatchEvent(new Event('change'));
 	                $('#repeatEndDate').val(data.scheduleRepeat.schedule_repeat_end_date);
@@ -930,6 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        success: function(data) { 
 	            $('#eventId').val(eventId);  
 	            $('#isRecurring').val('0');   
+	            $('#"isRepeat"').val('1');   
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_exception_title);
 	            $('#eventDate').val(data.schedule.schedule_exception_start_date);
@@ -1014,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 일정 수정
 	function submitEventUpdate() {
 	    const eventData = getEventFormData();
-    	const isException = $('#isRecurring').val() === '0';
+    	const isException = $('#isRecurring').val() === '1';
 		const url = isException ? '/company/schedule/exception/edit/' : '/company/schedule/edit/';
 	    console.log(document.getElementById('eventId').value);
 	    $.ajax({
@@ -1227,9 +1229,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     } 
     
-	document.getElementById('startDate').addEventListener('change', function () {
+	document.getElementById('searchstartDate').addEventListener('change', function () {
 	    const startDateValue = this.value; 
-	    const endDateInput = document.getElementById('endDate');  
+	    const endDateInput = document.getElementById('searchendDate');  
 	 
 	    endDateInput.value = '';
 	 
@@ -1239,15 +1241,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('searchButton').addEventListener('click', function () {
 	    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
 	    const searchCategory = document.getElementById('searchCategory').value;
-	    const startDateValue = document.getElementById('startDate').value;
-	    const endDateValue = document.getElementById('endDate').value;
+	    const startDateValue = document.getElementById('searchstartDate').value;
+	    const endDateValue = document.getElementById('searchendDate').value;
 	
 	    const startDate = startDateValue ? new Date(startDateValue) : null;
 	    const endDate = endDateValue ? new Date(endDateValue) : null;
 	
 	    const events = allEvents[0];
-	    
-	    // Instead of removing all events, we'll only remove non-holiday events
+	     
 	    const holidayEvents = calendar.getEvents().filter(event => 
 	        event.extendedProps.description === '공휴일'
 	    );

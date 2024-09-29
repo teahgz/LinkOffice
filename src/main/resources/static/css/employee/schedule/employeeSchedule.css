@@ -1,13 +1,10 @@
 @charset "UTF-8";
-
-#sidebar {
-    width: 250px;
-    padding: 20px;
-    background-color: #f0f0f0;
-}
+ 
 #calendar {
     flex-grow: 1;
     padding: 20px;
+    height: calc(100% - 100px); /* 100px 만큼 높이를 줄여서 footer 공간 확보 */
+    overflow-y: auto; /* 세로 스크롤 가능하게 설정 */
 }
 .checkbox-group {
     margin-bottom: 15px;
@@ -56,9 +53,6 @@
     background-color: transparent; 
     border:none;
     color: #808080;
-}
-#calendar {
-	margin:auto;
 } 
 .fc-daygrid-day {
     height: 150px;  
@@ -68,8 +62,8 @@
 }
 
 .fc {
-    width: 1250px; 
-    height: 850px;  
+    width: 70%; 
+    height: 120px;  
 }
 
 .fc-next-button:hover {
@@ -584,4 +578,48 @@ textarea{
 
 .fc-event-title-container {
 	z-index: 1;
+}
+
+#header {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+.schedule-filters {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    overflow-y: auto;
+}
+.search-container {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+} 
+#addEventBtn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.department-checkbox, .all-checkbox {
+    margin-right: 5px;
+}
+#searchCategory, #searchInput, #startDate, #endDate {
+    padding: 5px;
+}
+#searchButton {
+    padding: 5px 10px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.employee_section {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    height: 100vh;
 }
