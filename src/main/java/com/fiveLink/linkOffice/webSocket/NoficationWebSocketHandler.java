@@ -238,6 +238,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	// [전주영] 휴가결재 등록 알림
 	private void handleVacationApprovalAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type) throws Exception {
 		Map<String, Object> notificationData = (Map<String, Object>) jsonMap.get("notificationData");
+		// 문서 제목
+		Object vacationTitle = jsonMap.get("vacationapprovalTitle");
+		
 		// 기안자
 		Object sendNoobj = jsonMap.get("memberNo");
 		Long senderNo = null;
@@ -249,7 +252,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		} else {
 		    throw new IllegalArgumentException("타입 오류");
 		}
-		//[김채영] 가져온 휴가 결재 pk
+		
 		Object vacationApprovalPkObj = jsonMap.get("vacationApprovalPk");
 		Long vacationApprovalPk = null;
 		if (vacationApprovalPkObj != null) {
@@ -290,26 +293,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		        .collect(Collectors.toList());
 		}
 
-		List<Long> reviewers = null;
-		if (notificationData.get("reviewers") instanceof List) {
-		    reviewers = ((List<?>) notificationData.get("reviewers")).stream()
-		        .map(value -> {
-		            if (value instanceof String) {
-		                return Long.parseLong((String) value);
-		            } else if (value instanceof Integer) {
-		                return ((Integer) value).longValue();
-		            } else if (value instanceof Long) {
-		                return (Long) value;
-		            } else {
-		                throw new IllegalArgumentException("알 수 없는 타입: " + value.getClass().getName());
-		            }
-		        })
-		        .collect(Collectors.toList());
-		}
-		
 		MemberDto member = memberService.selectMemberOne(senderNo);
 		
-		 String nofication_content = member.getMember_name()+"님이 올린 결재 문서의 차례가 되었습니다.";
+		 String nofication_content = member.getMember_name()+"님이 기안한 "+'"'+vacationTitle+'"'+" 문서의 결재 차례가 되었습니다.";
 	     String nofication_title = "휴가결재"; 
 	     int nofication_type = 3;
 	     
@@ -353,26 +339,6 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	        }
 	    }
 
-	    // Reviewers 처리: 모든 reviewer에게 알림 전송
-	    if (reviewers != null) {
-	        for (Long reviewer : reviewers) {
-	            noficationDto.setNofication_content(nofication_content);
-	            noficationDto.setNofication_receive_no(reviewer);
-	            noficationDto.setNofication_title(nofication_title);
-	            noficationDto.setNofication_type(nofication_type);
-	            noficationDto.setMember_no(senderNo);
-				noficationDto.setNofication_type_pk(vacationApprovalPk);//휴가 결재 pk 전달
-
-
-	            if (noficationService.insertAlarm(noficationDto) > 0) {
-					long notificationPk = noficationService.insertAlarmPk(); // pk값 추가
-	                Map<String, Object> memberUnreadCount = new HashMap<>();
-	                memberUnreadCount.put("memberNo", reviewer);
-					memberUnreadCount.put("nofication_pk", notificationPk);//같이 넘길 값
-	                unreadCounts.add(memberUnreadCount);
-	            }
-	        }
-	    }
 	    
 	    for (WebSocketSession s : sessions.values()) {
 	    	if (s.isOpen()) {
@@ -393,6 +359,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	
 	// [전주영] 휴가결재 등록 알림 (참조자)
 	private void handleVacationAppReviewersAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type) throws Exception {
+		
+		Object vacationTitle = jsonMap.get("vacationapprovalTitle");
+		
 		Object sendNoobj = jsonMap.get("memberNo");
 
 		Long senderNo = null;
@@ -429,7 +398,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    	
 		MemberDto member = memberService.selectMemberOne(senderNo);
 
-		String nofication_content = member.getMember_name()+"님이 기안한 결재 문서의 참조자로 지정 되었습니다.";
+		String nofication_content = member.getMember_name()+"님이 기안한 "+'"'+vacationTitle+'"'+" 문서의 참조자로 지정 되었습니다.";
 	     String nofication_title = "휴가결재"; 
 	     int nofication_type = 4;
 	     
@@ -476,7 +445,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	// [전주영] 휴가결재 승인 알림
 	private void handleVacationAppApproveAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type)
 			throws Exception {
-
+		
 		// 결재자
 		Object sendNoObj = jsonMap.get("memberNo");
 		// 기안자
@@ -519,7 +488,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		List<VacationApprovalFlowDto> approvalDtos = vacationApprovalService.getVacationApprovalFlows(vaAppNo);
 		Long nextApproverNo = findNextVacationApproverMemberNo(approvalDtos, senderNo);
 
-		String nofication_content = member.getMember_name()+"님이 올린 결재 문서의 차례가 되었습니다.";
+		String nofication_content = member.getMember_name()+"님이 기안한 "+'"'+vacationApproval.getVacation_approval_title()+'"'+" 문서의 결재 차례가 되었습니다.";
 		String nofication_title = "휴가결재";
 		int nofication_type = 5;
 		
