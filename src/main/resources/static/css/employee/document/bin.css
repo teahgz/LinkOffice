@@ -137,7 +137,7 @@
     text-align: center;
 }
 #select_delete:hover{
-    background-color: #e0b2b2;
+    background-color: #e07676;
 }
 #select_delete:active{
     transform: scale(0.98);
