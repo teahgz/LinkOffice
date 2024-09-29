@@ -115,6 +115,9 @@ public class VacationApprovalApicontroller {
 	            vaFiledto.setVacation_approval_file_size(file.getSize());
 
 	            if (vacationApprovalService.createVacationApprovalFile(vappdto, vaFiledto, approvalFlowDtos) != null) {
+					Long vacationApprovalPk = vacationApprovalService.getVacationApprovalPk();
+					System.out.println("pk: "+ vacationApprovalPk);
+					response.put("approvalPk", String.valueOf(vacationApprovalPk));
 	                response.put("res_code", "200");
 	                response.put("res_msg", "휴가 신청이 완료되었습니다.");
 	                isFileUploaded = true;

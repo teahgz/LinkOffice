@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	let selectedDate = null;
 	var pickStartDate = null;
-	var pickEndDate = null;
-	
+	var pickEndDate = null; 
+  	
+    var allEvents = [];  
+  	   
 	$.ajax({
         url: '/categories',
         method: 'GET',
@@ -89,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	                        }
 	                    }
 	                }); 
+	                allEvents.push(events);
 	                initializeCalendar(events);
 	            })
 	        }) 
@@ -875,7 +878,8 @@ document.addEventListener('DOMContentLoaded', function() {
         		console.log("scheduleRepeat : ", data.scheduleRepeat);
 				
 	            $('#eventId').val(data.schedule.schedule_no);  
-	            $('#isRecurring').val(data.schedule.schedule_repeat);  
+	            const repeatValue = data.schedule.schedule_repeat;
+	            $('#isRecurring').val(data.schedule.schedule_repeat); 
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_title);
 	            $('#eventDate').val(pickStartDate);
@@ -894,9 +898,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	                $('#endTime').val(data.schedule.schedule_end_time);
 	            }
 	
-	            $('#description').val(data.schedule.schedule_comment);
-	             
-	            if (data.schedule.schedule_repeat === 1) {
+	            $('#description').val(data.schedule.schedule_comment); 
+	            
+	            if (repeatValue === 1) { 
 		            $('#repeatOption').val(data.scheduleRepeat.schedule_repeat_type);
 		            document.getElementById('repeatOption').dispatchEvent(new Event('change'));
 	                $('#repeatEndDate').val(data.scheduleRepeat.schedule_repeat_end_date);
@@ -927,6 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        success: function(data) { 
 	            $('#eventId').val(eventId);  
 	            $('#isRecurring').val('0');   
+	            $('#"isRepeat"').val('1');   
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_exception_title);
 	            $('#eventDate').val(data.schedule.schedule_exception_start_date);
@@ -1011,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 일정 수정
 	function submitEventUpdate() {
 	    const eventData = getEventFormData();
-    	const isException = $('#isRecurring').val() === '0';
+    	const isException = $('#isRecurring').val() === '1';
 		const url = isException ? '/company/schedule/exception/edit/' : '/company/schedule/edit/';
 	    console.log(document.getElementById('eventId').value);
 	    $.ajax({
@@ -1223,6 +1228,79 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     } 
-     
-
+    
+	document.getElementById('searchstartDate').addEventListener('change', function () {
+	    const startDateValue = this.value; 
+	    const endDateInput = document.getElementById('searchendDate');  
+	 
+	    endDateInput.value = '';
+	 
+	    endDateInput.min = startDateValue;   
+	});
+ 
+	document.getElementById('searchButton').addEventListener('click', function () {
+	    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+	    const searchCategory = document.getElementById('searchCategory').value;
+	    const startDateValue = document.getElementById('searchstartDate').value;
+	    const endDateValue = document.getElementById('searchendDate').value;
+	
+	    const startDate = startDateValue ? new Date(startDateValue) : null;
+	    const endDate = endDateValue ? new Date(endDateValue) : null;
+	
+	    const events = allEvents[0];
+	     
+	    const holidayEvents = calendar.getEvents().filter(event => 
+	        event.extendedProps.description === '공휴일'
+	    );
+	    
+	    calendar.removeAllEvents();
+	     
+	    holidayEvents.forEach(event => calendar.addEvent(event));
+	
+	    if (searchTerm === '' && !startDate && !endDate) {
+	        events.forEach(event => {
+	            calendar.addEvent(event);
+	        });
+	        return;
+	    }
+	
+	    const filteredEvents = events.filter(event => {
+	        const titleMatch = event.title.toLowerCase().includes(searchTerm);
+	        const contentMatch = event.extendedProps.comment &&
+	            event.extendedProps.comment.toLowerCase().includes(searchTerm);
+	        const categoryMatch = event.extendedProps.categoryName &&
+	            event.extendedProps.categoryName.toLowerCase().includes(searchTerm);
+	
+	        const eventStartDate = new Date(event.start);
+	        let eventEndDate;
+	
+	        if (event.allDay === true) {
+	            eventEndDate = new Date(event.start);
+	            eventEndDate.setDate(eventEndDate.getDate() - 1);
+	        } else {
+	            eventEndDate = new Date(event.end || event.start);
+	        }
+	
+	        const withinDateRange =
+	            (!startDate || eventStartDate >= startDate) &&
+	            (!endDate || eventEndDate <= endDate) ||
+	            (eventStartDate >= startDate && eventStartDate <= endDate) ||
+	            (eventEndDate >= startDate && eventEndDate <= endDate);
+	
+	        switch (searchCategory) {
+	            case 'all':
+	                return (titleMatch || contentMatch || categoryMatch) && withinDateRange;
+	            case 'content':
+	                return contentMatch && withinDateRange;
+	            case 'categoryName':
+	                return categoryMatch && withinDateRange;
+	            default:
+	                return false;
+	        }
+	    });
+	
+	    filteredEvents.forEach(event => {
+	        calendar.addEvent(event);
+	    });
+	});
 });

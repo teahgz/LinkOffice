@@ -500,7 +500,8 @@ $(function () {
                             	tree.select_node(newFolderNo);
                             	openFolderToNode(newFolderNo);
                             	loadFiles(newFolderNo);
-                        	});			                     				
+                        	});			                 
+                        	$('.first_folder_add_modal').hide();    				
                         	$('.document_no_folder').hide();
                     		$('.document_select_folder').show();
                     		$('.folder_buttons').show();
@@ -587,7 +588,7 @@ $(function () {
                         isFolderNameChange = true;
                         openFolderToNode(selectedFolderNo);
                         loadFiles(selectedFolderNo);
-	                    
+	                    $('.change_name_modal').hide();
 	                    $('.document_no_folder').hide();
 	                    $('.document_select_folder').show();
 	                    $('.folder_buttons').show();
@@ -666,7 +667,7 @@ $(function () {
                             tree.select_node(newFolderId);
                             openFolderToNode(newFolderId);
                             loadFiles(newFolderId);
-	
+							$('.folder_create_modal').hide();	
 	                        $('.document_no_folder').hide();
 	                        $('.document_select_folder').show();
 	                        $('.folder_buttons').show();

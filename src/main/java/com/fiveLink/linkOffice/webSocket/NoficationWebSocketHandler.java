@@ -405,6 +405,12 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			throw new IllegalArgumentException("타입 오류");
 		}		
 		
+		Object vacationApprovalPkObj = jsonMap.get("vacationApprovalPk");
+		Long vacationApprovalPk = null;
+		if (vacationApprovalPkObj != null) {
+			vacationApprovalPk = Long.valueOf(String.valueOf(vacationApprovalPkObj));
+		}		
+		
 	    List<Long> reviewers = null;
 
 	    if (jsonMap.get("reviewers") instanceof List) {
@@ -438,12 +444,13 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				noficationDto.setNofication_title(nofication_title);
 				noficationDto.setNofication_type(nofication_type);
 				noficationDto.setMember_no(senderNo);
-
+				noficationDto.setNofication_type_pk(vacationApprovalPk);
+				
 				if (noficationService.insertAlarm(noficationDto) > 0) {
-					long notificationPk = noficationService.insertAlarmPk(); // pk값 추가
+					long notificationPk = noficationService.insertAlarmPk(); 
 					Map<String, Object> memberUnreadCount = new HashMap<>();
 					memberUnreadCount.put("memberNo", reviewer);
-					memberUnreadCount.put("nofication_pk", notificationPk);//같이 넘길 값
+					memberUnreadCount.put("nofication_pk", notificationPk);
 					unreadCounts.add(memberUnreadCount);
 				}
 			}
@@ -459,6 +466,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
 				responseMap.put("timestamp", currentTime);
+				responseMap.put("pk", vacationApprovalPk);		
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}
@@ -525,13 +533,13 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	         noficationDto.setNofication_title(nofication_title);
 	         noficationDto.setNofication_type(nofication_type);
 	         noficationDto.setMember_no(senderNo);
-			noficationDto.setNofication_type_pk(vaAppNo);//휴가 결재 pk 전달
+			 noficationDto.setNofication_type_pk(vaAppNo);
 
 	         if (noficationService.insertAlarm(noficationDto) > 0) {
-				 long notificationPk = noficationService.insertAlarmPk(); // pk값 추가
+				 long notificationPk = noficationService.insertAlarmPk(); 
 	            Map<String, Object> memberUnreadCount = new HashMap<>();
 	            memberUnreadCount.put("memberNo", nextApproverNo);
-				memberUnreadCount.put("nofication_pk", notificationPk);//같이 넘길 값
+				memberUnreadCount.put("nofication_pk", notificationPk);
 	            unreadCounts.add(memberUnreadCount);
 	         }
 
@@ -541,13 +549,13 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	         noficationDto.setNofication_title(nofication_title);
 	         noficationDto.setNofication_type(nofication_type);
 	         noficationDto.setMember_no(senderNo);
-			 noficationDto.setNofication_type_pk(vaAppNo);//휴가 결재 pk 전달
+			 noficationDto.setNofication_type_pk(vaAppNo);
 
 	         if (noficationService.insertAlarm(noficationDto) > 0) {
-				 long notificationPk = noficationService.insertAlarmPk(); // pk값 추가
+				 long notificationPk = noficationService.insertAlarmPk(); 
 	            Map<String, Object> memberUnreadCount = new HashMap<>();
 	            memberUnreadCount.put("memberNo", vaAppMemberNo);
-				 memberUnreadCount.put("nofication_pk", notificationPk);//같이 넘길 값
+				 memberUnreadCount.put("nofication_pk", notificationPk);
 	            unreadCounts.add(memberUnreadCount);
 	         }
 		}
@@ -562,7 +570,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	             responseMap.put("data", unreadCounts);
 				  String currentTime = getCurrentFormattedDateTime();
 				  responseMap.put("timestamp", currentTime);
-				  responseMap.put("pk", vaAppNo); //전자결재 pk값
+				  responseMap.put("pk", vaAppNo); 
 	             String unreadMessage = objectMapper.writeValueAsString(responseMap);
 	             s.sendMessage(new TextMessage(unreadMessage));
 	          }
@@ -641,12 +649,13 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		noficationDto.setNofication_title(nofication_title);
 		noficationDto.setNofication_type(nofication_type);
 		noficationDto.setMember_no(senderNo);
-
+		noficationDto.setNofication_type_pk(vaAppNo);
+		
 		if (noficationService.insertAlarm(noficationDto) > 0) {
-			long notificationPk = noficationService.insertAlarmPk(); // pk값 추가
+			long notificationPk = noficationService.insertAlarmPk(); 
 			Map<String, Object> memberUnreadCount = new HashMap<>();
 			memberUnreadCount.put("memberNo", vaAppprovalMemberNo);
-			memberUnreadCount.put("nofication_pk", notificationPk);//같이 넘길 값
+			memberUnreadCount.put("nofication_pk", notificationPk);
 			unreadCounts.add(memberUnreadCount);
 		}
 
@@ -660,6 +669,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
 				responseMap.put("timestamp", currentTime);
+				responseMap.put("pk", vaAppNo); //전자결재 pk값				
 				String unreadMessage = objectMapper.writeValueAsString(responseMap);
 				s.sendMessage(new TextMessage(unreadMessage));
 			}

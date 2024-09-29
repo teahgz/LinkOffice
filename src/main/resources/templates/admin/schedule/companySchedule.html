@@ -11,6 +11,18 @@
             <h1>사내 일정</h1>
             <button id="addEventBtn">등록</button>
         </div>
+		<div class="search-container">
+		    <select id="searchCategory">
+		        <option value="all">전체</option>
+		        <option value="content">내용</option>
+		        <option value="categoryName">카테고리</option>
+		    </select>
+		    <input type="text" id="searchInput" placeholder="검색어를 입력하세요." />
+		    <input type="date" id="searchstartDate" placeholder="시작일" />
+		    <input type="date" id="searchendDate" placeholder="종료일" />
+		    <button id="searchButton">검색</button>
+		</div>
+
         <div id="calendar"></div>
     </section>
 
@@ -24,6 +36,7 @@
 	            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	            <input type="hidden" id="eventId">
 	            <input type="hidden" id="isRecurring"> 
+	            <input type="hidden" id="isException_create"> 
 	            
 	            <div class="form-group">
 	                <label for="eventTitle">일정 제목</label>

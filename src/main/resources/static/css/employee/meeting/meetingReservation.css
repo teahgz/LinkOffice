@@ -645,5 +645,12 @@ select option:disabled {
 select option {
 	font-weight : 550;
 }
+  
+.fc {
+    cursor: pointer;
+}
  
+.fc-daygrid-day {
+    cursor: pointer;
+}
  
