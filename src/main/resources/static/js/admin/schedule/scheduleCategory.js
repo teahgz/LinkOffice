@@ -268,5 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("editScheduleCategoryColor").addEventListener('input', function() {
 	    document.getElementById('edit_colorCode').textContent = this.value; 
 	});
-	 
+	
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '일정 관리&emsp;&gt;&emsp;일정 카테고리 관리'; 
 });

@@ -179,6 +179,7 @@ button:hover {
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 15px;
+    background-color: white;
 } 
 
 .meetingRoom_table th, .meetingRoom_table td {
@@ -215,7 +216,7 @@ button:hover {
 
 .pagination button {
     margin: 0 5px;
-    padding: 10px 15px;
+    padding: 8px 13px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;

@@ -2251,4 +2251,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	 
 	    endDateInput.min = startDateValue;   
 	});
+	
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '일정&emsp;';
 });

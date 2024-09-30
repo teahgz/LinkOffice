@@ -54,8 +54,7 @@ body {
 
 section {
     flex: 1;
-    padding: 20px;
-    background: #f0f0f0;
+    margin-top: -30px; 
     display: flex; 
     gap: 15px;
 }
