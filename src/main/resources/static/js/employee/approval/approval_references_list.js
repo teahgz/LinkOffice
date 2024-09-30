@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
 	const memberRows = document.querySelectorAll('.approval_row');
 	    window.functionTypes = [4,8]; 
-	    console.log("현재 기능 타입: " + window.functionTypes);
 	memberRows.forEach(row => {
 		row.addEventListener('click',function(){
 			const approvalNo = this.getAttribute('data-approval_no');

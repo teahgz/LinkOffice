@@ -126,7 +126,6 @@ public class VacationApprovalApicontroller {
 	    // 파일이 없을 떄 
 	    if (!isFileUploaded) {
 	        if (vacationApprovalService.createVacationApproval(vappdto,approvalFlowDtos) != null) {
-				//[김채영] 휴가 결재 pk값 테스트
 				Long vacationApprovalPk = vacationApprovalService.getVacationApprovalPk();
 				response.put("approvalPk", String.valueOf(vacationApprovalPk));
 	            response.put("res_code", "200");
@@ -152,7 +151,7 @@ public class VacationApprovalApicontroller {
 	    
 	    if(vacationApprovalService.cancelVacationApproval(dto) != null) {
 	    	response.put("res_code", "200");
-		    response.put("res_msg", "기안이 취소되었습니다.");			 
+		    response.put("res_msg", "휴가 신청이 취소되었습니다.");			 
 	    }
 	    return response; 
 	}
@@ -238,7 +237,7 @@ public class VacationApprovalApicontroller {
 	            
 	            if (vacationApprovalService.updateVacationApprovalFile(vacationapprovaldto, vaFiledto, approvalFlowDtos) != null) {
 	                response.put("res_code", "200");
-	                response.put("res_msg", "수정이 완료되었습니다.");
+	                response.put("res_msg", "휴가 문서를 수정하였습니다.");
 	                isFileUploaded = true;
 	            } else {
 	                response.put("res_msg", "파일 정보 업데이트 실패");
@@ -252,7 +251,7 @@ public class VacationApprovalApicontroller {
 	    if (!isFileUploaded) {
 	        if (vacationApprovalService.updateVacationApproval(vacationapprovaldto, approvalFlowDtos) != null) {
 	            response.put("res_code", "200");
-	            response.put("res_msg", "수정이 완료되었습니다."); 
+	            response.put("res_msg", "휴가 문서를 수정하였습니다."); 
 	        }
 	    }
 		 
@@ -272,7 +271,7 @@ public class VacationApprovalApicontroller {
 	    if(vacationApprovalService.employeeVacationApprovalFlowUpdate(vacationApprovalNo, memberNo) != null) {
 	    	
             response.put("res_code", "200");
-            response.put("res_msg", "승인이 완료되었습니다."); 	    	
+            response.put("res_msg", "결재 승인이 완료되었습니다."); 	    	
 	    }
 	    
 	    return response;
@@ -294,7 +293,7 @@ public class VacationApprovalApicontroller {
 	    if(vacationApprovalService.employeeVacationApprovalFlowReject(vacationApprovalFlowDto, memberNo) != null) {
 	    	
             response.put("res_code", "200");
-            response.put("res_msg", "반려가 완료되었습니다."); 	    	
+            response.put("res_msg", "결재 문서를 반려하였습니다."); 	    	
 	    }
 	    
 	    return response;
@@ -313,7 +312,7 @@ public class VacationApprovalApicontroller {
 	    if(vacationApprovalService.employeeVacationApprovalFlowApproveCancel(vacationApprovalNo, memberNo) != null) {
 	    	
             response.put("res_code", "200");
-            response.put("res_msg", "승인 취소가 완료되었습니다."); 	    	
+            response.put("res_msg", "결재 승인이 취소되었습니다."); 	    	
 	    }
 	    
 	    return response;

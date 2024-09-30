@@ -113,7 +113,7 @@
 	                                </div>
 	                            </div>
 								<div th:if="${vacationapprovaldto.vacation_approval_cancel_reason != null}" id="vacationapproval_cancel_reason">
-								    <strong>기안 취소 사유</strong>
+								    <strong>신청 취소 사유</strong>
 								    <div th:text="${vacationapprovaldto.vacation_approval_cancel_reason}"></div>
 								</div>
 			
@@ -128,7 +128,7 @@
 	                        </div>
 	
 	                    <div class="button_container">
-	                    	<button type="button" class="cancel_button" th:if="${vacationapprovaldto.vacation_approval_status == 0}" onclick="vacationCancel()">기안 취소</button>
+	                    	<button type="button" class="cancel_button" th:if="${vacationapprovaldto.vacation_approval_status == 0}" onclick="vacationCancel()">신청 취소</button>
 			                <a th:if="${#lists.size(vacationapprovaldto.flows) > 0 and vacationapprovaldto.flows[0].vacation_approval_flow_status == 1 and vacationapprovaldto.vacation_approval_status == 0}" 
 			                   th:href="@{/employee/vacationapproval/edit/{no}(no=${vacationapprovaldto.vacation_approval_no})}" 
 			                   class="edit_button">수정</a>
