@@ -567,7 +567,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			
 			if (vali_check == false) {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     text: vali_text,
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
