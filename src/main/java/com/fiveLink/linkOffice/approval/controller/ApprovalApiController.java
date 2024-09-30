@@ -215,7 +215,7 @@ public class ApprovalApiController {
 	    
 	    if(approvalService.cancelApproval(dto) != null) {
 	    	response.put("res_code", "200");
-		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
+		    response.put("res_msg", "기안이 취소되었습니다.");			 
 	    }
 	    return response; 
 	} 

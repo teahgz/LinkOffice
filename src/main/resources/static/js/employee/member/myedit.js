@@ -25,7 +25,7 @@ pwform.addEventListener('submit', (e) => {
 		}else {
 	        Swal.fire({
 	            icon: 'error',
-	            text: '비밀번호가 일치하지 않습니다!',
+	            text: '비밀번호가 일치하지 않습니다.',
 	            confirmButtonColor: '#B1C2DD', 
 	            confirmButtonText: '확인'
 	        }).then(() => {
