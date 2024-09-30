@@ -55,5 +55,8 @@ public class ChatMessageService {
     public List<Map<String, Object>> getUnreadCounts(Long memberNo) {
         return chatMapper.getUnreadCounts(memberNo);
     }
-
+    //채팅 내용 가져오기
+    public String getChatMessageText(Long chatRoom) {
+        return chatMapper.getChatMessageText(chatRoom);
+    }
 }
