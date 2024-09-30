@@ -6,14 +6,10 @@
     gap: 20px;  
     padding: 40px 60px; 
     width: 1250px;
+    margin : auto;
 }
 .container-section {
-    width: 100%; 
-    padding: 30px 50px;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px; 
+    margin : auto;
 }
 
 .top_area {
@@ -113,42 +109,54 @@
 .reservation-table-title{
 	margin-left: 15px; 
 } 
- 
+
+.fc .fc-toolbar-title {
+	font-size: 23px;
+}
+
+.fc-button, .fc-button:focus, .fc-button:active {
+    outline: none !important; 
+    box-shadow: none !important; 
+    border: none !important;  
+}
+
+.fc-button:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 .fc .fc-button.fc-button-primary {
-    background-color: #7e9bd1;
-    border: 1px solid #7e9bd1;
-    color: white;
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d;
+    font-size : 16px;
+    font-weight: 600;
 }
 
 .fc .fc-button.fc-button-primary:hover {
-    background-color: #3f66af;
-    border: 1px solid #3f66af;
-    color: white;
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
 }
  
 .fc-prev-button {
-    background-color: #7e9bd1;
-    border: 1px solid #7e9bd1;
-    color: white;
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d;
 }
 
 .fc-prev-button:hover {
-    background-color: #3f66af;
-    border: 1px solid #3f66af;
-    color: white;
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
 }
  
 .fc-next-button {
-    background-color: #7e9bd1;
-    border: 1px solid #7e9bd1;
-    color: white;
-}
-
-.fc-next-button:hover {
-    background-color: #3f66af;
-    border: 1px solid #3f66af;
-    color: white;
-}
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d; 
+}  
 
 .modal {
     display: none;
@@ -162,20 +170,8 @@
     background-color: rgba(0,0,0,0.3);
 }
  
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 40px;
-    border: 1px solid #888; 
-    z-index: 1060;  
-    position: relative;  
-    max-width: 600px;  
-    height: auto; 
-    overflow: hidden; 
-    border-radius: 8px; 
-}
 .form_scroll {
-    max-height: 350px;  
+    max-height: 550px;  
     overflow-y: auto;  
     padding-right: 10px; 
 }
@@ -509,11 +505,11 @@ textarea{
     border: 1px solid #888; 
     z-index: 1060;  
     position: relative;  
-    max-width: 600px;
-    max-height: 500px;  
-    height: 500px; 
-    overflow-y: auto;   
+    max-width: 600px; 
+    overflow-y: auto; 
+    border-radius: 8px;   
 }
+ 
 
 .close {
     color: #aaa;
@@ -652,5 +648,4 @@ select option {
  
 .fc-daygrid-day {
     cursor: pointer;
-}
- 
+} 

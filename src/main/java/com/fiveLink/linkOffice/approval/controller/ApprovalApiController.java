@@ -57,7 +57,7 @@ public class ApprovalApiController {
 		    
 		 if(approvalFormService.saveApprovalForm(dto) != null) {
 				response.put("res_code", "200");
-			    response.put("res_msg", "양식 등록을 성공하였습니다.");			 
+			    response.put("res_msg", "양식이 등록되었습니다.");			 
 		 }
 	    return response; 
 	}
@@ -80,7 +80,7 @@ public class ApprovalApiController {
 		    
 		 if(approvalFormService.editApprovalForm(dto) != null) {
 				response.put("res_code", "200");
-			    response.put("res_msg", "양식 수정을 성공하였습니다.");			 
+			    response.put("res_msg", "양식을 수정하였습니다.");			 
 		 }
 	    return response; 
 	}
@@ -98,7 +98,7 @@ public class ApprovalApiController {
 	    
 	    if(approvalFormService.deleteApprovalForm(dto) != null) {
 	    	response.put("res_code", "200");
-		    response.put("res_msg", "양식 삭제를 성공하였습니다.");			 
+		    response.put("res_msg", "양식을 삭제하였습니다.");			 
 	    }
 	    return response; 
 	}
@@ -176,8 +176,10 @@ public class ApprovalApiController {
 	        	filedto.setApproval_file_size(file.getSize());
 
 	            if (approvalService.createApprovalFile(appdto, filedto, approvalFlowdto) != null) {
+					Long approvalPk = approvalService.getApprovalPk();
+					response.put("approvalPk", String.valueOf(approvalPk));	            	
 	                response.put("res_code", "200");
-	                response.put("res_msg", "결재 작성이 완료되었습니다.");
+	                response.put("res_msg", "결재를 기안하였습니다.");
 	                isFileUploaded = true;
 	            }
 	        } 
@@ -186,8 +188,10 @@ public class ApprovalApiController {
 	    // 파일이 없을 때
 	    if (!isFileUploaded) {
 	        if (approvalService.createApproval(appdto, approvalFlowdto) != null) {
+				Long approvalPk = approvalService.getApprovalPk();
+				response.put("approvalPk", String.valueOf(approvalPk));		        	
 	            response.put("res_code", "200");
-	            response.put("res_msg", "결재 작성이 완료되었습니다."); 
+	            response.put("res_msg", "결재를 기안하였습니다."); 
 	        }
 	    }
 	    
@@ -209,7 +213,7 @@ public class ApprovalApiController {
 	    
 	    if(approvalService.cancelApproval(dto) != null) {
 	    	response.put("res_code", "200");
-		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
+		    response.put("res_msg", "결재 기안이 취소되었습니다.");			 
 	    }
 	    return response; 
 	} 
@@ -295,7 +299,7 @@ public class ApprovalApiController {
 	        	
 	            if (approvalService.updateApprovalFile(appdto, filedto, approvalFlowdto) != null) {
 	                response.put("res_code", "200");
-	                response.put("res_msg", "결재 수정이 완료되었습니다.");
+	                response.put("res_msg", "결재 문서를 수정하였습니다.");
 	                isFileUploaded = true;
 	            }
 	        } 
@@ -305,7 +309,7 @@ public class ApprovalApiController {
 	    if (!isFileUploaded) {
 	        if (approvalService.updateApproval(appdto, approvalFlowdto) != null) {
 	            response.put("res_code", "200");
-	            response.put("res_msg", "결재 수정이 완료되었습니다."); 
+	            response.put("res_msg", "결재 문서를 수정하였습니다."); 
 	        }
 	    }
 	    
@@ -325,7 +329,7 @@ public class ApprovalApiController {
 	    if(approvalService.employeeApprovalFlowUpdate(appNo, memberNo) != null) {
 	    	
             response.put("res_code", "200");
-            response.put("res_msg", "승인이 완료되었습니다."); 	    	
+            response.put("res_msg", "결재 승인이 완료되었습니다."); 	    	
 	    }
 	    
 	    return response;
@@ -344,7 +348,7 @@ public class ApprovalApiController {
 	    if(approvalService.employeeApprovalFlowApproveCancel(appNo, memberNo) != null) {
 	    	
             response.put("res_code", "200");
-            response.put("res_msg", "승인 취소가 완료되었습니다."); 	    	
+            response.put("res_msg", "결재 승인이 취소되었습니다."); 	    	
 	    }
 	    
 	    return response;
@@ -366,7 +370,7 @@ public class ApprovalApiController {
 	    if(approvalService.employeeApprovalFlowReject(approvalFlowDto, memberNo) != null) {
 	    	
             response.put("res_code", "200");
-            response.put("res_msg", "반려가 완료되었습니다."); 	    	
+            response.put("res_msg", "결재 문서를 반려하였습니다."); 	    	
 	    }
 	    
 	    return response;

@@ -1,3 +1,5 @@
+const memberName = document.getElementById('member_name').innerHTML;
+
 function confirmEnd(){
 	Swal.fire({
 		text:'퇴사처리 하시겠습니까?',
@@ -36,8 +38,9 @@ function confirmEnd(){
 					confirmButtonColor: '#C0C0C0',
 					confirmButtonText : "확인"
 				});
-			}
-			})
-		}
-		});
+			}}
+		)}
+	});
 }
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '사원 관리&emsp;&gt;&emsp;사원 조회&emsp;&gt;&emsp;'+memberName;

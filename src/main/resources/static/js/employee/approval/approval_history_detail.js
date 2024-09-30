@@ -1,6 +1,6 @@
-// 승인 버튼 업데이트
-let vacationApprovalPk = null;
+const approvalTitle = document.querySelector('#approval_title').innerHTML;
 
+// 승인 버튼 업데이트
 function approveRequest(){
 	 const csrfToken = document.querySelector('#csrf_token').value;
 	 const approvalNo = document.querySelector('#approval_no').value;
@@ -32,10 +32,6 @@ function approveRequest(){
 		}
 	})
 	
-	vacationApprovalPk = data.approvalPk;
-	
-	console.log("승인시"+vacationApprovalPk);
-	
     const appprovalMemberNo = document.getElementById('approval_member_no').value;
     const memberNo = document.getElementById('member_no').value;
 
@@ -43,8 +39,7 @@ function approveRequest(){
 		type: 'notificationAppApprove',
 		approvalNo : approvalNo,
 		appprovalMemberNo :appprovalMemberNo,
-		memberNo : memberNo,
-		vacationApprovalPk : vacationApprovalPk
+		memberNo : memberNo
 	}));
 }
 
@@ -377,3 +372,7 @@ function cancelApproval(){
 
 		});
 });
+
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 수신함&emsp;&gt;&emsp;결재 내역함&emsp;&gt;&emsp;'+approvalTitle;		

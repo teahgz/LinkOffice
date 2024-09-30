@@ -4,8 +4,7 @@
      layout:decorate="~{include/layout}"> 
     <th:block layout:fragment="content">
         <link th:href="@{/css/admin/meeting/meetingroomList.css}" rel="stylesheet" type="text/css">
-         <section>
-            <h1 class="page_title">회의실 관리</h1>
+         <section> 
             <div class="container">
                 <div class="member-section" id="meetingRoomSection"> 
                     
@@ -139,6 +138,7 @@
 		    <div class="modal-content">
 		        <span class="edit_close close">&times;</span>
 		        <h2 class="modal-title">회의실 정보 수정</h2>
+		        <hr>
 		        <form id="editForm" enctype="multipart/form-data">
 		            <input type="hidden" id="modal-meeting-id" name="meetingId">
 		            <div class="form-group">
@@ -150,11 +150,11 @@
 		                <input type="number" id="modal-meeting-max" name="meetingMax">
 		            </div>
 		            <div class="form-group">
-		                <label for="modal-meeting-available-start">이용 가능 시작 시간</label>
+		                <label for="modal-meeting-available-start">이용 시작 시간</label>
 		                <input type="time" id="modal-meeting-available-start" name="meetingAvailableStart">
 		            </div>
 		            <div class="form-group">
-		                <label for="modal-meeting-available-end">이용 가능 마감 시간</label>
+		                <label for="modal-meeting-available-end">이용 마감 시간</label>
 		                <input type="time" id="modal-meeting-available-end" name="meetingAvailableEnd">
 		            </div>
 		            <div class="form-group">

@@ -24,15 +24,10 @@
 	                            </li>
 	                            <li>
 	                                <strong>사용자</strong>
-	                                <input type="text" id="member_name" name="member_name" th:value="${member.member_name}">
+	                                <span id="member_name" th:text="${member.member_name}"></span>
 	                            </li>
 	                            <li>
-	                                <strong>주민번호</strong>
-	                                <div class="national_number">
-	                                <input type="text" id="national_number_front" name="national_number_front" maxlength="6" th:value="${#strings.substring(member.member_national, 0, 6)}">
-	                                <span>-</span> 
-	                                <input type="text" id="national_number_back" name="national_number_back" maxlength="7" th:value="${#strings.substring(member.member_national, 7, 14)}">
-	                                </div>
+	                                <strong>주민번호</strong><span th:text="${#strings.concat(member.member_national.substring(0, 6), '-', member.member_national.substring(7, 8), '******')}"></span>
 	                            </li>
 	                        </ul>
 	                    </div>

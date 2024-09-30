@@ -117,16 +117,38 @@ const editorConfig = {
 };
 
 // 수정 폼
+            const approvalTitle = document.querySelector('#approval_title').value;
 ClassicEditor.create(document.querySelector('#editor'), editorConfig)
     .then(editor => {
         editor.ui.view.editable.element.style.height = '500px';
 
         document.querySelector('.submit_button').addEventListener('click', (e) => {
             const formNo = document.querySelector('#form_no').value;
-            const approvalTitle = document.querySelector('#approval_title').value;
             const editorData = editor.getData();
             const csrfToken = document.querySelector('#csrf_token').value;
+				
+				 let vali_check = false;
+            let vali_text = "";
 
+            if (approvalTitle.trim() === "") {  
+                vali_text += '양식 이름을 입력해주세요.';
+                document.querySelector('#approval_title').focus();
+            } else if (editorData.trim() === "") {
+                vali_text += '양식 입력해주세요.';
+                editor.ui.view.editable.element.focus();  
+            } else {
+                vali_check = true;
+            }
+
+            if (vali_check == false) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: vali_text,
+                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonText: "확인"
+                });
+				
+			}else{
                 const formData = new FormData();
                 formData.append('form_no', formNo);
                 formData.append('approval_title', approvalTitle);
@@ -161,6 +183,9 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                         });
                     }
                 });  
-            
+			}	
         });
     });
+    
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자 결재 양식 관리&emsp;&gt;&emsp;결재 양식 수정&emsp;&gt;&emsp;'+approvalTitle;

@@ -392,7 +392,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 
 		});
 
-
+			let approvalPk = null;
 			// 등록 폼
 			
 			const form = document.getElementById('appCreateFrm');
@@ -415,15 +415,21 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 vali_text += '결재 제목을 입력해주세요.';
                 document.querySelector('#approval_title').focus();
             } else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
-				 vali_text += '결재자를 지정해주세요.';
+				 vali_text += '결재선를 지정해주세요.';
                 document.querySelector('#openChart').focus();
-			} else {
+			}  else if(approvers.length === 0 && references.length === 0){
+				 vali_text += '결재자 / 합의자를 지정해주세요.';
+                document.querySelector('#openChart').focus();
+			} else if (editorData.trim() === "") {
+                vali_text += '양식을 선택해주세요.';
+                editor.ui.view.editable.element.focus();  
+            } else {
                 vali_check = true;
             }
 			
 			if (vali_check == false) {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     text: vali_text,
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
@@ -465,29 +471,37 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			                confirmButtonText: "확인"
 				            });
 				        }
-				    })
+			
+						approvalPk = data.approvalPk;	
+						let notificationData = {};
+						
+						if (approvers !== null) {
+						    notificationData.approvers = approvers;
+						}
+						
+						if (references !== null) {
+						    notificationData.references = references;
+						}
+						console.log(approvalPk);
+						alarmSocket.send(JSON.stringify({
+						   type: 'notificationApproval',
+						   notificationData : notificationData,
+						   memberNo : memberNo,
+						   approvalPk : approvalPk,
+						   approvalTitle : approvalTitle
+						}));
+						
+						alarmSocket.send(JSON.stringify({
+						   type: 'notificationApprovalReviewers',
+						   reviewers : reviewers,
+						   memberNo : memberNo,
+						   approvalPk : approvalPk,
+						   approvalTitle : approvalTitle
+						}));
+				    });
 				}
-				
-			let notificationData = {};
-			
-			if (approvers !== null) {
-			    notificationData.approvers = approvers;
-			}
-			
-			if (references !== null) {
-			    notificationData.references = references;
-			}
-			
-			alarmSocket.send(JSON.stringify({
-			   type: 'notificationApproval',
-			   notificationData : notificationData,
-			   memberNo : memberNo
-			}));
-			
-			alarmSocket.send(JSON.stringify({
-			   type: 'notificationApprovalReviewers',
-			   reviewers : reviewers,
-			   memberNo : memberNo
-			}));
 		});
 	});
+	
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 작성';

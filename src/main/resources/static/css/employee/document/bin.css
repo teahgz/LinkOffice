@@ -6,6 +6,7 @@
     height: 95%;
     width: 100%;
     overflow: hidden; 
+    margin-top: 50px;
 }
 .document_file_div{
 	border-radius: 20px;
@@ -41,12 +42,6 @@
 	display: flex;
 	width: 30vw;
 }
-#range{
-	margin-top: 1.7vh;
-}
-.range_calendar{
-	margin-left: 0.5vw;	
-}
 #start_date, #end_date{
 	margin-top: 0.6vh;
 	height: 2.7vh;
@@ -69,16 +64,12 @@
 	margin-left: 0.5vw;
 }
 .search_name{
-	margin-left: 2vw;
 	width: 23vw;
 	display: flex;
     justify-content: center; 
 }
-#file_name{
-	margin-top: 1.7vh;
-}
 #file_name_input{
-	margin: 0.6vh 0 0 1vw; 
+	margin: 0.6vh 0 0 3.5vw; 
 	width: 12vw;
 	height: 2.7vh;
 	font-size: 0.9vw;
@@ -137,10 +128,18 @@
     text-align: center;
 }
 #select_delete:hover{
-    background-color: #e0b2b2;
+    background-color: #e07676;
 }
 #select_delete:active{
     transform: scale(0.98);
+}
+#select_delete:disabled, #update_button:disabled{
+    background-color: #d3d3d3;  
+    color: #a9a9a9; 
+    cursor: not-allowed;
+} 
+#select_delete:disabled, #update_button:disabled:hover{
+    background-color: #d3d3d3;
 }
 .upload_and_sort{
 	display: flex;

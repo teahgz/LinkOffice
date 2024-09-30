@@ -180,3 +180,16 @@ a {
     align-items: center;
     font-size: 11px;
 }
+
+.header_location_text {
+	font-size: 15px;
+	color:#727272;
+	margin-left : 50px;
+	font-weight: 550; 
+	margin-top: 30px;
+}
+
+.header_logo {
+    display: flex;  
+    align-items: center;  
+}  

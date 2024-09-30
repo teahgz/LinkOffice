@@ -194,11 +194,14 @@ endDateInput.addEventListener("change", function() {
 });
 
 
-// 오늘 이전 날짜 막기
-const today = new Date().toISOString().split("T")[0];
+// 오늘 이전 날짜 막기 재설정
+const today = new Date();
+today.setDate(today.getDate());  
+const minDate = today.toISOString().split("T")[0];
 
-document.getElementById("vacationapproval_start_date").setAttribute("min", today);
-document.getElementById("vacationapproval_end_date").setAttribute("min", today);
+document.getElementById("vacationapproval_start_date").setAttribute("min", minDate);
+document.getElementById("vacationapproval_end_date").setAttribute("min", minDate);
+
 
 
 
@@ -537,7 +540,10 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 				 vali_text += '휴가 기간을 입력해주세요.';
                 document.querySelector('#vacationapproval_end_date').focus();
 			} else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
-				 vali_text += '결재자를 지정해주세요.';
+				 vali_text += '결재선를 지정해주세요.';
+                document.querySelector('#openChart').focus();
+			}  else if(approvers.length === 0 && references.length === 0){
+				 vali_text += '결재자 / 합의자를 지정해주세요.';
                 document.querySelector('#openChart').focus();
 			} else {
                 vali_check = true;
@@ -545,7 +551,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			
 			if (vali_check == false) {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     text: vali_text,
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
@@ -608,20 +614,21 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                        type: 'notificationVacationApproval',
                        notificationData : notificationData,
                        memberNo : memberNo,
-                       vacationApprovalPk : vacationApprovalPk
+                       vacationApprovalPk : vacationApprovalPk,
+                       vacationapprovalTitle : vacationapproval_title
                     }));
 
                     alarmSocket.send(JSON.stringify({
                        type: 'notificationVacationApprovalReviewers',
                        reviewers : reviewers,
                        memberNo : memberNo,
-                       vacationApprovalPk : vacationApprovalPk
+                       vacationApprovalPk : vacationApprovalPk,
+                       vacationapprovalTitle : vacationapproval_title
                     }));
-			    })
+			    });
 			}
-
-
-
 	});
 });
 
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청';

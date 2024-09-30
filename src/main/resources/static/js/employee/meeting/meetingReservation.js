@@ -780,6 +780,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }).then(() => {
                     location.reload();
                 });
+                
+				const memberNo = $('#memberNo').val();
+		        const selectedMembers = $('#selectedMembers').val();
+		        const reservationDate = $('#reservation_date').val(); 
+		        
+		        alarmSocket.send(JSON.stringify({
+		            type: 'noficationParticipantMeeting', 
+		            memberNo: memberNo,
+		            participants: selectedMembers,
+		            reservationDate: reservationDate 
+		        })); 
             } else {
                 Swal.fire({
                     text: response.res_msg,
@@ -792,5 +803,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } 
     });
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '회의실&emsp;&gt;&emsp;회의실 예약'; 
 
 });

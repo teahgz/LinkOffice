@@ -7,8 +7,7 @@
         <link th:href="@{/css/admin/organization/organizationChart.css}" rel="stylesheet" type="text/css">
         <link th:href="@{/css/admin/permission/permission.css}" rel="stylesheet" type="text/css">
         
-        <section>
-        	<h1>통합 권한 관리</h1>
+        <section> 
             <div class="container">
                 <!-- 권한 기능 목록 -->
                 <div class="permission_list_box">
@@ -68,7 +67,7 @@
                     <form>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div class="modal-header">
-                            <div class="organizationchart_title" id="organizationChartModalLabel">권한자 등록</div>
+                            <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div>
                             <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
                         </div>
                         <div class="modal-body"> 

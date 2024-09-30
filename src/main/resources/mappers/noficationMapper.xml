@@ -54,4 +54,11 @@
         AND nofication_type = #{functionType}
         AND nofication_type_pk = #{noficationTypePk}
     </update>
+    
+    <select id="getApprovalPk" resultType="Long">
+        SELECT approval_no
+        FROM fl_approval
+        ORDER BY approval_no DESC
+        LIMIT 1
+    </select>    
 </mapper>

@@ -49,8 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         deleteButton.onclick = function () {
             var positionId = this.getAttribute("data-position-id");
 
-            Swal.fire({
-                title: '직위 삭제',
+            Swal.fire({ 
                 text: '직위를 삭제하시겠습니까?',
                 icon: 'warning',
                 showCancelButton: true,
@@ -80,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             } else {
                                 Swal.fire({ 
 								    text: response.res_msg,
-								    icon: 'error', 
+								    icon: 'warning', 
 								    confirmButtonColor: '#B1C2DD', 
 								    confirmButtonText: '확인', 
 								});
@@ -224,4 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
             link.classList.add('selected');
         });
     });
+    
+    const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '조직 관리&emsp;&gt;&emsp;직위 관리';
 });

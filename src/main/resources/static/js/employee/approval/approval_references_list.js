@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
 	const memberRows = document.querySelectorAll('.approval_row');
 	    window.functionTypes = [4,8]; 
-	    console.log("현재 기능 타입: " + window.functionTypes);
 	memberRows.forEach(row => {
 		row.addEventListener('click',function(){
 			const approvalNo = this.getAttribute('data-approval_no');
@@ -23,5 +22,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	});
 	
-
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 수신함&emsp;&gt;&emsp;결재 참조함';

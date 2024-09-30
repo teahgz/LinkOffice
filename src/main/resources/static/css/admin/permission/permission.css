@@ -147,6 +147,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
+    background-color: white;
 }
 
 .employee_table th, .employee_table td {
@@ -177,7 +178,7 @@
 
 .pagination button {
     margin: 0 5px;
-    padding: 10px 15px;
+    padding: 8px 13px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;
@@ -211,14 +212,14 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 } 
 
 .permission_table th, .permission_table td {
-    padding: 18px 15px;
+	padding: 11px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 15px;
+    font-size: 13px;
 }
 
 .permission_table th {
@@ -226,7 +227,7 @@
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: 13px;
 }
 
 .permission_table tr:last-child td {

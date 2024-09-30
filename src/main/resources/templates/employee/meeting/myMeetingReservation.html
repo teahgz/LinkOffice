@@ -4,8 +4,7 @@
      layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/meeting/myMeetingReservation.css}" rel="stylesheet" type="text/css">
-        <section>
-            <h1>회의실 예약 내역</h1>
+        <section> 
             <div class="myMeetingReservation_list">
                 <div class="search_sort_container">
                     <div class="search_container">
@@ -32,6 +31,7 @@
                     </div>
                 </div>
                 <table class="reservation_list_table">
+                	<div class="reservation_info_text">사용일 하루 전까지만 예약 변경이 가능합니다.</div>
                     <thead>
                         <tr>
                             <th>회의실명</th>

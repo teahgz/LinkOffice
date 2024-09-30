@@ -8,11 +8,7 @@
 }
 .container-section {
     width: 100%; 
-    padding: 30px 50px;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px; 
+    padding: 30px 50px; 
 }
 
 .modal {
@@ -40,7 +36,7 @@
     border-radius: 8px; 
 }
 .form_scroll {
-    max-height: 350px;  
+    max-height: 550px;  
     overflow-y: auto;  
     padding-right: 10px; 
 }
@@ -340,9 +336,7 @@ textarea{
     border: 1px solid #888; 
     z-index: 1060;  
     position: relative;  
-    max-width: 600px;
-    max-height: 500px;  
-    height: 500px; 
+    max-width: 600px;  
     overflow-y: auto;   
 }
 
@@ -461,36 +455,46 @@ hr {
 	width : 100%;  
 }
 
-
-.reservation_detail {  
-    gap: 20px;   
-    width: 1250px; 
-    padding: 50px 50px;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px; 
-    margin: 50px auto;
+.reservation_detail {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    border: 1px solid #e0e0e0;
 }
 
-.info-participant-value {
-    display: block;  
-    margin-bottom: 10px; 
-    font-size :17px;
+.info-row {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px 0;
 }
 
-.info-participant-row { 
-    margin-bottom: 15px;
-    display: block;  
-    margin-bottom: 10px;
+.info-row:last-child {
+    border-bottom: none;
 }
 
 .info-label {
-    flex: 0 0 130px; 
+    flex: 0 0 120px;
     font-weight: bold;
-    text-align: left;
-    font-size : 17px;
-}  
+    color: #333;
+}
+
+.info-value {
+    flex: 1;
+    color: #000000;
+}
+
+.info-participant-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.info-participant-value {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
 
 .bottom-btn-three {
     display: flex;
@@ -563,3 +567,4 @@ hr {
 	color:red;
 	margin-top : -15px;
 }
+

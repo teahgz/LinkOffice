@@ -23,5 +23,8 @@ public interface NoficationMapper {
 
     //휴가 결재
     void readTypePkNotification(Map<String, Object> params);
+    
+    Long getApprovalPk();
+    
 
 }

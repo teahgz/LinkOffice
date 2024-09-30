@@ -549,9 +549,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	        initialView: 'dayGridMonth',
 	        locale: 'ko',
 	        headerToolbar: {
-	            left: 'prev,next today',
+	            left: 'prev,next',
 	            center: 'title',
-	            right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+	            right: 'today'
 	        },
 	        contentHeight: 'auto',
 	        handleWindowResize: true,
@@ -576,10 +576,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        ],
 	        eventOrder: '-order,-allDay,start',
 	        buttonText: {
-	            today: '오늘',
-	            month: '월',
-	            week: '주',
-	            day: '일'
+	            today: '오늘'
 	        },
 	        eventClick: function(info) { 
 				info.jsEvent.preventDefault(); 

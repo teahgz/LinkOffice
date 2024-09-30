@@ -166,8 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(data) {
-				console.log(data.participants);
+	        success: function(data) { 
 	            exceptionParMemberNos = data.participants.map(participant => participant.member_no); 
 	            exceptionParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName); 
 	            callback(exceptionParMemberNos, exceptionParMemberNames); 
@@ -187,8 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(data) {
-	            console.log(data.participants); 
+	        success: function(data) { 
 	            if (data.participants) {
 	                meetingParMemberNos = data.participants.map(participant => participant.member_no);
 	                meetingParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName);
@@ -290,8 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    }
 	}
 	
-	function createMeetingEvent(meeting) {
-	    console.log(meeting);
+	function createMeetingEvent(meeting) { 
 		var event = {
 		    order: 1,
 		    id: 'meeting' + meeting.meeting_no,
@@ -585,25 +582,28 @@ document.addEventListener('DOMContentLoaded', function() {
             initialView: 'dayGridMonth',
             locale: 'ko',
             headerToolbar: {
-                left: 'prev,next today yearButton,monthButton',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-            },
-            customButtons: {
-                yearButton: {
-                    text: '년도',
-                    click: showYearPicker
-                },
-                monthButton: {
-                    text: '월',
-                    click: showMonthPicker
-                }
-            },
+		      left: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth,prevYear, prev',
+		      center: 'title',
+		      right: 'next, nextYear, today, customYearPicker, customMonthPicker'
+		    },
+		    customButtons: {
+		      customYearPicker: {
+		        text: '년도',
+		        click: function(e) {
+		          togglePicker('yearPicker', e.currentTarget);
+		        }
+		      },
+		      customMonthPicker: {
+		        text: '월',
+		        click: function(e) {
+		          togglePicker('monthPicker', e.currentTarget);
+		        }
+		      }
+		    },
             contentHeight: 'auto',
             handleWindowResize: true,
             fixedWeekCount: false,
-            eventClick: function(info) {
-				console.log(info.event); 
+            eventClick: function(info) { 
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -664,9 +664,10 @@ document.addEventListener('DOMContentLoaded', function() {
             eventOrder: '-order,-allDay,start',
             buttonText: {
                 today: '오늘',
-                month: '월',
-                week: '주',
-                day: '일'
+                month: '월간',
+                week: '주간',
+                day: '일간',
+                listMonth : '목록'
             },
             dayCellContent: function(info) {
                 var number = document.createElement("a");
@@ -682,7 +683,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 return { domNodes: [] };
             },
-            dayMaxEvents: 3 ,
+            dayMaxEvents: 3,
+            moreLinkContent: function(args) {
+			    return ' + ' + args.num;
+			 },	
             dateClick: function(info) {
 			    selectedDate = info.dateStr;   
 			    $('#eventDate').val(selectedDate);   
@@ -724,11 +728,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	        // 참여자 일정
 	        else if (event.extendedProps.type === 'participateResult') {
 	            if (event.extendedProps.participantsLoaded) {
-	                shouldDisplay = participantNos.includes(parseInt(memberNo));
+	                if (event.extendedProps.member_no.toString() === memberNo) {
+			            shouldDisplay = true;
+			        } else {
+			            shouldDisplay = participantNos.includes(parseInt(memberNo));
+			        }
 	            } else {
 	                shouldDisplay = true;
 	            }
-	        }
+	        } 
 	        // 전사 일정
 	        else if (event.extendedProps.type === 'scheduleDtos') {
 	            shouldDisplay = companyChecked;  
@@ -763,11 +771,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	        if (event.allDay === true) {  
 	        	eventStartDate = new Date(event.start);
 	        	eventStartDate.setDate(eventStartDate.getDate() + 1);
+
 	            eventEndDate = new Date(event.start);
 	            eventEndDate.setDate(eventEndDate.getDate() - 1);
 	        } else {
 				eventStartDate = new Date(event.start);
-				eventStartDate.setDate(eventStartDate.getDate() - 1);
+				eventStartDate.setDate(eventStartDate.getDate() + 1);
 	            eventEndDate = eventStartDate;  
 	        }
 	  		 
@@ -805,63 +814,74 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	}
   
-     function showYearPicker() {
-	    const currentYear = calendar.getDate().getFullYear();
-	    const yearPicker = document.createElement('select');
-	    
-	    for (let year = currentYear - 5; year <= currentYear + 5; year++) {
-	        const option = document.createElement('option');
-	        option.value = year;
-	        option.text = year;
-	        if (year === currentYear) option.selected = true;
-	        yearPicker.appendChild(option);
-	    }
-	    
-	    yearPicker.onchange = function() {
-	        const selectedYear = parseInt(this.value);
-	        const currentDate = calendar.getDate();
-	        calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
-	    };
-	    
-	    Swal.fire({
-	        title: '년도 선택',
-	        html: yearPicker,
-	        showCancelButton: true,
-	        cancelButtonColor: '#C0C0C0',
-	        confirmButtonColor: '#B1C2DD',
-	        confirmButtonText: '확인',
-	        cancelButtonText: '취소'
+    function createPicker(id, options) {
+	    const picker = document.createElement('select');
+	    picker.id = id;
+	    picker.className = 'custom-picker';
+	    picker.size = 7; 
+	    picker.style.display = 'none';
+	    options.forEach(option => {
+	      const optionEl = document.createElement('option');
+	      optionEl.value = option.value;
+	      optionEl.text = option.text;
+	      picker.appendChild(optionEl);
 	    });
-	}
+	    document.body.appendChild(picker);
+	    return picker;
+   }
 	
-	function showMonthPicker() {
-	    const currentDate = calendar.getDate();
-	    const monthPicker = document.createElement('select');
-	    const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+   function togglePicker(pickerId, button) {
+	    const picker = document.getElementById(pickerId);
+	    const otherPickerId = pickerId === 'yearPicker' ? 'monthPicker' : 'yearPicker';
+	    const otherPicker = document.getElementById(otherPickerId);
 	    
-	    months.forEach((month, index) => {
-	        const option = document.createElement('option');
-	        option.value = index;
-	        option.text = month;
-	        if (index === currentDate.getMonth()) option.selected = true;
-	        monthPicker.appendChild(option);
-	    });
-	    
-	    monthPicker.onchange = function() {
-	        const selectedMonth = parseInt(this.value);
-	        calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
-	    };
-	    
-	    Swal.fire({
-	        title: '월 선택',
-	        html: monthPicker,
-	        confirmButtonColor: '#B1C2DD',
-	        cancelButtonColor: '#C0C0C0',
-	        showCancelButton: true,
-	        confirmButtonText: '확인',
-	        cancelButtonText: '취소'
-	    });
-	}
+	    if (picker.style.display === 'none') {
+	      const rect = button.getBoundingClientRect();
+	      picker.style.display = 'block';
+	      picker.style.top = `${rect.bottom}px`;
+	      picker.style.left = `${rect.left}px`;
+	      picker.focus(); 
+	      otherPicker.style.display = 'none'; 
+	    } else {
+	      picker.style.display = 'none';
+	    }
+   }
+	
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({length: 11}, (_, i) => ({
+    value: currentYear - 5 + i,
+    text: `${currentYear - 5 + i}년`
+  }));
+	
+  const monthOptions = Array.from({length: 12}, (_, i) => ({
+    value: i,
+    text: `${i + 1}월`
+  }));
+	
+  const yearPicker = createPicker('yearPicker', yearOptions);
+  const monthPicker = createPicker('monthPicker', monthOptions);
+
+  yearPicker.onchange = function() {
+    const selectedYear = parseInt(this.value);
+    const currentDate = calendar.getDate();
+    calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
+    this.style.display = 'none';
+  };
+
+  monthPicker.onchange = function() {
+    const selectedMonth = parseInt(this.value);
+    const currentDate = calendar.getDate();
+    calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
+    this.style.display = 'none';
+  };
+ 
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.fc-customYearPicker-button') && !e.target.closest('.fc-customMonthPicker-button') && !e.target.closest('.custom-picker')) {
+      yearPicker.style.display = 'none';
+      monthPicker.style.display = 'none';
+    }
+  });
+		 
 	
     // 일정 등록
     function roundToNearest30Minutes(timeStr) {
@@ -1372,6 +1392,26 @@ document.addEventListener('DOMContentLoaded', function() {
 		                  	window.location.reload();  
 		                	document.getElementById('eventModal').style.display = 'none';
 		                });
+		                
+		                // 부서 일정 알림 
+		                if(schedule_type === 1) {
+							console.log("departmentAlarm");
+			                alarmSocket.send(JSON.stringify({
+					           	type: 'noficationDepartmentSchedule',
+					           	deptNo: departmentNo, 
+					           	memberNo: memberNo 
+					        })); 
+						}
+						// 참여자 일정 알림
+						if(schedule_type === 2) {
+							console.log("participantAlarm");
+							console.log(selectedMembers);
+			                alarmSocket.send(JSON.stringify({
+					           	type: 'noficationParticipantSchedule', 
+					           	memberNo: memberNo,
+					           	participants : selectedMembers
+					        })); 
+						}
 		            } else {
 		                Swal.fire({
 		                    text: response.res_msg,
@@ -1813,6 +1853,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		            }).then(function() {
 		                window.location.reload();
 		            });
+		            
+		            // 부서 일정 알림  
+	                if(schedule_edit_type === 1) {   
+		                alarmSocket.send(JSON.stringify({
+				           	type: 'noficationDepartmentSchedule',
+				           	deptNo: eventData.department_no, 
+				           	memberNo: eventData.memberNo 
+				        })); 
+					}
+					// 참여자 일정 알림
+					if(schedule_edit_type === 2) {  
+		                alarmSocket.send(JSON.stringify({
+				           	type: 'noficationParticipantSchedule', 
+				           	memberNo: eventData.memberNo,
+				           	participants : eventData.selectedMembers
+				        })); 
+					}
 	            } else {
 	                Swal.fire('반복 일정', response.res_msg, 'error');
 	            }   
@@ -1847,6 +1904,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	            }).then(function() {
 	                window.location.reload();
 	            });
+	            // 부서 일정 알림  
+                if(schedule_edit_type === 1) {   
+	                alarmSocket.send(JSON.stringify({
+			           	type: 'noficationDepartmentSchedule',
+			           	deptNo: eventData.department_no, 
+			           	memberNo: eventData.memberNo 
+			        })); 
+				}
+				// 참여자 일정 알림
+				if(schedule_edit_type === 2) {  
+	                alarmSocket.send(JSON.stringify({
+			           	type: 'noficationParticipantSchedule', 
+			           	memberNo: eventData.memberNo,
+			           	participants : eventData.selectedMembers
+			        })); 
+				}
 	        },
 	        error: function(xhr, status, error) {
 	            console.error('일정 수정 오류: ', error);
@@ -2231,4 +2304,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	 
 	    endDateInput.min = startDateValue;   
 	});
+	
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '일정&emsp;';
+	
+	// 알림
+	window.functionTypes = [11,12,13];  
+    console.log("현재 기능 타입: " +window.functionTypes);
+
+    if (window.functionTypes.includes(11) || window.functionTypes.includes(12) || window.functionTypes.includes(13)) {
+	     markNotificationsAsRead(11); 
+	     markNotificationsAsRead(12);  
+	     markNotificationsAsRead(13);  
+	 }
 });

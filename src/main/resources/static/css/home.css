@@ -54,8 +54,7 @@ body {
 
 section {
     flex: 1;
-    padding: 20px;
-    background: #f0f0f0;
+    margin-top: -30px; 
     display: flex; 
     gap: 15px;
 }
@@ -366,4 +365,70 @@ section {
 }
 .fc-daygrid-day.fc-day-sat .fc-daygrid-day-number{		
 	color: blue;
+}
+
+
+.fc .fc-button.fc-button-primary {
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d;
+    font-size : 20px;
+    font-weight: 550;
+}
+
+.fc .fc-button.fc-button-primary:hover {
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
+}
+ 
+.fc-prev-button {
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d;
+}
+
+.fc-prev-button:hover {
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
+}
+ 
+.fc-next-button {
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d; 
+} 
+.fc-daygrid-day {
+    max-height: 30px;  
+}  
+.google-holiday {
+	text-align: right;  
+} 
+
+.fc-header-toolbar {
+	font-size : 11px;	
+}
+.fc-next-button:hover {
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
+}
+.fc-button, .fc-button:focus, .fc-button:active {
+    outline: none !important; 
+    box-shadow: none !important; 
+    border: none !important;  
+}
+
+.fc-button:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.fc .fc-button.fc-button-primary.fc-button-active {
+    background-color: transparent; 
+    border:none;
+    color: black;
+    font-weight: 550;
 }

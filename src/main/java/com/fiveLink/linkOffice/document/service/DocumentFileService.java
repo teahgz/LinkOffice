@@ -243,7 +243,7 @@ public class DocumentFileService {
 		return changedToDocumentFile(documentFileList);
 	}
 	// 폴더에 파일 저장  
-	public String fileUpload(MultipartFile file, Long folderNo) {
+	public String fileUpload(MultipartFile file) {
 		String newFileName = null;
 		
 		try {
@@ -255,7 +255,7 @@ public class DocumentFileService {
 			newFileName = uniqueName + fileExt;
 			
 			// folderNo를 경로에 추가 
-			String saveDir = fileDir + folderNo + "\\";
+			String saveDir = fileDir + "\\";
 			File saveFile = new File(saveDir + newFileName);
 	        if (!saveFile.exists()) {
 	        	saveFile.mkdirs(); 
@@ -287,7 +287,7 @@ public class DocumentFileService {
 			String newFileName = documentFile.getDocumentNewFileName();
 			String oriFileName = URLEncoder.encode(documentFile.getDocumentOriFileName(),"UTF-8");
 			String downDir = 
-					fileDir + documentFile.getDocumentFolder().getDocumentFolderNo() + "\\" + newFileName;
+					fileDir + "\\" + newFileName;
 			
 			Path filePath = Paths.get(downDir);
 			Resource resource = new InputStreamResource(Files.newInputStream(filePath));
@@ -310,7 +310,7 @@ public class DocumentFileService {
 			String newFileName = documentFile.getDocumentNewFileName();
 			String oriFileName = URLEncoder.encode(documentFile.getDocumentOriFileName(),"UTF-8");
 			String downDir = 
-					fileDir + documentFile.getDocumentFolder().getDocumentFolderNo() + "\\" + newFileName;
+					fileDir + "\\" + newFileName;
 			
 			Path filePath = Paths.get(downDir);
 			Resource resource = new InputStreamResource(Files.newInputStream(filePath));
@@ -335,7 +335,7 @@ public class DocumentFileService {
 			DocumentFile documentFile = documentFileRepository.findByDocumentFileNo(fileNo);
 			String newFileName = documentFile.getDocumentNewFileName();	
 			String resultDir = 
-					fileDir + documentFile.getDocumentFolder().getDocumentFolderNo() + "\\" + newFileName;
+					fileDir + "\\" + newFileName;
 			if(resultDir != null && resultDir.isEmpty() == false) {
 				File file = new File(resultDir);
 				if(file.exists()) {
