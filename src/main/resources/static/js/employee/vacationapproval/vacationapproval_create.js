@@ -627,9 +627,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                     }));
 			    });
 			}
-
-
-
 	});
 });
 
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청';
