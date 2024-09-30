@@ -1282,21 +1282,36 @@ document.addEventListener('DOMContentLoaded', function() {
 	        const categoryMatch = event.extendedProps.categoryName &&
 	            event.extendedProps.categoryName.toLowerCase().includes(searchTerm);
 	
-	        const eventStartDate = new Date(event.start);
-	        let eventEndDate;
+	        const startDateValue = document.getElementById('searchstartDate').value;
+			const endDateValue = document.getElementById('searchendDate').value;
+			const startDate = startDateValue ? new Date(startDateValue) : null;
+			const endDate = endDateValue ? new Date(endDateValue) : null;
+			
+			if (startDate) {
+			    startDate.setHours(0, 0, 0, 0);  
+			}
+			if (endDate) {
+			    endDate.setHours(23, 59, 59, 999); 
+			}
+			
+			let eventStartDate;
+			let eventEndDate;
+			
+			if (event.allDay === true) {
+			    eventStartDate = new Date(event.start);
+			    eventEndDate = new Date(event.end);
+			    eventEndDate.setDate(eventEndDate.getDate() - 1); 
+			} else {
+			    eventStartDate = new Date(event.start);
+			    eventEndDate = eventStartDate;
+			 
+			    eventStartDate.setHours(0, 0, 0, 0);
+			    eventEndDate.setHours(0, 0, 0, 0);
+			}
 	
-	        if (event.allDay === true) {
-	            eventEndDate = new Date(event.start);
-	            eventEndDate.setDate(eventEndDate.getDate() - 1);
-	        } else {
-	            eventEndDate = new Date(event.end || event.start);
-	        }
-	
-	        const withinDateRange =
-	            (!startDate || eventStartDate >= startDate) &&
-	            (!endDate || eventEndDate <= endDate) ||
-	            (eventStartDate >= startDate && eventStartDate <= endDate) ||
-	            (eventEndDate >= startDate && eventEndDate <= endDate);
+			const withinDateRange =
+			    (!startDate || eventEndDate >= startDate) &&  
+			    (!endDate || eventStartDate <= endDate);  
 	
 	        switch (searchCategory) {
 	            case 'all':
