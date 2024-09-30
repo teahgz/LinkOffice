@@ -40,6 +40,7 @@ public class ChatRoomController {
             if (result > 0) {
                 response.put("success", true);
                 response.put("message", "채팅방에서 성공적으로 나갔습니다.");
+
             } else {
                 response.put("success", false);
                 response.put("message", "채팅방 나가기에 실패했습니다.");
