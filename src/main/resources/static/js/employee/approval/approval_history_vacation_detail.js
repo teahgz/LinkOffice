@@ -1,3 +1,6 @@
+const approvalTitle = document.querySelector('#vacationapproval_title').value;
+
+
 // 승인 버튼 업데이트
 function approveRequest(){
 	 const csrfToken = document.querySelector('#csrf_token').value;
@@ -373,4 +376,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}));						
 			
 		});
-	}	
+	}
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 수신함&emsp;&gt;&emsp;결재 내역함&emsp;&gt;&emsp;'+approvalTitle;		
