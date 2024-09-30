@@ -588,12 +588,17 @@ if (sendButton && messageInput) {
          const chatRoom = message.currentChatRoomNo;
          console.log(count);
          if(currentChatRoomNo === chatRoom){
-          console.log(count);
             const participantCount = document.getElementById('participantCountSpan');
             participantCount.textContent = count;
          }
 
       } else {
+            alarmSocket.send(JSON.stringify({
+                type: 'noficationChat',
+                chat_sender_no: currentMember,
+                chat_room_no: currentChatRoomNo
+            }));
+
            if (message.chat_room_no === currentChatRoomNo) {
                 markAllMessagesAsRead(currentChatRoomNo);
                const messageElement = document.createElement("div");
@@ -695,11 +700,7 @@ if (sendButton && messageInput) {
         };
         socket.send(JSON.stringify(message));
         document.getElementById("messageInput").value = "";
-        alarmSocket.send(JSON.stringify({
-           type: 'noficationChat',
-           chat_sender_no: chat_sender_no,
-           chat_room_no: currentChatRoomNo
-        }));
+
 
     };
 
