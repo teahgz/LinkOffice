@@ -55,5 +55,7 @@ public interface ChatMapper {
     //한 채팅방 참여자 안읽은 개수
     int chatRoomUnread(Map<String, Object> params);
 
+    //채팅 메시지
+    String getChatMessageText(Long chatRoom);
 
 }

@@ -717,7 +717,6 @@ if (sendButton && messageInput) {
                  } else {
                      Swal.fire({
                          icon: 'warning',
-                         title: '중복된 채팅방',
                          text: '동일한 멤버와의 채팅방이 이미 존재합니다.',
                          confirmButtonText: '확인'
                      });

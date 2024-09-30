@@ -421,13 +421,13 @@ function connectWebSocket() {
                             addMarkAsReadListener();
                         }
                         message.data.forEach(function(item) {
-                            showNotification(title, content, item.memberNo, message.timestamp);
+                            showNotification(title, item.content, item.memberNo, message.timestamp);
                             const listItem = document.createElement('li');
 
                             listItem.setAttribute('data-notification-no', item.nofication_pk);
                             listItem.innerHTML = `
                                 <strong style="margin-bottom: 5px;">${title}</strong>
-                                <p>${content}</p>
+                                <p>${item.content}</p>
                                 <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                                 <hr style="border: none; margin: 10px 0;">
                             `;

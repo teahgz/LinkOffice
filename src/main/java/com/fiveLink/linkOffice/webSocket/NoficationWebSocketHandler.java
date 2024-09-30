@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fiveLink.linkOffice.chat.domain.ChatMember;
+import com.fiveLink.linkOffice.chat.service.ChatMemberService;
+import com.fiveLink.linkOffice.chat.service.ChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -40,6 +43,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
     private final VacationApprovalService vacationApprovalService;
     private final MemberService memberService;
     private final ScheduleParticipantService scheduleParticipantService;
+	private final ChatMemberService chatMemberService;
+	private final ChatMessageService chatMessageService;
     
     @Autowired
     public NoficationWebSocketHandler(ChatRoomService chatRoomService, NoficationService noficationService,
@@ -47,7 +52,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
     		ApprovalService approvalService,
     		VacationApprovalService vacationApprovalService,
     		MemberService memberService,
-    		ScheduleParticipantService scheduleParticipantService) {
+    		ScheduleParticipantService scheduleParticipantService,
+			ChatMemberService chatMemberService,
+			ChatMessageService chatMessageService) {
         this.chatRoomService = chatRoomService;
         this.noficationService = noficationService;
         this.memberRepository = memberRepository;
@@ -55,6 +62,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         this.vacationApprovalService = vacationApprovalService;
         this.memberService = memberService;
         this.scheduleParticipantService = scheduleParticipantService;
+		this.chatMemberService = chatMemberService;
+		this.chatMessageService = chatMessageService;
     }
     
     @Override
@@ -137,13 +146,18 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 
         List<Map<String, Object>> unreadCounts = new ArrayList<>();
         List<Long> userIdsInChatRoom = chatRoomService.findChatRoomMembers(currentRoom, senderNo);
-        String nofication_content = "메신저가 도착했습니다.";
+
         String nofication_title = "메신저";
         int nofication_type = 1;
 		
 
         for (Long memberNo : userIdsInChatRoom)  {
-            NoficationDto noficationDto = new NoficationDto();
+			String chatRoomName = chatMemberService.selectChatRoomName(currentRoom, memberNo);
+			String chatMessage = chatMessageService.getChatMessageText(currentRoom);
+			String nofication_content = "[" + chatRoomName + "]<br>" + chatMessage ;
+
+
+			NoficationDto noficationDto = new NoficationDto();
             noficationDto.setNofication_content(nofication_content);// 알림내용
             noficationDto.setNofication_receive_no(memberNo);//알림 받는 사람
             noficationDto.setNofication_title(nofication_title);//알림 제목
@@ -156,6 +170,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
                 memberUnreadCount.put("memberNo", memberNo);
                 memberUnreadCount.put("chatRoomNo", currentRoom);
 				memberUnreadCount.put("nofication_pk", notificationPk);
+				memberUnreadCount.put("content", nofication_content);
                 unreadCounts.add(memberUnreadCount);
             }
 
@@ -167,12 +182,12 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
                 responseMap.put("type", "chatAlarm");
 				responseMap.put("nofication_type", nofication_type);
                 responseMap.put("title", nofication_title);
-                responseMap.put("content", nofication_content);
                 responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
 				responseMap.put("timestamp", currentTime);
 				responseMap.put("pk", null); //전자결재 pk값
                 String unreadMessage = objectMapper.writeValueAsString(responseMap);
+				System.out.println(responseMap);
                 s.sendMessage(new TextMessage(unreadMessage));
             }
         }
