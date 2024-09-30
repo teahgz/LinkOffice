@@ -513,7 +513,14 @@ if (sendButton && messageInput) {
       else if (message.type === "memberAdded") {
          const chatRoomNo = message.chatRoomNo;
          const chatRoomName = message.chatRoomName;
+         const countPeople = message.countPeople;
          const existingChatRoom = document.querySelector(`#chatList input[type="hidden"][value="${chatRoomNo}"]`);
+
+         if(currentChatRoomNo === chatRoomNo){
+            console.log(countPeople);
+            const participantCount = document.getElementById('participantCountSpan');
+            participantCount.textContent = countPeople;
+         }
          // 기존에 동일한 채팅방이 없을 때만 추가
          if (!existingChatRoom) {
              createChatListIfNotExists();
@@ -576,7 +583,17 @@ if (sendButton && messageInput) {
                     }
                  }
       }
-      else {
+      else if(message.type === "chatMemCount") {
+         const count = message.data;
+         const chatRoom = message.currentChatRoomNo;
+         console.log(count);
+         if(currentChatRoomNo === chatRoom){
+          console.log(count);
+            const participantCount = document.getElementById('participantCountSpan');
+            participantCount.textContent = count;
+         }
+
+      } else {
            if (message.chat_room_no === currentChatRoomNo) {
                 markAllMessagesAsRead(currentChatRoomNo);
                const messageElement = document.createElement("div");
