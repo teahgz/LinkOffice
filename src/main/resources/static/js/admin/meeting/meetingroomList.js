@@ -336,8 +336,13 @@ document.addEventListener('DOMContentLoaded', function () {
 			        }).then(() => {
 			                        location.reload();
 			                    });
-			                } else {
-			                    Swal.fire('등록 실패', response.res_msg, 'error');
+			                }else {
+			                    Swal.fire({
+								    text: response.res_msg,
+								    icon: 'warning',
+								    confirmButtonColor: '#B1C2DD',
+								    confirmButtonText: '확인',
+								});
 			                }
 			            },
             error: function () {
@@ -453,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
 					    text: response.res_msg,
-					    icon: 'error',
+					    icon: 'warning',
 					    confirmButtonColor: '#B1C2DD',
 					    confirmButtonText: '확인',
 					});
@@ -531,4 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+    
+    const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '회의실 관리&emsp;&gt;&emsp;회의실 정보';
 });

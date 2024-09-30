@@ -147,6 +147,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
+    background-color: white;
 }
 
 .employee_table th, .employee_table td {
@@ -177,7 +178,7 @@
 
 .pagination button {
     margin: 0 5px;
-    padding: 10px 15px;
+    padding: 8px 13px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;

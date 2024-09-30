@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	        lastDateElement.textContent = formattedDate;
 	    }
 	});
-
+	
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '회의실 관리&emsp;&gt;&emsp;예약 내역';
 
 });

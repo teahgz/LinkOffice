@@ -69,7 +69,8 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin-bottom: 15px; 
+    background-color: white;
 }
 
 .reservation_list_table th, .reservation_list_table td {
@@ -99,7 +100,7 @@
 
 .pagination button {
     margin: 0 5px;
-    padding: 10px 15px;
+    padding: 8px 13px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;
