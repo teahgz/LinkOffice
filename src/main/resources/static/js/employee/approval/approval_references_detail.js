@@ -1,3 +1,5 @@
+const approvalTitle = document.getElementById('vacationapproval_title').innerHTML;
+
 document.addEventListener('DOMContentLoaded', function() {
     	// 미리보기
 			document.getElementById('previewButton').addEventListener('click', function() {
@@ -228,3 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		});
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 수신함&emsp;&gt;&emsp;결재 참조함&emsp;&gt;&emsp;'+approvalTitle;

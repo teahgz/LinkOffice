@@ -1,5 +1,4 @@
-const approvalTitle = document.querySelector('#vacationapproval_title').value;
-
+const approvalTitle = document.querySelector('#vacationapproval_title').innerHTML;
 
 // 승인 버튼 업데이트
 function approveRequest(){
