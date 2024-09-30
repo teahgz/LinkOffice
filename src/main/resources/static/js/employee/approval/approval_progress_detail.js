@@ -1,5 +1,6 @@
-// 모달 창 기안 취소
+const approvalTitle = document.getElementById('approval_title').innerHTML;
 
+// 모달 창 기안 취소
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById("myModal");
     const closeModal = document.querySelector(".close");
@@ -288,3 +289,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		});
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 상신함&emsp;&gt;&emsp;결재 진행함&emsp;&gt;&emsp;'+approvalTitle;

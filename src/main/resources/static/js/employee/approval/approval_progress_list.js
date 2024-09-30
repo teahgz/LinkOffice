@@ -10,8 +10,9 @@ document.addEventListener('DOMContentLoaded', function(){
 				if (window.functionTypes.includes(9)) {
 					markApprovalAsRead(9, approvalNo); 
 				}
-				
-
 		});
 	});
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 상신함&emsp;&gt;&emsp;결재 진행함';
