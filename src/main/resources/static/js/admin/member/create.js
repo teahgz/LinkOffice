@@ -169,3 +169,6 @@ createFrm.addEventListener('submit',(e)=>{
 			})
 		
 	 }})
+	 
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '사원 관리&emsp;&gt;&emsp;사원 등록';

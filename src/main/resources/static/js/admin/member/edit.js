@@ -1,3 +1,6 @@
+const memberName = document.getElementById('member_name').innerHTML;
+
+
 function previewImage(event) {
     const file = event.target.files[0];
 
@@ -130,3 +133,5 @@ editFrm.addEventListener('submit',(e)=>{
 		})
 	}})
 	
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '사원 관리&emsp;&gt;&emsp;사원 수정&emsp;&gt;&emsp;'+memberName;
