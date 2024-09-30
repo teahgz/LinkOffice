@@ -1,4 +1,6 @@
 $(function () {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '문서함&emsp;&gt;&emsp;휴지통';	
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     const csrfToken = $('input[name="_csrf"]').val();
@@ -273,7 +275,7 @@ $(function () {
 	function deleteFile(fileNo){
 		Swal.fire({
 			icon: 'warning',
-		    text: '정말 영구 삭제하시겠습니까?',
+		    text: '파일을 영구 삭제하시겠습니까?',
 		    showCancelButton: true,
 		    confirmButtonText: '확인',
 		    cancelButtonText: '취소'
@@ -315,7 +317,7 @@ $(function () {
 	function deleteSelectedFile(fileNos) {
 	    Swal.fire({
 	        icon: 'warning',
-	        text: '정말 삭제하시겠습니까?',
+	        text: '파일을 영구 삭제하시겠습니까?',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
 	        cancelButtonText: '취소'

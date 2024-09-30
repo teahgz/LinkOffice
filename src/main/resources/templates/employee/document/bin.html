@@ -9,15 +9,11 @@
         <section>
         	<div id="mem_no" style="display: none;" th:text="${member.member_no}"></div>
         	<div id="dept_no" style="display: none;" th:text="${member.department_no}"></div>
-        	<div id="title">        	
-	        	<h1>휴지통</h1>     
-        	</div>
             <div class="document_folder_list">
                 <div class="document_file_div">
 	                <div class="document_file_list" style="display: none;">
 	                	<div class="document_search">
 	                		<div class="search_range">
-	                			<div id="range">기간</div>   
 	                			<div class="range_calendar">
 	                				<input type="date" id="start_date">
 	                				<span id="wave">~</span>
@@ -25,7 +21,6 @@
 	                			</div>       
 	                		</div>
 	                		<div class="search_name">
-	                			<div id="file_name">파일명</div>  
 	                			<input type="text" id="file_name_input" placeholder="파일명을 입력하세요."> 
 	                			<input type="button" id="search_button" value="검색">
 	                		</div> 		

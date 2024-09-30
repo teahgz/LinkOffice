@@ -2,6 +2,8 @@
 let folderList = [];
 
 $(function () {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '문서함&emsp;&gt;&emsp;사내 문서함';		
 	// 전역 변수로 selectedFolderNo 정의
 	let selectedFolderNo = null;
 	// 폴더 이름 변경 여부 
@@ -506,7 +508,8 @@ $(function () {
                             	tree.select_node(newFolderNo);
                             	openFolderToNode(newFolderNo);
                             	loadFiles(newFolderNo);
-                        	});			                 
+                        	});			      
+                        	$('#first_folder_name').val('');	           
                         	$('.first_folder_add_modal').hide();    				
                         	$('.document_no_folder').hide();
                     		$('.document_select_folder').show();
@@ -554,7 +557,7 @@ $(function () {
 	    
 	    if (newFolderName.trim() === '') {
 	        Swal.fire({
-	            text: '새로운 폴더명을 입력해주세요.',
+	            text: '폴더명을 입력해주세요.',
 	            icon: 'warning',
 	            confirmButtonText: '확인'
 	        });
@@ -631,7 +634,7 @@ $(function () {
 	    
 	    if (folderName.trim() === '') {
 	        Swal.fire({
-	            text: '생성할 폴더명을 입력해주세요.',
+	            text: '폴더명을 입력해주세요.',
 	            icon: 'warning',
 	            confirmButtonText: '확인'
 	        });
@@ -898,7 +901,7 @@ $(function () {
 	function deleteFile(fileNo){
 		Swal.fire({
 			icon: 'warning',
-		    text: '정말 삭제하시겠습니까?',
+		    text: '파일을 삭제하시겠습니까?',
 		    showCancelButton: true,
 		    confirmButtonText: '확인',
 		    cancelButtonText: '취소'
@@ -940,7 +943,7 @@ $(function () {
 	function deleteSelectedFile(fileNos) {
 	    Swal.fire({
 	        icon: 'warning',
-	        text: '정말 삭제하시겠습니까?',
+	        text: '파일을 삭제하시겠습니까?',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
 	        cancelButtonText: '취소'
