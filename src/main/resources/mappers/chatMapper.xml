@@ -21,7 +21,7 @@
         cm.chat_member_pin DESC,
         cm.chat_member_pin_time DESC,
         cm.chat_member_no DESC,
-        rm.recent_message_date DESC,
+        rm.chat_message_create_date DESC,
         cm.chat_member_join_date DESC;
     </select>
 
