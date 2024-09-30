@@ -1,4 +1,6 @@
 $(function () {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '문서함&emsp;&gt;&emsp;휴지통';	
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     const csrfToken = $('input[name="_csrf"]').val();
@@ -8,6 +10,16 @@ $(function () {
     const paginationDiv = document.getElementById('pagination');
     let totalPages = 0;
     let currentPage = 0;
+    
+    $('#select_delete').prop('disabled', true);
+    $('#update_button').prop('disabled', true);
+    
+	// 체크박스 상태 변경 이벤트
+    $(document).on('change', '.file_checkbox', function() {
+        const checkedFiles = $('.file_checkbox:checked').length > 0;
+        $('#select_delete').prop('disabled', !checkedFiles);
+        $('#update_button').prop('disabled', !checkedFiles);
+    });    
     
     // 날짜 포맷 함수
     function formatDate(dateString) {
@@ -138,6 +150,8 @@ $(function () {
                 $('#select_all').on('change', function() {
                     const isChecked = this.checked; 
                     $('.file_checkbox').prop('checked', isChecked); 
+	                $('#select_delete').prop('disabled', !isChecked);
+	                $('#update_button').prop('disabled', !isChecked);                    
                 });
  	            // 파일 선택 삭제
 	            $('#select_delete').on('click', function() {
@@ -149,13 +163,10 @@ $(function () {
 	                    selectedFileNos.push(fileNo); 
 	                });
 	                if (selectedFileNos.length > 0) {
+						$('#select_delete').prop('disabled', false);
 	                    deleteSelectedFile(selectedFileNos);
 	                } else {
-	                    Swal.fire({
-	                        icon: 'warning',
-	                        text: '삭제할 파일을 선택해 주세요.',
-	                        confirmButtonText: '확인'
-	                    });
+	                    $('#select_delete').prop('disabled', true);
 	                }
 	            });      
 	            // 파일 복구 
@@ -173,13 +184,10 @@ $(function () {
 	                    selectedFileNos.push(fileNo); 
 	                });
 	                if (selectedFileNos.length > 0) {
+						$('#update_button').prop('disabled', false);
 	                    updateSelectedFile(selectedFileNos);
 	                } else {
-	                    Swal.fire({
-	                        icon: 'warning',
-	                        text: '복구할 파일을 선택해 주세요.',
-	                        confirmButtonText: '확인'
-	                    });
+	                    $('#update_button').prop('disabled', true);
 	                }
 	            }); 
             }
@@ -267,7 +275,7 @@ $(function () {
 	function deleteFile(fileNo){
 		Swal.fire({
 			icon: 'warning',
-		    text: '정말 영구 삭제하시겠습니까?',
+		    text: '파일을 영구 삭제하시겠습니까?',
 		    showCancelButton: true,
 		    confirmButtonText: '확인',
 		    cancelButtonText: '취소'
@@ -309,7 +317,7 @@ $(function () {
 	function deleteSelectedFile(fileNos) {
 	    Swal.fire({
 	        icon: 'warning',
-	        text: '정말 삭제하시겠습니까?',
+	        text: '파일을 영구 삭제하시겠습니까?',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
 	        cancelButtonText: '취소'

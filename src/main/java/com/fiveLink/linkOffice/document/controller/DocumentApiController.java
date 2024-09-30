@@ -94,7 +94,7 @@ public class DocumentApiController {
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
-    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
     	  resultMap.put("folderNo", documentFirstFolder.getDocumentFolderNo());
       } 
       return resultMap;
@@ -139,7 +139,7 @@ public class DocumentApiController {
       if (result > 0) {
     	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
     	  resultMap.put("res_code", "200");
-    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
     	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
       } 
       return resultMap;
@@ -182,7 +182,7 @@ public class DocumentApiController {
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
-    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
     	  resultMap.put("folderNo", documentFirstFolder.getDocumentFolderNo());
       } 
       return resultMap;
@@ -228,7 +228,7 @@ public class DocumentApiController {
       if (result > 0) {
     	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
     	  resultMap.put("res_code", "200");
-    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
     	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
       } 
       return resultMap;
@@ -271,7 +271,7 @@ public class DocumentApiController {
 
       if (result > 0) {
     	  resultMap.put("res_code", "200");
-    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
     	  resultMap.put("folderNo", documentFirstFolder.getDocumentFolderNo());
       } 
       return resultMap;
@@ -317,7 +317,7 @@ public class DocumentApiController {
       if (result > 0) {
     	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
     	  resultMap.put("res_code", "200");
-    	  resultMap.put("res_msg", "폴더 생성이 완료되었습니다.");
+    	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
     	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
       } 
       return resultMap;
@@ -441,7 +441,7 @@ public class DocumentApiController {
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
-    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("res_msg", "삭제되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);
        }
        
@@ -501,7 +501,7 @@ public class DocumentApiController {
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
-    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("res_msg", "삭제되었습니다.");
        }
        
        return resultMap;       
@@ -569,7 +569,7 @@ public class DocumentApiController {
        documentfolder.setDocumentFolderStatus(1L);
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
-    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("res_msg", "삭제되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);
        }
        
@@ -638,7 +638,7 @@ public class DocumentApiController {
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
     	   resultMap.put("res_code", "200");
-    	   resultMap.put("res_msg", "삭제 완료되었습니다.");
+    	   resultMap.put("res_msg", "삭제되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);
        }
        
