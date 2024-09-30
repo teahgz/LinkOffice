@@ -548,6 +548,17 @@ $(document).ready(function() {
 	                }).then(() => {
 	                    location.reload();
 	                });
+	                
+	                const memberNo = $('#memberNo').val();
+			        const selectedMembers = $('#selectedMembers').val();
+			        const reservationDate = $('#reservation_date_input').val(); 
+			         
+			        alarmSocket.send(JSON.stringify({
+			            type: 'noficationParticipantMeeting', 
+			            memberNo: memberNo,
+			            participants: selectedMembers,
+			            reservationDate: reservationDate 
+			        })); 
 	            } else {
 	                Swal.fire({
 	                    text: response.res_msg,
