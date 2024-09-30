@@ -59,7 +59,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         else if("getUnreadCounts".equals(type)){
             handleChatCount(jsonMap, session, type);
         }
-        else {
+        else if("outCount".equals(type)) {
+
+        }else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
             chatMessageService.saveChatMessage(chatMessageDto);

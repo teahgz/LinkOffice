@@ -19,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 
@@ -53,6 +51,27 @@ public class ChatMessageController {
             model.addAttribute("memberdto", memberDtoList);
             model.addAttribute("chatList",chatList);
 
+            List<Integer> chatRoomNos = new ArrayList<>();
+
+            for (ChatMemberDto chatMember : chatList) {
+                int type = chatMemberService.chatRoomType(chatMember.getChat_room_no());
+                chatRoomNos.add(type);
+            }
+            List<Map<String, Object>> combinedList = new ArrayList<>();
+
+            for (int i = 0; i < chatList.size(); i++) {
+                ChatMemberDto chatMember = chatList.get(i);
+                int chatType = chatRoomNos.get(i);
+
+                Map<String, Object> combinedItem = new HashMap<>();
+                combinedItem.put("chatMember", chatMember);
+                combinedItem.put("chatType", chatType);
+
+                combinedList.add(combinedItem);
+            }
+            System.out.println(combinedList);
+            model.addAttribute("combinedChatList", combinedList);
+
 
             return "admin/chat/chatMessage";
         } catch (Exception e) {
@@ -61,11 +80,11 @@ public class ChatMessageController {
         }
 
     }
-    @GetMapping("/api/chat/messages/{chat_room_no}")
+    @GetMapping("/api/chat/messages/{chat_room_no}/{currentMember}")
     @ResponseBody
-    public List<Map<String, Object>> chatMessages(@PathVariable("chat_room_no") Long chatRoomNo){
+    public List<Map<String, Object>> chatMessages(@PathVariable("chat_room_no") Long chatRoomNo, @PathVariable("currentMember") Long currentMember){
         try{
-            return chatMessageService.getChatMessages(chatRoomNo);
+            return chatMessageService.getChatMessages(chatRoomNo, currentMember);
         }catch (Exception e){
             e.printStackTrace();
             return Collections.emptyList();

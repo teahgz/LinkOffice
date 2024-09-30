@@ -35,20 +35,21 @@
                     </button>
                 </div>
                 <div class="chatList-container">
-                    <div class="chatList" id="chatList" th:each="chat:${chatList}">
+                    <div class="chatList" id="chatList" th:each="item : ${combinedChatList}">
                         <!-- 채팅 목록 항목 -->
-                        <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${chat.chat_room_no} + ')'">
-                            <i class="fa-regular fa-user" style="margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
-                            <h3><p th:text="${chat.chat_member_room_name}"></p></h3>
+                        <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${item.chatMember.chat_room_no} + ')'">
+                           <i th:if="${item.chatType == 0}" class="fa-solid fa-user" style="font-size: 15px; margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
+                            <i th:if="${item.chatType == 1}" class="fa-solid fa-users" style="font-size: 15px; margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
+                            <h3><p th:text="${item.chatMember.chat_member_room_name}"></p></h3>
                             <div class="pin">
-                                <i class="fa-solid fa-thumbtack" th:if="${chat.chat_member_pin == 1}" ></i>
+                                <i class="fa-solid fa-thumbtack" th:if="${item.chatMember.chat_member_pin == 1}"></i>
                             </div>
                             <!-- 읽지 않은 메시지 개수 표시 -->
                             <div class="unread-count-container">
                                 <span class="unread-count"></span>
                             </div>
-                            <input type="hidden" id="memberNo" th:value="${member.member_no}"/>
-                            <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
+                            <input type="hidden" id="memberNo" th:value="${item.chatMember.member_no}"/>
+                            <input type="hidden" id="chatRoomNo" th:value="${item.chatMember.chat_room_no}" />
                         </div>
                     </div>
                 </div>
@@ -87,7 +88,7 @@
 <!--                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">알림켜기</span>-->
 <!--                                </a>-->
                                 <a href="#" id="addChatItem" class="chat-dropdown-item">
-                                    <i class="fa-solid fa-plus"></i> <span class="menu-text">추가</span>
+                                    <i class="fa-solid fa-plus"></i> <span class="menu-text">초대</span>
                                 </a>
                                 <a href="#" id="editChatRoomButton" class="chat-dropdown-item">
                                     <i class="fa-regular fa-pen-to-square"></i> <span class="menu-text">수정</span>

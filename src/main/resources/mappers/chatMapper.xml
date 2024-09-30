@@ -14,6 +14,7 @@
         WHERE cm.member_no = #{memberNo}
         GROUP BY cm.chat_room_no
         ) AS rm ON cm.chat_room_no = rm.chat_room_no
+        JOIN fl_chat_room cr ON cm.chat_room_no = cr.chat_room_no
         WHERE cm.member_no = #{memberNo}
         AND cm.chat_member_par = 0
         ORDER BY
@@ -25,7 +26,17 @@
     </select>
 
     <!-- 채팅 내용 가져오기   -->
-    <select id="getChatMessages" parameterType="java.lang.Long" resultType="java.util.HashMap">
+    <select id="getChatMessages" parameterType="java.util.Map" resultType="java.util.HashMap">
+<!--        SELECT-->
+<!--        cm.chat_message_create_date AS chatMessageCreateDate,-->
+<!--        cm.chat_content AS chatContent,-->
+<!--        m.member_name AS senderName,-->
+<!--        cm.chat_room_no AS roomNo,-->
+<!--        cm.chat_sender_no AS senderNo-->
+<!--        FROM fl_chat_message cm-->
+<!--        JOIN fl_member m ON cm.chat_sender_no = m.member_no-->
+<!--        WHERE cm.chat_room_no = #{roomNo}-->
+<!--        ORDER BY cm.chat_message_create_date ASC;-->
         SELECT
         cm.chat_message_create_date AS chatMessageCreateDate,
         cm.chat_content AS chatContent,
@@ -34,7 +45,11 @@
         cm.chat_sender_no AS senderNo
         FROM fl_chat_message cm
         JOIN fl_member m ON cm.chat_sender_no = m.member_no
+        JOIN fl_chat_member ctm ON cm.chat_room_no = ctm.chat_room_no
         WHERE cm.chat_room_no = #{roomNo}
+        AND ctm.member_no = #{memberNo}
+        AND ctm.chat_member_par = 0
+        AND cm.chat_message_create_date >= ctm.chat_member_join_date
         ORDER BY cm.chat_message_create_date ASC;
     </select>
 
@@ -56,6 +71,7 @@
         FROM fl_chat_member
         WHERE chat_room_no = #{chatRoomNo}
         AND member_no = #{memberNo}
+        AND chat_member_par = 0
     </select>
 
 <!-- 채팅방 이름 수정   -->
@@ -72,10 +88,11 @@
         WHERE chat_room_no = #{chatRoomNo}
     </select>
 
-    <!-- 채팅방 타입 가져오기  -->
+    <!-- 같은 채팅방에 있는 사용자 번호  -->
     <select id="chatRoomMemberNo" resultType="Long">
         SELECT member_no FROM fl_chat_member
         WHERE chat_room_no = #{chatRoomNo}
+        AND chat_member_par = 0
     </select>
 
     <select id="selectMemberChatRoomName" resultType="String" parameterType="java.lang.Long">
@@ -142,11 +159,21 @@
 
     <!-- 채팅방 별 안읽은 개수-->
     <select id="getUnreadCounts" parameterType="java.lang.Long" resultType="java.util.Map">
+<!--        SELECT COUNT(cm.chat_message_no) AS unread_count, cm.chat_room_no-->
+<!--        FROM fl_chat_message cm-->
+<!--        LEFT JOIN fl_chat_read_status cr ON cm.chat_message_no = cr.chat_message_no AND cr.member_no = #{memberNo}-->
+<!--        WHERE cr.chat_read_no IS NULL AND cm.chat_room_no IS NOT NULL-->
+<!--        GROUP BY cm.chat_room_no;-->
         SELECT COUNT(cm.chat_message_no) AS unread_count, cm.chat_room_no
         FROM fl_chat_message cm
         LEFT JOIN fl_chat_read_status cr ON cm.chat_message_no = cr.chat_message_no AND cr.member_no = #{memberNo}
-        WHERE cr.chat_read_no IS NULL AND cm.chat_room_no IS NOT NULL
+        JOIN fl_chat_member ctm ON cm.chat_room_no = ctm.chat_room_no
+        WHERE cr.chat_read_no IS NULL
+        AND cm.chat_room_no IS NOT NULL
+        AND ctm.member_no = #{memberNo}
+        AND cm.chat_message_create_date >= ctm.chat_member_join_date
         GROUP BY cm.chat_room_no;
+
     </select>
 
     <!-- 채팅방 중복 생성-->
@@ -159,7 +186,7 @@
     <select id="findMembersByChatRoom" parameterType="java.lang.Long" resultType="java.lang.Long">
         SELECT member_no
         FROM fl_chat_member
-        WHERE chat_room_no = #{chatRoomNo}
+        WHERE chat_room_no = #{chatRoomNo} AND chat_member_par = 0
     </select>
 
     <!--채팅방 사용자 번호-->

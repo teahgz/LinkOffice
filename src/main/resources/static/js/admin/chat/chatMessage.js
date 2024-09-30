@@ -319,11 +319,8 @@ if (sendButton && messageInput) {
                     const memberNo = item.memberNo;
 
                     const inputElement = document.querySelector(`input[value="${chatRoomNo}"]`);
-                    console.log("check:"+inputElement);
-
                     if (inputElement) {
                         const chatItem = inputElement.closest('.chatItem');
-                        console.log("chatItem:"+chatItem);
                         if (chatItem) {
 
                             let  unreadCountContainer = chatItem.querySelector('.unread-count-container');
@@ -432,7 +429,7 @@ if (sendButton && messageInput) {
                   newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
                   newChatItem.innerHTML = `
-                        <i class="fa-regular fa-user" style="margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
+                        <i class="fa-solid fa-user" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
                       <h3><p>${memberInfo.roomName}</p></h3>
                       <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
                       <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
@@ -473,7 +470,7 @@ if (sendButton && messageInput) {
 
                     // 그룹 채팅의 경우 그룹 이름을 사용
                     newChatItem.innerHTML = `
-                        <i class="fa-regular fa-user" style="margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
+                        <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
                         <h3><p>${message.names}</p></h3>
                         <input type="hidden" id="memberNo" value="${currentMember}"/>
                         <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
@@ -514,26 +511,52 @@ if (sendButton && messageInput) {
 
       }
       else if (message.type === "memberAdded") {
-               const chatRoomNo = message.chatRoomNo;
-               const chatRoomName = message.chatRoomName;
+         const chatRoomNo = message.chatRoomNo;
+         const chatRoomName = message.chatRoomName;
+         const existingChatRoom = document.querySelector(`#chatList input[type="hidden"][value="${chatRoomNo}"]`);
+         // 기존에 동일한 채팅방이 없을 때만 추가
+         if (!existingChatRoom) {
+             createChatListIfNotExists();
+             const chatListContainer = document.querySelector('.chatList-container');
+             const chatList = document.getElementById('chatList');
+             const newChatItem = document.createElement("div");
+             newChatItem.classList.add("chatItem");
+             newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
-               const chatRoomExists = document.querySelector(`input[value="${chatRoomNo}"]`);
-               if (!chatRoomExists) {
 
-                   const newChatItem = document.createElement("div");
-                   newChatItem.classList.add("chatItem");
-                   newChatItem.setAttribute("onclick", `handleChatRoomClick(${chatRoomNo})`);
+             newChatItem.innerHTML = `
+                <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
+                <h3><p>${chatRoomName}</p></h3>
+                <input type="hidden" id="memberNo" value="${currentMember}"/>
+                <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />
+             `;
+             if (chatList) {
+                const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
+                const existingItems = chatList.querySelectorAll('.chatItem');
+                if (pinnedItems.length > 0) {
+                   const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                   lastPinnedItem.after(newChatItem);
+                } else if (existingItems.length > 0) {
 
-                   newChatItem.innerHTML = `
-                       <h3><p>${chatRoomName}</p></h3>
-                       <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
-                       <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />
-                   `;
-
-                   const chatList = document.getElementById('chatList');
                    chatList.insertBefore(newChatItem, chatList.firstChild);
-               }
-
+                } else {
+                   chatList.appendChild(newChatItem);
+                }
+             }
+             const chatRoomExists = document.querySelector(`input[value="${chatRoomNo}"]`);
+             if (!chatRoomExists) {
+                const newChatItem = document.createElement("div");
+                newChatItem.classList.add("chatItem");
+                newChatItem.setAttribute("onclick", `handleChatRoomClick(${chatRoomNo})`);
+                newChatItem.innerHTML = `
+                   <h3><p>${chatRoomName}</p></h3>
+                   <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
+                   <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />
+                `;
+                const chatList = document.getElementById('chatList');
+                chatList.insertBefore(newChatItem, chatList.firstChild);
+             }
+         }
       }else if(message.type === "updateUnreadCount") {
                 const chatRoomNo = message.chatRoomNo;
                 const unreadCount = message.unreadCount;
@@ -817,6 +840,10 @@ if (sendButton && messageInput) {
                     .then(data => {
                         if (data.success) {
                             // 성공적으로 처리된 경우, 페이지 리로드
+                            socket.send(JSON.stringify({
+                                type: 'outCount',
+                                chat_room_no: currentChatRoomNo
+                            }));
                             window.location.reload();
                         } else {
                             // 실패 시 경고 메시지
@@ -935,7 +962,7 @@ function formatDateTime(date) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
     function loadChatMessages(chatRoomNo) {
-        fetch(`/api/chat/messages/${chatRoomNo}`)
+        fetch(`/api/chat/messages/${chatRoomNo}/${currentMember}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("서버가 응답하지 않음" + response.statusText);
@@ -943,6 +970,8 @@ function formatDateTime(date) {
                 return response.json();
             })
             .then(data => {
+            console.log(data);
+
                 displayChatMessages(data);
             })
             .catch(error => {
