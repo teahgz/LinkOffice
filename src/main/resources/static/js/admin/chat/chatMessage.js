@@ -809,9 +809,11 @@ if (sendButton && messageInput) {
               } else {
                   Swal.fire({
                       icon: 'warning',
-                      title: '중복된 채팅방',
                       text: '동일한 멤버의 그룹방이 이미 존재합니다.',
-                      confirmButtonText: '확인'
+                      confirmButtonText: '확인',
+                      customClass: {
+                          confirmButton: 'custom-confirm-button'
+                      }
                   });
                   $('#groupChatNameModal').modal('hide');
               }
@@ -839,9 +841,13 @@ if (sendButton && messageInput) {
                 text: "채팅방에서 나가시겠습니까?",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "나가기",
+                confirmButtonText: "확인",
                 cancelButtonText: "취소",
-                dangerMode: true
+                dangerMode: true,
+                customClass: {
+                        confirmButton: 'custom-confirm-button',
+                        cancelButton: 'custom-cancel-button'
+                    }
             }).then((result) => {
                 if (result.isConfirmed) {
                     // 사용자가 나가기를 원하면 서버에 요청 보내기
@@ -916,7 +922,11 @@ if (sendButton && messageInput) {
             showCancelButton: true,
             confirmButtonText: "확인",
             cancelButtonText: "취소",
-            dangerMode: true
+            dangerMode: true,
+            customClass: {
+               confirmButton: 'custom-confirm-button',
+               cancelButton: 'custom-cancel-button'
+            }
          }).then((result) => {
             if (result.isConfirmed) {
             // 채팅방 상단 고정요청

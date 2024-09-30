@@ -481,3 +481,11 @@ margin-top: 10px;
     color: #a9a9a9;
     opacity: 0.6;
 }
+.custom-confirm-button {
+    background-color: #B1C2DD;
+    color: white;
+}
+.custom-cancel-button {
+    background-color: #C0C0C0;
+    color: white;
+}
