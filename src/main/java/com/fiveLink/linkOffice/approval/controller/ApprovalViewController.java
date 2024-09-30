@@ -165,8 +165,6 @@ public class ApprovalViewController {
 			}
 		});
 		
-		System.out.println(approvals.getContent());
-		
 	    model.addAttribute("approvals", approvals.getContent());
 	    model.addAttribute("page", approvals);
 	    model.addAttribute("searchDto", searchdto);

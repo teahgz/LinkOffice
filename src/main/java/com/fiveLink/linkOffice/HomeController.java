@@ -95,11 +95,6 @@ public class HomeController {
 		return "pwchange";
 	}
 
-	@GetMapping("/error")
-	public String error() {
-		return "error";
-	}
-	  
 	@GetMapping({"/",""})
 	public String home(HttpServletRequest request, Model model) {
 
