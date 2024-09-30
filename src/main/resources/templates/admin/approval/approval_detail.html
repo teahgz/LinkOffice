@@ -11,7 +11,7 @@
 			                <div class="form_header">
 			                	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
 		                        <input type="hidden" id="form_no" th:value="${form.approval_form_no}" name="form_no" />
-			                    <span class="form_title" th:text="${form.approval_form_title}"></span>
+			                    <span class="form_title" id="form_title" th:text="${form.approval_form_title}"></span>
 			                    <span class="form_date">등록일 </span>
 			                    <span class="form_date" th:text="${form.format_create_date}"></span>
 			                </div>

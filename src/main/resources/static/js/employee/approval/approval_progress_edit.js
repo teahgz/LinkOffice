@@ -491,7 +491,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    })
 			}
 	});
-	
-	
-    
 });
+const approvalTitle = document.querySelector('#approval_title').value;
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 상신함&emsp;&gt;&emsp;결재 진행함&emsp;&gt;&emsp;'+approvalTitle;

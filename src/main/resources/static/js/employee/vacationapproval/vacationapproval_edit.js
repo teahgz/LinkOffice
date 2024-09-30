@@ -518,14 +518,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		});
 
 
-
-
-
-
-
-
-
-
 			const form = document.getElementById('vacAppEditFrm');
 			form.addEventListener('submit', (e) => {
 	  		  e.preventDefault();
@@ -617,6 +609,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    })
 			} 
 	});
-
-
 });
+
+const approvalTitle = document.querySelector('#vacationapproval_title').value;
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청함&emsp;&gt;&emsp;'+approvalTitle;

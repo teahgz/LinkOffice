@@ -207,7 +207,7 @@ public class MemberApiController {
 			
 			if(memberService.createMember(dto) != null) {
 				response.put("res_code", "200");
-			    response.put("res_msg", "사원 등록을 성공하였습니다.");
+			    response.put("res_msg", "사원을 등록하였습니다.");
 			}
 			
 		}catch(Exception e) {
@@ -252,7 +252,7 @@ public class MemberApiController {
 
 		            if (!decryptedNational.equals(userNational)) {
 		                response.put("res_code", "409");
-		                response.put("res_msg", "등록된 주민번호와 일치하지 않습니다!");
+		                response.put("res_msg", "등록된 주민번호와 일치하지 않습니다.");
 		                return response; 
 		            } else {
 		                dto.setMember_pw(newPw); 
@@ -262,7 +262,7 @@ public class MemberApiController {
 
 		    if (!memberExists) {
 		        response.put("res_code", "404");
-		        response.put("res_msg", "등록된 아이디가 아닙니다!");
+		        response.put("res_msg", "등록된 아이디가 아닙니다.");
 		        return response;
 		    }
 
@@ -342,7 +342,7 @@ public class MemberApiController {
 	    
 	    if(memberService.memberEdit(memberdto) != null) {
 	    	response.put("res_code", "200");
-	    	response.put("res_msg", "정보 수정을 성공하였습니다.");
+	    	response.put("res_msg", "정보를 수정하였습니다.");
 
 	    }
 	    

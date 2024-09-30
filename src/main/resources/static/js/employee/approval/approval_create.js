@@ -502,3 +502,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 				}
 		});
 	});
+	
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자결재&emsp;&gt;&emsp;결재 작성';
