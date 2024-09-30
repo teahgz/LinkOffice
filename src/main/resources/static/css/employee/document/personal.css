@@ -311,6 +311,14 @@
 #select_delete:active{
     transform: scale(0.98);
 }
+#select_delete:disabled, #select_down:disabled{
+    background-color: #d3d3d3;  
+    color: #a9a9a9; 
+    cursor: not-allowed;
+} 
+#select_delete:disabled, #select_down:disabled:hover{
+    background-color: #d3d3d3;
+}
 #select_down{
 	margin-left: 0.5vw;
 	margin-top: 0.4vh;

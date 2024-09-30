@@ -142,6 +142,14 @@
 #select_delete:active{
     transform: scale(0.98);
 }
+#select_delete:disabled, #update_button:disabled{
+    background-color: #d3d3d3;  
+    color: #a9a9a9; 
+    cursor: not-allowed;
+} 
+#select_delete:disabled, #update_button:disabled:hover{
+    background-color: #d3d3d3;
+}
 .upload_and_sort{
 	display: flex;
 	align-items: center;

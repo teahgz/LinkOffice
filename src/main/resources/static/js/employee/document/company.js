@@ -17,6 +17,16 @@ $(function () {
     let totalPages = 0;
     let currentPage = 0;
 
+    $('#select_delete').prop('disabled', true);
+    $('#select_down').prop('disabled', true);
+
+	// 체크박스 상태 변경 이벤트
+    $(document).on('change', '.file_checkbox', function() {
+        const checkedFiles = $('.file_checkbox:checked').length > 0;
+        $('#select_delete').prop('disabled', !checkedFiles);
+        $('#select_down').prop('disabled', !checkedFiles);
+    });
+    
     // 날짜 포맷 함수
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -303,6 +313,8 @@ $(function () {
 	             $('#select_all').on('change', function() {
                 	const isChecked = this.checked; 
                 	$('.file_checkbox').prop('checked', isChecked);
+	                $('#select_delete').prop('disabled', !isChecked);
+	                $('#select_down').prop('disabled', !isChecked);                	
             	});
             	// 파일 선택 삭제
 				$('#select_delete').on('click', function() {
@@ -330,13 +342,10 @@ $(function () {
 				            confirmButtonText: '확인'
 				        });
 				    } else if (fileNos.length > 0) {
+						$('#select_delete').prop('disabled', false);
 				        deleteSelectedFile(fileNos); 
 				    } else {
-				        Swal.fire({
-				            icon: 'warning',
-				            text: '삭제할 파일을 선택해 주세요.',
-				            confirmButtonText: '확인'
-				        });
+				        $('#select_delete').prop('disabled', true);
 				    }
 				});
 				// 파일 선택 다운
@@ -347,6 +356,7 @@ $(function () {
 				        selectedFileNos.push(fileNo);
 				    });
 				    if (selectedFileNos.length > 0) {
+						$('#update_button').prop('disabled', false);
 				        selectedFileNos.forEach(fileNo => {
 				            const downloadLink = document.createElement('a');
 				            downloadLink.href = `/document/file/download/${fileNo}`;
@@ -356,11 +366,7 @@ $(function () {
 				            document.body.removeChild(downloadLink);
 				        });
 				    } else {
-				        Swal.fire({
-				            icon: 'warning',
-				            text: '다운할 파일을 선택해 주세요.',
-				            confirmButtonText: '확인'
-				        });
+				       $('#select_delete').prop('disabled', true);
 				    }
 				});
             }
