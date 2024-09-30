@@ -38,7 +38,7 @@
         AND nofication_type = #{functionType}
     </update>
 
-<!-- 휴가 결재 pk   -->
+    <!-- 휴가 결재 pk   -->
     <select id="getVacationApprovalPk" resultType="Long">
         SELECT vacation_approval_no
         FROM fl_vacation_approval
