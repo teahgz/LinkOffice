@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            processMeetingSchedules(meetingSchedules.meetingResult, allEvents)  
 	        ]).then(() => {
 	            initializeCalendar(allEvents);
-	            filterEvents();
+	            filterEvents(); 
 	        });
 	    });
 	}
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            return createEvent(schedule, type);
 	        } else {
 	            const repeatInfo = repeats.find(r => r.schedule_no === schedule.schedule_no);
-	            if (repeatInfo) {
+	            if (repeatInfo) { 
 	                const startDate = new Date(schedule.schedule_start_date);
 	                const endDate = repeatInfo.schedule_repeat_end_date ? new Date(repeatInfo.schedule_repeat_end_date) : new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
 	                let currentDate = new Date(startDate);
@@ -412,71 +412,76 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	}
 	
-    function createEvent(schedule, type, date, repeatInfo) {
-        var eventStart = date || new Date(schedule.schedule_start_date);
-        var eventEnd = schedule.schedule_end_date ? new Date(schedule.schedule_end_date) : null;
-    	 
-        if (date) { 
-            eventEnd = new Date(date);
-            eventEnd.setHours(new Date(schedule.schedule_end_date).getHours());
-            eventEnd.setMinutes(new Date(schedule.schedule_end_date).getMinutes());
-        }  
-        
-        if (schedule.schedule_allday === 1 && eventEnd) {
-	        eventEnd.setDate(eventEnd.getDate() + 2);
+   function createEvent(schedule, type, date, repeatInfo) {
+	    var eventStart = date || new Date(schedule.schedule_start_date);
+	    var eventEnd;
+	
+	    if (date) { 
+	        const originalStart = new Date(schedule.schedule_start_date);
+	        const originalEnd = new Date(schedule.schedule_end_date);
+	        const duration = originalEnd - originalStart;
+	
+	        eventEnd = new Date(date.getTime() + duration);
+	    } else {
+	        eventEnd = schedule.schedule_end_date ? new Date(schedule.schedule_end_date) : null;
 	    }
-	    
-        var event = {
-            order: 1,
-            id: schedule.schedule_no,
-            title: schedule.schedule_title,
-            start: formatDate(eventStart) + (schedule.schedule_start_time ? 'T' + schedule.schedule_start_time : ''),
-            end: eventEnd ? formatDate(eventEnd) + (schedule.schedule_end_time ? 'T' + schedule.schedule_end_time : '') : null,
-            allDay: schedule.schedule_allday === 1,
-            backgroundColor: categoryColors[schedule.schedule_category_no] || '#3788d8',
-            borderColor: categoryColors[schedule.schedule_category_no] || '#3788d8',
-            textColor: '#000000',
-            className: type + '-event',
-            extendedProps: {
-                type: type,
-                categoryName: categoryNames[schedule.schedule_category_no],
-                comment: schedule.schedule_comment,
-                repeatOption: schedule.schedule_repeat,
-                createDate: schedule.schedule_create_date,
-                startDate: eventStart ? formatDate(eventStart) : null,
-                endDate: eventEnd ? formatDate(eventEnd) : null,
-                startTime: schedule.schedule_allday === 0 ? schedule.schedule_start_time : null,
-                endTime: schedule.schedule_allday === 0 ? schedule.schedule_end_time : null,
-                department_no: schedule.department_no,
-                member_no: schedule.member_no,
-                participant_no: [],
-                participantsLoaded: false,
-                isException: schedule.isException || false,
-                repeatType: repeatInfo ? repeatInfo.schedule_repeat_type : null,
-	            repeatDay : repeatInfo ? repeatInfo.schedule_repeat_day : null,
+	
+	    if (schedule.schedule_allday === 1 && eventEnd) {
+	        eventEnd.setDate(eventEnd.getDate() + 1);
+	    }
+	
+	    var event = {
+	        order: 1,
+	        id: schedule.schedule_no,
+	        title: schedule.schedule_title,
+	        start: formatDate(eventStart) + (schedule.schedule_start_time ? 'T' + schedule.schedule_start_time : ''),
+	        end: eventEnd ? formatDate(eventEnd) + (schedule.schedule_end_time ? 'T' + schedule.schedule_end_time : '') : null,
+	        allDay: schedule.schedule_allday === 1,
+	        backgroundColor: categoryColors[schedule.schedule_category_no] || '#3788d8',
+	        borderColor: categoryColors[schedule.schedule_category_no] || '#3788d8',
+	        textColor: '#000000',
+	        className: type + '-event',
+	        extendedProps: {
+	            type: type,
+	            categoryName: categoryNames[schedule.schedule_category_no],
+	            comment: schedule.schedule_comment,
+	            repeatOption: schedule.schedule_repeat,
+	            createDate: schedule.schedule_create_date,
+	            startDate: eventStart ? formatDate(eventStart) : null,
+	            endDate: eventEnd ? formatDate(eventEnd) : null,
+	            startTime: schedule.schedule_allday === 0 ? schedule.schedule_start_time : null,
+	            endTime: schedule.schedule_allday === 0 ? schedule.schedule_end_time : null,
+	            department_no: schedule.department_no,
+	            member_no: schedule.member_no,
+	            participant_no: [],
+	            participantsLoaded: false,
+	            isException: schedule.isException || false,
+	            repeatType: repeatInfo ? repeatInfo.schedule_repeat_type : null,
+	            repeatDay: repeatInfo ? repeatInfo.schedule_repeat_day : null,
 	            repeatWeek: repeatInfo ? repeatInfo.schedule_repeat_week : null,
-	            repeatDate : repeatInfo ? repeatInfo.schedule_repeat_date : null,
+	            repeatDate: repeatInfo ? repeatInfo.schedule_repeat_date : null,
 	            repeatMonth: repeatInfo ? repeatInfo.schedule_repeat_month : null,
-	            memberName : schedule.member_name,
-	            participant_name : [],
-	            positionName : schedule.position_name,
-	            departmentName : schedule.department_name
-            }
-        };
-    
-        if (type === 'participateResult') {
-            searchParticipate(event.extendedProps.member_no, schedule.schedule_no, function(participantNos, participantNames) {
-                event.extendedProps.participant_no = participantNos; 
-                event.extendedProps.participant_name = participantNames; 
-                event.extendedProps.participantsLoaded = true;
-                calendar.getEventById(event.id).setExtendedProp('participant_no', participantNos);
-                calendar.getEventById(event.id).setExtendedProp('participant_name', participantNames);
-                calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
-                filterEvents();   
-            });
-        }  
-        return event;
-    }
+	            memberName: schedule.member_name,
+	            participant_name: [],
+	            positionName: schedule.position_name,
+	            departmentName: schedule.department_name
+	        }
+	    };
+	
+	    if (type === 'participateResult') {
+	        searchParticipate(event.extendedProps.member_no, schedule.schedule_no, function(participantNos, participantNames) {
+	            event.extendedProps.participant_no = participantNos;
+	            event.extendedProps.participant_name = participantNames;
+	            event.extendedProps.participantsLoaded = true;
+	            calendar.getEventById(event.id).setExtendedProp('participant_no', participantNos);
+	            calendar.getEventById(event.id).setExtendedProp('participant_name', participantNames);
+	            calendar.getEventById(event.id).setExtendedProp('participantsLoaded', true);
+	            filterEvents();
+	        });
+	    }
+	
+	    return event;
+	}
 
     function createExceptionEvent(exceptionEvent, currentDate, type, ori_memberNo) { 
 	    const startDate = new Date(exceptionEvent.schedule_exception_start_date);
@@ -603,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
             contentHeight: 'auto',
             handleWindowResize: true,
             fixedWeekCount: false,
-            eventClick: function(info) { 
+            eventClick: function(info) {  
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -709,13 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	    const searchTerm = document.getElementById('searchInput').value.toLowerCase();  
 	    const searchCategory = document.getElementById('searchCategory').value; 
-	
-	    // 시작일과 종료일을 가져오고 Date 객체 생성
-	    const startDateValue = document.getElementById('searchstartDate').value; 
-	    const endDateValue = document.getElementById('searchendDate').value; 
-	    const startDate = startDateValue ? new Date(startDateValue) : null;
-	    const endDate = endDateValue ? new Date(endDateValue) : null;
-	
+ 	
 	    calendar.getEvents().forEach(function(event) {
 	        const eventDepartmentNo = event.extendedProps.department_no;
 	        const participantNos = event.extendedProps.participant_no || []; 
@@ -763,30 +762,43 @@ document.addEventListener('DOMContentLoaded', function() {
 	                shouldDisplay = true;  
 	            }
 	        } 
-	 		
-	        // 검색  
-	        let eventStartDate;
-	        let eventEndDate;
-	 
-	        if (event.allDay === true) {  
-	        	eventStartDate = new Date(event.start);
-	        	eventStartDate.setDate(eventStartDate.getDate() + 1);
+	        
+	        // 검색	 
+		    const startDateValue = document.getElementById('searchstartDate').value;
+			const endDateValue = document.getElementById('searchendDate').value;
+			const startDate = startDateValue ? new Date(startDateValue) : null;
+			const endDate = endDateValue ? new Date(endDateValue) : null;
+			
+			if (startDate) {
+			    startDate.setHours(0, 0, 0, 0);  
+			}
+			if (endDate) {
+			    endDate.setHours(23, 59, 59, 999); 
+			}
+			
+			let eventStartDate;
+			let eventEndDate;
+			
+			if (event.allDay === true) {
+			    eventStartDate = new Date(event.start);
+			    eventEndDate = new Date(event.end);
+			    eventEndDate.setDate(eventEndDate.getDate() - 1); 
+			} else {
+			    eventStartDate = new Date(event.start);
+			    eventEndDate = eventStartDate;
+			 
+			    eventStartDate.setHours(0, 0, 0, 0);
+			    eventEndDate.setHours(0, 0, 0, 0);
+			}
+			
+			const withinDateRange =
+			    (!startDate || eventEndDate >= startDate) &&  
+			    (!endDate || eventStartDate <= endDate);      
+			
+			if (shouldDisplay && (startDate || endDate)) {
+			    shouldDisplay = withinDateRange;
+			}
 
-	            eventEndDate = new Date(event.start);
-	            eventEndDate.setDate(eventEndDate.getDate() - 1);
-	        } else {
-				eventStartDate = new Date(event.start);
-				eventStartDate.setDate(eventStartDate.getDate() + 1);
-	            eventEndDate = eventStartDate;  
-	        }
-	  		 
-	        const withinDateRange = 
-	            (!startDate || eventStartDate >= startDate) &&   
-	            (!endDate || eventEndDate <= endDate);          
-	 
-	        if (shouldDisplay && (startDate || endDate)) {
-	            shouldDisplay = withinDateRange;
-	        }
 	
 	        if (shouldDisplay && searchTerm) {
 	            const eventTitle = event.title.toLowerCase();
