@@ -196,7 +196,7 @@ endDateInput.addEventListener("change", function() {
 
 // 오늘 이전 날짜 막기 재설정
 const today = new Date();
-today.setDate(today.getDate() + 1);  
+today.setDate(today.getDate());  
 const minDate = today.toISOString().split("T")[0];
 
 document.getElementById("vacationapproval_start_date").setAttribute("min", minDate);
