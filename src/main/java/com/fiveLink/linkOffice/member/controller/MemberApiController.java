@@ -298,9 +298,6 @@ public class MemberApiController {
 	@PutMapping("/admin/member/edit/{member_no}")
 	public Map<String,String> edit(@PathVariable("member_no") Long memberNo,
 			@RequestParam("profile_img") MultipartFile profileImage,
-            @RequestParam("member_name") String name,
-            @RequestParam("national_number_front") String nationalNumberFront,
-            @RequestParam("national_number_back") String nationalNumberBack,
             @RequestParam("hire_date") String hireDate,
             @RequestParam("mobile1") String mobile1,
             @RequestParam("mobile2") String mobile2,
@@ -330,11 +327,6 @@ public class MemberApiController {
 	    	}
 	    }
 	    
-	    memberdto.setMember_name(name);
-	    
-		String national = nationalNumberFront + "-" + nationalNumberBack;
-		
-		memberdto.setMember_national(national);
 		
 		memberdto.setMember_hire_date(hireDate);
 		

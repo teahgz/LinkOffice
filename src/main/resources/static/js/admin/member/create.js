@@ -7,6 +7,15 @@ frontInput.addEventListener('input', function() {
 	if (frontInput.value.length === 6) {
 		backInput.focus();
 	}
+	
+    const restrictInput = (inputElement) => {
+        inputElement.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, ''); 
+        });
+    };
+
+    restrictInput(frontInput);
+    restrictInput(backInput);	
 });
 
 // 전화번호 
@@ -33,7 +42,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			internal.focus();
 		}
 	});
+	
+    const restrictInput = (inputElement) => {
+        inputElement.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    };
 
+    restrictInput(mobile1);
+    restrictInput(mobile2);
+    restrictInput(mobile3);
+    restrictInput(internal);
 });
 
 // 이미지 등록 
@@ -54,7 +73,7 @@ function previewImage(event) {
             reader.readAsDataURL(file);
         } else {
             Swal.fire({
-                icon: 'error',
+                icon: 'warning',
                 text: 'PNG 또는 JPEG 파일만 등록 가능합니다.',
                 confirmButtonColor: '#B1C2DD',
                 confirmButtonText: '확인'
@@ -90,11 +109,11 @@ createFrm.addEventListener('submit',(e)=>{
 	 } else if(createFrm.hire_date.value.trim() == ""){
 		vali_text += '입사일을 지정해주세요.';
 		hire_date.focus();
-	 } else if(createFrm.mobile2.value.trim() == ""){
-		vali_text += '전화번호를 입력해주세요.';
+	 } else if(createFrm.mobile2.value.trim() == "" || createFrm.mobile2.value.length < 4){
+		vali_text += '전화번호 두번째 부분을 4자리로 입력해주세요.';
 		mobile2.focus();
-	 } else if(createFrm.mobile3.value.trim() ==""){
-		vali_text += '전화번호를 입력해주세요.';
+	 } else if(createFrm.mobile3.value.trim() =="" || createFrm.mobile3.value.length < 4){
+		vali_text += '전화번호 세번째 부분을 4자리로 입력해주세요.';
 		mobile3.focus();
 	 } else if(createFrm.internal.value.trim() == ""){
 		vali_text += '내선번호를 입력해주세요.';
@@ -107,7 +126,7 @@ createFrm.addEventListener('submit',(e)=>{
 	 
 	 if(vali_check == false){
 		Swal.fire({
-			icon : 'error',
+			icon : 'warning',
 			text : vali_text,
 			confirmButtonColor: '#B1C2DD',
 			confirmButtonText : "확인"
@@ -145,11 +164,8 @@ createFrm.addEventListener('submit',(e)=>{
 				text : data.res_msg,
 				confirmButtonColor: '#B1C2DD',
 				confirmButtonText : "확인"
-			});
-			}
-		}
+					});
+				}
+			})
 		
-        )
-		
-	 }
-})
+	 }})

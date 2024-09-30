@@ -177,7 +177,6 @@ public class ApprovalApiController {
 
 	            if (approvalService.createApprovalFile(appdto, filedto, approvalFlowdto) != null) {
 					Long approvalPk = approvalService.getApprovalPk();
-					System.out.println("pk: "+ approvalPk);
 					response.put("approvalPk", String.valueOf(approvalPk));	            	
 	                response.put("res_code", "200");
 	                response.put("res_msg", "결재 작성이 완료되었습니다.");
@@ -190,7 +189,6 @@ public class ApprovalApiController {
 	    if (!isFileUploaded) {
 	        if (approvalService.createApproval(appdto, approvalFlowdto) != null) {
 				Long approvalPk = approvalService.getApprovalPk();
-				System.out.println("pk: "+ approvalPk);
 				response.put("approvalPk", String.valueOf(approvalPk));		        	
 	            response.put("res_code", "200");
 	            response.put("res_msg", "결재 작성이 완료되었습니다."); 
@@ -215,7 +213,7 @@ public class ApprovalApiController {
 	    
 	    if(approvalService.cancelApproval(dto) != null) {
 	    	response.put("res_code", "200");
-		    response.put("res_msg", " 기안 취소를 성공하였습니다.");			 
+		    response.put("res_msg", "기안이 취소되었습니다.");			 
 	    }
 	    return response; 
 	} 
