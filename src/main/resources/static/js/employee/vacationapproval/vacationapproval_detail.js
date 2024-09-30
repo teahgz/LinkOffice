@@ -1,3 +1,5 @@
+const approvalTitle = document.querySelector('#vacationapproval_title').innerHTML;
+
 // 모달 창 기안 취소
 
     const cancelModal = document.getElementById("cancelModal");
@@ -297,3 +299,6 @@
 				};
 	
 			});
+			
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청함&emsp;&gt;&emsp;'+approvalTitle;

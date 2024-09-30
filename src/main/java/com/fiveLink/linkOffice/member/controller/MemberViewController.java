@@ -60,11 +60,7 @@ public class MemberViewController {
 	    
 		if (!memberdto.isEmpty()) {
 		     decryptedNational = AESUtil.decrypt(memberNational);
-		    System.out.println(decryptedNational);
-		} else {
-		    System.out.println("해당 멤버가 존재하지 않습니다.");
 		}
-		
 		memberdto.get(0).setMember_national(decryptedNational);	
 		
 	    model.addAttribute("memberdto", memberdto);
@@ -82,10 +78,7 @@ public class MemberViewController {
 	    
 		if (!memberdto.isEmpty()) {
 		     decryptedNational = AESUtil.decrypt(memberNational);
-		    System.out.println(decryptedNational);
-		} else {
-		    System.out.println("해당 멤버가 존재하지 않습니다.");
-		}
+		} 
 		
 		memberdto.get(0).setMember_national(decryptedNational);	
 		
@@ -228,10 +221,7 @@ public class MemberViewController {
 	    
 		if (!memberDtoList.isEmpty()) {
 		     decryptedNational = AESUtil.decrypt(memberNational);
-		    System.out.println(decryptedNational);
-		} else {
-		    System.out.println("해당 멤버가 존재하지 않습니다.");
-		}
+		} 
 		
 		memberDtoList.get(0).setMember_national(decryptedNational);
 
@@ -262,6 +252,17 @@ public class MemberViewController {
 	        List<DepartmentDto> departments = departmentService.getAllDepartments();
 	        List<PositionDto> positions = positionService.getAllPositionsForSelect();
 
+		    String memberNational = memberDtoList.get(0).getMember_national();
+		    
+		    String decryptedNational = null;
+		    
+			if (!memberDtoList.isEmpty()) {
+			     decryptedNational = AESUtil.decrypt(memberNational);
+			} else {
+			}
+			
+			memberDtoList.get(0).setMember_national(decryptedNational);
+			
 	        model.addAttribute("memberdto", memberdto);
 	        model.addAttribute("memberDtoList", memberDtoList);
 	        model.addAttribute("departments", departments);

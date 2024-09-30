@@ -518,14 +518,6 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 		});
 
 
-
-
-
-
-
-
-
-
 			const form = document.getElementById('vacAppEditFrm');
 			form.addEventListener('submit', (e) => {
 	  		  e.preventDefault();
@@ -556,7 +548,10 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 				 vali_text += '휴가 기간을 입력해주세요.';
                 document.querySelector('#vacationapproval_end_date').focus();
 			} else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
-				 vali_text += '결재자를 지정해주세요.';
+				 vali_text += '결재선를 지정해주세요.';
+                document.querySelector('#openChart').focus();
+			}  else if(approvers.length === 0 && references.length === 0){
+				 vali_text += '결재자 / 합의자를 지정해주세요.';
                 document.querySelector('#openChart').focus();
 			} else {
                 vali_check = true;
@@ -564,7 +559,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			
 			if (vali_check == false) {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     text: vali_text,
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
@@ -614,6 +609,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			    })
 			} 
 	});
-
-
 });
+
+const approvalTitle = document.querySelector('#vacationapproval_title').value;
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청함&emsp;&gt;&emsp;'+approvalTitle;

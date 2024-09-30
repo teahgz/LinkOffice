@@ -59,7 +59,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         else if("getUnreadCounts".equals(type)){
             handleChatCount(jsonMap, session, type);
         }
-        else {
+        else if("outCount".equals(type)) {
+            handleOutCount(jsonMap, session, type);
+        }else {
             // 일반 채팅 메시지 처리
             ChatMessageDto chatMessageDto = objectMapper.convertValue(jsonMap, ChatMessageDto.class);
             chatMessageService.saveChatMessage(chatMessageDto);
@@ -258,19 +260,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         List<String> members = (List<String>) jsonMap.get("newMembers");
 
         ChatMemberDto memberDto = new ChatMemberDto();
+
         for(int i = 0; i< members.size(); i++){
             memberDto.setMember_no(Long.valueOf(members.get(i))); //memberNo
             memberDto.setChat_room_no(currentChatRoomNo);
             memberDto.setChat_member_room_name(chatRoomName);
             if(chatMemberService.createMemberRoomOne(memberDto)>0){
-
+                int unreadCounts = chatRoomService.countParicipant(currentChatRoomNo);
                 // 새 멤버 정보를 클라이언트에 전송
                 Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("type", "memberAdded");
                 responseMap.put("chatRoomNo", currentChatRoomNo);
                 responseMap.put("chatRoomName", chatRoomName);
                 responseMap.put("member", Long.valueOf(members.get(i)));
-
+                responseMap.put("countPeople", unreadCounts);
                 for (WebSocketSession s : sessions.values()) {
                     if (s.isOpen()) {
                         String responseJson = new ObjectMapper().writeValueAsString(responseMap);
@@ -323,6 +326,31 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         response.put("data", unreadResponseList);
         session.sendMessage(new TextMessage(new ObjectMapper().writeValueAsString(response)));
     }
+    //채팅방 인원수 개수
+    private void handleOutCount(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+        Object currentChatRoomNoObj = jsonMap.get("chat_room_no");
+
+        Long currentChatRoomNo;
+        if (currentChatRoomNoObj instanceof Integer) {
+            currentChatRoomNo = ((Integer) currentChatRoomNoObj).longValue();
+        } else if (currentChatRoomNoObj instanceof String) {
+            currentChatRoomNo = Long.parseLong((String) currentChatRoomNoObj);
+        } else {
+            throw new IllegalArgumentException("채팅방 번호의 오류");
+        }
+
+        int unreadCounts = chatRoomService.countParicipant(currentChatRoomNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("type", "chatMemCount");
+        response.put("data", unreadCounts);
+        response.put("currentChatRoomNo",currentChatRoomNo);
+        for (WebSocketSession s : sessions.values()) {
+            if (s.isOpen()) {
+                String responseJson = new ObjectMapper().writeValueAsString(response);
+                s.sendMessage(new TextMessage(responseJson));
+            }
+        }
+      }
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);

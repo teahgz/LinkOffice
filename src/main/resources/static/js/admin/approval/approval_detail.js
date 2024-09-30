@@ -1,6 +1,8 @@
 // 삭제 폼
 
 const form = document.getElementById("appDeleteFrm");
+const formTitle = document.getElementById("form_title").innerHTML;
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formNo = form.form_no.value;
@@ -48,3 +50,6 @@ form.addEventListener('submit', (e) => {
         }
     });
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자 결재 양식 관리&emsp;&gt;&emsp;결재 양식함&emsp;&gt;&emsp;'+formTitle;

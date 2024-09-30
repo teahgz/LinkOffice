@@ -12,7 +12,7 @@ public interface ChatMapper {
     //채팅방 목록 가져오기
     List<ChatMemberDto> selectChatList(Long memberNo);
     //채팅 내용 가져오기
-    List<Map<String, Object>> getChatMessages(Long roomNo);
+    List<Map<String, Object>> getChatMessages(Map<String, Object> params);
     //채팅방 갯수 번호
     int countRoomNo();
     //채팅방 목록 디비 입력 이름+부서
@@ -30,21 +30,16 @@ public interface ChatMapper {
     String selectMemberChatRoomName(Long chatRoomNo);
     //채팅방 멤버 가져오기
     List<Long> getMemberInfo(Long chatRoomNo);
-
     //개인 채팅방 정보 가져오기
     List<ChatMemberDto> getMembersByChatRoomNo(Long chatRoomNo);
-
     // 채팅방 나가기
     int chatRoomOut(Map<String, Object> params);
-
     // 채팅방 고정
     int chatRoomPin(Map<String, Object> params);
-
     // 채팅방 고정 여부
     int selectChatPin(Map<String, Object> params);
     //참여자 수
     int countParicipant(Long chatRoomNo);
-
     // 채팅방 별 안읽은 메시지 읽기
     List<Long> markMessagesAsReadForChatRoom(Map<String, Object> params);
     //채팅방 별 안읽은 메시지 개수
