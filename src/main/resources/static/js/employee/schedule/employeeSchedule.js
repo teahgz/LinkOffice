@@ -166,8 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(data) {
-				console.log(data.participants);
+	        success: function(data) { 
 	            exceptionParMemberNos = data.participants.map(participant => participant.member_no); 
 	            exceptionParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName); 
 	            callback(exceptionParMemberNos, exceptionParMemberNames); 
@@ -187,8 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(data) {
-	            console.log(data.participants); 
+	        success: function(data) { 
 	            if (data.participants) {
 	                meetingParMemberNos = data.participants.map(participant => participant.member_no);
 	                meetingParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName);
@@ -290,8 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    }
 	}
 	
-	function createMeetingEvent(meeting) {
-	    console.log(meeting);
+	function createMeetingEvent(meeting) { 
 		var event = {
 		    order: 1,
 		    id: 'meeting' + meeting.meeting_no,
@@ -606,8 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
             contentHeight: 'auto',
             handleWindowResize: true,
             fixedWeekCount: false,
-            eventClick: function(info) {
-				console.log(info.event); 
+            eventClick: function(info) { 
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -732,11 +728,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	        // 참여자 일정
 	        else if (event.extendedProps.type === 'participateResult') {
 	            if (event.extendedProps.participantsLoaded) {
-	                shouldDisplay = participantNos.includes(parseInt(memberNo));
+	                if (event.extendedProps.member_no.toString() === memberNo) {
+			            shouldDisplay = true;
+			        } else {
+			            shouldDisplay = participantNos.includes(parseInt(memberNo));
+			        }
 	            } else {
 	                shouldDisplay = true;
 	            }
-	        }
+	        } 
 	        // 전사 일정
 	        else if (event.extendedProps.type === 'scheduleDtos') {
 	            shouldDisplay = companyChecked;  
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        if (event.allDay === true) {  
 	        	eventStartDate = new Date(event.start);
 	        	eventStartDate.setDate(eventStartDate.getDate() + 1);
-	        	console.log(eventStartDate);
+
 	            eventEndDate = new Date(event.start);
 	            eventEndDate.setDate(eventEndDate.getDate() - 1);
 	        } else {
@@ -1392,6 +1392,26 @@ document.addEventListener('DOMContentLoaded', function() {
 		                  	window.location.reload();  
 		                	document.getElementById('eventModal').style.display = 'none';
 		                });
+		                
+		                // 부서 일정 알림 
+		                if(schedule_type === 1) {
+							console.log("departmentAlarm");
+			                alarmSocket.send(JSON.stringify({
+					           	type: 'noficationDepartmentSchedule',
+					           	deptNo: departmentNo, 
+					           	memberNo: memberNo 
+					        })); 
+						}
+						// 참여자 일정 알림
+						if(schedule_type === 2) {
+							console.log("participantAlarm");
+							console.log(selectedMembers);
+			                alarmSocket.send(JSON.stringify({
+					           	type: 'noficationParticipantSchedule', 
+					           	memberNo: memberNo,
+					           	participants : selectedMembers
+					        })); 
+						}
 		            } else {
 		                Swal.fire({
 		                    text: response.res_msg,
@@ -1833,6 +1853,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		            }).then(function() {
 		                window.location.reload();
 		            });
+		            
+		            // 부서 일정 알림  
+	                if(schedule_edit_type === 1) {   
+		                alarmSocket.send(JSON.stringify({
+				           	type: 'noficationDepartmentSchedule',
+				           	deptNo: eventData.department_no, 
+				           	memberNo: eventData.memberNo 
+				        })); 
+					}
+					// 참여자 일정 알림
+					if(schedule_edit_type === 2) {  
+		                alarmSocket.send(JSON.stringify({
+				           	type: 'noficationParticipantSchedule', 
+				           	memberNo: eventData.memberNo,
+				           	participants : eventData.selectedMembers
+				        })); 
+					}
 	            } else {
 	                Swal.fire('반복 일정', response.res_msg, 'error');
 	            }   
@@ -1867,6 +1904,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	            }).then(function() {
 	                window.location.reload();
 	            });
+	            // 부서 일정 알림  
+                if(schedule_edit_type === 1) {   
+	                alarmSocket.send(JSON.stringify({
+			           	type: 'noficationDepartmentSchedule',
+			           	deptNo: eventData.department_no, 
+			           	memberNo: eventData.memberNo 
+			        })); 
+				}
+				// 참여자 일정 알림
+				if(schedule_edit_type === 2) {  
+	                alarmSocket.send(JSON.stringify({
+			           	type: 'noficationParticipantSchedule', 
+			           	memberNo: eventData.memberNo,
+			           	participants : eventData.selectedMembers
+			        })); 
+				}
 	        },
 	        error: function(xhr, status, error) {
 	            console.error('일정 수정 오류: ', error);
@@ -2254,4 +2307,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	const location_text = document.getElementById('header_location_text');
 	location_text.innerHTML = '일정&emsp;';
+	
+	// 알림
+	window.functionTypes = [11,12,13];  
+    console.log("현재 기능 타입: " +window.functionTypes);
+
+    if (window.functionTypes.includes(11) || window.functionTypes.includes(12) || window.functionTypes.includes(13)) {
+	     markNotificationsAsRead(11); 
+	     markNotificationsAsRead(12);  
+	     markNotificationsAsRead(13);  
+	 }
 });

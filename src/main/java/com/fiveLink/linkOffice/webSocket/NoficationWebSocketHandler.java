@@ -24,6 +24,7 @@ import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.nofication.domain.NoficationDto;
 import com.fiveLink.linkOffice.nofication.service.NoficationService;
+import com.fiveLink.linkOffice.schedule.service.ScheduleParticipantService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
@@ -38,19 +39,22 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
     private final ApprovalService approvalService;
     private final VacationApprovalService vacationApprovalService;
     private final MemberService memberService;
-
+    private final ScheduleParticipantService scheduleParticipantService;
+    
     @Autowired
     public NoficationWebSocketHandler(ChatRoomService chatRoomService, NoficationService noficationService,
     		MemberRepository memberRepository,
     		ApprovalService approvalService,
     		VacationApprovalService vacationApprovalService,
-    		MemberService memberService) {
+    		MemberService memberService,
+    		ScheduleParticipantService scheduleParticipantService) {
         this.chatRoomService = chatRoomService;
         this.noficationService = noficationService;
         this.memberRepository = memberRepository;
         this.approvalService = approvalService;
         this.vacationApprovalService = vacationApprovalService;
         this.memberService = memberService;
+        this.scheduleParticipantService = scheduleParticipantService;
     }
     
     @Override
@@ -87,8 +91,14 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         	handleAppApproveAlarm(jsonMap, session, type);
         } else if("notificationAppReject".equals(type)) {
         	handleAppRejectAlarm(jsonMap, session, type);
+        } else if("noficationDepartmentSchedule".equals(type)) {
+        	handleDepartmentScheduleAlarm(jsonMap, session, type);
+        } else if("noficationParticipantSchedule".equals(type)) {
+        	handleParticipantScheduleAlarm(jsonMap, session, type);
+        } else if("noficationParticipantMeeting".equals(type)) {
+        	handleParticipantMeetingAlarm(jsonMap, session, type);
         }
-
+        
     }
 
     //위에 선언한 본인 기능 알람 메소드 선언하고 안에서
@@ -1055,7 +1065,234 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 
 	}
 	
+	// [서혜원] 부서 일정 알림
+	public void handleDepartmentScheduleAlarm(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+		Object memberNoObj = (String) jsonMap.get("memberNo");
+		Object deptNoObj = (String) jsonMap.get("deptNo");	 
+		
+        Long memberNo;
+        Long deptNo; 
+
+        if (memberNoObj instanceof String) {
+        	memberNo = Long.parseLong((String) memberNoObj);
+        } else if (memberNoObj instanceof Integer) {
+        	memberNo = ((Integer) memberNoObj).longValue();
+        } else {
+            throw new IllegalArgumentException("타입 오류");
+        }
+
+        if (deptNoObj instanceof String) {
+        	deptNo = Long.parseLong((String) deptNoObj);
+        } else if (deptNoObj instanceof Integer) {
+        	deptNo = ((Integer) deptNoObj).longValue();
+        } else {
+            throw new IllegalArgumentException("타입 오류");
+        } 
+        
+        String memberName = memberRepository.findById(memberNo)
+                .map(Member::getMemberName)
+                .orElse("사원");
+        String departmentName = "부서";
+        String positionName = "직위"; 
+        
+        List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(memberNo); 
+        
+        Object[] row = memberInfo.get(0);  
+        positionName = (String) row[1];   
+        departmentName = (String) row[2]; 
+        
+	  	List<Map<String, Object>> msg = new ArrayList<>();
+		String nofication_content = memberName+"님이 "+ departmentName + " 일정을 등록했습니다.";
+		String nofication_title = "일정";
+		int nofication_type = 11;
+	  	
+	  	Long status = 0L;	  	
+	  	List<Member> members = memberRepository.findByDepartmentNoAndMemberStatus(deptNo, status);
+
+	  	for(Member member : members) {
+	  		NoficationDto noficationDto = new NoficationDto();
+	  		if(member.getMemberNo() != memberNo) {
+	  			noficationDto.setNofication_content(nofication_content);// 알림내용
+	  			noficationDto.setNofication_receive_no(member.getMemberNo());//알림 받는 사람
+	  			noficationDto.setNofication_title(nofication_title);//알림 제목
+	  			noficationDto.setNofication_type(nofication_type);//본인 기능 타입
+	  			noficationDto.setMember_no(memberNo);
+	  		}
+		        if (noficationDto.getMember_no() != null) {
+		            if (noficationService.insertAlarm(noficationDto) > 0) {
+						long notificationPk = noficationService.insertAlarmPk();
+		                Map<String, Object> getter = new HashMap<>();
+		                getter.put("memberNo", member.getMemberNo());
+						getter.put("nofication_pk", notificationPk);
+		                msg.add(getter);
+		            }
+		        } 
+	  	}
+	  	for (WebSocketSession s : sessions.values()) {
+	  		if (s.isOpen()) {
+	  			ObjectMapper objectMapper = new ObjectMapper();
+	  			Map<String, Object> responseMap = new HashMap<>();
+	  			responseMap.put("type", "noficationDepartmentSchedule");
+	  			responseMap.put("title", nofication_title);
+	  			responseMap.put("content", nofication_content);
+	  			responseMap.put("data", msg);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
+				responseMap.put("pk", null); //전자결재 pk값
+	  			String unreadMessage = objectMapper.writeValueAsString(responseMap);
+	  			s.sendMessage(new TextMessage(unreadMessage));
+	  		}
+	  	}
+	 }   
 	
+	// [서혜원] 참여자 일정 알림
+	public void handleParticipantScheduleAlarm(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+		Object memberNoObj = (String) jsonMap.get("memberNo"); 
+		Object participantsObj = (String) jsonMap.get("participants");
+		
+        Long memberNo; 
+
+        if (memberNoObj instanceof String) {
+        	memberNo = Long.parseLong((String) memberNoObj);
+        } else if (memberNoObj instanceof Integer) {
+        	memberNo = ((Integer) memberNoObj).longValue();
+        } else {
+            throw new IllegalArgumentException("타입 오류");
+        } 
+        
+        List<Long> participantIds = new ArrayList<>();
+        if (participantsObj instanceof String) {
+            String participantsStr = (String) participantsObj;
+            String[] participantStrArray = participantsStr.split(",");  
+            for (String participantStr : participantStrArray) {
+                participantIds.add(Long.parseLong(participantStr.trim()));  
+            }
+        } else if (participantsObj instanceof List) {
+            participantIds = (List<Long>) participantsObj;
+        } else {
+            throw new IllegalArgumentException("타입 오류");
+        }
+        
+        String memberName = memberRepository.findById(memberNo)
+                .map(Member::getMemberName)
+                .orElse("사원");  
+        
+	  	List<Map<String, Object>> msg = new ArrayList<>();
+		String nofication_content = memberName+"님이 일정을 공유했습니다.";
+		String nofication_title = "일정";
+		int nofication_type = 12; 
+
+	  	for (Long participantId : participantIds) {  
+	        if (!participantId.equals(memberNo)) {
+	            NoficationDto noficationDto = new NoficationDto();
+	            noficationDto.setNofication_content(nofication_content); // 알림내용
+	            noficationDto.setNofication_receive_no(participantId); // 알림 받는 사람
+	            noficationDto.setNofication_title(nofication_title); // 알림 제목
+	            noficationDto.setNofication_type(nofication_type); //본인 기능 타입
+	            noficationDto.setMember_no(memberNo); 
+	            
+	            if (noficationService.insertAlarm(noficationDto) > 0) {
+	                long notificationPk = noficationService.insertAlarmPk();
+	                
+	                Map<String, Object> getter = new HashMap<>();
+	                getter.put("memberNo", participantId);
+	                getter.put("nofication_pk", notificationPk);
+	                
+	                msg.add(getter);
+	            }
+	        }
+	    }
+	  	for (WebSocketSession s : sessions.values()) {
+	  		if (s.isOpen()) {
+	  			ObjectMapper objectMapper = new ObjectMapper();
+	  			Map<String, Object> responseMap = new HashMap<>();
+	  			responseMap.put("type", "noficationParticipantSchedule");
+	  			responseMap.put("title", nofication_title);
+	  			responseMap.put("content", nofication_content);
+	  			responseMap.put("data", msg);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
+				responseMap.put("pk", null); //전자결재 pk값
+	  			String unreadMessage = objectMapper.writeValueAsString(responseMap);
+	  			s.sendMessage(new TextMessage(unreadMessage));
+	  		}
+	  	}
+	 }   
+	
+	// [서혜원] 참여자 회의 알림
+	public void handleParticipantMeetingAlarm(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
+		Object memberNoObj = (String) jsonMap.get("memberNo"); 
+		Object participantsObj = (String) jsonMap.get("participants");
+		String reservationDateObj = (String) jsonMap.get("reservationDate"); 
+		
+        Long memberNo; 
+
+        if (memberNoObj instanceof String) {
+        	memberNo = Long.parseLong((String) memberNoObj);
+        } else if (memberNoObj instanceof Integer) {
+        	memberNo = ((Integer) memberNoObj).longValue();
+        } else {
+            throw new IllegalArgumentException("타입 오류");
+        } 
+        
+        List<Long> participantIds = new ArrayList<>();
+        if (participantsObj instanceof String) {
+            String participantsStr = (String) participantsObj;
+            String[] participantStrArray = participantsStr.split(",");  
+            for (String participantStr : participantStrArray) {
+                participantIds.add(Long.parseLong(participantStr.trim()));  
+            }
+        } else if (participantsObj instanceof List) {
+            participantIds = (List<Long>) participantsObj;
+        } else {
+            throw new IllegalArgumentException("타입 오류");
+        }
+        
+        String memberName = memberRepository.findById(memberNo)
+                .map(Member::getMemberName)
+                .orElse("사원");  
+        
+	  	List<Map<String, Object>> msg = new ArrayList<>();
+		String nofication_content = memberName+"님이 회의에 참여자로 등록했습니다.<br>회의 일시 : " + reservationDateObj;
+		String nofication_title = "일정";
+		int nofication_type = 13; 
+
+	  	for (Long participantId : participantIds) {  
+	        if (!participantId.equals(memberNo)) {
+	            NoficationDto noficationDto = new NoficationDto();
+	            noficationDto.setNofication_content(nofication_content); // 알림내용
+	            noficationDto.setNofication_receive_no(participantId); // 알림 받는 사람
+	            noficationDto.setNofication_title(nofication_title); // 알림 제목
+	            noficationDto.setNofication_type(nofication_type); //본인 기능 타입
+	            noficationDto.setMember_no(memberNo); 
+	            
+	            if (noficationService.insertAlarm(noficationDto) > 0) {
+	                long notificationPk = noficationService.insertAlarmPk();
+	                
+	                Map<String, Object> getter = new HashMap<>();
+	                getter.put("memberNo", participantId);
+	                getter.put("nofication_pk", notificationPk);
+	                
+	                msg.add(getter);
+	            }
+	        }
+	    }
+	  	for (WebSocketSession s : sessions.values()) {
+	  		if (s.isOpen()) {
+	  			ObjectMapper objectMapper = new ObjectMapper();
+	  			Map<String, Object> responseMap = new HashMap<>();
+	  			responseMap.put("type", "noficationParticipantMeeting");
+	  			responseMap.put("title", nofication_title);
+	  			responseMap.put("content", nofication_content);
+	  			responseMap.put("data", msg);
+				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("timestamp", currentTime);
+				responseMap.put("pk", null); //전자결재 pk값
+	  			String unreadMessage = objectMapper.writeValueAsString(responseMap);
+	  			s.sendMessage(new TextMessage(unreadMessage));
+	  		}
+	  	}
+	 }   
 
 	@Override
     public void afterConnectionEstablished(WebSocketSession session) {
