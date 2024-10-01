@@ -115,3 +115,6 @@ document.getElementById('joined').addEventListener('change', function() {
 window.onload = function() {
     document.getElementById('designatedDate').disabled = true;
 };
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '휴가관리&emsp;&gt;&emsp;휴가 기준';
