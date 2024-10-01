@@ -37,7 +37,6 @@ $(function () {
         const day = ('0' + date.getDate()).slice(-2);
         return `${year}-${month}-${day}`;
     }
-
     // 폴더 리스트 받아오기
     function getFolders() {
 		return new Promise((resolve, reject) => {
@@ -233,7 +232,7 @@ $(function () {
                         	<td><input type="checkbox" class="file_checkbox" id="${file.member_no}"></td>
                             <td>${file.document_ori_file_name}</td>
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + ' ' + file.position_name + "(" + file.department_name + ")")}</td>
-                            <td>${formatDate(file.document_file_upload_date)}</td>
+                            <td>${formatDate(file.document_file_update_date)}</td>
 	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
 	                            `<a href="/document/file/view/${file.document_file_no}" target="_blank">
 	                            <svg class="file_show_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -1012,11 +1011,23 @@ $(function () {
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
 
+    // 삭제 버튼 클릭 시 자동으로 초기 지정 날짜로 설정
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = oneYearAgoStr;
+        }
+    });
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; 
+        }
+    });
+    
     // 파일 검색 
-   $('#search_button').on('click', function(){
+   	$('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
 		loadFiles(selectedFolderNo, searchInput);
-   });
+   	});
    
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {

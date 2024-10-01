@@ -6,14 +6,11 @@
     height: 95%;
     width: 100%;
     overflow: hidden; 
-    margin-top: 50px;
 }
 .document_file_div{
-	border-radius: 20px;
-	background-color: #fefefe;
+	border-radius: 8px;
 	width: 80%;
 	height: 75vh;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	margin: 1vw;
 }
 .document_no_file{
@@ -51,7 +48,7 @@
 	margin-left: 10px;
     padding: 0.5vh 0.5vw;
 	border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 #start_date:focus, #end_date:focus{
     outline: none;
@@ -75,7 +72,7 @@
 	font-size: 0.9vw;
 	padding: 0.5vh 0 0.5vh 0.5vw;
 	border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 #file_name_input:focus{
     outline: none;
@@ -108,13 +105,13 @@
 	justify-content: space-between;
 	align-items: center;
 	height: 3.5vh;
-	margin-top: 3vh;
+	margin-top: 2vh;
 }
 .select_button{
 	display: flex;
 }
 #select_delete{
-	margin-right: 0.5vw;
+	margin-left: 0.8vw;
 	margin-top: 0.4vh;
     padding: 0.5vh 0.5vw;
     background-color: #EEB3B3;
@@ -175,7 +172,7 @@
 	border-radius: 2px;
 	font-size: 0.8vw;
 	border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
@@ -186,8 +183,12 @@
     outline: none;
     border-color: #B1C2DD;
 }
+.table_div{
+	border-radius: 8px;	
+	border: 1px solid #ddd;
+	margin-top: 1.5vh;
+}
 .file_table{
-	margin-top: 1vh;
 	width: 100%;
 	align-items: center;
     justify-content: center;
@@ -195,19 +196,23 @@
 	border-collapse: collapse;
 	table-layout: fixed; 
 	height: 52vh;
-	border-top: 2px solid #ddd;
 }
 .file_table td { 
 	padding: 0.3vh;
     text-align: center;
 	border-top: 1px solid #ddd;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .file_table th {
 	height: 2.7vh;
 	padding: 0.8vh;
     text-align: center;
-    border-bottom: 2px solid gray;
+    border-bottom: 1px solid #ddd;
     font-size: 0.9vw;
+    background-color: #f8f9fa;
+    border-radius: 8px;
 }
 .file_table tbody tr {
     height: 4.5vh; 
@@ -246,8 +251,8 @@
     margin-top: 10px;
 }
 .pagination_button {
-	width: 35px;
-	height: 33px;
+	width: 33px;
+	height: 31px;
     margin: 0 5px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
@@ -269,8 +274,8 @@
     border-color: #B1C2DD;
 }
 .go_first_page_button, .go_last_page_button{
-    width: 45px;
-	height: 33px;
+    width: 42px;
+	height: 31px;
     margin: 0 5px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;

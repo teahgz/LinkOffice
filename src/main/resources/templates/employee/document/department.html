@@ -139,29 +139,25 @@
 	                			</select>
 	                		</div>
 	                	</div>
-	                	<table class="file_table">
-	                		<thead class="table_head">
-	                            <tr>
-	                            	<th style="width: 5%"><input type="checkbox" id="select_all"></th>
-	                                <th style="width: 40%">파일명</th>
-	                                <th style="width: 10%">작성자</th>
-	                                <th style="width: 13%">등록일</th>
-	                                <th style="width: 9%">파일 보기</th>
-	                                <th style="width: 10%">용량</th>
-	                                <th style="width: 7%">다운로드</th>
-	                                <th style="width: 6%">삭제</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody id="file_table_body">
-	                            <!-- 리스트는 AJAX로 불러옴 -->
-	                        </tbody>
-	                        <tfoot id="table_foot">
-	                            <tr>
-	                                <td colspan="7">
-	                                </td>
-	                            </tr>
-	                        </tfoot>
-	                	</table>
+	                	<div class="table_div">
+		                	<table class="file_table">
+		                		<thead class="table_head">
+		                            <tr>
+		                            	<th style="width: 5%"><input type="checkbox" id="select_all"></th>
+		                                <th style="width: 40%">파일명</th>
+		                                <th style="width: 10%">작성자</th>
+		                                <th style="width: 13%">등록일</th>
+		                                <th style="width: 9%">파일 보기</th>
+		                                <th style="width: 10%">용량</th>
+		                                <th style="width: 7%">다운로드</th>
+		                                <th style="width: 6%">삭제</th>
+		                            </tr>
+		                        </thead>
+		                        <tbody id="file_table_body">
+		                            <!-- 리스트는 AJAX로 불러옴 -->
+		                        </tbody>
+		                	</table>
+	                	</div>
                         <div class="pagination_div">
                         	<div class="pagination" id="pagination">
                             	<!-- 페이지 버튼 ajax -->
