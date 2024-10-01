@@ -589,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headerToolbar: {
 		      left: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth,prevYear, prev',
 		      center: 'title',
-		      right: 'next, nextYear, today, customYearPicker, customMonthPicker'
+		      right: 'next, nextYear, today, customYearPicker, customMonthPicker, customDayPicker'
 		    },
 		    customButtons: {
 		      customYearPicker: {
@@ -602,6 +602,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		        text: '월',
 		        click: function(e) {
 		          togglePicker('monthPicker', e.currentTarget);
+		        }
+		      },
+		      customDayPicker: {  
+		        text: '일',
+		        click: function(e) {
+		          togglePicker('dayPicker', e.currentTarget); 
 		        }
 		      }
 		    },
@@ -674,6 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 day: '일간',
                 listMonth : '목록'
             },
+            allDayText: '종일',
             dayCellContent: function(info) {
                 var number = document.createElement("a");
                 number.classList.add("fc-daygrid-day-number");
@@ -797,8 +804,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			if (shouldDisplay && (startDate || endDate)) {
 			    shouldDisplay = withinDateRange;
-			}
-
+			} 
 	
 	        if (shouldDisplay && searchTerm) {
 	            const eventTitle = event.title.toLowerCase();
@@ -843,56 +849,98 @@ document.addEventListener('DOMContentLoaded', function() {
    }
 	
    function togglePicker(pickerId, button) {
-	    const picker = document.getElementById(pickerId);
-	    const otherPickerId = pickerId === 'yearPicker' ? 'monthPicker' : 'yearPicker';
-	    const otherPicker = document.getElementById(otherPickerId);
-	    
-	    if (picker.style.display === 'none') {
-	      const rect = button.getBoundingClientRect();
-	      picker.style.display = 'block';
-	      picker.style.top = `${rect.bottom}px`;
-	      picker.style.left = `${rect.left}px`;
-	      picker.focus(); 
-	      otherPicker.style.display = 'none'; 
-	    } else {
-	      picker.style.display = 'none';
-	    }
-   }
-	
-  const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from({length: 11}, (_, i) => ({
-    value: currentYear - 5 + i,
-    text: `${currentYear - 5 + i}년`
-  }));
-	
-  const monthOptions = Array.from({length: 12}, (_, i) => ({
-    value: i,
-    text: `${i + 1}월`
-  }));
-	
-  const yearPicker = createPicker('yearPicker', yearOptions);
-  const monthPicker = createPicker('monthPicker', monthOptions);
+        const picker = document.getElementById(pickerId);
+        const otherPickers = ['yearPicker', 'monthPicker', 'dayPicker'].filter(id => id !== pickerId);
+        
+        otherPickers.forEach(id => {
+            const otherPickerElement = document.getElementById(id);
+            if (otherPickerElement) {
+                otherPickerElement.style.display = 'none';
+            }
+        });
 
-  yearPicker.onchange = function() {
-    const selectedYear = parseInt(this.value);
-    const currentDate = calendar.getDate();
-    calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
-    this.style.display = 'none';
-  };
-
-  monthPicker.onchange = function() {
-    const selectedMonth = parseInt(this.value);
-    const currentDate = calendar.getDate();
-    calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
-    this.style.display = 'none';
-  };
- 
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.fc-customYearPicker-button') && !e.target.closest('.fc-customMonthPicker-button') && !e.target.closest('.custom-picker')) {
-      yearPicker.style.display = 'none';
-      monthPicker.style.display = 'none';
+        if (picker) {
+            if (picker.style.display === 'none' || picker.style.display === '') {
+                const rect = button.getBoundingClientRect();
+                picker.style.display = 'block';
+                picker.style.top = `${rect.bottom}px`;
+                picker.style.left = `${rect.left}px`;
+                picker.focus();
+            } else {
+                picker.style.display = 'none';
+            }
+        }
     }
-  });
+	
+   const currentYear = new Date().getFullYear();
+   const yearOptions = Array.from({length: 11}, (_, i) => ({
+     value: currentYear - 5 + i,
+     text: `${currentYear - 5 + i}년`
+   }));
+	
+   const monthOptions = Array.from({length: 12}, (_, i) => ({
+     value: i,
+     text: `${i + 1}월`
+   })); 
+	
+   const yearPicker = createPicker('yearPicker', yearOptions);
+   const monthPicker = createPicker('monthPicker', monthOptions); 
+
+   yearPicker.onchange = function() {
+     const selectedYear = parseInt(this.value);
+     const currentDate = calendar.getDate();
+     calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
+     this.style.display = 'none';
+   };
+
+   monthPicker.onchange = function() {
+        const selectedMonth = parseInt(this.value);
+        const currentDate = calendar.getDate();
+        calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
+        updateDayPicker(currentDate.getFullYear(), selectedMonth);  
+        this.style.display = 'none';
+    }; 
+  
+   const dayPicker = createPicker('dayPicker', []);
+    updateDayPicker(currentYear, new Date().getMonth());  
+
+    dayPicker.onchange = function() {
+        const selectedDay = parseInt(this.value);
+        const currentDate = calendar.getDate();
+        calendar.gotoDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), selectedDay));
+        this.style.display = 'none';
+    }; 
+    
+    function updateDayPicker(year, month) {
+        const lastDay = new Date(year, month + 1, 0).getDate(); 
+        const dayOptions = Array.from({ length: lastDay }, (_, i) => ({
+            value: i + 1,
+            text: `${i + 1}일`
+        }));
+
+        dayPicker.innerHTML = '';  
+        dayOptions.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.text;
+            dayPicker.appendChild(opt);
+        });
+ 
+        dayPicker.value = lastDay;
+    }
+    
+   document.addEventListener('click', function (e) {
+     if (!e.target.closest('.fc-customYearPicker-button') &&
+       !e.target.closest('.fc-customMonthPicker-button') &&
+       !e.target.closest('.fc-customDayPicker-button') &&
+       !e.target.closest('.custom-picker')) {
+       yearPicker.style.display = 'none';
+       monthPicker.style.display = 'none';
+       if (dayPicker) {
+         dayPicker.style.display = 'none';
+       }
+     }
+   });
 		 
 	
     // 일정 등록
