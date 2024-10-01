@@ -497,17 +497,25 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp);
+                        showNotification(title, content, item.memberNo, message.timestamp, 11);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', 11);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                         <hr style="border: none; margin: 10px 0;">
                         `;
-
+						
+						listItem.addEventListener('click', () => {
+					        const notificationType = listItem.getAttribute('data-notification-type');
+					        if (notificationType === '11') {  
+					            window.location.href = noficationTypeUrl[11];
+					        } 
+					    });
+    
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
                     });
                 } else if(message.type === 'noficationParticipantSchedule'){
@@ -520,17 +528,25 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp);
+                        showNotification(title, content, item.memberNo, message.timestamp, 11);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', 11);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                         <hr style="border: none; margin: 10px 0;">
                         `;
-
+						
+						 listItem.addEventListener('click', () => {
+					        const notificationType = listItem.getAttribute('data-notification-type');
+					        if (notificationType === '12') { 
+					            window.location.href = noficationTypeUrl[11];
+					        } 
+					     });
+					     
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
                     });
                 } else if(message.type === 'noficationParticipantMeeting'){
@@ -543,17 +559,24 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp);
+                        showNotification(title, content, item.memberNo, message.timestamp, 13);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', 11);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                         <hr style="border: none; margin: 10px 0;">
                         `;
-
+	
+						 listItem.addEventListener('click', () => {
+					        const notificationType = listItem.getAttribute('data-notification-type');
+					        if (notificationType === '13') { 
+					            window.location.href = noficationTypeUrl[11];
+					        } 
+					     });
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
                     });
                 }
