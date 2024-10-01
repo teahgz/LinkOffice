@@ -58,7 +58,11 @@ nav {
 #nav_wrap > ul > li > a:hover {
     background-color: #ddd;
 }
-
+/* single-menu 링크 스타일 */
+.single-menu-active {
+    background-color: #28a745; /* single-menu에 대한 다른 배경색 */
+    color: #ffffff; /* 텍스트 색상 */
+}
 .dropdown {
     display: none;
     background-color: #f9f9f9;
@@ -82,7 +86,7 @@ nav {
     margin-left: 15%;
     text-decoration: none;
     color: #333;
-    background-color: #ffffff
+    background-color: #fff;
     padding: 13px;
 }
 
@@ -100,10 +104,8 @@ nav {
     font-weight: bold;
 }
 
-
 .active-link {
     color: #007bff;
-
 }
 #nav_wrap > ul > li.active {
     border-bottom: none;
