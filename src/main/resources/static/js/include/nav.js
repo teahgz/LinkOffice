@@ -122,7 +122,7 @@ function closeDropdowns() {
 
 
 //알림 모달
-const modal = document.getElementById("notification-modal");
+const alarmModal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
 function showNotification(title, content, memberNo, time) {
@@ -177,8 +177,8 @@ function showNotification(title, content, memberNo, time) {
 
 }
 window.onclick = function(event) {
-    if (event.target === modal) {
-        modal.style.display = "none";
+    if (event.target === alarmModal) {
+        alarmModal.style.display = "none";
     }
 }
 
