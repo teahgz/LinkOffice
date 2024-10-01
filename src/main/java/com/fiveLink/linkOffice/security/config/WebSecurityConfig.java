@@ -38,11 +38,9 @@ public class WebSecurityConfig implements HttpSessionListener {
                 authorizeRequests
                     .requestMatchers("/login","/css/**", "/img/**", "/js/**").permitAll()
                     .requestMatchers("/pwchange", "/error", "/error500", "/session-time").permitAll()
-                        .requestMatchers("/websocket/**").permitAll()  // 웹소켓 엔드포인트 접근 허용
                     .requestMatchers("/").authenticated()
                     .requestMatchers("/**").authenticated()
                     .requestMatchers("/employee/member/**").authenticated()
-                        .requestMatchers("/api/**").authenticated()
             )
             .formLogin(login ->
                 login

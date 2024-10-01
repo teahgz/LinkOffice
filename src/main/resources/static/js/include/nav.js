@@ -105,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const activeLink = document.querySelector(`.dropdown a[href="${activeLinkHref}"]`);
         if (activeLink) {
             activeLink.classList.add('active-link');
-
             if (activeLink.classList.contains('single-menu')) {
                 activeLink.classList.add('single-menu-active');
             }
@@ -452,9 +451,6 @@ function connectWebSocket() {
                             const notificationType = listItem.getAttribute('data-notification-type');
                             if (notificationType === '1') {
                                 window.location.href = noficationTypeUrl[1];
-                            } else {
-                                // 다른 타입에 대한 처리 (필요시)
-                                console.log('다른 타입의 알림 클릭:', notificationType);
                             }
                         });
                             notificationModal.insertBefore(listItem, notificationModal.children[1]);
