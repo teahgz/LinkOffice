@@ -41,6 +41,7 @@ public class WebSecurityConfig implements HttpSessionListener {
                     .requestMatchers("/").authenticated()
                     .requestMatchers("/**").authenticated()
                     .requestMatchers("/employee/member/**").authenticated()
+
             )
             .formLogin(login ->
                 login
