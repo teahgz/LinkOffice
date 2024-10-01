@@ -633,6 +633,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handleWindowResize: true,
             fixedWeekCount: false,
             eventClick: function(info) { 
+				console.log(info.event);
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -660,7 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						showVacationModal(info.event);
 					} else if (info.event.extendedProps.type === 'meetingResult') {
 						const eventId = info.event.id;
-				        showMeetingModalById(calendar, eventId);
+				        showMeetingModalById(calendar, eventId, info.event);
 					} else {
 				        info.jsEvent.preventDefault();
 				    }   
@@ -1554,7 +1555,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('event_repeat_title').style.display = 'block';  
 	    document.getElementById('editEventBtn').style.display = 'block';
 	    document.getElementById('deleteEventBtn').style.display = 'block';  
-	    document.getElementById('eventViewHr').style.display = 'block';  
+	    document.getElementById('eventViewHr').style.display = 'block';   
+		
+		document.getElementById('par_join').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_join_name').style.display = 'none'; 
+		document.getElementById('meeting_name').style.display = 'none'; 
 	 	  
 	    if(allDay && startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
@@ -1591,9 +1598,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			document.getElementById('par_join').style.display = 'block'; 
 			document.getElementById('par_create_name').style.display = 'block'; 
 			document.getElementById('par_create_name').style.display = 'block'; 
-		    const createName = document.getElementById('par_create_name');
-		    createName.textContent = `[등록자] ${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
-		
+			document.getElementById('par_join_name').style.display = 'block'; 
+			const createName = document.getElementById('par_create_name');
+			createName.innerHTML = `[등록자]<br>${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+
 		    const joinName = document.getElementById('par_join_name');
 		 
 		    if (event.extendedProps.participant_name && Array.isArray(event.extendedProps.participant_name)) {
@@ -1605,11 +1613,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		else if (event.extendedProps.type === 'departmentResult') {
 			document.getElementById('par_join').style.display = 'none'; 
-			document.getElementById('par_create_name').style.display = 'none'; 
+			document.getElementById('par_create_name').style.display = 'block'; 
 			document.getElementById('par_join_name').style.display = 'none'; 
 			document.getElementById('meeting_name').style.display = 'block'; 
 			const departmentName = document.getElementById('departmentName');
-			departmentName.textContent = event.extendedProps.departmentName;
+			departmentName.textContent = event.extendedProps.departmentName + ' 부서 일정';
+			
+			const createName = document.getElementById('par_create_name');
+			createName.innerHTML = `[등록자]<br>${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
 		}
 		else {
 			 document.getElementById('par_join').style.display = 'none'; 
@@ -1658,6 +1669,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('editEventBtn').style.display = 'block';
 	    document.getElementById('deleteEventBtn').style.display = 'block'; 
 	    document.getElementById('eventViewHr').style.display = 'block'; 
+    
+		document.getElementById('par_join').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_join_name').style.display = 'none'; 
+		document.getElementById('meeting_name').style.display = 'none'; 
 	     
 	    if(startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
@@ -1674,9 +1691,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		if (event.extendedProps.type === 'participateResult') { 
 			document.getElementById('event_modal_vacation').style.height = '500px'
-		    const createName = document.getElementById('par_create_name');
-		    createName.textContent = `[등록자] ${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
-		
+			const createName = document.getElementById('par_create_name');
+			createName.innerHTML = `[등록자]<br>${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+
 		    const joinName = document.getElementById('par_join_name');
 		 	 
 			if (event.extendedProps.excepetion_participant_name && Array.isArray(event.extendedProps.excepetion_participant_name)) {
@@ -2309,7 +2326,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.getElementById('par_join').style.display = 'none'; 
 		document.getElementById('par_join_name').style.display = 'none'; 
 	    document.getElementById('par_create_name').style.display = 'none'; 
-		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none';  
 			 
 	    modal.style.display = 'block';  
 	}
@@ -2319,8 +2336,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	
 	// 회의실 상세 모달
-	function showMeetingModalById(calendar, eventId) {
-	    const event = calendar.getEventById(eventId);   
+	function showMeetingModalById(calendar, eventId, event) { 
 	    if (!event) {
 	        console.error("일정을 찾을 수 없습니다.");
 	        return;
@@ -2350,8 +2366,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.getElementById('par_create_name').style.display = 'block'; 
 		document.getElementById('par_create_name').style.display = 'block'; 
 		document.getElementById('meeting_name').style.display = 'block'; 
+		document.getElementById('par_join_name').style.display = 'block'; 
 	    const createName = document.getElementById('par_create_name');
-	    createName.textContent = `[예약자] ${event.extendedProps.member_name} ${event.extendedProps.positionName}`;
+	    createName.innerHTML = `[예약자]<br>${event.extendedProps.member_name} ${event.extendedProps.positionName}`;
 	
 	    const joinName = document.getElementById('par_join_name');
 	 
