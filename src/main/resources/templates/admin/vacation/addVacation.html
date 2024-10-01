@@ -4,9 +4,6 @@
       layout:decorate="~{include/layout}">
 <th:block layout:fragment="content"> 
     <link th:href="@{/css/admin/vacation/addVacation.css}" rel="stylesheet" type="text/css">
-
-    <section th:each = "member : ${memberdto}">
-		<h1>휴가 생성</h1> 
         <div class="addVacation_content"> 
             <div class="vacationForms">
                 <form id="vacationForm" class="vacationForm">

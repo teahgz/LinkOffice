@@ -35,7 +35,7 @@
 					</div>
 				</li>
 				<li>
-					<a th:href="@{/employee/schedule}">일정</a>
+					<a th:href="@{/employee/schedule}" class="single-menu" data-menu-id="schedule">일정</a>
 				</li>
 
 
@@ -76,10 +76,11 @@
 				</li>
 				<li th:each = "member : ${memberdto}">
 
-					<a th:href="@{/api/chat/{no}(no=${member.member_no})}">메신저</a>
+					<a th:href="@{/api/chat/{no}(no=${member.member_no})}" class="single-menu"  data-menu-id="chatting">메신저</a>
 
 				</li>
-				<li th:each = "member : ${memberdto}"><a th:href="@{/employee/member/list}">주소록</a></li>
+				<li th:each = "member : ${memberdto}">
+					<a th:href="@{/employee/member/list}" class="single-menu"  data-menu-id="memberInfo">주소록</a></li>
 
 				<li>
 					<a href="#" class="dropdown-toggle">문서함</a>
@@ -165,8 +166,8 @@
 							<li><a th:href="@{/meeting/reservation/list}">예약 관리</a></li>
 						</ul>
 					</div>
-				</li> 
-				<li th:each = "member : ${memberdto}"><a th:href="@{/permission}">통합 권한 관리</a></li>
+				</li>
+			<li th:each = "member : ${memberdto}"><a th:href="@{/permission}" class="single-menu" data-menu-id="allPermission">통합 권한 관리</a></li>
 			</ul>
 		</div>
 

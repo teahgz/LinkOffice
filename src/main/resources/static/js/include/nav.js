@@ -1,8 +1,5 @@
 let currentMember = parseInt(document.getElementById("currentMember").value, 10);
 //알림 출력을 위한 멤버값
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
     const dropdowns = document.querySelectorAll(".dropdown");
@@ -54,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem("activeDropdown");
             } else {
                 openDropdown(dropdown);
-
                 saveDropdownState(dropdownId);
             }
         });
@@ -88,9 +84,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     links.forEach(function (link) {
         link.addEventListener("click", function () {
+            links.forEach(l => {
+                l.classList.remove('active-link');
+                l.classList.remove('single-menu-active');
+            });
 
-            links.forEach(l => l.classList.remove('active-link'));
             this.classList.add('active-link');
+
+            // single-menu 클래스일 경우
+            if (this.classList.contains('single-menu')) {
+                this.classList.add('single-menu-active');
+            }
 
             localStorage.setItem("activeLink", this.getAttribute("href"));
         });
@@ -100,7 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (activeLinkHref) {
         const activeLink = document.querySelector(`.dropdown a[href="${activeLinkHref}"]`);
         if (activeLink) {
-            activeLink.classList.add('active-link'); // Add active class to the saved link
+            activeLink.classList.add('active-link');
+
+            if (activeLink.classList.contains('single-menu')) {
+                activeLink.classList.add('single-menu-active');
+            }
         }
     }
 });
@@ -121,11 +129,12 @@ function closeDropdowns() {
 }
 
 
+
 //알림 모달
 const alarmModal = document.getElementById("notification-modal");
 const closeButton = document.querySelector(".close-notification-modal");
 
-function showNotification(title, content, memberNo, time) {
+function showNotification(title, content, memberNo, time, type) {
 
     if(memberNo === currentMember){
         const notificationContainer = document.getElementById("notificationContainer");
@@ -134,7 +143,7 @@ function showNotification(title, content, memberNo, time) {
         notificationModal.classList.add("notification-modal");
 
         notificationModal.innerHTML = `
-            <div class="notification-modal-content">
+            <div class="notification-modal-content" data-notification-type="${type}">
                 <strong>${title}</strong>
                 <p>${content}</p>
                 <input type="hidden" name="memberNo" value="${memberNo}">
@@ -172,7 +181,14 @@ function showNotification(title, content, memberNo, time) {
             }, 400);
         });
 
-
+        notificationModal.querySelector('.notification-modal-content').addEventListener('click', function() {
+            const notificationType = this.getAttribute('data-notification-type');
+            if (noficationTypeUrl[notificationType]) {
+                window.location.href = noficationTypeUrl[notificationType];
+            } else {
+                console.log('알 수 없는 알림 타입:', notificationType);
+            }
+        });
     }
 
 }
@@ -421,17 +437,26 @@ function connectWebSocket() {
                             addMarkAsReadListener();
                         }
                         message.data.forEach(function(item) {
-                            showNotification(title, item.content, item.memberNo, message.timestamp);
+                            showNotification(title, item.content, item.memberNo, message.timestamp, 1);
                             const listItem = document.createElement('li');
 
                             listItem.setAttribute('data-notification-no', item.nofication_pk);
+                            listItem.setAttribute('data-notification-type', 1);
                             listItem.innerHTML = `
                                 <strong style="margin-bottom: 5px;">${title}</strong>
                                 <p>${item.content}</p>
                                 <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                                 <hr style="border: none; margin: 10px 0;">
                             `;
-
+                        listItem.addEventListener('click', () => {
+                            const notificationType = listItem.getAttribute('data-notification-type');
+                            if (notificationType === '1') {
+                                window.location.href = noficationTypeUrl[1];
+                            } else {
+                                // 다른 타입에 대한 처리 (필요시)
+                                console.log('다른 타입의 알림 클릭:', notificationType);
+                            }
+                        });
                             notificationModal.insertBefore(listItem, notificationModal.children[1]);
                         });
                     }
@@ -461,7 +486,7 @@ function connectWebSocket() {
                                 notificationModal.insertBefore(listItem, notificationModal.children[1]);
                             }
 
-                        }); 
+                        });
                 } else if(message.type === 'noficationDepartmentSchedule'){
                     const title = message.title;
                     const content = message.content;
@@ -531,8 +556,8 @@ function connectWebSocket() {
 
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
                     });
-                } 
-                
+                }
+
             }
         }
 

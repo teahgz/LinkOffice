@@ -102,7 +102,9 @@ function bellUnreadCount() {
                 }
            });
 }
-
+const noficationTypeUrl={
+     1: `/api/chat/${headerCurrentMember}`
+}
 
 //통합 알림 리스트
 function unreadNoficationList() {
@@ -129,6 +131,7 @@ function unreadNoficationList() {
 
                     const listItem = document.createElement('li');
                     listItem.setAttribute('data-notification-no', notification.nofication_no);
+                    listItem.setAttribute('data-notification-type', notification.nofication_type);
                     const date = new Date(notification.nofication_create_date);
                     const formattedDate = date.toLocaleDateString('ko-KR', {
                         year: '2-digit',
@@ -146,6 +149,15 @@ function unreadNoficationList() {
                         <em style="display: block; margin-bottom: 5px; float: right;">${formattedDate} ${formattedTime}</em>
                         <hr style="border: none; margin: 10px 0;">
                     `;
+
+                    listItem.addEventListener('click', () => {
+                        const notificationType = listItem.getAttribute('data-notification-type');
+                        if (notificationType === '1') {
+                            window.location.href = noficationTypeUrl[1];
+                        } else {
+                            console.log('다른 타입의 알림 클릭:', noficationType);
+                        }
+                    });
 
                     notificationModal.appendChild(listItem);
 
