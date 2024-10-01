@@ -4,7 +4,7 @@
       layout:decorate="~{include/layout}">
     <th:block layout:fragment="content">
         <link th:href="@{/css/employee/vacationapproval/vacationapproval_detail.css}" rel="stylesheet" type="text/css">
-	        <section>
+	        <section th:each="member : ${memberdto}">
 	            <div class="container">
 	            	<input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
 	            	<input type="hidden" id="vacationapproval_no" th:value="${vacationapprovaldto.vacation_approval_no}" >
@@ -13,80 +13,59 @@
 	               			<button type="button" id="previewButton" class="preview_button">미리보기</button> 
 	                        <p class="vacation_title">휴가 신청서</p>
 	                	</div>
-							<div class="approval_line_section">
-							    <table class="approval_line_table">
-							        <tr>
-							            <th rowspan="3">결재</th>
-							            <td>
-							                <div >
-							                    <span th:text="${vacationapprovaldto.member_position}"></span>
-							                </div>
-							            </td>
-							            <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2}">
-							                <div >
-							                    <span th:text="${flow.member_position}"></span>
-							                </div>
-							            </td>
-							        </tr>
-							        <tr>
-							            <td>
-							                <div class="signature_box">
-							                    <img th:if="${vacationapprovaldto.digitalname != null}" 
-							                         th:src="@{'/linkOfficeImg/member/digital/'+${vacationapprovaldto.digitalname}}" 
-							                         alt="기안자 서명" class="currentSignature">
-							                    <span th:if="${vacationapprovaldto.digitalname == null}" 
-							                          class="currentSignature" th:text="${vacationapprovaldto.member_name}"></span>
-							                </div>
-							                     <div class="date_box" th:text="${vacationapprovaldto.format_vacation_approval_create_date}"></div>
-							            </td>
-							            <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2}">
-							                <div class="signature_box">
-							                    <img th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name != null}" 
-							                         th:src="@{'/linkOfficeImg/member/digital/' + ${flow.digital_name}}" 
-							                         alt="현재 서명" class="currentSignature">
-							                    <span th:if="${flow.vacation_approval_flow_status == 2 and flow.digital_name == null}" 
-							                          class="currentSignature" th:text="${flow.member_name}"></span>
-												<span th:if="${flow.vacation_approval_flow_status != 2 and (vacationapprovaldto.vacation_approval_status != 2 or flow.vacation_approval_flow_status == 3)}" 
-												      class="approval_status" th:classappend="${flow.vacation_approval_flow_status == 3 ? 'rejected' : 'pending'}" 
-												      th:text="${flow.vacation_approval_flow_status == 3 || vacationapprovaldto.vacation_approval_status == 2 ? '반려' : '대기중'}">
-												</span>
-							                </div>
-							                 <div class="date_box" th:if="${flow.vacation_approval_flow_status != 0 and flow.vacation_approval_flow_status != 1}"
-										    th:text="${flow.format_vacation_approval_flow_complete_date}"></div>
-							            </td>
-							        </tr>
-							        <tr>
-							            <td>
-							                <div  th:text="${vacationapprovaldto.member_name}"></div>
-							               
-							            </td>
-							            <td th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 2}">
-							                <div th:text="${flow.member_name}"></div>
-							            </td>
-							        </tr>
-							        <tr>
-							            <th>합의</th>
-							            <td th:colspan="${#lists.size(vacationapprovaldto.flows)+1}">
-							                <div class="reference_box">
-							                    <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 1}">
-							                        <span th:text="${flow.member_name}"></span>
-							                        <span th:if="${flow.vacation_approval_flow_status == 2}" class="approved">(승인)</span>
-							                        <span th:if="${flow.vacation_approval_flow_status == 3}" class="rejected">(반려)</span>
-							                    </div>
-							                </div>
-							            </td>
-							        </tr>
-							        <tr>
-							            <th>참조</th>
-							            <td th:colspan="${#lists.size(vacationapprovaldto.flows)+1}">
-							                <div class="reference_box">
-							                    <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 0}"
-							                         th:text="${flow.member_name}"></div>
-							                </div>
-							            </td>
-							        </tr>
-							    </table>
-							</div>
+	                	
+								<table id="approvalLineTable" class="approval_line_table">
+								    <tr>
+								        <th rowspan="3">결재</th>
+								        <td id="approve"><div><span th:text="${member.position_name}"></span></div></td>
+								        <td><div></div></td>
+								        <td><div></div></td>
+								        <td><div></div></td>
+								        <td><div></div></td>
+								        <td><div></div></td>
+								        <td><div></div></td>
+								    </tr>
+								    <tr>
+								        <td id="approve"><div class="signature_box"></div></td>
+								        <td><div class="signature_box"></div></td>
+								        <td><div class="signature_box"></div></td>
+								        <td><div class="signature_box"></div></td>
+								        <td><div class="signature_box"></div></td>
+								        <td><div class="signature_box"></div></td>
+								        <td><div class="signature_box"></div></td>
+								    </tr>
+								    <tr>
+								        <td id="approve"><span th:text="${member.member_name}"></span></td>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								    </tr>
+								    <tr>
+								        <td id="strong"><strong>합의</strong></td>
+								        <td colspan="7">
+		                                     <div class="reference_box">
+		                                         <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 1}">
+		                                             <span th:text="${flow.member_name}"></span>
+		                                             <span th:if="${flow.vacation_approval_flow_status == 2}" class="approved">(승인)</span>
+		                                             <span th:if="${flow.vacation_approval_flow_status == 3}" class="rejected">(반려)</span>
+		                                         </div>
+		                                     </div>
+								        </td>
+								    </tr>
+								    <tr>
+								        <td id="strong"><strong>참조</strong></td>
+								        <td colspan="7">
+	                                     <div class="reference_box">
+	                                         <div th:each="flow : ${vacationapprovaldto.flows}" th:if="${flow.vacation_approval_flow_role == 0}"
+	                                              th:text="${flow.member_name}"></div>
+	                                     </div>
+								        </td>
+								    </tr>
+								</table>							
+							
 	                            <div class="field">
 	                                <div id="vacationapproval_title" th:text="${vacationapprovaldto.vacation_approval_title}"></div>
 	                            </div>

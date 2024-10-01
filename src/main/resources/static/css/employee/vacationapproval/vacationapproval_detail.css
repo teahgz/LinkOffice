@@ -6,7 +6,6 @@
 }
 
 .main_container {
-    width: 50%;
     background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -31,8 +30,12 @@
 
 .approval_line_table {
     border-collapse: collapse;
-    width: 75%; 
+    width: 60%; 
     margin-left: auto; 
+}
+
+#strong{
+    background-color: #f2f2f2;
 }
 
 .approval_line_table th {
