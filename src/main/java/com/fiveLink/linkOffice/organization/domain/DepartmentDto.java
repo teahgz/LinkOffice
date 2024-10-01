@@ -34,7 +34,8 @@ public class DepartmentDto {
     private Long departmentId;
     private String departmentName;
     private Long departmentHigh;
-    private Long memberCount;
+    private Long memberCount; 
+    private Long subMemberCount;
     
     private List<MemberDto> members;
     

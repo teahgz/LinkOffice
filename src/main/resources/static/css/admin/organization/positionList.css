@@ -52,7 +52,7 @@ button:hover {
     padding: 0;
 }
 .position_li {
-    margin-bottom: 10px; 
+    margin-bottom: 20px; 
 }
 .container a, .details a {
     color: #2994da;
@@ -201,4 +201,4 @@ hr {
 
 form input[type="text"], form select { 
     padding-left: 10px;
-}
+} 

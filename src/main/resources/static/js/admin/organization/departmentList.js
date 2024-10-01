@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var departmentId = this.getAttribute("data-department-id");
 
             Swal.fire({ 
-                text: '부서를 삭제하시겠습니까?',
+                html: '부서를 삭제하시겠습니까?<br/>상위 부서 삭제 시 하위 부서가 함께 삭제됩니다.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#EEB3B3',

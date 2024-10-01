@@ -31,21 +31,21 @@ public class DepartmentController {
     public String listDepartments(Model model, @RequestParam(value = "id", required = false) Long id) {
         List<DepartmentDto> departments = departmentService.getAllDepartments();
         Long memberNo = memberService.getLoggedInMemberNo();
-        List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
-
+        List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
+        
         model.addAttribute("memberdto", memberDto);
         model.addAttribute("departments", departments);
-        model.addAttribute("topLevelDepartments", departmentService.getTopLevelDepartments());
+        model.addAttribute("topLevelDepartments", departmentService.getTopLevelDepartments()); 
 
         if (id != null) {
             departmentService.getDepartmentById(id).ifPresent(department -> {
                 List<MemberDto> members = memberService.getMembersByDepartmentNo(department.getDepartment_no());
                 department.setMembers(members);
-                model.addAttribute("department", department);
+                model.addAttribute("department", department);  
             });
-        }
+        } 
         return "/admin/organization/department_list";
-    }
+    } 
 
     @PostMapping("/department/add")
     @ResponseBody

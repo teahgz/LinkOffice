@@ -18,9 +18,11 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     
     boolean existsByPositionNameAndPositionStatus(String positionName, Long positionStatus);
     
-    boolean existsByPositionNameAndPositionNoNot(String positionName, Long positionNo); 
+    boolean existsByPositionNameAndPositionNoNotAndPositionStatus(String positionName, Long positionNo, Long positionStatus); 
   
     List<Position> findByPositionHigh(Long positionHigh);
     
     List<Position> findAllByPositionStatus(Long status);
+    
+    List<Position> findByPositionStatusOrderByPositionLevelAsc(Long status);
 } 

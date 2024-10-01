@@ -40,4 +40,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     // [서혜원] 일정 부서 조회
     List<Department> findAllByDepartmentStatusAndDepartmentHighNotOrderByDepartmentHighAscDepartmentNameAsc(Long departmentStatus, Long departmentHigh);
+     
 }

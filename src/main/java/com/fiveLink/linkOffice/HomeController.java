@@ -162,9 +162,7 @@ public class HomeController {
 		for (Schedule schedule : schedules) {
 			ScheduleDto dto = ScheduleDto.toDto(schedule);
 			scheduleDtos.add(dto);
-		}
-
-		System.out.println("scheduleDtos : " + scheduleDtos);
+		} 
 		return scheduleDtos;
 	}
 
@@ -306,9 +304,7 @@ public class HomeController {
     @ResponseBody
     @GetMapping("/home/api/schedule/department/list")
     public List<DepartmentDto> getAllDepartments() {
-        List<DepartmentDto> departments = departmentService.getSecondDepartments();
-        
-        System.out.println("departments information : " + departments);
+        List<DepartmentDto> departments = departmentService.getSecondDepartments(); 
         return departments;
     }
 
@@ -371,8 +367,7 @@ public class HomeController {
 	    Map<String, Object> response = new HashMap<>();
 	     
 	    List<MeetingParticipantDto> participants = meetingReservationService.getParticipantsByMeetingNoOwn(scheduleNo, memberNo);
-	    
-	    System.out.println("participants" + participants);
+	     
 	    response.put("participants", participants); 
 	    return response;
 	}  
@@ -380,8 +375,7 @@ public class HomeController {
 	// [서혜원] 일정 카테고리	
 	@GetMapping("/home/categories")
 	@ResponseBody
-	public List<ScheduleCategoryDto> getAlladminScheduleCategory() {
-		System.out.println(scheduleCategoryService.getAlladminScheduleCategory());
+	public List<ScheduleCategoryDto> getAlladminScheduleCategory() { 
 		return scheduleCategoryService.getAlladminScheduleCategory();
 	}
 	

@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
 	        success: function(data) { 
-	            if (data.participants) {
+	            if (data.participants) { 
 	                meetingParMemberNos = data.participants.map(participant => participant.member_no);
 	                meetingParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName);
 	            }
@@ -197,38 +197,40 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	
     function fetchAllSchedules() {
-	    Promise.all([
-	        fetchSchedules('/api/personal/schedules/' + memberNo, 'personalResult'),
-	        fetchSchedules('/api/department/schedules', 'departmentResult'),
-	        fetchSchedules('/api/company/schedules', 'scheduleDtos'),
-	        fetchSchedules('/api/participate/schedules', 'participateResult'),
-	        fetchSchedules('/api/employee/vacation/schedules', 'vacationResult'),
-	        fetchSchedules('/api/employee/meeting/schedules', 'meetingResult'),
-	        $.ajax({
-	            url: '/api/repeat/schedules',
-	            method: 'GET',
-	            headers: { 'X-CSRF-TOKEN': csrfToken }
-	        }),
-	        $.ajax({
-	            url: '/api/company/exception/schedules',
-	            method: 'GET',
-	            headers: { 'X-CSRF-TOKEN': csrfToken }
-	        })
-	    ]).then(function([personalSchedules, departmentSchedules, companySchedules, participateSchedules, vacationSchedules, meetingSchedules, repeats, exceptions]) {
-	        const allEvents = [];
+	  Promise.all([
+	    fetchSchedules('/api/personal/schedules/' + memberNo, 'personalResult'),
+	    fetchSchedules('/api/department/schedules', 'departmentResult'),
+	    fetchSchedules('/api/company/schedules', 'scheduleDtos'),
+	    fetchSchedules('/api/participate/schedules', 'participateResult'),
+	    fetchSchedules('/api/employee/vacation/schedules', 'vacationResult'),
+	    fetchSchedules('/api/employee/meeting/schedules', 'meetingResult'),
+	    $.ajax({
+	      url: '/api/repeat/schedules',
+	      method: 'GET',
+	      headers: { 'X-CSRF-TOKEN': csrfToken }
+	    }),
+	    $.ajax({
+	      url: '/api/company/exception/schedules',
+	      method: 'GET',
+	      headers: { 'X-CSRF-TOKEN': csrfToken }
+	    })
+	  ]).then(function([personalSchedules, departmentSchedules, companySchedules, 
+	                    participateSchedules, vacationSchedules, meetingSchedules, 
+	                    repeats, exceptions]) {
+	    const allEvents = [];
 	
-	        Promise.all([
-	            processSchedules(personalSchedules.personalResult, 'personalResult', repeats, exceptions, allEvents),
-	            processSchedules(departmentSchedules.departmentResult, 'departmentResult', repeats, exceptions, allEvents),
-	            processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents),
-	            processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents),
-	            processVacationSchedules(vacationSchedules.vacationResult, allEvents),
-	            processMeetingSchedules(meetingSchedules.meetingResult, allEvents)  
-	        ]).then(() => {
-	            initializeCalendar(allEvents);
-	            filterEvents(); 
-	        });
+	    Promise.all([
+	      processSchedules(personalSchedules.personalResult, 'personalResult', repeats, exceptions, allEvents),
+	      processSchedules(departmentSchedules.departmentResult, 'departmentResult', repeats, exceptions, allEvents),
+	      processSchedules(companySchedules.scheduleDtos, 'scheduleDtos', repeats, exceptions, allEvents),
+	      processSchedules(participateSchedules.participateResult, 'participateResult', repeats, exceptions, allEvents),
+	      processVacationSchedules(vacationSchedules.vacationResult, allEvents),
+	      processMeetingSchedules(meetingSchedules.meetingResult, allEvents)
+	    ]).then(() => {
+	      initializeCalendar(allEvents);
+	      filterEvents();
 	    });
+	  });
 	}
 
     
@@ -278,64 +280,80 @@ document.addEventListener('DOMContentLoaded', function() {
 	        }
 	    }); 
 	}
-	
-	function processMeetingSchedules(meetingSchedules, allEvents) { 
-	    if (meetingSchedules && meetingSchedules.meetingSchedules) {
-	        meetingSchedules.meetingSchedules.forEach(function(meeting) {
-	            const event = createMeetingEvent(meeting);
-	            allEvents.push(event);
+	 
+	function loadAllParticipants(meetings) {
+	  return Promise.all(meetings.map(meeting => {
+	    return new Promise((resolve) => {
+	      searchMeetingParticipate(meeting.member_no, meeting.meeting_reservation_no, 
+	        (participantNos, participantNames) => {
+	          resolve({
+	            meetingNo: meeting.meeting_reservation_no,
+	            participantNos,
+	            participantNames
+	          });
 	        });
-	    }
-	}
-	
-	function createMeetingEvent(meeting) { 
-		var event = {
-		    order: 1,
-		    id: 'meeting' + meeting.meeting_no,
-		    title: meeting.meeting_name  + ' 회의', 
-		    start: meeting.meeting_reservation_date + 'T' + meeting.meeting_reservation_start_time,
-		    end: meeting.meeting_reservation_date + 'T' + meeting.meeting_reservation_end_time,
-		    allDay: false,
-		    backgroundColor: '#fff8db',
-		    borderColor: '#fff8db',
-		    textColor: '#000000',
-		    className: 'meeting-event',
-		    extendedProps: {
-		        type: 'meetingResult',
-		        categoryName: '회의',  
-		        positionName: meeting.position_name,
-		        departmentName: meeting.department_name,
-		        member_no: meeting.member_no,
-		        meeting_no: meeting.meeting_no,
-		        participant_no: [],
-		        participant_name: [],
-		        participantsLoaded: false,
-		        member_name : meeting.member_name,
-		        meeting_reservation_purpose : meeting.meeting_reservation_purpose,
-		        meeting_name : meeting.meeting_name,
-		        meeting_date : meeting.meeting_reservation_date,
-		        meeting_start_time : meeting.meeting_reservation_start_time,
-		        meeting_end_time : meeting.meeting_reservation_end_time, 
-		    }
-		}; 
-	     
-	    searchMeetingParticipate(event.extendedProps.member_no, event.extendedProps.meeting_no, function(participantNos, participantNames) {
-	        event.extendedProps.participant_no = participantNos;
-	        event.extendedProps.participant_name = participantNames;
-	        event.extendedProps.participantsLoaded = true;
-	         
-	        const calendarEvent = calendar.getEventById(event.id);
-	        if (calendarEvent) {
-	            calendarEvent.setExtendedProp('participant_no', participantNos);
-	            calendarEvent.setExtendedProp('participant_name', participantNames);
-	            calendarEvent.setExtendedProp('participantsLoaded', true);
-	        }
-	        
-	        filterEvents();   
 	    });
-	
-	    return event;
+	  }));
 	}
+
+	function processMeetingSchedules(meetingSchedules, allEvents) {
+	  if (meetingSchedules && meetingSchedules.meetingSchedules) {
+	    const meetings = meetingSchedules.meetingSchedules;
+	     
+	    return loadAllParticipants(meetings).then(participantsData => { 
+	      const participantsMap = participantsData.reduce((acc, data) => {
+	        acc[data.meetingNo] = {
+	          nos: data.participantNos,
+	          names: data.participantNames
+	        };
+	        return acc;
+	      }, {});
+	 
+	      meetings.forEach(meeting => {
+	        const participants = participantsMap[meeting.meeting_reservation_no];
+	        const event = createMeetingEvent(meeting, participants);
+	        allEvents.push(event);
+	      });
+	    });
+	  }
+	  return Promise.resolve(); 
+	}
+
+	
+	function createMeetingEvent(meeting, participants) {
+  var event = {
+    order: 1,
+    id: 'meeting' + meeting.meeting_no,
+    title: meeting.meeting_name + ' 회의',
+    start: meeting.meeting_reservation_date + 'T' + meeting.meeting_reservation_start_time,
+    end: meeting.meeting_reservation_date + 'T' + meeting.meeting_reservation_end_time,
+    allDay: false,
+    backgroundColor: '#fff8db',
+    borderColor: '#fff8db',
+    textColor: '#000000',
+    className: 'meeting-event',
+    extendedProps: {
+      type: 'meetingResult',
+      categoryName: '회의',
+      positionName: meeting.position_name,
+      departmentName: meeting.department_name,
+      member_no: meeting.member_no,
+      meeting_no: meeting.meeting_no,
+      participant_no: participants ? participants.nos : [],
+      participant_name: participants ? participants.names : [],
+      participantsLoaded: true,
+      member_name: meeting.member_name,
+      meeting_reservation_purpose: meeting.meeting_reservation_purpose,
+      meeting_name: meeting.meeting_name,
+      meeting_date: meeting.meeting_reservation_date,
+      meeting_start_time: meeting.meeting_reservation_start_time,
+      meeting_end_time: meeting.meeting_reservation_end_time,
+      meeting_reservation_no: meeting.meeting_reservation_no
+    }
+  };
+  
+  return event;
+}
 	
 	function createVacationEvent(vacation) {  
 	    var eventEnd = new Date(vacation.vacation_approval_end_date);
@@ -614,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
             contentHeight: 'auto',
             handleWindowResize: true,
             fixedWeekCount: false,
-            eventClick: function(info) {  
+            eventClick: function(info) { 
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 			
@@ -724,9 +742,9 @@ document.addEventListener('DOMContentLoaded', function() {
  	
 	    calendar.getEvents().forEach(function(event) {
 	        const eventDepartmentNo = event.extendedProps.department_no;
-	        const participantNos = event.extendedProps.participant_no || []; 
+	        const participantNos = event.extendedProps.participant_no || [];  
 	        let shouldDisplay = false;
-	
+			 
 	        // 개인 일정
 	        if (event.extendedProps.type === 'personalResult' && (event.extendedProps.member_no.toString() === memberNo)) {
 	            shouldDisplay = true;
@@ -764,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            }
 	        }
 	        // 회의 일정
-	        else if (event.extendedProps.type === 'meetingResult') {
+	        else if (event.extendedProps.type === 'meetingResult') { 
 	            if (event.extendedProps.member_no.toString() === memberNo || participantNos.includes(parseInt(memberNo))) {
 	                shouldDisplay = true;  
 	            }
@@ -1464,8 +1482,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						}
 						// 참여자 일정 알림
 						if(schedule_type === 2) {
-							console.log("participantAlarm");
-							console.log(selectedMembers);
+							console.log("participantAlarm"); 
 			                alarmSocket.send(JSON.stringify({
 					           	type: 'noficationParticipantSchedule', 
 					           	memberNo: memberNo,
