@@ -988,11 +988,22 @@ $(function () {
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
     
+    // 삭제 버튼 클릭 시 자동으로 초기 지정 날짜로 설정
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = oneYearAgoStr;
+        }
+    });
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; 
+        }
+    });
     // 파일 검색 
-   $('#search_button').on('click', function(){
+    $('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
 		loadFiles(selectedFolderNo, searchInput);
-   });
+    });
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {

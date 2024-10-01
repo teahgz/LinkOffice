@@ -28,7 +28,7 @@ $(function () {
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const day = ('0' + date.getDate()).slice(-2);
         return `${year}-${month}-${day}`;
-    }
+    }   
     // 휴지통 파일 목록을 불러오기
     function loadFiles(searchInput = '') {
         $.ajax({
@@ -456,12 +456,24 @@ $(function () {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
-    
+
+    // 삭제 버튼 클릭 시 자동으로 초기 지정 날짜로 설정
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = oneYearAgoStr;
+        }
+    });
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; 
+        }
+    });
+        
     // 파일 검색 
-   $('#search_button').on('click', function(){
+    $('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
 		loadFiles(searchInput);
-   });
+    });
 
     // 페이지가 로드될 때 파일 목록을 불러옴
     $(document).ready(function() {
@@ -482,17 +494,5 @@ $(function () {
             startDateLimit();
             loadFiles();
         });
-    });
-
-    // 시작 날짜를 끝나는 날보다 나중 날짜로 설정 못하게 하는 함수 
-    function startDateLimit() {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-        // endDate가 startDate보다 이전일 때 startDate를 endDate와 같게 설정
-        if (endDate < startDate) {
-            startDateInput.value = formatDate(endDate);
-        }        
-        // startDate의 최대값을 endDate로 설정
-        startDateInput.max = formatDate(endDate);
-    }
+    });  
 });

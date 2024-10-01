@@ -37,7 +37,6 @@ $(function () {
         const day = ('0' + date.getDate()).slice(-2);
         return `${year}-${month}-${day}`;
     }
-
     // 폴더 리스트 받아오기
     function getFolders() {
 		return new Promise((resolve, reject) => {
@@ -1020,12 +1019,24 @@ $(function () {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
+    
+    // 삭제 버튼 클릭 시 자동으로 초기 지정 날짜로 설정
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = oneYearAgoStr;
+        }
+    });
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; 
+        }
+    });    
 
     // 파일 검색 
-   $('#search_button').on('click', function(){
+    $('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
 		loadFiles(selectedFolderNo, searchInput);
-   });
+    });
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
