@@ -238,3 +238,8 @@
 .modal_btn {
 	float: right;
 }
+
+.jstree-search { 
+    font-style: normal !important;
+    color: #0059ff !important; 
+}
