@@ -1,6 +1,8 @@
 package com.fiveLink.linkOffice.organization.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.organization.domain.Department;
 import com.fiveLink.linkOffice.organization.domain.Position;
 import com.fiveLink.linkOffice.organization.domain.PositionDto;
 import com.fiveLink.linkOffice.organization.repository.PositionRepository;
@@ -83,7 +84,7 @@ public class PositionService {
     }
 
     public boolean isPositionNameDuplicate(String positionName, Long excludedPositionId) { 
-        return positionRepository.existsByPositionNameAndPositionNoNot(positionName, excludedPositionId);
+        return positionRepository.existsByPositionNameAndPositionNoNotAndPositionStatus(positionName, excludedPositionId, 0L);
     }
     
     // 등록
@@ -190,5 +191,95 @@ public class PositionService {
         }
          
         return highPosition.map(Position::getPositionName).orElse("-");
+    }
+    
+    // 수정
+    @Transactional
+    public boolean updatePosition(PositionDto positionDto) {
+        Optional<Position> positionOpt = positionRepository.findById(positionDto.getPosition_no());
+        
+        if (positionOpt.isPresent()) {
+            Position position = positionOpt.get();
+            Long oldPositionHigh = position.getPositionHigh();
+            Long newPositionHigh = positionDto.getPosition_high();
+             
+            position.setPositionName(positionDto.getPosition_name());
+            position.setPositionHigh(newPositionHigh);
+            positionRepository.save(position);
+             
+            List<Position> formerSubordinates = positionRepository.findByPositionHigh(position.getPositionNo());
+            for (Position subordinate : formerSubordinates) {
+                subordinate.setPositionHigh(oldPositionHigh);
+                positionRepository.save(subordinate);
+            }
+             
+            List<Position> newSubordinates = positionRepository.findByPositionHigh(newPositionHigh);
+            for (Position subordinate : newSubordinates) {
+                if (!subordinate.getPositionNo().equals(position.getPositionNo())) {
+                    subordinate.setPositionHigh(position.getPositionNo());
+                    positionRepository.save(subordinate);
+                }
+            }
+             
+            updateAllPositionLevels();
+            
+            return true;
+        }
+        return false;
+    }
+
+    private void updateAllPositionLevels() {
+        List<Position> allPositions = positionRepository.findAll();
+        Map<Long, Integer> levelMap = new HashMap<>();
+ 
+        for (Position position : allPositions) {
+            if (position.getPositionHigh() == 0) {
+                setPositionLevelRecursively(position, 1, levelMap);
+            }
+        }
+    }
+
+    private void setPositionLevelRecursively(Position position, int level, Map<Long, Integer> levelMap) {
+        position.setPositionLevel((long) level);
+        levelMap.put(position.getPositionNo(), level);
+        positionRepository.save(position);
+
+        List<Position> subordinates = positionRepository.findByPositionHigh(position.getPositionNo());
+        for (Position subordinate : subordinates) {
+            setPositionLevelRecursively(subordinate, level + 1, levelMap);
+        }
+    }
+    
+    public List<PositionDto> getActivePositions() {
+        return positionRepository.findByPositionStatusOrderByPositionLevelAsc(0L)
+                .stream()
+                .map(this::updatemapToDto)
+                .collect(Collectors.toList());
+    }
+    
+    public Long findHighestActiveParent(Long positionHigh) {
+        if (positionHigh == null || positionHigh == 0) {
+            return 0L;
+        }
+        
+        Optional<Position> parentPosition = positionRepository.findById(positionHigh);
+        while (parentPosition.isPresent() && parentPosition.get().getPositionStatus() == 1) {
+            Long nextParentId = parentPosition.get().getPositionHigh();
+            if (nextParentId == null || nextParentId == 0) {
+                return 0L;
+            }
+            parentPosition = positionRepository.findById(nextParentId);
+        }
+        
+        return parentPosition.map(Position::getPositionNo).orElse(0L);
+    }
+    
+    private PositionDto updatemapToDto(Position position) {
+        return PositionDto.builder()
+                .position_no(position.getPositionNo())
+                .position_name(position.getPositionName())
+                .position_high(findHighestActiveParent(position.getPositionHigh()))
+                .position_level(position.getPositionLevel())
+                .build();
     }
 }

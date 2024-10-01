@@ -187,8 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             modalImagePreview.src = initialImageSrc;
             modalImagePreview.style.display = 'block';
-        }
-        console.log(initialImageSrc +"initialImageSrc");
+        } 
     });
 
 	// 수정 모달 닫기

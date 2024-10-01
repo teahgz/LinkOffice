@@ -479,8 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}  
 
 	// 예외 상세 모달
-	function showExceptionEventModal(event) {
-		console.log(event);
+	function showExceptionEventModal(event) { 
 	    const modal = document.getElementById('eventViewModal');
 	    const title = document.getElementById('eventViewTitle');
 	    const dateRange = document.getElementById('eventViewDateRange');
@@ -933,9 +932,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        url: '/schedule/edit/' + eventNo,
 	        type: 'GET',
 	        dataType: 'json',
-	        success: function(data) {
-				console.log("scheduleDto : ", data.schedule);  
-        		console.log("scheduleRepeat : ", data.scheduleRepeat);
+	        success: function(data) { 
 				
 	            $('#eventId').val(data.schedule.schedule_no);  
 	            const repeatValue = data.schedule.schedule_repeat;
@@ -965,10 +962,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		            document.getElementById('repeatOption').dispatchEvent(new Event('change'));
 	                $('#repeatEndDate').val(data.scheduleRepeat.schedule_repeat_end_date);
 	            } 		             
-		        },
-	        error: function(xhr, status, error) {
-	            console.log("일정 정보를 불러오는 중 오류 발생: " + error);
-	        }
+	        } 
 	    });
 	} 
 	
@@ -1041,9 +1035,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// 반복 일정 수정  
 	function handleRecurringEventUpdate(eventId, repeatEditOption) {
-	    const eventData = getEventFormData();   
-	    
-	    console.log("eventData : ", eventData); 
+	    const eventData = getEventFormData();    
 	    
 	    $.ajax({
 	        type: "POST",
@@ -1078,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const eventData = getEventFormData();
     	const isException = $('#isRecurring').val() === '1';
 		const url = isException ? '/company/schedule/exception/edit/' : '/company/schedule/edit/';
-	    console.log(document.getElementById('eventId').value);
+	    
 	    $.ajax({
 	        type: "POST",
 	        url: url + document.getElementById('eventId').value,

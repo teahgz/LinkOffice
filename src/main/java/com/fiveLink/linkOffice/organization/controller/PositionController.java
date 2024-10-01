@@ -39,10 +39,12 @@ public class PositionController {
         List<PositionDto> topLevelPositions = positionService.getAllPositionsForSelect();
         Long memberNo = memberService.getLoggedInMemberNo();
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
-
+        List<PositionDto> activePositions = positionService.getActivePositions();
+        
         model.addAttribute("memberdto", memberDto);
         model.addAttribute("positions", positions);
         model.addAttribute("topLevelPositions", topLevelPositions);
+        model.addAttribute("topLevelPositionsUpdate", activePositions);
 
         if (id != null) {
             positionService.getPositionById(id).ifPresent(position -> {
@@ -90,8 +92,12 @@ public class PositionController {
         try {
             Optional<PositionDto> positionDtoOptional = positionService.getPositionById(id);
             if (positionDtoOptional.isPresent()) {
+                PositionDto positionDto = positionDtoOptional.get();
+                Long highestActiveParent = positionService.findHighestActiveParent(positionDto.getPosition_high());
+                positionDto.setPosition_high(highestActiveParent);
+                
                 resultMap.put("res_code", "200");
-                resultMap.put("position", positionDtoOptional.get());
+                resultMap.put("position", positionDto);
             } else {
                 resultMap.put("res_code", "404");
                 resultMap.put("res_msg", "직위를 찾을 수 없습니다.");
@@ -122,6 +128,51 @@ public class PositionController {
             resultMap.put("res_code", "404");
             resultMap.put("res_msg", "직위에 소속 사원이 존재하여 삭제가 불가능합니다.");
         }
+        return resultMap;
+    } 
+    
+    // 수정
+    @PostMapping("/position/update")
+    @ResponseBody
+    public Map<String, String> updatePosition(@RequestBody Map<String, Object> payload) {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("res_code", "404");
+        resultMap.put("res_msg", "직위 수정 중 오류가 발생했습니다.");
+         
+        
+        try {
+            Long positionNo = Long.valueOf(payload.get("positionId").toString());  
+            String positionName = (String) payload.get("positionName");
+            Long positionHigh = null;
+            
+            if (positionService.isPositionNameDuplicate(positionName, positionNo)) {
+                resultMap.put("res_msg", "중복된 직위명이 존재합니다.");
+                return resultMap;
+            }
+            
+            if (payload.get("positionHigh") != null) {
+                positionHigh = Long.valueOf(payload.get("positionHigh").toString());
+            }
+ 
+            PositionDto positionDto = PositionDto.builder()
+                    .position_no(positionNo)
+                    .position_name(positionName)
+                    .position_high(positionHigh)
+                    .build();
+            
+            System.out.println(positionDto);
+            boolean success = positionService.updatePosition(positionDto);
+
+            if (success) {
+                resultMap.put("res_code", "200");
+                resultMap.put("res_msg", "직위 정보가 수정되었습니다.");
+            } else {
+                resultMap.put("res_msg", "직위 정보를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            resultMap.put("res_msg", "오류: " + e.getMessage());
+        }
+
         return resultMap;
     } 
 }

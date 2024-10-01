@@ -81,8 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(data) {
-				console.log(data.participants);
+	        success: function(data) { 
 	            exceptionParMemberNos = data.participants.map(participant => participant.member_no); 
 	            exceptionParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName); 
 	            callback(exceptionParMemberNos, exceptionParMemberNames); 
@@ -102,8 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        headers: {
 	            'X-CSRF-TOKEN': csrfToken
 	        },
-	        success: function(data) {
-	            console.log(data.participants); 
+	        success: function(data) { 
 	            if (data.participants) {
 	                meetingParMemberNos = data.participants.map(participant => participant.member_no);
 	                meetingParMemberNames = data.participants.map(participant => participant.memberName + ' ' + participant.positionName);

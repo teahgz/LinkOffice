@@ -15,7 +15,9 @@
 	                    <ul class="department_ul">
 	                        <th:block th:each="department : ${departments}">
 	                            <li class="department_li">
-	                                <a class="list_pardep" th:href="@{/department(id=${department.department_no})}" th:text="${department.department_name}"></a>
+	                            	<div class="pardep_div">
+		                                <a class="list_pardep" th:href="@{/department(id=${department.department_no})}" th:text="${department.department_name}"></a>	                            	
+	                            	</div>
 	                                <ul class="department_ul" th:if="${department.subDepartments}">
 	                                    <th:block th:each="sub : ${department.subDepartments}">
 	                                        <li class="department_li">
@@ -31,7 +33,15 @@
 					    <div class="details-header">
                             <h3>부서 정보</h3>
                         </div>
-					    <p><span class="department_info">부서명</span> <span class="info_content1" th:text="${department.department_name}"></span></p>
+					    <p>
+					    	<span class="department_info">부서명</span> <span class="info_content1" th:text="${department.department_name}"></span>
+					    	<th:block th:if="${#lists.size(department.subDepartments) == 0}">
+					    		(<span th:text="${department.memberCount ?: 0}"></span>명)
+					    	</th:block>
+					    	<th:block th:if="${#lists.size(department.subDepartments) > 0}">
+					    		(<span th:text="${department.subMemberCount ?: 0}"></span>명)
+					    	</th:block>
+					    </p>
 					    <p><span class="department_info">상위 부서명</span> <span class="info_content2" th:text="${department.department_high_name}"></span></p>
 					    <div class="sub-departments" th:if="${department.subDepartments}">
 						    <span class="department_info">하위 부서</span>
@@ -40,6 +50,7 @@
 						            <th:block th:each="sub : ${department.subDepartments}">
 						                <li class="department_li info_content_tag">
 						                    <a th:href="@{/department(id=${sub.department_no})}" th:text="${sub.department_name}"></a>
+						                    (<span th:text="${sub.memberCount ?: 0}"></span>명)  
 						                </li>
 						            </th:block>
 						        </th:block>  
@@ -47,16 +58,7 @@
 						            <li>-</li>
 						        </th:block>
 						    </ul>
-						</div> 
-
-					    <!-- <div class="members" th:if="${department.members}">
-					        <h3>소속 직원</h3>
-					        <ul>
-					            <th:block th:each="member : ${department.members}">
-					                <li th:text="${member.memberName}"></li>
-					            </th:block>
-					        </ul>
-					    </div> -->
+						</div>  
 					    <div class="info_btn">
 					    	<button id="editButton" th:data-department-id="${department.department_no}">수정</button>
 					    	<button id="deleteButton" th:data-department-id="${department.department_no}">삭제</button>  
