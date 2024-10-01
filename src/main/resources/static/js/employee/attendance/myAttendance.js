@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '근태 조회';
     // work_date와 근태를 담을 배열
     var attendanceDates = [];
     
@@ -132,7 +134,7 @@ function attendanceCalendar(today, attendanceDates, holidays) {
     var todayDate = new Date();
 
     // 기존 행 삭제
-    while (calendarTable.rows.length > 2) {
+    while (calendarTable.rows.length > 1) {
         calendarTable.deleteRow(calendarTable.rows.length - 1);
     }
 
