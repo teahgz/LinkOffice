@@ -217,7 +217,11 @@ if (sendButton && messageInput) {
                 }
             });
         }
-
+    // 모달이 닫힐 때 검색 내용을 리셋
+    $('#organizationChartModal').on('hide.bs.modal', function () {
+        $('#organization_search').val(''); // 검색 입력 필드 비우기
+        $('#organization-chart').jstree(true).search(''); // jstree 검색 리셋
+    });
     // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
         const selectedMembersContainer = $('#selected-members');
@@ -1255,6 +1259,11 @@ function formatDateTime(date) {
             }
         });
     }
+    // 모달이 닫힐 때 검색 내용을 리셋
+    $('#organizationAddModal').on('hide.bs.modal', function () {
+        $('#organization_add_search').val(''); // 검색 입력 필드 비우기
+        $('#organization-chart-add').jstree(true).search(''); // jstree 검색 리셋
+    });
 //function loadOrganizationAddChart() {
 //            $.ajax({
 //                url: '/chat/chart',
