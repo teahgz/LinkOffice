@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headerToolbar: {
                 left: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth,prevYear, prev',
 			    center: 'title',
-			    right: 'next, nextYear, today, customYearPicker, customMonthPicker'
+			    right: 'next, nextYear, today, customYearPicker, customMonthPicker, customDayPicker'
             }, 
 		    customButtons: {
 		      customYearPicker: {
@@ -219,6 +219,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		        text: '월',
 		        click: function(e) {
 		          togglePicker('monthPicker', e.currentTarget);
+		        }
+		      },
+		      customDayPicker: {  
+		        text: '일',
+		        click: function(e) {
+		          togglePicker('dayPicker', e.currentTarget); 
 		        }
 		      }
 		    },
@@ -279,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 day: '일간',
                 listMonth : '목록'
             },
+            allDayText: '종일',
             dayCellContent: function(info) {
                 var number = document.createElement("a");
                 number.classList.add("fc-daygrid-day-number");
@@ -332,56 +339,98 @@ document.addEventListener('DOMContentLoaded', function() {
    }
 	
    function togglePicker(pickerId, button) {
-	    const picker = document.getElementById(pickerId);
-	    const otherPickerId = pickerId === 'yearPicker' ? 'monthPicker' : 'yearPicker';
-	    const otherPicker = document.getElementById(otherPickerId);
-	    
-	    if (picker.style.display === 'none') {
-	      const rect = button.getBoundingClientRect();
-	      picker.style.display = 'block';
-	      picker.style.top = `${rect.bottom}px`;
-	      picker.style.left = `${rect.left}px`;
-	      picker.focus(); 
-	      otherPicker.style.display = 'none'; 
-	    } else {
-	      picker.style.display = 'none';
-	    }
-   }
-	
-  const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from({length: 11}, (_, i) => ({
-    value: currentYear - 5 + i,
-    text: `${currentYear - 5 + i}년`
-  }));
-	
-  const monthOptions = Array.from({length: 12}, (_, i) => ({
-    value: i,
-    text: `${i + 1}월`
-  }));
-	
-  const yearPicker = createPicker('yearPicker', yearOptions);
-  const monthPicker = createPicker('monthPicker', monthOptions);
+        const picker = document.getElementById(pickerId);
+        const otherPickers = ['yearPicker', 'monthPicker', 'dayPicker'].filter(id => id !== pickerId);
+        
+        otherPickers.forEach(id => {
+            const otherPickerElement = document.getElementById(id);
+            if (otherPickerElement) {
+                otherPickerElement.style.display = 'none';
+            }
+        });
 
-  yearPicker.onchange = function() {
-    const selectedYear = parseInt(this.value);
-    const currentDate = calendar.getDate();
-    calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
-    this.style.display = 'none';
-  };
-
-  monthPicker.onchange = function() {
-    const selectedMonth = parseInt(this.value);
-    const currentDate = calendar.getDate();
-    calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
-    this.style.display = 'none';
-  };
- 
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.fc-customYearPicker-button') && !e.target.closest('.fc-customMonthPicker-button') && !e.target.closest('.custom-picker')) {
-      yearPicker.style.display = 'none';
-      monthPicker.style.display = 'none';
+        if (picker) {
+            if (picker.style.display === 'none' || picker.style.display === '') {
+                const rect = button.getBoundingClientRect();
+                picker.style.display = 'block';
+                picker.style.top = `${rect.bottom}px`;
+                picker.style.left = `${rect.left}px`;
+                picker.focus();
+            } else {
+                picker.style.display = 'none';
+            }
+        }
     }
-  });
+	
+   const currentYear = new Date().getFullYear();
+   const yearOptions = Array.from({length: 11}, (_, i) => ({
+     value: currentYear - 5 + i,
+     text: `${currentYear - 5 + i}년`
+   }));
+	
+   const monthOptions = Array.from({length: 12}, (_, i) => ({
+     value: i,
+     text: `${i + 1}월`
+   })); 
+	
+   const yearPicker = createPicker('yearPicker', yearOptions);
+   const monthPicker = createPicker('monthPicker', monthOptions); 
+
+   yearPicker.onchange = function() {
+     const selectedYear = parseInt(this.value);
+     const currentDate = calendar.getDate();
+     calendar.gotoDate(new Date(selectedYear, currentDate.getMonth(), 1));
+     this.style.display = 'none';
+   };
+
+   monthPicker.onchange = function() {
+        const selectedMonth = parseInt(this.value);
+        const currentDate = calendar.getDate();
+        calendar.gotoDate(new Date(currentDate.getFullYear(), selectedMonth, 1));
+        updateDayPicker(currentDate.getFullYear(), selectedMonth);  
+        this.style.display = 'none';
+    }; 
+  
+   const dayPicker = createPicker('dayPicker', []);
+    updateDayPicker(currentYear, new Date().getMonth());  
+
+    dayPicker.onchange = function() {
+        const selectedDay = parseInt(this.value);
+        const currentDate = calendar.getDate();
+        calendar.gotoDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), selectedDay));
+        this.style.display = 'none';
+    }; 
+    
+    function updateDayPicker(year, month) {
+        const lastDay = new Date(year, month + 1, 0).getDate(); 
+        const dayOptions = Array.from({ length: lastDay }, (_, i) => ({
+            value: i + 1,
+            text: `${i + 1}일`
+        }));
+
+        dayPicker.innerHTML = '';  
+        dayOptions.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.text;
+            dayPicker.appendChild(opt);
+        });
+ 
+        dayPicker.value = lastDay;
+    }
+    
+   document.addEventListener('click', function (e) {
+     if (!e.target.closest('.fc-customYearPicker-button') &&
+       !e.target.closest('.fc-customMonthPicker-button') &&
+       !e.target.closest('.fc-customDayPicker-button') &&
+       !e.target.closest('.custom-picker')) {
+       yearPicker.style.display = 'none';
+       monthPicker.style.display = 'none';
+       if (dayPicker) {
+         dayPicker.style.display = 'none';
+       }
+     }
+   });
 
     function showEventModalById(calendar, eventId) {
 	    const event = calendar.getEventById(eventId);   
@@ -430,8 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}  
 
 	// 예외 상세 모달
-	function showExceptionEventModal(event) {
-		console.log(event);
+	function showExceptionEventModal(event) { 
 	    const modal = document.getElementById('eventViewModal');
 	    const title = document.getElementById('eventViewTitle');
 	    const dateRange = document.getElementById('eventViewDateRange');
@@ -884,9 +932,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        url: '/schedule/edit/' + eventNo,
 	        type: 'GET',
 	        dataType: 'json',
-	        success: function(data) {
-				console.log("scheduleDto : ", data.schedule);  
-        		console.log("scheduleRepeat : ", data.scheduleRepeat);
+	        success: function(data) { 
 				
 	            $('#eventId').val(data.schedule.schedule_no);  
 	            const repeatValue = data.schedule.schedule_repeat;
@@ -916,10 +962,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		            document.getElementById('repeatOption').dispatchEvent(new Event('change'));
 	                $('#repeatEndDate').val(data.scheduleRepeat.schedule_repeat_end_date);
 	            } 		             
-		        },
-	        error: function(xhr, status, error) {
-	            console.log("일정 정보를 불러오는 중 오류 발생: " + error);
-	        }
+	        } 
 	    });
 	} 
 	
@@ -992,9 +1035,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// 반복 일정 수정  
 	function handleRecurringEventUpdate(eventId, repeatEditOption) {
-	    const eventData = getEventFormData();   
-	    
-	    console.log("eventData : ", eventData); 
+	    const eventData = getEventFormData();    
 	    
 	    $.ajax({
 	        type: "POST",
@@ -1029,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const eventData = getEventFormData();
     	const isException = $('#isRecurring').val() === '1';
 		const url = isException ? '/company/schedule/exception/edit/' : '/company/schedule/edit/';
-	    console.log(document.getElementById('eventId').value);
+	    
 	    $.ajax({
 	        type: "POST",
 	        url: url + document.getElementById('eventId').value,
@@ -1282,21 +1323,36 @@ document.addEventListener('DOMContentLoaded', function() {
 	        const categoryMatch = event.extendedProps.categoryName &&
 	            event.extendedProps.categoryName.toLowerCase().includes(searchTerm);
 	
-	        const eventStartDate = new Date(event.start);
-	        let eventEndDate;
+	        const startDateValue = document.getElementById('searchstartDate').value;
+			const endDateValue = document.getElementById('searchendDate').value;
+			const startDate = startDateValue ? new Date(startDateValue) : null;
+			const endDate = endDateValue ? new Date(endDateValue) : null;
+			
+			if (startDate) {
+			    startDate.setHours(0, 0, 0, 0);  
+			}
+			if (endDate) {
+			    endDate.setHours(23, 59, 59, 999); 
+			}
+			
+			let eventStartDate;
+			let eventEndDate;
+			
+			if (event.allDay === true) {
+			    eventStartDate = new Date(event.start);
+			    eventEndDate = new Date(event.end);
+			    eventEndDate.setDate(eventEndDate.getDate() - 1); 
+			} else {
+			    eventStartDate = new Date(event.start);
+			    eventEndDate = eventStartDate;
+			 
+			    eventStartDate.setHours(0, 0, 0, 0);
+			    eventEndDate.setHours(0, 0, 0, 0);
+			}
 	
-	        if (event.allDay === true) {
-	            eventEndDate = new Date(event.start);
-	            eventEndDate.setDate(eventEndDate.getDate() - 1);
-	        } else {
-	            eventEndDate = new Date(event.end || event.start);
-	        }
-	
-	        const withinDateRange =
-	            (!startDate || eventStartDate >= startDate) &&
-	            (!endDate || eventEndDate <= endDate) ||
-	            (eventStartDate >= startDate && eventStartDate <= endDate) ||
-	            (eventEndDate >= startDate && eventEndDate <= endDate);
+			const withinDateRange =
+			    (!startDate || eventEndDate >= startDate) &&  
+			    (!endDate || eventStartDate <= endDate);  
 	
 	        switch (searchCategory) {
 	            case 'all':

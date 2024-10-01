@@ -17,7 +17,6 @@
 			    <td class="vacation_end" th:text="${vacationApproval.vacation_approval_end_date}"></td>
 			</tr>
         </table>
-            <h1>근태 조회</h1>
             <div class="attendance_div">
                 <div class="attendance_left">
                     <div class="attendance_status">
@@ -70,38 +69,34 @@
                 			<option>결근</option>
                 			<option>휴가</option>
                 		</select>
-                		<input type="date" id="start_date">
-                		<span id="wave">~</span>
-                		<input type="date" id="end_date">
+                		<div class="date_div">
+	                		<input type="date" id="start_date">
+	                		<span id="wave">~</span>
+	                		<input type="date" id="end_date">
+                		</div>
                 		<select id="sort_select">
                 			<option>최신순</option>
                 			<option>과거순</option>
-                		</select>
+                		</select>               		
                 	</div>				                	
 	                <div class="attendance_list">
 	                    <table class="attendance_table">
 	                        <thead class="table_head">
 	                            <tr>
-	                                <th>날짜</th>
-	                                <th>출근 시간</th>
-	                                <th>퇴근 시간</th>
-	                                <th>근태</th>
+	                                <th style="width: 25%">날짜</th>
+	                                <th style="width: 25%">출근 시간</th>
+	                                <th style="width: 25%">퇴근 시간</th>
+	                                <th style="width: 25%">근태</th>
 	                            </tr>
 	                        </thead>
 	                        <tbody id="attendance_table_body">
 	                            <!-- 리스트는 AJAX로 불러옴 -->
 	                        </tbody>
-	                        <tfoot id="table_foot">
-	                            <tr>
-	                                <td colspan="4">
-	                                    <div class="pagination" id="pagination">
-	                                        <!-- 페이지 버튼 ajax -->
-	                                    </div>
-	                                </td>
-	                            </tr>
-	                        </tfoot>
 	                    </table>
 	                </div>
+                    <div class="pagination" id="pagination">
+                        <!-- 페이지 버튼 ajax -->
+                    </div>	                    
 	            </div>
             </div>
         </section>

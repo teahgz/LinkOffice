@@ -1,6 +1,5 @@
 package com.fiveLink.linkOffice.document.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -137,10 +136,11 @@ public class DocumentApiController {
       int result = documentFolderService.personalCreateFolder(newDocumentFolder);
 
       if (result > 0) {
-    	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
+    	  List<DocumentFolder> folderList = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+    	  DocumentFolder createdFolder = folderList.get(folderList.size() - 1);
     	  resultMap.put("res_code", "200");
     	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
-    	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
+    	  resultMap.put("folderNo" ,createdFolder.getDocumentFolderNo());
       } 
       return resultMap;
    }
@@ -226,10 +226,11 @@ public class DocumentApiController {
       int result = documentFolderService.departmentCreateFolder(newDocumentFolder);
 
       if (result > 0) {
-    	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
+    	  List<DocumentFolder> folderList = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+    	  DocumentFolder createdFolder = folderList.get(folderList.size() - 1);
     	  resultMap.put("res_code", "200");
     	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
-    	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
+    	  resultMap.put("folderNo" ,createdFolder.getDocumentFolderNo());
       } 
       return resultMap;
    }
@@ -295,7 +296,7 @@ public class DocumentApiController {
 	  Long folderNo = Long.valueOf(folderNoStr);
       Long docBoxType = 2L;
       Long folderStatus = 0L;
-      
+
       Member member = memberRepository.findByMemberNo(memberNo);
       Department department = departmentRepository.findByDepartmentNo(deptNo);
       DocumentFolder documentFolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
@@ -313,12 +314,12 @@ public class DocumentApiController {
             .build();
 
       int result = documentFolderService.companyCreateFolder(newDocumentFolder);
-
       if (result > 0) {
-    	  DocumentFolder createdFolder = documentFolderRepository.findByDocumentFolderNameAndDocumentFolderParentNo(folderName, folderNo);
+    	  List<DocumentFolder> folderList = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+    	  DocumentFolder createdFolder = folderList.get(folderList.size() - 1);
     	  resultMap.put("res_code", "200");
     	  resultMap.put("res_msg", "폴더가 생성되었습니다.");
-    	  resultMap.put("folderNo" , createdFolder.getDocumentFolderNo());
+    	  resultMap.put("folderNo" ,createdFolder.getDocumentFolderNo());
       } 
       return resultMap;
    }
@@ -598,7 +599,7 @@ public class DocumentApiController {
        List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
        // 최상위 폴더 
        DocumentFolder parentFolder 
-       		= documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
+       		= documentFolderRepository.findByDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(docBoxType, docParentNo, folderStatus);
        // 자식 폴더 
        List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
        
@@ -641,7 +642,6 @@ public class DocumentApiController {
     	   resultMap.put("res_msg", "삭제되었습니다.");
     	   resultMap.put("parentNo", parentFolderNo);
        }
-       
        return resultMap;       
    }   
    

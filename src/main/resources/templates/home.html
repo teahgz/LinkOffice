@@ -23,46 +23,7 @@
 					</div>
 				</div>
 			</div> 
-			<div class="main_item_box custom-height-4">
-	            <a class="main_link" th:href="@{/휴가 링크}">
-		            <span class="main_box_title">
-	            		휴가 현황
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-            	<h3>휴가 현황</h3>
-            </div>
-            <div class="main_item_box custom-height-8">
-	           	<a class="main_link" th:href="@{/employee/member/list}"> 
-	            	<h3>주소록</h3>
-	            	
-	            </a>
-           </div>  
-            <div class="main_item_box custom-height-11"> 
-	     		<h3>날씨</h3>
-	     		<div class="weather_div">
-	     			<div class="weather_left_div">
-	     				<img id="weather_icon"/>
-	    				    <div class="weather_location">
-	    						<img th:src="@{/img/map_location.png}" alt="map_location_icon" id="map_location_icon"/>
-	    						<div id="weather_location_text">금천구 가산동</div>
-	    					</div>
-	     			</div>
-	     			
-	     			<div class="weather_right_div">
-	     				<div class="weather_temp">
-	     					<div id="weather_now_temp"></div>
-	     				</div>           
-	     				<div id="weather_temp_min"></div>
-	     				<div id="weather_temp_max"></div>
-	     				<div id="weather_pop"></div>
-	     				<div id="weather_humidity"></div>
-	     			</div>
-	     		</div>
-	         </div>
-        </div>
-        <div class="middle-column">
-            <div class="main_item_box custom-height-3">
+			<div class="main_item_box custom-height-3">
             	<a class="main_link" th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">
 	            	<span class="main_box_title">
 	            		근태 조회
@@ -86,7 +47,39 @@
                 	</div> 	
 	            </div>
             </div>
-            
+			<div class="main_item_box custom-height-4">
+	            <a class="main_link" th:href="@{/휴가 링크}">
+		            <span class="main_box_title">
+	            		휴가 현황
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>휴가 현황</h3>
+            </div> 
+            <div class="main_item_box custom-height-11"> 
+	     		<h3>날씨</h3>
+	     		<div class="weather_div">
+	     			<div class="weather_left_div">
+	     				<img id="weather_icon"/>
+	    				    <div class="weather_location">
+	    						<img th:src="@{/img/map_location.png}" alt="map_location_icon" id="map_location_icon"/>
+	    						<div id="weather_location_text">금천구 가산동</div>
+	    					</div>
+	     			</div>
+	     			
+	     			<div class="weather_right_div">
+	     				<div class="weather_temp">
+	     					<div id="weather_now_temp"></div>
+	     				</div>           
+	     				<div id="weather_temp_min"></div>
+	     				<div id="weather_temp_max"></div>
+	     				<div id="weather_pop"></div>
+	     				<div id="weather_humidity"></div>
+	     			</div>
+	     		</div>
+	         </div>
+        </div>
+        <div class="middle-column"> 
             <div class="main_item_box custom-height-5">
             	<a class="main_link" th:href="@{/공지사항 링크}">
 	        		<span class="main_box_title">

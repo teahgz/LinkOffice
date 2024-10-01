@@ -468,9 +468,10 @@ textarea {
 }
 
 .fc-customYearPicker-button:after,
-.fc-customMonthPicker-button:after {
+.fc-customMonthPicker-button:after,
+.fc-customDayPicker-button:after {
   content: '\25BC';
-  font-size: 0.7em;
+  font-size: 0.5em;
   margin-left: 7px;
 }
 

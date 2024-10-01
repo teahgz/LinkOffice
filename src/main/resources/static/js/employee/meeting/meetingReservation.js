@@ -296,8 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	                    time < r.meeting_reservation_end_time
 	                );
 	
-	                if (reservation) { 
-						console.log(reservation);
+	                if (reservation) {  
 	                    const startTimeIndex = timeSlots.indexOf(reservation.meeting_reservation_start_time);
 	                    const endTimeIndex = timeSlots.indexOf(reservation.meeting_reservation_end_time);
 	                    const colspan = endTimeIndex - startTimeIndex + 1; 
@@ -579,8 +578,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $.ajax({
             url: '/meeting/chart',
             method: 'GET',
-            success: function(data) {
-                console.log('조직도 데이터:', data);
+            success: function(data) { 
                 $('#organization-chart').jstree({ 
                     'core': {
                         'data': data,
