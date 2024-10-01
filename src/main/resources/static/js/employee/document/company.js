@@ -232,7 +232,7 @@ $(function () {
                         	<td><input type="checkbox" class="file_checkbox" id="${file.member_no}"></td>
                             <td>${file.document_ori_file_name}</td>
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + ' ' + file.position_name + "(" + file.department_name + ")")}</td>
-                            <td>${formatDate(file.document_file_upload_date)}</td>
+                            <td>${formatDate(file.document_file_update_date)}</td>
 	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
 	                            `<a href="/document/file/view/${file.document_file_no}" target="_blank">
 	                            <svg class="file_show_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
