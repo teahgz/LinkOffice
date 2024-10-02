@@ -36,16 +36,16 @@ function fetchSessionTime() {
         });
 }
 
-document.getElementById('userImage').addEventListener('click', function(event) {
-    var dropdownMenu = document.getElementById('dropdownMenu');
-    var notificationModal = document.getElementById('notification-bell-modal');
+ function toggleDropdown(event) {
+        var dropdownMenu = document.getElementById('dropdownMenu');
+        var notificationModal = document.getElementById('notification-bell-modal');
 
-    if (notificationModal.classList.contains('show')) {
-        notificationModal.classList.remove('show');
+        if (notificationModal.classList.contains('show')) {
+            notificationModal.classList.remove('show');
+        }
+        dropdownMenu.classList.toggle('show');
+        event.stopPropagation();
     }
-    dropdownMenu.classList.toggle('show');
-    event.stopPropagation();
-});
 
 document.getElementById('notification-bell').addEventListener('click', function(event) {
     var notificationModal = document.getElementById('notification-bell-modal');
