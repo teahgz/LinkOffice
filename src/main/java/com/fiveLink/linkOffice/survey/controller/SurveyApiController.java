@@ -139,43 +139,51 @@ public class SurveyApiController {
 	@PostMapping("/employee/survey/questionDetail")
 	@ResponseBody
 	public Map<String, String> submitSurvey(HttpServletRequest request,
-			@ModelAttribute SurveyAnswerOptionDto surveyAnswerOptionDto, @ModelAttribute SurveyTextDto surveyTextDto) {
+	        @ModelAttribute SurveyAnswerOptionDto surveyAnswerOptionDto, @ModelAttribute SurveyTextDto surveyTextDto) {
 
-		Map<String, String> resultMap = new HashMap<>();
-		try {
-			Long memberNo = memberService.getLoggedInMemberNo();
-			LOGGER.info("Logged in memberNo: {}", memberNo);
+	    Map<String, String> resultMap = new HashMap<>();
+	    try {
+	        Long memberNo = memberService.getLoggedInMemberNo();
+	        LOGGER.info("Logged in memberNo: {}", memberNo);
 
-			// 참가자 정보 설정
-			surveyAnswerOptionDto.setSurvey_participant_no(memberNo);
-			surveyTextDto.setSurvey_participant_no(memberNo);
+	        // 참가자 정보 설정
+	        surveyAnswerOptionDto.setSurvey_participant_no(memberNo);
+	        surveyTextDto.setSurvey_participant_no(memberNo);
 
-			// 객관식 응답 처리
-			String[] optionNos = request.getParameterValues("survey_option_no");
-			String[] questionNos = request.getParameterValues("survey_question_no");
+	        // 객관식 응답 처리
+	        String[] optionNos = request.getParameterValues("survey_option_no");
+	        String[] questionNos = request.getParameterValues("survey_question_no");
 
-			if (optionNos != null && questionNos != null) {
+	        if (optionNos != null && questionNos != null) {
 				for (int i = 0; i < optionNos.length; i++) {
 					surveyAnswerOptionDto.setSurvey_option_no(Long.parseLong(optionNos[i]));
 					surveyService.saveSurveyAnswerOption(surveyAnswerOptionDto);
 				}
 			}
 
-			// 주관식 응답 처리 (객관식 응답 저장 후 한 번만 처리)
-			if (surveyTextDto.getSurvey_text_answer() != null) {
-				surveyService.saveSurveyTextAnswer(surveyTextDto);
-			}
+	        // 주관식 응답 처리 - 배열로 여러 응답을 수집하여 각각 저장
+	        String[] textAnswers = request.getParameterValues("survey_text_answer");
+	        String[] textQuestionNos = request.getParameterValues("survey_question_no"); // 주관식 질문 번호 수집
 
-			resultMap.put("res_code", "200");
-			resultMap.put("res_msg", "설문 응답이 성공적으로 저장되었습니다.");
-		} catch (Exception e) {
-			LOGGER.error("Error during survey submission: {}", e.getMessage());
-			resultMap.put("res_code", "500");
-			resultMap.put("res_msg", "설문 응답 처리 중 오류가 발생했습니다: " + e.getMessage());
-		}
+	        if (textAnswers != null && textQuestionNos != null) {
+	            for (int i = 0; i < textAnswers.length; i++) {
+	                surveyTextDto.setSurvey_text_answer(textAnswers[i]);
+	                surveyTextDto.setSurvey_question_no(Long.parseLong(textQuestionNos[i]));
+	                surveyService.saveSurveyTextAnswer(surveyTextDto);
+	            }
+	        }
 
-		return resultMap;
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "설문 응답이 성공적으로 저장되었습니다.");
+	    } catch (Exception e) {
+	        LOGGER.error("Error during survey submission: {}", e.getMessage());
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "설문 응답 처리 중 오류가 발생했습니다: " + e.getMessage());
+	    }
+
+	    return resultMap;
 	}
+
 	
 	
 

@@ -255,18 +255,24 @@ public class SurveyService {
             .orElseThrow(() -> new IllegalArgumentException("해당 참여자를 찾을 수 없습니다."));
 
         LOGGER.info("SurveyTextDto: {}", surveyTextDto);
-        SurveyText surveyText = SurveyText.builder()
-            .surveyParticipant(participant)
-            .surveyQuestion(surveyQuestion)
-            .surveyTextAnswer(surveyTextDto.getSurvey_text_answer())
-            .build();
-        surveyTextRepository.save(surveyText);
+
+        // 주관식 답변이 여러 개라면 반복문으로 처리, 단일 값이라면 바로 저장
+        if (surveyTextDto.getSurvey_text_answer() != null) {
+            String textAnswer = surveyTextDto.getSurvey_text_answer();  // 단일 주관식 답변 처리
+            SurveyText surveyText = SurveyText.builder()
+                .surveyParticipant(participant)
+                .surveyQuestion(surveyQuestion)
+                .surveyTextAnswer(textAnswer)
+                .build();
+            surveyTextRepository.save(surveyText);
+        }
 
         if (participant.getSurveyParticipantStatus() == 0) {
             participant.setSurveyParticipantStatus(1);
             surveyParticipantRepository.save(participant);
         }
     }
+
     
     @Transactional
     public void updateSurveyAnswerOption(SurveyAnswerOptionDto surveyAnswerOptionDto) {
@@ -549,19 +555,14 @@ public class SurveyService {
         return participationRates;
     }
     
+ // 주관식 답변과 참여자 정보(이름, 직위) 가져오기
     public Map<Long, List<Object[]>> getTextAnswersBySurvey(Long surveyNo) {
-       
-
         List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
         Map<Long, List<Object[]>> textAnswers = new HashMap<>();
 
         for (SurveyQuestion question : questions) {
-            if (question.getSurveyQuestionType() == 1) {
-                
+            if (question.getSurveyQuestionType() == 1) { 
                 List<Object[]> answersWithParticipants = surveyTextRepository.findTextAnswersWithParticipant(question.getSurveyQuestionNo());
-
-               
-
                 textAnswers.put(question.getSurveyQuestionNo(), answersWithParticipants);
             }
         }
