@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <section>
-    <h1>비품 등록</h1>
     <div class="create_inventory">
     <form id="inventoryForm">
     <!-- CSRF 토큰 추가 -->
@@ -108,6 +107,8 @@
 </section>
 
 <script>
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '비품관리&emsp;&gt;&emsp;비품등록';
 document.getElementById("inventoryForm").addEventListener("submit", function(event) {
     event.preventDefault();  
 

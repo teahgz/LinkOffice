@@ -351,7 +351,7 @@ public class SurveyService {
         return surveys.stream()
             .filter(objects -> {
                 Survey survey = (Survey) objects[0];
-                return seenSurveyNos.add(survey.getSurveyNo());  // 중복된 설문 번호는 제외
+                return seenSurveyNos.add(survey.getSurveyNo()); 
             })
             .map(objects -> {
                 Survey survey = (Survey) objects[0];

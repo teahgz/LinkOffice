@@ -14,7 +14,6 @@
 
 <th:block layout:fragment="content">
     <section>
-        <h1>설문 수정</h1><br>
         <input type="hidden" id="surveyNo" th:value="${dto.survey_no}">
 
         <form id="surveyForm" th:action="@{/employee/qupdate/{survey_no}(survey_no=${dto.survey_no})}" method="post">
@@ -107,8 +106,11 @@
         </div>
     </div>
 
-    <!-- 스크립트 추가 -->
+
     <script>
+    const location_text = document.getElementById('header_location_text');
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 수정';
+    
     document.addEventListener("DOMContentLoaded", function () {
         // CSRF 토큰 가져오기
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');

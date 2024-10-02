@@ -6,7 +6,6 @@
     <link th:href="@{/css/employee/survey/survey_end_list.css}" rel="stylesheet" type="text/css">
     
     <section>
-        <h1>마감된 설문</h1>
         <div class="list_survey_list">
             <div class="search_sort_container">
                 <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
@@ -95,16 +94,20 @@
                         </th:block>
                     </th:block>
 
-                    <!-- Next Page -->
+
                     <button th:if="${page.hasNext()}" 
                             th:onclick="|location.href='@{/employee/survey/endList/{member_no}(member_no=${memberdto[0].member_no}, page=${page.number + 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;</button>
                     
-                    <!-- Last Page -->
+
                     <button th:if="${page.number < totalPages - 1}" 
                             th:onclick="|location.href='@{/employee/survey/endList/{member_no}(member_no=${memberdto[0].member_no}, page=${page.totalPages - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;&gt;</button>
                 </th:block>
             </div>
         </div>
     </section>
+    <script>
+    const location_text = document.getElementById('header_location_text');
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;마감된 설문';
+    </script>
 </th:block>
 </html>

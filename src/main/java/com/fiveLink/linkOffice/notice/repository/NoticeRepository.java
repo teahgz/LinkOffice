@@ -45,15 +45,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
            "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
     Page<Object[]> findNoticesByContentWithMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
 
-    @Query("SELECT n, m.memberName " +
-           "FROM Notice n " +
-           "JOIN n.member m " + 
-           "WHERE m.memberName LIKE %:searchText% " +
-           "ORDER BY CASE WHEN n.noticeImportance = 1 THEN 0 ELSE 1 END, " +
-           "CASE WHEN :sort = 'latest' THEN n.noticeCreateDate END DESC, " +
-           "CASE WHEN :sort = 'oldest' THEN n.noticeCreateDate END ASC")
-    Page<Object[]> findNoticesByMember(@Param("searchText") String searchText, @Param("sort") String sort, Pageable pageable);
-
+  
     @Query("SELECT n, m.memberName " +
            "FROM Notice n " +
            "JOIN n.member m " +
