@@ -46,8 +46,7 @@
 				</div>
 
 				<div class="notice-image" th:if="${dto.notice_new_img != null}">
-					<img th:src="@{'/linkOfficeImg/' + ${dto.notice_new_img}}"
-						alt="Notice Image">
+					<img th:src="@{'/linkOfficeImg/notice/' + ${dto.notice_new_img}}" alt="Notice Image">
 				</div>
 
 				<div class="notice-text">

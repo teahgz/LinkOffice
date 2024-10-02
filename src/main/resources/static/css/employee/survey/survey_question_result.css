@@ -16,20 +16,21 @@
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* 세부 정보와 통계 항목을 상단 정렬 */
+    align-items: center; 
     margin-bottom: 20px;
 }
 
 .details {
-    flex-basis: 60%; /* 세부 정보 영역의 너비를 60%로 설정 */
+    flex-basis: 60%; 
 }
 
 .stats {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    flex-basis: 35%; /* 통계 항목 영역의 너비를 35%로 설정 */
+    flex-basis: 50%; 
     gap: 20px;
+    text-align: center; 
 }
 
 .stat {
