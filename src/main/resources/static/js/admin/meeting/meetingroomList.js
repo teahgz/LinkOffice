@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 reader.readAsDataURL(file);
             } else {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: '확인'
@@ -175,8 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 reader.readAsDataURL(file);
             } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: '파일 형식 오류',
+                    icon: 'warning', 
                     text: 'PNG 또는 JPG 파일만 등록 가능합니다.',
                     confirmButtonText: '확인'
                 });

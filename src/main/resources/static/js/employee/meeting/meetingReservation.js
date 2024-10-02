@@ -568,6 +568,11 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#openOrganizationChartButton').on('click', function() {
         openOrganizationChartModal();
     });
+    
+	document.getElementById('chart_close').addEventListener('click', function() {  
+		$('#organization-chart').jstree("uncheck_all");
+		$('#organizationChartModal').modal('hide');	 
+	});
 	
 	function openOrganizationChartModal() {
 	    selectedMembers = [];   

@@ -1004,6 +1004,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('allDay').dispatchEvent(new Event('change'));
 				resetForm(createEmployeeScheduleForm);
 				$('#organization-chart').jstree("uncheck_all");
+				
+				const editTitle = document.getElementById('modal-title');
+				editTitle.textContent = '일정 등록'; 
 	 
 			    const reservationArea = $('.selected-participants-container');  
 			    reservationArea.find('.selected-participants').remove(); 
@@ -1036,7 +1039,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('allDay').dispatchEvent(new Event('change'));
 				resetForm(createEmployeeScheduleForm);
 				$('#organization-chart').jstree("uncheck_all");
-	 
+	 	
+				const editTitle = document.getElementById('modal-title');
+				editTitle.textContent = '일정 등록'; 
+				
 			    const reservationArea = $('.selected-participants-container');  
 			    reservationArea.find('.selected-participants').remove(); 
 			    
@@ -1198,6 +1204,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	 
 	document.getElementById('chart_close').addEventListener('click', function() {  
+		$('#organization-chart').jstree("uncheck_all");
 		$('#organizationChartModal').modal('hide');	 
 	});
 	
@@ -1402,11 +1409,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (repeatOption != 0 && !repeatEndDate && !$('#repeatOption').is(':disabled')) {
 		    showAlert('반복 종료일을 입력해 주세요.');
 		    return;
-		} 
-	    if (!description) {
-	        showAlert('내용을 입력해 주세요.');
-	        return;
-	    } 
+		}  
 	
 	    // 반복 옵션 값 
 	    const repeat_insert_date = document.getElementById('eventDate').value;
