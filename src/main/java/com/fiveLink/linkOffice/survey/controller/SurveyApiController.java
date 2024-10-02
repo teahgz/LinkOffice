@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
-import com.fiveLink.linkOffice.notice.domain.NoticeDto;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 import com.fiveLink.linkOffice.survey.domain.SurveyAnswerOptionDto;
@@ -100,7 +100,10 @@ public class SurveyApiController {
 	public String showSurveyCreatePage(Model model) {
 		List<DepartmentDto> departments = departmentService.getAllDepartments();
 		List<MemberDto> members = memberService.getAllMembersChartOut(); // 본인 제외한 사원 목록
-
+		Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        
+        model.addAttribute("memberdto", memberdto);
 		model.addAttribute("departments", departments);
 		model.addAttribute("members", members);
 
@@ -114,7 +117,7 @@ public class SurveyApiController {
 	@ResponseBody
 	public Map<String, String> createSurvey(@RequestBody SurveyDto surveyDto, Model model) {
 		Map<String, String> resultMap = new HashMap<>();
-
+		
 		Long member_no = memberService.getLoggedInMemberNo();
 		surveyDto.setMember_no(member_no);
 
@@ -218,9 +221,21 @@ public class SurveyApiController {
 
 	    return resultMap;
 	}
-
-
-
+	
+	@ResponseBody
+	@DeleteMapping("/employee/delete/{survey_no}")
+	public Map<String, String> deletesurvey(@PathVariable("survey_no") Long surveyNo) {
+	    Map<String, String> resultMap = new HashMap<>();
+	    try {
+	        surveyService.deleteSurvey(surveyNo);
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "설문이 성공적으로 삭제되었습니다.");
+	    } catch (Exception e) {
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "삭제 중 오류가 발생했습니다: " + e.getMessage());
+	    }
+	    return resultMap;
+	}
 
 
 	// 트리 구조 생성 메서드
