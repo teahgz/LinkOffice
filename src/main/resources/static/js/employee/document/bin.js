@@ -406,7 +406,7 @@ $(function () {
             },
 			success: function(response){
 				if (response.res_code === '200') {
-					if(response.res_status == 0){						
+					if(response.res_status === "0"){					
 	                    Swal.fire({
 	                        icon: 'success',
 	                        text: response.res_msg,
