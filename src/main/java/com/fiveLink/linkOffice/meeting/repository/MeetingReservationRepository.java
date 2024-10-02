@@ -56,4 +56,6 @@ public interface MeetingReservationRepository extends JpaRepository<MeetingReser
     
     @Query("SELECT mr FROM MeetingReservation mr WHERE mr.meetingReservationStatus = 0")
     List<MeetingReservation> findMeetingReservationsByStatusZero();
+    
+    List<MeetingReservation> findAllByMeetingReservationStatusOrderByMeetingReservationStartTimeAsc(Long status);
 } 

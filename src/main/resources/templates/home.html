@@ -47,29 +47,7 @@
                 	</div> 	
 	            </div>
             </div>
-			<div class="main_item_box custom-height-4">
-	            <a class="main_link" th:href="@{/employee/vacationapproval/list}">
-		            <span class="main_box_title">
-	            		휴가 현황
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-
-			        <div class="approvalState">
-						<div class="vacationApproval_btn_con">
-							<a th:href="@{/employee/vacationapproval/create}" class="vacationApproval">+ 휴가 신청</a>
-						</div>
-
-						<div id="vacationDays">
-							<span id="vacationYear">입사일 기준</span>
-							<span id="vacationTitle">지급 휴가 개수</span>
-							<strong id="vacationCount">0</strong>
-							<span  id="vacationTitle2">남은 휴가 개수</span>
-							<strong id="vacationRemainCount">0</strong>
-						</div>
-					</div>
-
-            </div> 
+			
             <div class="main_item_box custom-height-11"> 
 	     		<h3>날씨</h3>
 	     		<div class="weather_div">
@@ -93,26 +71,7 @@
 	     		</div>
 	         </div>
         </div>
-        <div class="middle-column"> 
-            <div class="main_item_box custom-height-5">
-            	<a class="main_link" th:href="@{/공지사항 링크}">
-	        		<span class="main_box_title">
-	            		공지사항 목록
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-            	<h3>공지사항</h3>
-            </div>
-            <div class="main_item_box custom-height-6">
-                <a class="main_link" th:href="@{/설문 링크}">
-	        		<span class="main_box_title">
-	            		설문 목록
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-            	<h3>설문</h3>
-            </div> 
-        </div>
+
         <div class="right-column">
         	<div class="main_item_box left-bottom custom-height-2">
 				<input type="hidden" id="schedule_memberNo" th:value="${member.member_no}"> 
@@ -133,20 +92,25 @@
             <div class="right-top"> 
                 <div class="main_item_box custom-height-7">
                 	<a class="main_link" th:href="@{/employee/meeting/reservation}">
-	                	<span class="main_box_title">
+	                	<span class="main_box_title meeting_box_title">
 				            회의실 예약
 				            <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 				        </span>
 	                </a>
-	                <div id="meeting_calendar"></div> 
-					<div id="meeting_reservation_list">
-					    <div id="meeting_home_date"></div>
-					    <ul id="meeting_selected_date_list"></ul> 
-					</div>  
+	                <div id="meeting_wrapper">
+					    <div id="meeting_calendar"></div> 
+					    <div id="meeting_reservation_list">
+					        <div id="meeting_home_date"></div>
+					        <ul id="meeting_selected_date_list"></ul> 
+					    </div>  
+					</div> 
                 </div>  
             </div> 
-			
-            <div class="right-bottom"> 
+			 
+        </div>
+        
+        <div class="middle-column"> 
+	        <div class="right-bottom"> 
                 <div class="main_item_box custom-height-10"> 
 			        <div class="approval_btn_con">
 			        <h3 class="approval-title">전자결재</h3>
@@ -175,9 +139,49 @@
 				            <span th:text="${referenceCount}"></span>
 			            </li>
 			        </ul>
-                </div>
-
+                </div> 
             </div>
+            <div class="main_item_box custom-height-4">
+	            <a class="main_link" th:href="@{/employee/vacationapproval/list}">
+		            <span class="main_box_title">
+	            		휴가 현황
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+
+			        <div class="approvalState">
+						<div class="vacationApproval_btn_con">
+							<a th:href="@{/employee/vacationapproval/create}" class="vacationApproval">+ 휴가 신청</a>
+						</div>
+
+						<div id="vacationDays">
+							<span id="vacationYear">입사일 기준</span>
+							<span id="vacationTitle">지급 휴가 개수</span>
+							<strong id="vacationCount">0</strong>
+							<span  id="vacationTitle2">남은 휴가 개수</span>
+							<strong id="vacationRemainCount">0</strong>
+						</div>
+					</div>
+
+            </div> 
+            <div class="main_item_box custom-height-5">
+            	<a class="main_link" th:href="@{/공지사항 링크}">
+	        		<span class="main_box_title">
+	            		공지사항 목록
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>공지사항</h3>
+            </div>
+            <div class="main_item_box custom-height-6">
+                <a class="main_link" th:href="@{/설문 링크}">
+	        		<span class="main_box_title">
+	            		설문 목록
+	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+	            	</span>
+	            </a>
+            	<h3>설문</h3>
+            </div> 
         </div>
     </section>
     <section sec:authorize="hasAnyAuthority('TOTAL_ADMIN')">

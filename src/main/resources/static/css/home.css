@@ -121,12 +121,15 @@ section {
 }
 
 .main_box_title {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
     display: flex;
     align-items: center;
     gap: 10px;  
     padding: 10px 0;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-left: 10px;
 }
 
 .main_arrow_img {
@@ -145,7 +148,7 @@ section {
 .meeting_reservation_img, .address_book_img {
     width: 75px; 
     margin-top : 20px;
-}
+} 
 
 /* ------------- 윗부분 수정 금지  -------------- */
 
@@ -432,12 +435,60 @@ section {
     font-weight: 550;
 }
 
+#meeting_wrapper {
+    display: flex;
+    justify-content: space-between; 
+    height: 100%;  
+}
+
+#meeting_calendar {
+    width: 45%;   
+}
+
+#meeting_reservation_list {
+    width: 50%; 
+    border: 1px solid #ddd;   
+    overflow-y: auto; 
+    height : 478px;
+    margin-right: 10px;
+    margin-top:65px;
+    text-align: left;
+    scrollbar-width: thin;  
+    scrollbar-color: #888 #f1f1f1;
+}
+
+#meeting_reservation_list::-webkit-scrollbar {
+    width: 8px;  
+    display: block; 
+}
+
+.meeting_box_title {
+	margin-left : -355px;
+}
+
+#meeting_home_date {
+	margin-left: 130px;
+    font-size: 23px;
+    font-weight: bold;
+	margin-top : 40px;
+	margin-bottom: 40px;
+} 
+ 
+.meeting_list_div {
+	margin-left: -15px;
+	margin-bottom: 20px;
+	font-size: 18px;
+}
+
+.meeting_no_reservation {
+	margin-left: 85px;
+}
+
 /*휴가 현황*/
 .approvalState {
     position: relative;
-    display: flex; /* flexbox 사용 */
-    flex-direction: column; /* 세로 정렬 */
-
+    display: flex;  
+    flex-direction: column; 
 }
 
 .vacationApproval_btn_con {
@@ -467,4 +518,52 @@ section {
 .vacationApproval {
     margin:0;
     color: black;
+}
+
+/* 일정 */ 
+#calendar .fc-daygrid-day {
+    height: 150px;  
+}  
+
+#schedule_list {
+    width: 850px;
+    max-width: 850px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    background-color: #fff; 
+    margin : 20px 0;
+}
+ 
+#schedule_home_date {
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+}
+ 
+#schedule_selected_date_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 150px;  
+    overflow-y: auto;
+    font-size: 18px; 
+	scrollbar-width: thin; 
+    scrollbar-color: #888 #f1f1f1; 
+}
+ 
+#schedule_selected_date_list::-webkit-scrollbar {
+    width: 8px; 
+    display: block; 
+}
+
+#schedule_selected_date_list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee; 
+}
+
+#schedule_selected_date_list li:last-child {
+    border-bottom: none;
 }
