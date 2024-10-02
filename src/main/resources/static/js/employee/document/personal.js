@@ -1075,6 +1075,14 @@ $(function () {
 	            loadFiles(selectedFolderNo, searchInputValue);
 	        }
 	    });
+	    // 검색 입력 시 파일 목록을 다시 로드
+	    $('#file_name_input').on('keyup', function() {
+	        searchInputValue = $(this).val(); 
+	        const selectedFolderNo = $('#tree').jstree('get_selected')[0];
+	        if (selectedFolderNo) {
+	            loadFiles(selectedFolderNo, searchInputValue);
+	        }
+	    });
 	    // 검색 버튼 클릭 시 파일 목록을 다시 로드
 	    $('#search_button').on('click', function() {
 	        searchInputValue = $('#file_name_input').val(); 

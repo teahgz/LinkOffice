@@ -255,8 +255,7 @@ public class DocumentFileService {
 			newFileName = uniqueName + fileExt;
 			
 			// folderNo를 경로에 추가 
-			String saveDir = fileDir + "\\";
-			File saveFile = new File(saveDir + newFileName);
+			File saveFile = new File(fileDir + newFileName);
 	        if (!saveFile.exists()) {
 	        	saveFile.mkdirs(); 
 	        }
@@ -287,7 +286,7 @@ public class DocumentFileService {
 			String newFileName = documentFile.getDocumentNewFileName();
 			String oriFileName = URLEncoder.encode(documentFile.getDocumentOriFileName(),"UTF-8");
 			String downDir = 
-					fileDir + "\\" + newFileName;
+					fileDir + newFileName;
 			
 			Path filePath = Paths.get(downDir);
 			Resource resource = new InputStreamResource(Files.newInputStream(filePath));
@@ -310,7 +309,7 @@ public class DocumentFileService {
 			String newFileName = documentFile.getDocumentNewFileName();
 			String oriFileName = URLEncoder.encode(documentFile.getDocumentOriFileName(),"UTF-8");
 			String downDir = 
-					fileDir + "\\" + newFileName;
+					fileDir + newFileName;
 			
 			Path filePath = Paths.get(downDir);
 			Resource resource = new InputStreamResource(Files.newInputStream(filePath));
@@ -335,7 +334,7 @@ public class DocumentFileService {
 			DocumentFile documentFile = documentFileRepository.findByDocumentFileNo(fileNo);
 			String newFileName = documentFile.getDocumentNewFileName();	
 			String resultDir = 
-					fileDir + "\\" + newFileName;
+					fileDir + newFileName;
 			if(resultDir != null && resultDir.isEmpty() == false) {
 				File file = new File(resultDir);
 				if(file.exists()) {
