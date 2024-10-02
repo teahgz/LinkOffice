@@ -549,95 +549,107 @@ function connectWebSocket() {
                 } else if(message.type === 'noficationDepartmentSchedule'){
                     const title = message.title;
                     const content = message.content;
-                    if (notificationModal.children.length <= 1) {
-                        notificationModal.innerHTML = `
-                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
-                        `;
-                        addMarkAsReadListener();
-                    }
-                    message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
-                        const listItem = document.createElement('li');
-
-                        listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 11);
-                        listItem.innerHTML = `
-                        <strong style="margin-bottom: 5px;">${title}</strong>
-                        <p>${content}</p>
-                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
-                        <hr style="border: none; margin: 10px 0;">
-                        `;
-						
-						listItem.addEventListener('click', () => {
-					        const notificationType = listItem.getAttribute('data-notification-type');
-					        if (notificationType === '11') {  
-					            window.location.href = noficationTypeUrl[11];
-					        } 
-					    });
-    
-                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
-                    });
-                } else if(message.type === 'noficationParticipantSchedule'){
+                    if (window.functionTypes.includes(currentType)) {
+                        markNotificationsAsRead(currentType);
+                    } else {
+						if (notificationModal.children.length <= 1) {
+	                        notificationModal.innerHTML = `
+	                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+	                        `;
+	                        addMarkAsReadListener();
+	                    }
+	                    message.data.forEach(function(item) {
+	                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
+	                        const listItem = document.createElement('li');
+	
+	                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+	                        listItem.setAttribute('data-notification-type', 11);
+	                        listItem.innerHTML = `
+	                        <strong style="margin-bottom: 5px;">${title}</strong>
+	                        <p>${content}</p>
+	                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+	                        <hr style="border: none; margin: 10px 0;">
+	                        `;
+							
+							listItem.addEventListener('click', () => {
+						        const notificationType = listItem.getAttribute('data-notification-type');
+						        if (notificationType === '11') {  
+						            window.location.href = noficationTypeUrl[11];
+						        } 
+						    });
+	    
+	                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+	                    });
+					} 
+                } else if(message.type === 'noficationParticipantSchedule'){  
                     const title = message.title;
-                    const content = message.content;
-                    if (notificationModal.children.length <= 1) {
-                        notificationModal.innerHTML = `
-                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
-                        `;
-                        addMarkAsReadListener();
-                    }
-                    message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
-                        const listItem = document.createElement('li');
-
-                        listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 11);
-                        listItem.innerHTML = `
-                        <strong style="margin-bottom: 5px;">${title}</strong>
-                        <p>${content}</p>
-                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
-                        <hr style="border: none; margin: 10px 0;">
-                        `;
-						
-						 listItem.addEventListener('click', () => {
-					        const notificationType = listItem.getAttribute('data-notification-type');
-					        if (notificationType === '12') { 
-					            window.location.href = noficationTypeUrl[11];
-					        } 
-					     });
-					     
-                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
-                    });
+                    const content = message.content; 
+                    if (window.functionTypes.includes(currentType)) {
+                        markNotificationsAsRead(currentType);
+                    } else {
+						if (notificationModal.children.length <= 1) {
+	                        notificationModal.innerHTML = `
+	                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+	                        `;
+	                        addMarkAsReadListener();
+	                    }
+	                    message.data.forEach(function(item) {
+	                        showNotification(title, content, item.memberNo, message.timestamp, 12, "");
+	                        const listItem = document.createElement('li');
+	
+	                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+	                        listItem.setAttribute('data-notification-type', 12);
+	                        listItem.innerHTML = `
+	                        <strong style="margin-bottom: 5px;">${title}</strong>
+	                        <p>${content}</p>
+	                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+	                        <hr style="border: none; margin: 10px 0;">
+	                        `;
+							
+							 listItem.addEventListener('click', () => {
+						        const notificationType = listItem.getAttribute('data-notification-type');
+						        if (notificationType === '12') { 
+						            window.location.href = noficationTypeUrl[11];
+						        } 
+						     });
+						     
+	                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    	});
+					} 
                 } else if(message.type === 'noficationParticipantMeeting'){
                     const title = message.title;
                     const content = message.content;
-                    if (notificationModal.children.length <= 1) {
-                        notificationModal.innerHTML = `
-                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
-                        `;
-                        addMarkAsReadListener();
-                    }
-                    message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 13, "");
-                        const listItem = document.createElement('li');
-
-                        listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 11);
-                        listItem.innerHTML = `
-                        <strong style="margin-bottom: 5px;">${title}</strong>
-                        <p>${content}</p>
-                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
-                        <hr style="border: none; margin: 10px 0;">
-                        `;
+                    if (window.functionTypes.includes(currentType)) {
+                        markNotificationsAsRead(currentType);
+                    } else{
+						if (notificationModal.children.length <= 1) {
+	                        notificationModal.innerHTML = `
+	                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+	                        `;
+	                        addMarkAsReadListener();
+	                    }
+	                    message.data.forEach(function(item) {
+	                        showNotification(title, content, item.memberNo, message.timestamp, 13, "");
+	                        const listItem = document.createElement('li');
 	
-						 listItem.addEventListener('click', () => {
-					        const notificationType = listItem.getAttribute('data-notification-type');
-					        if (notificationType === '13') { 
-					            window.location.href = noficationTypeUrl[11];
-					        } 
-					     });
-                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
-                    });
+	                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+	                        listItem.setAttribute('data-notification-type', 13);
+	                        listItem.innerHTML = `
+	                        <strong style="margin-bottom: 5px;">${title}</strong>
+	                        <p>${content}</p>
+	                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+	                        <hr style="border: none; margin: 10px 0;">
+	                        `;
+		
+							 listItem.addEventListener('click', () => {
+						        const notificationType = listItem.getAttribute('data-notification-type');
+						        if (notificationType === '13') { 
+						            window.location.href = noficationTypeUrl[11];
+						        } 
+						     });
+	                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+	                    });
+					} 
                 }
 
             }
