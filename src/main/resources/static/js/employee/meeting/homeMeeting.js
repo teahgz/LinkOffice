@@ -30,23 +30,37 @@ document.addEventListener('DOMContentLoaded', function() {
             contentHeight: 'auto',
 	        handleWindowResize: true,
 	        fixedWeekCount: false, 
-            events: reservations.map(function(reservation) {
-                return {
-                    id: reservation.meeting_reservation_no,
-                    title: reservation.meeting_name,
-                    start: reservation.meeting_reservation_date,
-                    extendedProps: {
-                        startTime : reservation.meeting_reservation_start_time,
-                        endTime : reservation.meeting_reservation_end_time,
-                        purpose: reservation.meeting_reservation_purpose,
-                        participantCount: reservation.participant_count,
-                        member_name : reservation.member_name,
-                        member_no : reservation.member_no,
-                        departmentName : reservation.department_name,
-                        positionName : reservation.position_name
-                    }
-                };
-            }),
+	        googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
+	        eventSources: [
+	            {
+	                googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+	                color: 'transparent',
+	                textColor: 'red',
+	                className: 'google-holiday',
+	                allDay: true,
+	                order: -1,
+	                type: 'holiday'
+	            },
+	            {
+	                events: reservations.map(function(reservation) {
+		                return {
+		                    id: reservation.meeting_reservation_no,
+		                    title: reservation.meeting_name,
+		                    start: reservation.meeting_reservation_date,
+		                    extendedProps: {
+		                        startTime : reservation.meeting_reservation_start_time,
+		                        endTime : reservation.meeting_reservation_end_time,
+		                        purpose: reservation.meeting_reservation_purpose,
+		                        participantCount: reservation.participant_count,
+		                        member_name : reservation.member_name,
+		                        member_no : reservation.member_no,
+		                        departmentName : reservation.department_name,
+		                        positionName : reservation.position_name
+		                    }
+		                }
+		            }),
+	            }
+	        ], 
             dayCellContent: function(info) {
                 var number = document.createElement("a");
                 number.classList.add("fc-daygrid-day-number");
@@ -69,6 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	            eventDate.setDate(eventDate.getDate() + 1); 
 	            const formattedDate = eventDate.toISOString().split('T')[0]; 
 	            displayReservations(formattedDate, reservations); 
+	        },
+	        eventDidMount: function(info) {
+	            info.el.style.cursor = 'pointer';
+	            if (info.event.extendedProps.description === '공휴일') {
+	                const dateCell = info.el.closest('.fc-daygrid-day');
+	                if (dateCell) {
+	                    const dateCellContent = dateCell.querySelector('.fc-daygrid-day-number');
+	                    if (dateCellContent) {
+	                        dateCellContent.style.color = '#FF0000';
+	                    } 
+	                }
+	            }
 	        }
         });
         calendar.render();

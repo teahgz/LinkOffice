@@ -556,6 +556,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	        fixedWeekCount: false,
 	        eventDidMount: function(info) {
 	            info.el.style.cursor = 'pointer';
+	            if (info.event.extendedProps.description === '공휴일') {
+	                const dateCell = info.el.closest('.fc-daygrid-day');
+	                if (dateCell) {
+	                    const dateCellContent = dateCell.querySelector('.fc-daygrid-day-number');
+	                    if (dateCellContent) {
+	                        dateCellContent.style.color = '#FF0000';
+	                    } 
+	                }
+	            }
 	        },
 	        googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
 	        eventSources: [
