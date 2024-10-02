@@ -633,10 +633,30 @@ document.addEventListener('DOMContentLoaded', function() {
             handleWindowResize: true,
             fixedWeekCount: false,
             eventClick: function(info) { 
-				console.log(info.event);
+				 
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
-			
+				
+				info.jsEvent.preventDefault();   
+	            let  modal = document.getElementById('eventViewModal');
+	            let  X = info.jsEvent.clientX;
+	            let  Y = info.jsEvent.clientY;
+	            
+	            if(X > 1900) {
+					X = X - 900;
+					Y = Y - 320;
+				}
+				else if(Y > 800) {
+					X = X - 700;
+					Y = Y - 490;
+				}
+				else {
+					X = X - 700;
+					Y = Y - 320;
+				}
+	            modal.style.top = `${Y}px`;
+	            modal.style.left = `${X}px`;   
+            
 			    let eventEnd;
 			    if (info.event.end) { 
 			        if (info.event.allDay) {
