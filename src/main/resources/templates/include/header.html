@@ -33,7 +33,7 @@
                             <li><a href="#">서명 등록</a></li>
                         </ul>
                     </div>
-                    <div class="bell" id="notification-bell">
+                    <div class="bell" id="notification-bell" sec:authorize="hasAuthority('USER')">
 
                         <i class="fa-regular fa-bell" style ="marin-right: 20px; font-size: 20px; color:#0000007a;"></i>
     <!--                    <span id="unread-bell-count" class="badge"></span>-->
