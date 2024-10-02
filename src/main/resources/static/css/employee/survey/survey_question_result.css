@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 .container {
-   position: relative;
+    position: relative;
     width: 80%;
     max-width: 1300px;
     margin: 50px auto;
@@ -12,30 +12,30 @@
     border-radius: 12px;
 }
 
+
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: flex-start; /* 세부 정보와 통계 항목을 상단 정렬 */
     margin-bottom: 20px;
 }
 
-.header h1, .header h3, .header p {
-    margin: 0;
+.details {
+    flex-basis: 60%; /* 세부 정보 영역의 너비를 60%로 설정 */
 }
 
 .stats {
-    display: flex; 
-    justify-content: space-around; 
-    align-items: center; 
-    margin-bottom: 20px;
-    gap: 20px; 
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-basis: 35%; /* 통계 항목 영역의 너비를 35%로 설정 */
+    gap: 20px;
 }
 
 .stat {
     background-color: #f4f4f4;
-    padding: 15px; 
+    padding: 15px;
     border-radius: 10px;
-    flex-grow: 1; 
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -53,19 +53,19 @@
 }
 
 .participation-summary {
-    display: inline-block; /* inline-block으로 조정하여 너무 늘어나지 않도록 함 */
+    display: inline-block;
     background-color: #f0f0f0;
     padding: 10px 20px;
     margin-top: 10px;
     border-radius: 5px;
-    max-width: fit-content; /* 내용에 맞게 박스 크기를 제한 */
+    max-width: fit-content;
 }
 
 .participation-summary p {
     margin: 0;
     font-size: 1rem;
     color: #333;
-    display: inline-block; /* 한 줄로 정렬 */
+    display: inline-block;
 }
 
 .participation-summary .total-participants, .participation-summary .participation-rate {
@@ -74,7 +74,7 @@
 
 .participation-summary .spacer {
     display: inline-block;
-    width: 100px; 
+    width: 100px;
 }
 
 .question {

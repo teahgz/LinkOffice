@@ -20,6 +20,9 @@ public class SurveyParticipantDto {
 	private Long member_no;
 	private String member_name;
 	private Integer survey_participant_status;
+	private Long survey_option_no;  // 객관식 답변 번호
+    private String survey_text_answer;  // 주관식 답변
+	
 	
 	private int search_type = 1;
 	private String search_text;

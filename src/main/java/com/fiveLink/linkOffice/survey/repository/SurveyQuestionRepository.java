@@ -12,4 +12,6 @@ public interface SurveyQuestionRepository extends JpaRepository<SurveyQuestion, 
 
     @Query("SELECT q FROM SurveyQuestion q WHERE q.survey.surveyNo = :surveyNo")
     List<SurveyQuestion> findBySurveyNo(@Param("surveyNo") Long surveyNo); 
+    
+    
 }
