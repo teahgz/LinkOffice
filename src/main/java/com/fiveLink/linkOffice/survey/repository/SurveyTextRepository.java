@@ -1,11 +1,16 @@
 package com.fiveLink.linkOffice.survey.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.fiveLink.linkOffice.survey.domain.SurveyParticipant;
+import com.fiveLink.linkOffice.survey.domain.SurveyQuestion;
 import com.fiveLink.linkOffice.survey.domain.SurveyText;
-import java.util.List;
 
 @Repository
 public interface SurveyTextRepository extends JpaRepository<SurveyText, Long> {
@@ -19,6 +24,7 @@ public interface SurveyTextRepository extends JpaRepository<SurveyText, Long> {
 		       "JOIN sp.member m " +
 		       "WHERE t.surveyQuestion.surveyQuestionNo = :surveyQuestionNo")
 		List<Object[]> findTextAnswersWithParticipant(@Param("surveyQuestionNo") Long surveyQuestionNo);
-
-
+		
+		List<SurveyText> findAllBySurveyParticipantAndSurveyQuestion(SurveyParticipant surveyParticipant, SurveyQuestion surveyQuestion);
+		
 }

@@ -1,10 +1,15 @@
 package com.fiveLink.linkOffice.survey.repository;
 
-import com.fiveLink.linkOffice.survey.domain.SurveyParticipant;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.fiveLink.linkOffice.survey.domain.Survey;
+import com.fiveLink.linkOffice.survey.domain.SurveyParticipant;
 
 @Repository
 public interface SurveyParticipantRepository extends JpaRepository<SurveyParticipant, Long> {
@@ -24,4 +29,11 @@ public interface SurveyParticipantRepository extends JpaRepository<SurveyPartici
     // 질문별 참여자 수 계산 (수정된 쿼리)
     @Query("SELECT COUNT(sp) FROM SurveyParticipant sp JOIN sp.survey.surveyQuestion sq WHERE sq.surveyQuestionNo = :questionNo AND sp.surveyParticipantStatus = 1")
     int countByQuestionAndStatus(@Param("questionNo") Long questionNo);
+    
+    Optional<SurveyParticipant> findByMember_MemberNoAndSurvey_SurveyNo(Long memberNo, Long surveyNo);
+    
+ // 특정 설문에 참여한 모든 참여자를 조회하는 메서드
+    List<SurveyParticipant> findBySurvey(Survey survey);
+    
+    
 }

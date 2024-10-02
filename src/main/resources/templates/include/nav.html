@@ -99,9 +99,10 @@
 					<a href="#" class="dropdown-toggle">설문</a>
 					<div class="dropdown" data-dropdown-id="Dropdown">
 						<ul>
-							<li><a href="#">설문 작성</a></li>
-							<li><a href="#">진행중인 설문</a></li>
-							<li><a href="#">내가 만든 설문</a></li>
+								<li><a th:href="@{/employee/survey/create/{no}(no=${member.member_no})}">설문 작성</a></li>
+							<li><a th:href="@{/employee/survey/ingList/{no}(no=${member.member_no})}">진행중인 설문</a></li>
+							<li><a th:href="@{/employee/survey/myList/{no}(no=${member.member_no})}">내가 만든 설문</a></li>
+							<li><a th:href="@{/employee/survey/endList/{no}(no=${member.member_no})}">마감된 설문</a></li>
 						</ul>
 					</div>
 				</li>

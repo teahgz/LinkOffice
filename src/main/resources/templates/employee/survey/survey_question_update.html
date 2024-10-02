@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link th:href="@{/css/employee/survey/survey_question_detail.css}" rel="stylesheet" type="text/css">
+</head>
+
+<th:block layout:fragment="content">
+    <section>
+        <h1>설문 수정</h1>
+        <div class="container">
+            <div class="header">
+                <div th:if="${dto != null}">
+                    <h1 th:text="${dto.survey_title}"></h1>
+                    <br>
+                    <h3 th:text="${dto.survey_description}"></h3>
+                    <br>
+                    <p>
+                        작성자: <span th:text="${dto.member_name}"></span>
+                    </p>
+                    <p>
+                        설문 기간: <span th:text="|${dto.survey_start_date} ~ ${dto.survey_end_date}|"></span>
+                    </p>
+                    <p>
+                        설문 상태: <span th:text="${dto.survey_status == 0 ? '진행 중' : '종료'}"></span>
+                    </p>
+                </div>
+            </div>
+            <br>
+
+            <!-- 설문 수정 폼 -->
+            <form id="surveyDetailForm" method="post" th:object="${dto}" th:action="@{/employee/update/{survey_no}(survey_no=${dto.survey_no})}" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken" />
+
+                <div th:each="question, iterStat : ${questions}" class="question">
+                    <p>
+                        <strong th:text="${iterStat.count + '.'}">1.</strong>
+                        <span th:text="${question.survey_question_text}">질문 텍스트</span>
+                    </p>
+
+                    <!-- 객관식 질문 처리 -->
+                    <div th:if="${question.survey_question_type == 0}">
+                        <div th:each="option, iterOpt : ${question.survey_option_no}">
+                            <input type="radio" th:id="${'option' + iterOpt.index}" th:name="${'survey_option_no_' + question.survey_question_no}" th:value="${option}" />
+                            <label th:for="${'option' + iterOpt.index}" th:text="${question.survey_option_answer[iterOpt.index]}">옵션 텍스트</label>
+                        </div>
+                    </div>
+
+                    <!-- 주관식 질문 처리 -->
+                    <div th:if="${question.survey_question_type == 1}">
+                        <input type="text" name="survey_text_answer" class="survey-text" />
+                        <input type="hidden" name="survey_question_no" th:value="${question.survey_question_no}" />
+                    </div>
+                </div>
+
+                <button type="submit" class="confirm-btn">수정 완료</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+    const form = document.getElementById("surveyDetailForm");
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const csrfToken = document.getElementById('csrfToken').value;
+        const formData = new FormData(form);
+
+        // 객관식 응답 처리
+        document.querySelectorAll('input[type="radio"]:checked').forEach((radio) => {
+            const questionNo = radio.name.split('_')[1];
+            formData.append('survey_option_no', radio.value);
+            formData.append('survey_question_no', questionNo);
+        });
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.res_code === '200') {
+                alert('설문이 성공적으로 수정되었습니다.');
+                window.location.href = '/employee/survey/ingList';
+            } else {
+                alert('설문 응답 수정 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        })
+        .catch(error => {
+            console.error('제출 오류:', error);
+            alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
+        });
+    });
+    </script>
+
+</th:block>
+</html>
