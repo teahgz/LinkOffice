@@ -570,7 +570,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	          }
 	       }
 	}	
-
+	
+	
+	
 	// 다음 결재자 
 	public Long findNextVacationApproverMemberNo(List<VacationApprovalFlowDto> approvalDtos, Long senderNo) {
 		for (int i = 0; i < approvalDtos.size(); i++) {
@@ -657,7 +659,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			if (s.isOpen()) {
 				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, Object> responseMap = new HashMap<>();
-				responseMap.put("type", "appRejectAlarm");
+				responseMap.put("type", "vacationAppRejectAlarm");
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
