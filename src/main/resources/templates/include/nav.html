@@ -143,7 +143,8 @@
 						</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('MEMBER_ADMIN')">
+
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('DOCUMENT_ADMIN')">
 					<a href="#" class="dropdown-toggle">전자 결재 양식 관리</a>
 					<div class="dropdown" data-dropdown-id="approvalFormDropdown">
 						<ul th:each = "member : ${memberdto}">
