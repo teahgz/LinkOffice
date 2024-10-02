@@ -12,7 +12,6 @@
 
 <th:block layout:fragment="content">
 	<section>
-		<h1>설문 상세</h1>
 		<div class="container">
 			<div class="header">
 				<div th:if="${dto != null}">
@@ -65,6 +64,9 @@
 	</section>
 
 	<script>
+	const location_text = document.getElementById('header_location_text');
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 상세';
+	
 	const form = document.getElementById("surveyDetailForm");
 
 	form.addEventListener('submit', async (e) => {
@@ -73,7 +75,6 @@
 	    var csrfToken = document.getElementById('csrfToken').value;
 	    const formData = new FormData(form);
 
-	    // 모든 라디오 버튼 값을 처리하여 survey_option_no로 통합
 	    document.querySelectorAll('input[type="radio"]:checked').forEach((radio) => {
 	        const questionNo = radio.name.split('_')[1]; 
 	        formData.append('survey_option_no', radio.value); 

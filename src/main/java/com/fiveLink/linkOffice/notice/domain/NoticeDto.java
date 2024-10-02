@@ -22,6 +22,7 @@ public class NoticeDto {
 	private String notice_content;
 	private Long member_no;
 	private String member_name;
+	private String position_name;
 	private String notice_create_date;
 	private String notice_update_date;
 	private Integer notice_importance;

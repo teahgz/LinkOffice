@@ -6,7 +6,6 @@
 	<link th:href="@{/css/admin/notice/notice_list.css}" rel="stylesheet"
 		type="text/css">
 	<section>
-		<h1>공지 사항</h1>
 		<div class="list_notice">
 			<div class="search_sort_container">
 				<input type="hidden" id="memberNo"
@@ -20,7 +19,6 @@
 							<option th:value="1" th:selected="${searchDto.search_type == 1}">전체</option>
 							<option th:value="2" th:selected="${searchDto.search_type == 2}">제목</option>
 							<option th:value="3" th:selected="${searchDto.search_type == 3}">내용</option>
-							<option th:value="4" th:selected="${searchDto.search_type == 4}">작성자</option>
 						</select> <input type="text" class="search_text" name="search_text"
 							th:value="${searchDto != null ? searchDto.search_text : ''}"
 							placeholder="검색어를 입력하세요."> <input type="hidden"
@@ -78,7 +76,7 @@
 									th:text="${notice.notice_title}"></span>
 							</a></td>
 							<td th:text="${notice.notice_create_date}"></td>
-							<td th:text="${notice.member_name}"></td>
+							<td th:text="${notice.member_name} + ' ' + ${notice.position_name} "></td>
 						</tr>
 					</th:block>
 				</tbody>
@@ -110,5 +108,9 @@
 			</div>
 		</div>
 	</section>
+	<script>
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '공지사항';
+	</script>
 </th:block>
 </html>

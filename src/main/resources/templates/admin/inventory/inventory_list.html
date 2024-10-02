@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <section>
-        <h1>비품 목록</h1>
 <div class="list_inventory">
         <br>
         <div id="departmentSelectContainer">
@@ -84,6 +83,8 @@
 </div>
 
 <script>
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '비품목록';
     function fetchInventoryByDepartment() {
         var departmentNo = document.getElementById("departmentSelect").value;
         var table = $('#example').DataTable();

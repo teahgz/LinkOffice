@@ -100,6 +100,8 @@
 			var chart = new google.visualization.PieChart(document.getElementById('piechart-' + questionNo));
 			chart.draw(data, options);
 		}
+		const location_text = document.getElementById('header_location_text');
+	    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 상세';
 	</script>
 </th:block>
 </html>

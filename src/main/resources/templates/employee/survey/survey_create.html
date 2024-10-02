@@ -15,7 +15,6 @@
 
 <th:block layout:fragment="content">
     <section>
-        <h1>설문 작성하기</h1><br>
         <form id="surveyForm">
             <label for="surveyTitle">설문 제목</label><br>
             <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
@@ -71,8 +70,10 @@
             </div>
         </div>
     </div>
-    <!-- 스크립트 추가 -->
     <script>
+    const location_text = document.getElementById('header_location_text');
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 작성';
+    
     document.addEventListener("DOMContentLoaded", function () {
         // CSRF 토큰 가져오기
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');

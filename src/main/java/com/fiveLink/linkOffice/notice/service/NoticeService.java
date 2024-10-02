@@ -82,10 +82,6 @@ public class NoticeService {
                 case 3:
                     results = noticeRepository.findNoticesByContentWithMember(searchText, sort, pageable);
                     break;
-                // 작성자 검색
-                case 4:
-                    results = noticeRepository.findNoticesByMember(searchText, sort, pageable);
-                    break;
             }
         } else {
             results = noticeRepository.findNoticesAllWithMember(sort, pageable);
@@ -99,6 +95,12 @@ public class NoticeService {
         return results.stream().map(result -> {
             Notice notice = (Notice) result[0];
             String memberName = (String) result[1];
+            
+            // 멤버 이름과 포지션 정보 가져오기
+            Long memberNo = notice.getMember().getMemberNo();
+            List<Object[]> memberDetails = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
+            String positionName = (String) memberDetails.get(0)[1]; 
+
             return NoticeDto.builder()
                     .notice_no(notice.getNoticeNo())
                     .notice_title(notice.getNoticeTitle())
@@ -109,6 +111,7 @@ public class NoticeService {
                     .notice_new_img(notice.getNoticeNewImg())
                     .notice_ori_img(notice.getNoticeOriImg())
                     .member_name(memberName)
+                    .position_name(positionName) 
                     .build();
         }).collect(Collectors.toList());
     }

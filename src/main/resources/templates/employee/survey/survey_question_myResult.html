@@ -7,7 +7,6 @@
 	<meta name="_csrf" th:content="${_csrf.token}"/>
 	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <section>
-        <h1>설문 상세</h1>
         <div class="container">
             <h1 th:text="${dto.survey_title}" style="margin: 0; padding: 0; text-align: left;"></h1> 
             <div class="header">
@@ -164,6 +163,8 @@
                 }
             });
         };
+        const location_text = document.getElementById('header_location_text');
+        location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 상세';
     </script>
 </th:block>
 </html>
