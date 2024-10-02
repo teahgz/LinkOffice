@@ -24,6 +24,7 @@ public class VacationSchedulerService {
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
+    //@Scheduled(cron = "*/5 * * * * *")
     @Transactional
     public void updateVacationStatus() {
         LocalDate now = LocalDate.now();
@@ -31,8 +32,6 @@ public class VacationSchedulerService {
             memberRepository.findAll().forEach(member -> {
                 String hire= member.getMemberHireDate();
                 LocalDate hireDate = LocalDate.parse(hire, DATE_FORMATTER);
-                System.out.println("Hire Date: " + hireDate);
-
                 long monthsBetween = ChronoUnit.MONTHS.between(hireDate, now);
 
                 if (monthsBetween < 12) {

@@ -20,7 +20,7 @@
 					</ul>
 				</div>
 			</li>
-			<li th:each="member : ${memberdto}" sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('USER')">
+			<li th:each="member : ${memberdto}" sec:authorize="hasAuthority('USER')">
 				<a th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">근태 조회</a>
 			</li>
 
@@ -106,7 +106,7 @@
 						</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('ORGANIZATION_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('ORGANIZATION_ADMIN')">
 					<a href="#" class="dropdown-toggle">조직 관리</a>
 					<div class="dropdown" data-dropdown-id="departmentDropdown">
 						<ul th:each = "member : ${memberdto}">
@@ -115,7 +115,7 @@
 						</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('INVENTORY_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('INVENTORY_ADMIN')">
 					<a href="#" class="dropdown-toggle">비품 관리</a>
 					<div class="dropdown" data-dropdown-id="inventoryDropdown">
 							<ul th:each = "member : ${memberdto}">
@@ -124,7 +124,7 @@
 							</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('MEMBER_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('MEMBER_ADMIN')">
 					<a href="#" class="dropdown-toggle">사원 관리</a>
 					<div class="dropdown" data-dropdown-id="memberDropdown">
 						<ul th:each = "member : ${memberdto}">
@@ -134,7 +134,7 @@
 						</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('SCHEDULE_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('SCHEDULE_ADMIN')">
 					<a href="#" class="dropdown-toggle">일정 관리</a>
 					<div class="dropdown" data-dropdown-id="scheduleDropdown">
 						<ul> 
@@ -143,7 +143,7 @@
 						</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('MEMBER_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('MEMBER_ADMIN')">
 					<a href="#" class="dropdown-toggle">전자 결재 양식 관리</a>
 					<div class="dropdown" data-dropdown-id="approvalFormDropdown">
 						<ul th:each = "member : ${memberdto}">
@@ -152,16 +152,16 @@
 						</ul>
 					</div>
 				</li>
-				<li sec:authorize="hasAuthority('VACATION_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('VACATION_ADMIN')">
 					<a href="#" class="dropdown-toggle">휴가 관리</a>
 					<div class="dropdown" data-dropdown-id="vacationDropdown">
 						<ul th:each = "member : ${memberdto}">
-							<li><a th:href="@{/vacation/addVacation/{no}(no=${member.member_no})}">휴가 생성</a></li>
-							<li><a th:href="@{/vacation/vacationStandard/{no}(no=${member.member_no})}">휴가 기준</a></li>
+							<li><a th:href="@{/vacation/addVacation/{member_no}(member_no=${member.member_no})}">휴가 생성</a></li>
+							<li><a th:href="@{/vacation/vacationStandard/{member_no}(member_no=${member.member_no})}">휴가 기준</a></li>
 						</ul>
 					</div>
 				</li> 
-				<li sec:authorize="hasAuthority('METTING_ADMIN')">
+				<li sec:authorize="hasAuthority('TOTAL_ADMIN') or hasAuthority('METTING_ADMIN')">
 					<a href="#" class="dropdown-toggle">회의실 관리</a>
 					<div class="dropdown" data-dropdown-id="reservationDropdown">
 						<ul th:each = "member : ${memberdto}">

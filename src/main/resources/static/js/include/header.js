@@ -167,7 +167,9 @@ function unreadNoficationList() {
 
                     listItem.addEventListener('click', () => {
                         const notificationType = listItem.getAttribute('data-notification-type');
-						const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
+
+						            const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
+
                         if (notificationType === '1') {
                             window.location.href = noficationTypeUrl[1];
                         } else if (notificationType === '11' || notificationType === '12' || notificationType === '13') {
@@ -193,6 +195,7 @@ function unreadNoficationList() {
                         } else if (notificationType === '15') {
                             window.location.href = noficationTypeUrl[15]+notificationTypePk;
                         } else {
+
                             console.log('다른 타입의 알림 클릭:', noficationType);
                         }
                     });
