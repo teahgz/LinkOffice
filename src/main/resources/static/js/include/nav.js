@@ -246,8 +246,9 @@ function connectWebSocket() {
                         `;
 						listItem.addEventListener('click', () => {
 								const notificationType = listItem.getAttribute('data-notification-type');
+								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 								if (notificationType === '3') { 
-								window.location.href = noficationTypeUrl[3];
+								window.location.href = `/employee/approval/approval_history_${notificationTypePk}`;
 							} 
 						});	
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -263,12 +264,11 @@ function connectWebSocket() {
                         }
                         message.data.forEach(function(item) {
                             if (Number(item.memberNo) === currentMember) {
-                                 showNotification(title, content, item.memberNo,  message.timestamp, 4, 14);
+                                 showNotification(title, content, item.memberNo,  message.timestamp, 4);
                                 const listItem = document.createElement('li');
 
                                 listItem.setAttribute('data-notification-no', item.nofication_pk);
                                 listItem.setAttribute('data-notification-type', 4);
-                                listItem.setAttribute('data-notification-type', 14);
                                 listItem.innerHTML = `
                                     <strong style="margin-bottom: 5px;">${title}</strong>
                                     <p>${content}</p>
@@ -277,12 +277,10 @@ function connectWebSocket() {
                                 `;
 							    listItem.addEventListener('click', () => {
 							        const notificationType = listItem.getAttribute('data-notification-type');
+							        const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							        if (notificationType === '4') { 
-							            window.location.href = noficationTypeUrl[4];
-							        } else if(notificationType === '14'){
-										window.location.href = noficationTypeUrl[14];
-									} 
-							        
+							            window.location.href = noficationTypeUrl[4]+notificationTypePk;
+							        } 
 							    });								
 	                                notificationModal.insertBefore(listItem, notificationModal.children[1]);
                             }
@@ -300,11 +298,12 @@ function connectWebSocket() {
                             addMarkAsReadListener();
                         }
                         message.data.forEach(function(item) {
-                            showNotification(title, content, item.memberNo, message.timestamp, 5);
+                            showNotification(title, content, item.memberNo, message.timestamp, 5, 14);
                             const listItem = document.createElement('li');
 
                             listItem.setAttribute('data-notification-no', item.nofication_pk);
                             listItem.setAttribute('data-notification-type', 5);
+                            listItem.setAttribute('data-notification-type', 14);
                             listItem.innerHTML = `
                             <strong style="margin-bottom: 5px;">${title}</strong>
                             <p>${content}</p>
@@ -313,9 +312,12 @@ function connectWebSocket() {
                             `;
 							listItem.addEventListener('click', () => {
 							    const notificationType = listItem.getAttribute('data-notification-type');
+								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');	
 							    if (notificationType === '5') { 
-							    window.location.href = noficationTypeUrl[5];
-							    } 
+							    window.location.href = `/employee/approval/approval_history_vacation_detail/${notificationTypePk}`;
+							    } else if(notificationType === '14'){
+								window.location.href = `/employee/vacationapproval/detail/${notificationTypePk}`;	
+								}
 							 });	
                             notificationModal.insertBefore(listItem, notificationModal.children[1]);
                         });
@@ -343,8 +345,9 @@ function connectWebSocket() {
                         `;
 						listItem.addEventListener('click', () => {
 							const notificationType = listItem.getAttribute('data-notification-type');
+							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '6') { 
-							window.location.href = noficationTypeUrl[6];
+							window.location.href = noficationTypeUrl[6]+notificationTypePk;
 							} 
 						});	
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -372,8 +375,9 @@ function connectWebSocket() {
                         `;
 						listItem.addEventListener('click', () => {
 							const notificationType = listItem.getAttribute('data-notification-type');
+							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '7') { 
-							window.location.href = noficationTypeUrl[7];
+							window.location.href = noficationTypeUrl[7]+notificationTypePk;
 							} 
 						});
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -403,10 +407,11 @@ function connectWebSocket() {
                                 `;
 								listItem.addEventListener('click', () => {
 									const notificationType = listItem.getAttribute('data-notification-type');
+									const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 									if (notificationType === '8') { 
-									window.location.href = noficationTypeUrl[8];
+									window.location.href = noficationTypeUrl[8]+notificationTypePk;
 									} else if(notificationType === '15'){
-									window.location.href = noficationTypeUrl[15];	
+									window.location.href = noficationTypeUrl[15]+notificationTypePk;	
 									}
 								});
                                 notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -437,8 +442,9 @@ function connectWebSocket() {
                         `;
 						listItem.addEventListener('click', () => {
 							const notificationType = listItem.getAttribute('data-notification-type');
+							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '9') { 
-							window.location.href = noficationTypeUrl[9];
+							window.location.href = noficationTypeUrl[9]+notificationTypePk;
 							} 
 						});
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -466,8 +472,9 @@ function connectWebSocket() {
                         `;
 						listItem.addEventListener('click', () => {
 							const notificationType = listItem.getAttribute('data-notification-type');
+							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '10') { 
-							window.location.href = noficationTypeUrl[10];
+							window.location.href = noficationTypeUrl[10]+notificationTypePk;
 							} 
 						});
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
