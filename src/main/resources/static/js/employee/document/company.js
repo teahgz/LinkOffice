@@ -8,6 +8,8 @@ $(function () {
 	let selectedFolderNo = null;
 	// 폴더 이름 변경 여부 
 	let isFolderNameChange = false;
+	// 폴더 생성 여부 
+	let folderCreated = 0;
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     var deptNo = document.getElementById("dept_no").textContent;
@@ -78,7 +80,14 @@ $(function () {
 	                        'plugins': ['wholerow', 'types']
 	                    }).on('ready.jstree', function () {
 	                        if (folderList.length > 0) {
-								selectedFolderNo = folderList[0].id;
+								// 처음 폴더 로드 시 
+								if(folderCreated == 0){
+									selectedFolderNo = folderList[0].id;	
+								// 폴더 생성 시 																			
+								} else{
+									// 다시 리셋 
+									folderCreated = 0;
+								}
 	                            $('#tree').jstree('select_node', selectedFolderNo);
 	                            if (isFolderNameChange) {
 	                                openFolderToNode(selectedFolderNo);
@@ -232,7 +241,7 @@ $(function () {
                         	<td><input type="checkbox" class="file_checkbox" id="${file.member_no}"></td>
                             <td>${file.document_ori_file_name}</td>
                             <td>${file.member_no == memberNo ? '본인' : (file.member_name + ' ' + file.position_name + "(" + file.department_name + ")")}</td>
-                            <td>${formatDate(file.document_file_update_date)}</td>
+                            <td>${formatDate(file.document_file_upload_date)}</td>
 	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
 	                            `<a href="/document/file/view/${file.document_file_no}" target="_blank">
 	                            <svg class="file_show_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -673,6 +682,9 @@ $(function () {
 	
 	                    // 폴더 생성 성공 처리
 	                    $('.modal_div').hide();
+	                    folderCreated = 1;
+                        const newFolderId = response.folderNo;
+	                    selectedFolderNo = newFolderId;
 	                    // 폴더 리스트를 다시 가져오기
 						getFolders().then(() => {
 							// 기존 선택 해제
@@ -682,10 +694,8 @@ $(function () {
 	                            tree.deselect_node(prevSelectedNode);
 	                        }
 	                        // 새로 생성된 폴더를 선택하고 열기
-                            const newFolderId = response.folderNo;
                             tree.select_node(newFolderId);
                             openFolderToNode(newFolderId);
-                            loadFiles(newFolderId);
 							$('.folder_create_modal').hide();	
 	                        $('.document_no_folder').hide();
 	                        $('.document_select_folder').show();

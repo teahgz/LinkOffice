@@ -12,7 +12,7 @@
     margin: 1vw;
     padding: 1vw;
     width: 18%;
-	height: 71.3vh;
+	height: 68vh;
     font-size: 1.1vw;
     overflow-y: auto;
 }
@@ -55,7 +55,7 @@
 }
 #first_folder_add{
     border: none;
-    background-color: #fefefe;
+    background-color: #f5f7fa;
     width: 2.3vw;
     height: 3vw;
     display: flex;
@@ -242,7 +242,7 @@
     transform: scale(0.98);
 }
 .folder_name_div{
-	margin-top: 1vh;
+	margin-top: 0.5vh;
 	display: flex;
 	height: 4.5vh;
 	align-items: center;
@@ -275,7 +275,7 @@
 	justify-content: space-between;
 	align-items: center;
 	height: 3.5vh;
-	margin-top: 1vh;
+	margin-top: 0.5vh;
 }
 .select_button{
 	display: flex;
@@ -379,7 +379,7 @@
 .table_div{
 	border-radius: 8px;	
 	border: 1px solid #ddd;
-	margin-top: 1vh;
+	margin-top: 0.5vh;
 }
 .file_table{
 	width: 100%;
@@ -436,7 +436,7 @@
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 .pagination_button {
 	width: 33px;
