@@ -90,7 +90,6 @@ $(function () {
 								// 처음 폴더 로드 시 
 								if(folderCreated == 0){
 									selectedFolderNo = folderList[0].id;	
-									console.log("처음 진입 " + selectedFolderNo);
 								// 폴더 생성 시 																			
 								} else{
 									// 다시 리셋 
