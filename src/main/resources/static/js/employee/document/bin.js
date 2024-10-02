@@ -474,7 +474,12 @@ $(function () {
             this.value = todayStr; 
         }
     });
-        
+	// 검색 입력 시 파일 목록을 다시 로드
+    $('#file_name_input').on('keyup', function() {
+        searchInputValue = $(this).val(); 
+        loadFiles(searchInputValue);
+
+    });        
     // 파일 검색 
     $('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
@@ -487,18 +492,24 @@ $(function () {
 
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
-            loadFiles();
+			const searchInput = $('#file_name_input').val();
+			loadFiles(searchInput);
+            loadFiles(searchInputValue);
         });
 
         // 날짜가 변경될 때 파일 목록을 새로 로드
         startDateInput.addEventListener('change', function() {
             startDateLimit();
-            loadFiles();
+            const searchInput = $('#file_name_input').val();
+			loadFiles(searchInput);
+            loadFiles(searchInputValue);
         });
 
         endDateInput.addEventListener('change', function() {
-            startDateLimit();
-            loadFiles();
+			startDateLimit();
+			const searchInput = $('#file_name_input').val();
+			loadFiles(searchInput);
+            loadFiles(searchInputValue);
         });
     });  
 });
