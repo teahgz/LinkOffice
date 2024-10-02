@@ -119,7 +119,7 @@ const noficationTypeUrl={
      10 : `/employee/approval/approval_reject_detail/`,
      14 : `/employee/vacationapproval/detail/`,
      15 : `/employee/approval/approval_progress_detail/`,
-     2 : `http://localhost:8080/employee/document/department/${headerCurrentDepartment}`
+     2 : `/employee/document/department/${headerCurrentDepartment}`
 }
 
 //통합 알림 리스트
