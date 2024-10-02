@@ -3,9 +3,9 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/employee/survey/survey_question_result.css}" rel="stylesheet" type="text/css">
+	<link th:href="@{/css/employee/survey/survey_question_result.css}"
+		rel="stylesheet" type="text/css">
 	<section>
-		<h1>설문 상세</h1>
 		<div class="container">
 			<h1 th:text="${dto.survey_title}" style="margin: 0; padding: 0; text-align: left;"></h1>
 			
@@ -35,11 +35,13 @@
 			</div>
 			<br>
 
-			<div class="questions">
+			<!-- 질문 출력 (참여 완료가 0이 아닐 경우만 표시) -->
+			<div class="questions" th:if="${completedParticipants != 0}">
 				<div class="question" th:each="question, iterStat : ${questions}">
 					<!-- 질문 번호 및 텍스트 -->
 					<p><strong th:text="${iterStat.count + '.'}"></strong> <span th:text="${question.survey_question_text}"></span></p>
 
+					<!-- 선택형 질문인 경우 -->
 					<div th:if="${question.survey_question_type == 0}">
 						<div class="participation-summary">
 							<p>
@@ -65,11 +67,13 @@
 					</div>
 				</div>
 			</div>
-	<!-- 설문 결과 페이지 수정 버튼 추가 -->
-	<a th:href="@{/employee/survey/update/{survey_no}(survey_no=${dto.survey_no})}" class="btn btn-edit">수정</a>
 
+			<!-- 참여 완료가 0인 경우 -->
+			<div th:if="${completedParticipants == 0}">
+				<p>참여자가 없습니다.</p>
+			</div>
 
-			
+		</div>
 	</section>
 
 	<!-- 구글 차트 스크립트 추가 -->
@@ -100,6 +104,7 @@
 			var chart = new google.visualization.PieChart(document.getElementById('piechart-' + questionNo));
 			chart.draw(data, options);
 		}
+
 		const location_text = document.getElementById('header_location_text');
 	    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 상세';
 	</script>

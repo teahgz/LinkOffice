@@ -18,6 +18,7 @@ public class SurveyTextDto {
 	private Long survey_question_no;
 	private Long survey_participant_no;
 	private String survey_text_answer;
+	private String survey_position_name;
 	 // 추가: 여러 질문과 답변을 처리할 수 있도록 배열 필드 추가
     private String[] survey_question_nos; 
     private String[] survey_text_answers;  

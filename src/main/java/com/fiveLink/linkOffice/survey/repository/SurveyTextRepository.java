@@ -18,10 +18,11 @@ public interface SurveyTextRepository extends JpaRepository<SurveyText, Long> {
 	 @Query("SELECT t FROM SurveyText t WHERE t.surveyQuestion.surveyQuestionNo = :surveyQuestionNo")
 	    List<SurveyText> findByQuestionNo(@Param("surveyQuestionNo") Long surveyQuestionNo);
 
-	 @Query("SELECT t.surveyParticipant.member.memberName, t.surveyTextAnswer " +
+	 @Query("SELECT m.memberName, p.positionName, t.surveyTextAnswer " +
 		       "FROM SurveyText t " +
 		       "JOIN t.surveyParticipant sp " +
 		       "JOIN sp.member m " +
+		       "JOIN m.position p " +
 		       "WHERE t.surveyQuestion.surveyQuestionNo = :surveyQuestionNo")
 		List<Object[]> findTextAnswersWithParticipant(@Param("surveyQuestionNo") Long surveyQuestionNo);
 		
