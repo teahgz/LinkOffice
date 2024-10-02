@@ -35,14 +35,14 @@
 
 .approval_line_table {
     border-collapse: collapse;
-    width: 75%; 
     margin-left: auto; 
+    max-width: 70%;
 }
 
 .approval_line_table th {
+	width: 50px;
     background-color: #f2f2f2;
     font-weight: bold;
-    width: 10%; 
     border: 1px solid #ccc;
     padding: 5px; 
     text-align: center;
@@ -51,7 +51,7 @@
 }
 
 .approval_line_table td {
-    width: 100px; 
+	
     border: 1px solid #ccc;
     padding: 5px; 
     text-align: center;
@@ -164,8 +164,8 @@
     position: relative;
 }
 
-.approval_button {
-    padding: 5px 10px;
+.edit_button {
+    padding: 8px 15px;
     background-color: #B3C7EE;
     border: none;
     border-radius: 5px;
@@ -175,27 +175,23 @@
     color: #000000;
 }
 
-.details_section {
-    position: relative;
-    padding: 20px; 
-}
-
-.reject_button_container {
-    position: absolute;
-    right: 20px; 
-}
-
-.reject_button {
-	display: inline-block;
+.cancel_button {
     padding: 8px 15px;
     background-color: #EEB3B3; 
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
+    position: absolute;
     bottom: 5px; 
     left: 5px; 
 }
+
+.details_section {
+    position: relative;
+    padding: 20px; 
+}
+
 
 .list_button {
     padding: 8px 15px;
@@ -378,13 +374,14 @@
     cursor: pointer;
 }
 
+
 .modal_content h2 {
     margin-top: 0;  
     margin-bottom: 20px;
     text-align: center;
 }
 
-.reject_reason_div {
+.cacel_reason_div {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -392,13 +389,13 @@
     width: 100%;
 }
 
-.modal_button {
+.confirm_cancel_button {
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
-#confirm_reject_button{
+#confirm_cancel_button{
 	margin-left: 10px;
    	padding: 10px 20px;
 	border: none;
@@ -407,7 +404,7 @@
 	background-color: #B1C2DD;
 }
 
-#reject_reason {
+#cancel_reason {
     width: 400px;
     height: 200px;
     padding: 5px;
@@ -418,7 +415,7 @@
     resize: none; 
 }
 
-#reject_reason:focus {
+#cancel_reason:focus {
     outline: none;
     border-color: #B1C2DD;
 }

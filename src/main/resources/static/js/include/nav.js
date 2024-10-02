@@ -180,19 +180,19 @@ function showNotification(title, content, memberNo, time, type, pk) {
             }, 400);
         });
 
-        notificationModal.querySelector('.notification-modal-content').addEventListener('click', function() {
+   notificationModal.querySelector('.notification-modal-content').addEventListener('click', function() {
             const notificationType = this.getAttribute('data-notification-type');
+            const notificationNo = this.getAttribute('data-notification-no');
             const notificationTypePk = this.getAttribute('data-notification-type-pk');
-            if (noficationTypeUrl[notificationType]) {
-                if(notificationTypePk == null){
-                window.location.href = noficationTypeUrl[notificationType];
-				}else{
-                window.location.href = noficationTypeUrl[notificationType]+notificationTypePk;
-					
-				}
-			}else {
-                console.log('알 수 없는 알림 타입:', notificationType);
-            }
+			if (noficationTypeUrl[notificationType]) {
+			    if (notificationTypePk === null || notificationTypePk === '') {
+			        window.location.href = noficationTypeUrl[notificationType]; 
+			    } else {
+			        window.location.href = noficationTypeUrl[notificationType] + notificationTypePk; 
+			    }
+			} else {
+			    console.log('알 수 없는 알림 타입:', notificationType);
+			}
         });
     }
 
@@ -240,10 +240,10 @@ function connectWebSocket() {
                     }
                     message.data.forEach(function(item) {
                         const listItem = document.createElement('li');
-                        showNotification(title, content, item.memberNo, message.timestamp, 3, message.pk);
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 3);  
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
@@ -254,7 +254,7 @@ function connectWebSocket() {
 								const notificationType = listItem.getAttribute('data-notification-type');
 								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 								if (notificationType === '3') { 
-								window.location.href = `/employee/approval/approval_history_${notificationTypePk}`;
+								window.location.href = noficationTypeUrl[3]+notificationTypePk;
 							} 
 						});	
                         notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -270,11 +270,11 @@ function connectWebSocket() {
                         }
                         message.data.forEach(function(item) {
                             if (Number(item.memberNo) === currentMember) {
-                                 showNotification(title, content, item.memberNo,  message.timestamp, 4, message.pk);
+                                 showNotification(title, content, item.memberNo,  message.timestamp, message.nofication_type, message.pk);
                                 const listItem = document.createElement('li');
 
                                 listItem.setAttribute('data-notification-no', item.nofication_pk);
-                                listItem.setAttribute('data-notification-type', 4);
+                                listItem.setAttribute('data-notification-type', message.nofication_type);
                                 listItem.innerHTML = `
                                     <strong style="margin-bottom: 5px;">${title}</strong>
                                     <p>${content}</p>
@@ -304,11 +304,11 @@ function connectWebSocket() {
                             addMarkAsReadListener();
                         }
                         message.data.forEach(function(item) {
-                            showNotification(title, content, item.memberNo, message.timestamp, 5, message.pk);
+                            showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
                             const listItem = document.createElement('li');
 
                             listItem.setAttribute('data-notification-no', item.nofication_pk);
-                            listItem.setAttribute('data-notification-type', 5);
+                            listItem.setAttribute('data-notification-type', message.nofication_type);
                             listItem.innerHTML = `
                             <strong style="margin-bottom: 5px;">${title}</strong>
                             <p>${content}</p>
@@ -319,9 +319,9 @@ function connectWebSocket() {
 							    const notificationType = listItem.getAttribute('data-notification-type');
 								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');	
 							    if (notificationType === '5') { 
-							    window.location.href = `/employee/approval/approval_history_vacation_detail/${notificationTypePk}`;
+							    window.location.href = noficationTypeUrl[5]+notificationTypePk;
 							    } else if(notificationType === '14'){
-								window.location.href = `/employee/vacationapproval/detail/${notificationTypePk}`;	
+								window.location.href = noficationTypeUrl[14]+notificationTypePk;	
 								}
 							 });	
                             notificationModal.insertBefore(listItem, notificationModal.children[1]);
@@ -337,11 +337,11 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 6, message.pk);
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 6);                        
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
@@ -367,11 +367,11 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 7, message.pk);
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 7);                              
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
@@ -398,12 +398,11 @@ function connectWebSocket() {
                         }
                         message.data.forEach(function(item) {
                             if (Number(item.memberNo) === currentMember) {
-                                 showNotification(title, content, item.memberNo,  message.timestamp, 8, message.pk);
                                 const listItem = document.createElement('li');
+                                 showNotification(title, content, item.memberNo,  message.timestamp, message.nofication_type, message.pk);
 
                                 listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        		listItem.setAttribute('data-notification-type', 8);                                    
-                        		listItem.setAttribute('data-notification-type', 15);                                    
+                                listItem.setAttribute('data-notification-type', message.nofication_type);
                                 listItem.innerHTML = `
                                     <strong style="margin-bottom: 5px;">${title}</strong>
                                     <p>${content}</p>
@@ -434,11 +433,11 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 9, message.pk);
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 9);  
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
@@ -464,11 +463,11 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 10, message.pk);
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
-                        listItem.setAttribute('data-notification-type', 10);                          
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
                         listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
@@ -500,7 +499,7 @@ function connectWebSocket() {
                             addMarkAsReadListener();
                         }
                         message.data.forEach(function(item) {
-                            showNotification(title, item.content, item.memberNo, message.timestamp, 1);
+                            showNotification(title, item.content, item.memberNo, message.timestamp, 1, "");
                             const listItem = document.createElement('li');
 
                             listItem.setAttribute('data-notification-no', item.nofication_pk);
@@ -557,7 +556,7 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 11);
+                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
@@ -588,7 +587,7 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 11);
+                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
@@ -619,7 +618,7 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 13);
+                        showNotification(title, content, item.memberNo, message.timestamp, 13, "");
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);

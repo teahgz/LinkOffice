@@ -86,6 +86,9 @@ public class NoficationService {
     //휴가 결재
     public boolean readTypePkNotification(Long memberNo, int functionType, Long noficationTypePk) {
         try {
+        	System.out.println("알림"+memberNo);
+        	System.out.println(functionType);
+        	System.out.println(noficationTypePk);
             Map<String, Object> params = new HashMap<>();
             params.put("functionType", functionType);
             params.put("memberNo", memberNo);
