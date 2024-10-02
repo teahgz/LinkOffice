@@ -59,6 +59,7 @@ select {
 }
 
 .vacationapproval_list_table {
+	background-color: #ffffff;
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
