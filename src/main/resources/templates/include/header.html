@@ -26,7 +26,7 @@
                 <div class="user_logout_container">
 
                     <div class="user_image" id="userImage">
-                        <img th:src="@{/img/user_profile.png}" class="user_photo"/>
+                        <img th:src="@{/img/user_profile.png}" class="user_photo" sec:authorize="hasAuthority('TOTAL_ADMIN')"/>
                         <img th:src="@{/img/user_profile.png}" class="user_photo" onclick="toggleDropdown(event)" sec:authorize="hasAuthority('USER')"/>
                         <ul class="dropdown_menu" id="dropdownMenu" sec:authorize="hasAuthority('USER')">
                             <li><a href="#">마이페이지</a></li>
