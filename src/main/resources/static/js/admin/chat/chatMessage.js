@@ -519,7 +519,7 @@ if (sendButton && messageInput) {
          const chatRoomNo = message.chatRoomNo;
          const chatRoomName = message.chatRoomName;
          const countPeople = message.countPeople;
-         const existingChatRoom = document.querySelector(`#chatList input[type="hidden"][value="${chatRoomNo}"]`);
+         const existingChatRoom = document.querySelector(`input[type="hidden"][value="${chatRoomNo}"]`);
 
          if(currentChatRoomNo === chatRoomNo){
             console.log(countPeople);
@@ -598,11 +598,7 @@ if (sendButton && messageInput) {
          }
 
       } else {
-            alarmSocket.send(JSON.stringify({
-                type: 'noficationChat',
-                chat_sender_no: currentMember,
-                chat_room_no: currentChatRoomNo
-            }));
+
 
            if (message.chat_room_no === currentChatRoomNo) {
                 markAllMessagesAsRead(currentChatRoomNo);
@@ -705,6 +701,15 @@ if (sendButton && messageInput) {
         };
         socket.send(JSON.stringify(message));
         document.getElementById("messageInput").value = "";
+        // 알림 소켓에 전송할 알림 메시지 생성
+         const notificationMessage = {
+             type: 'noficationChat',
+             chat_sender_no: chat_sender_no, // 여기서 사용자의 번호로 바꿉니다.
+             chat_room_no: currentChatRoomNo
+         };
+
+         // 알림 소켓에 메시지 전송
+         alarmSocket.send(JSON.stringify(notificationMessage));
 
 
     };

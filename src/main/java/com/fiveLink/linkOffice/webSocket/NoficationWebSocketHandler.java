@@ -128,21 +128,23 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         Long senderNo;
         Long currentRoom;
 
-        if (senderNoObj instanceof String) {
-            senderNo = Long.parseLong((String) senderNoObj);
-        } else if (senderNoObj instanceof Integer) {
-            senderNo = ((Integer) senderNoObj).longValue();
-        } else {
-            throw new IllegalArgumentException("타입 오류");
-        }
+		if (senderNoObj instanceof String) {
+			senderNo = Long.parseLong((String) senderNoObj);
+		} else if (senderNoObj instanceof Integer) {
+			senderNo = ((Integer) senderNoObj).longValue();
+		} else {
+			System.out.println("Unexpected senderNoObj type: " + senderNoObj.getClass());
+			throw new IllegalArgumentException("타입 오류: chat_sender_no의 타입이 예상하지 못한 타입입니다.");
+		}
 
-        if (currentRoomObj instanceof String) {
-            currentRoom = Long.parseLong((String) currentRoomObj);
-        } else if (currentRoomObj instanceof Integer) {
-            currentRoom = ((Integer) currentRoomObj).longValue();
-        } else {
-            throw new IllegalArgumentException("타입 오류");
-        }
+		if (currentRoomObj instanceof String) {
+			currentRoom = Long.parseLong((String) currentRoomObj);
+		} else if (currentRoomObj instanceof Integer) {
+			currentRoom = ((Integer) currentRoomObj).longValue();
+		} else {
+			System.out.println("Unexpected currentRoomObj type: " + currentRoomObj.getClass());
+			throw new IllegalArgumentException("타입 오류: chat_room_no의 타입이 예상하지 못한 타입입니다.");
+		}
 
         List<Map<String, Object>> unreadCounts = new ArrayList<>();
         List<Long> userIdsInChatRoom = chatRoomService.findChatRoomMembers(currentRoom, senderNo);
@@ -153,8 +155,8 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 
         for (Long memberNo : userIdsInChatRoom)  {
 			String chatRoomName = chatMemberService.selectChatRoomName(currentRoom, memberNo);
-			String chatMessage = chatMessageService.getChatMessageText(currentRoom);
-			String nofication_content = "[" + chatRoomName + "]<br>" + chatMessage ;
+			// String chatMessage = chatMessageService.getChatMessageText(currentRoom);
+			String nofication_content = "[" + chatRoomName + "]<br><p>메신저가 도착했습니다.</p>";
 
 
 			NoficationDto noficationDto = new NoficationDto();
