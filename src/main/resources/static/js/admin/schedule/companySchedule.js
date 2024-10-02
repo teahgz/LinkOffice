@@ -262,6 +262,16 @@ document.addEventListener('DOMContentLoaded', function() {
 	            } else {
 	                info.el.style.cursor = 'default'; 
 	            }  
+	            
+	            if (info.event.extendedProps.description === '공휴일') {
+	                const dateCell = info.el.closest('.fc-daygrid-day');
+	                if (dateCell) {
+	                    const dateCellContent = dateCell.querySelector('.fc-daygrid-day-number');
+	                    if (dateCellContent) {
+	                        dateCellContent.style.color = '#FF0000';
+	                    } 
+	                }
+	            }
 	        },
             googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
             eventSources: [
@@ -608,6 +618,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		}).then((result) => {
 			if (result.isConfirmed) { 
 				document.getElementById('eventModal').style.display = 'none';
+			    document.getElementById('allDay').checked = false;
+                document.getElementById('allDay').dispatchEvent(new Event('change'));
+                
+                const editTitle = document.getElementById('modal-title');
+				editTitle.textContent = '사내 일정 등록'; 
 				resetForm(createCompanyScheduleForm); 
 				document.getElementById('eventRepeatModal').style.display = 'none'; 
 			}
@@ -630,7 +645,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				document.getElementById('eventModal').style.display = 'none';
+			    document.getElementById('allDay').checked = false;
+                document.getElementById('allDay').dispatchEvent(new Event('change'));
+                
+                const editTitle = document.getElementById('modal-title');
+				editTitle.textContent = '사내 일정 등록'; 
+				
 				resetForm(createCompanyScheduleForm);
+				document.getElementById('eventRepeatModal').style.display = 'none'; 
 			}
 		});
 	});
@@ -797,11 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (repeatOption != 0 && !repeatEndDate && !$('#repeatOption').is(':disabled')) {
 		    showAlert('반복 종료일을 입력해 주세요.');
 		    return;
-		} 
-	    if (!description) {
-	        showAlert('내용을 입력해 주세요.');
-	        return;
-	    } 
+		}  
 	
 	    // 반복 옵션 값 
 	    const repeat_insert_date = document.getElementById('eventDate').value;

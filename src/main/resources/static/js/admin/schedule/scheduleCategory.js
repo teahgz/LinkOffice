@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            }
 			            Swal.fire({ 
 						    text: errorMsg,
-						    icon: 'error', 
+						    icon: 'warning', 
 						    confirmButtonColor: '#B1C2DD', 
 						    confirmButtonText: '확인', 
 						});
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            }
 			            Swal.fire({ 
 						    text: errorMsg,
-						    icon: 'error', 
+						    icon: 'warning', 
 						    confirmButtonColor: '#B1C2DD', 
 						    confirmButtonText: '확인', 
 						});

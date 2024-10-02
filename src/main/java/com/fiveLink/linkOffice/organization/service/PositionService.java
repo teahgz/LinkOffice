@@ -250,8 +250,8 @@ public class PositionService {
         }
     }
     
-    public List<PositionDto> getActivePositions() {
-        return positionRepository.findByPositionStatusOrderByPositionLevelAsc(0L)
+    public List<PositionDto> getActivePositions(Long id) {
+        return positionRepository.findByPositionStatusAndPositionNoNotOrderByPositionLevelAsc(0L, id)
                 .stream()
                 .map(this::updatemapToDto)
                 .collect(Collectors.toList());

@@ -92,32 +92,32 @@ document.addEventListener("DOMContentLoaded", function () {
     timeSlots.push('23:00');
 
     var calendarEl = document.getElementById('calendar');
-    function initializeCalendar(data) { 
+	function initializeCalendar(data) {
 	    const mergedEvents = {};
 	
 	    data.forEach(function(reservation) {
-	        const date = reservation.meeting_reservation_date.split('T')[0]; 
+	        const date = reservation.meeting_reservation_date.split('T')[0];
 	
 	        if (!mergedEvents[date]) {
 	            mergedEvents[date] = {
-	                id: reservation.meeting_reservation_no,   
-	                start: date,  
-	                count: 1, 
+	                id: reservation.meeting_reservation_no,
+	                start: date,
+	                count: 1,
 	                extendedProps: {
 	                    meeting_reservations: [],
-	               		className : 'meeting_ping'
+	                    className: 'meeting_ping'
 	                }
 	            };
 	        } else {
-	            mergedEvents[date].count += 1; 
+	            mergedEvents[date].count += 1;
 	        }
-	 
+	
 	        mergedEvents[date].extendedProps.meeting_reservations.push(reservation);
 	    });
-	 
+	
 	    const events = Object.values(mergedEvents).map(event => ({
 	        id: event.id,
-	        title: `${event.title}`,  
+	        title: `${event.title}`,
 	        backgroundColor: 'transparent',
 	        borderColor: 'transparent',
 	        textColor: '#000000',
@@ -127,65 +127,80 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	    calendar = new FullCalendar.Calendar(calendarEl, {
 	        initialView: 'dayGridMonth',
-	        locale: 'ko', 
+	        locale: 'ko',
 	        buttonText: {
-	            today: '오늘' 
+	            today: '오늘'
 	        },
 	        validRange: {
-	            start: today 
+	            start: today
 	        },
-	        events: events,
 	        dateClick: function(info) {
-	            selectedDate = info.dateStr;  
+	            selectedDate = info.dateStr;
 	            fetchReservations(selectedDate);
-	            
+	
 	            document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
-	                cell.style.backgroundColor = ''; 
+	                cell.style.backgroundColor = '';
 	            });
 	            const selectedCell = document.querySelector(`[data-date="${selectedDate}"]`);
-	            
+	
 	            if (selectedCell) {
 	                selectedCell.style.backgroundColor = '#a6bef7';
-	                document.getElementById('pick_date_text').innerText = '';
 	                document.getElementById('pick_date_text').innerText = formatDate(selectedDate);
-	            } 
+	            }
 	        },
+	        googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
+	        eventSources: [
+	            {
+	                googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+	                className: 'google-holiday',
+	                backgroundColor: 'transparent',
+			        borderColor: 'transparent',
+			        textColor: '#000000',
+	            },
+	            {
+	                events: events
+	            }
+	        ],
 	        eventClick: function(info) {
 	            const eventDate = new Date(info.event.start);
-	            eventDate.setDate(eventDate.getDate() + 1); 
-	            const formattedDate = eventDate.toISOString().split('T')[0]; 
+	            eventDate.setDate(eventDate.getDate() + 1);
+	            const formattedDate = eventDate.toISOString().split('T')[0];
 	
-	            fetchReservations(formattedDate); 
-	            highlightSelectedDate(formattedDate); 
+	            fetchReservations(formattedDate);
+	            highlightSelectedDate(formattedDate);
 	        },
-	        // '일' 삭제
 	        dayCellContent: function(info) {
 	            var number = document.createElement("a");
 	            number.classList.add("fc-daygrid-day-number");
 	            number.innerHTML = info.dayNumberText.replace("일", '').replace("日","");
-	
-	            if (info.view.type === "dayGridMonth") {
-	                return {
-	                    html: number.outerHTML
-	                };
-	            }
-	            return {
-	                domNodes: []
-	            };
+	            
+	            return { html: number.outerHTML };
 	        },
-	        eventDidMount: function(info) { 
-	            info.el.style.cursor = 'pointer'; 
-	        }, eventContent: function(info) {
-			    return {
-			        html: '<span class="small-dot">●</span>'
-			    };
-			}
-
+	        eventDidMount: function(info) {
+	            info.el.style.cursor = 'pointer';
+	             
+	            if (info.event.extendedProps.description === '공휴일') {
+	                const dateCell = info.el.closest('.fc-daygrid-day');
+	                if (dateCell) {
+	                    const dateCellContent = dateCell.querySelector('.fc-daygrid-day-number');
+	                    if (dateCellContent) {
+	                        dateCellContent.style.color = '#FF0000';
+	                    } 
+	                }
+	            }
+	        },
+	        eventContent: function(info) {  
+	            if (info.event.extendedProps.description !== '공휴일') {
+	                return {
+	                    html: '<span class="small-dot">●</span>'
+	                };
+	            }return;
+	        }
 	    });
 	
 	    calendar.render();
 	}
-	
+		
 	function highlightSelectedDate(date) {
 	    document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
 	        cell.style.backgroundColor = ''; 
@@ -568,6 +583,11 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#openOrganizationChartButton').on('click', function() {
         openOrganizationChartModal();
     });
+    
+	document.getElementById('chart_close').addEventListener('click', function() {  
+		$('#organization-chart').jstree("uncheck_all");
+		$('#organizationChartModal').modal('hide');	 
+	});
 	
 	function openOrganizationChartModal() {
 	    selectedMembers = [];   
