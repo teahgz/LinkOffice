@@ -33,6 +33,7 @@ public class AddVacationSchedulerService {
         this.vacationService = vacationService;
     }
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
+    //@Scheduled(cron = "*/5 * * * * *")
     @Transactional
     public void addVacationScheduler() {
         if(vacationService.countCheckOneYear() != 0){
@@ -116,7 +117,7 @@ public class AddVacationSchedulerService {
 
 
         } catch (DateTimeParseException e) {
-           return false;
+            return false;
         }
     }
 

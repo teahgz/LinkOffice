@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         Swal.fire({
-            title: '확인',
             text: '입력되지 않은 연차의 개수는 0으로 지정됩니다. 계속하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <th:block th:fragment="headerLayout">
     <link th:href="@{/css/include/header.css}" rel="stylesheet" type="text/css">
     <header>
@@ -26,7 +27,7 @@
 
                     <div class="user_image" id="userImage">
                         <img th:src="@{/img/user_profile.png}" class="user_photo"/>
-                        <ul class="dropdown_menu" id="dropdownMenu">
+                        <ul class="dropdown_menu" id="dropdownMenu" sec:authorize="hasAuthority('USER')">
                             <li><a href="#">마이페이지</a></li>
                             <li><a href="#">정보 수정</a></li>
                             <li><a href="#">서명 등록</a></li>
