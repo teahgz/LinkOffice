@@ -100,8 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	        if (!mergedEvents[date]) {
 	            mergedEvents[date] = {
-	                id: reservation.meeting_reservation_no,  
-	                title: '📌',  
+	                id: reservation.meeting_reservation_no,   
 	                start: date,  
 	                count: 1, 
 	                extendedProps: {
@@ -176,7 +175,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	        },
 	        eventDidMount: function(info) { 
 	            info.el.style.cursor = 'pointer'; 
-	        }, 
+	        }, eventContent: function(info) {
+			    return {
+			        html: '<span class="small-dot">●</span>'
+			    };
+			}
+
 	    });
 	
 	    calendar.render();
