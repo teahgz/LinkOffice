@@ -20,8 +20,8 @@
                          <span id="session-time">30:00</span>
                      </div>
                  </div>
-                 <div class="user_name" style="margin-right:10px; ">
-                     <span id="user_info" th:text="${member.member_name} + ' ' + ${member.position_name}" style="font-size:13px; color: gray;"></span>
+                 <div class="user_name" style="margin-right:10px; "> 
+                     <span id="user_info" th:text="${member.member_name} + ' ' + (${member.position_name == '관리자' ? '' : member.position_name})" style="font-size:13px; color: gray;"></span> 
                  </div>
                 <div class="user_logout_container">
 
