@@ -35,14 +35,14 @@
 
 .approval_line_table {
     border-collapse: collapse;
-    width: 75%; 
+    max-width: 70%; 
     margin-left: auto; 
 }
 
 .approval_line_table th {
     background-color: #f2f2f2;
     font-weight: bold;
-    width: 10%; 
+    width: 50px; 
     border: 1px solid #ccc;
     padding: 5px; 
     text-align: center;
@@ -51,7 +51,6 @@
 }
 
 .approval_line_table td {
-    width: 100px; 
     border: 1px solid #ccc;
     padding: 5px; 
     text-align: center;
