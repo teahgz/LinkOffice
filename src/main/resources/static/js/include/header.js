@@ -76,6 +76,7 @@ document.addEventListener('click', function(event) {
     if (!event.target.closest('.bell')) {
         notificationModal.classList.remove('show');
     }
+    
 });
 
 //통합알림 개수
@@ -102,9 +103,21 @@ function bellUnreadCount() {
                 }
            });
 }
+
+
 const noficationTypeUrl={
      1: `/api/chat/${headerCurrentMember}`,
-     11: `http://localhost:8080/employee/schedule`
+     11: `http://localhost:8080/employee/schedule`,
+     3 : `/employee/approval/approval_history_vacation_detail/`,
+     4 : `/employee/approval/approval_history_vacation_detail/`,
+     5 : `/employee/approval/approval_history_vacation_detail/`,
+     6 : `/employee/vacationapproval/detail/`,
+     7 : `/employee/approval/approval_history_detail/`,
+     8 : `/employee/approval/approval_history_detail/`,
+     9 : `/employee/approval/approval_history_detail/`,
+     10 : `/employee/approval/approval_reject_detail/`,
+     14 : `/employee/vacationapproval/detail/`,
+     15 : `/employee/approval/approval_progress_detail/`
 }
 
 //통합 알림 리스트
@@ -133,6 +146,7 @@ function unreadNoficationList() {
                     const listItem = document.createElement('li');
                     listItem.setAttribute('data-notification-no', notification.nofication_no);
                     listItem.setAttribute('data-notification-type', notification.nofication_type);
+                    listItem.setAttribute('data-notification-type-pk', notification.nofication_type_pk);
                     const date = new Date(notification.nofication_create_date);
                     const formattedDate = date.toLocaleDateString('ko-KR', {
                         year: '2-digit',
@@ -153,10 +167,31 @@ function unreadNoficationList() {
 
                     listItem.addEventListener('click', () => {
                         const notificationType = listItem.getAttribute('data-notification-type');
+						const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
                         if (notificationType === '1') {
                             window.location.href = noficationTypeUrl[1];
                         } else if (notificationType === '11' || notificationType === '12' || notificationType === '13') {
                             window.location.href = noficationTypeUrl[11];
+                        } else if (notificationType === '3') {
+                            window.location.href = noficationTypeUrl[3]+notificationTypePk;
+                        } else if (notificationType === '4') {
+                            window.location.href = noficationTypeUrl[4]+notificationTypePk;
+                        } else if (notificationType === '5') {
+                            window.location.href = noficationTypeUrl[5]+notificationTypePk;
+                        } else if (notificationType === '6') {
+                            window.location.href = noficationTypeUrl[6]+notificationTypePk;
+                        } else if (notificationType === '7') {
+                            window.location.href = noficationTypeUrl[7]+notificationTypePk;
+                        } else if (notificationType === '8') {
+                            window.location.href = noficationTypeUrl[8]+notificationTypePk;
+                        } else if (notificationType === '9') {
+                            window.location.href = noficationTypeUrl[9]+notificationTypePk;
+                        } else if (notificationType === '10') {
+                            window.location.href = noficationTypeUrl[10]+notificationTypePk;
+                        } else if (notificationType === '14') {
+                            window.location.href = noficationTypeUrl[14]+notificationTypePk;
+                        } else if (notificationType === '15') {
+                            window.location.href = noficationTypeUrl[15]+notificationTypePk;
                         } else {
                             console.log('다른 타입의 알림 클릭:', noficationType);
                         }
