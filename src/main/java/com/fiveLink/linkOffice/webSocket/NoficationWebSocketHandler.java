@@ -371,6 +371,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	    		Map<String, Object> responseMap = new HashMap<>();
 	    		responseMap.put("type", "vacationApprovalAlarm");
 	    		responseMap.put("title", nofication_title);
+				responseMap.put("nofication_type", noficationDto.getNofication_type());
 	    		responseMap.put("content",nofication_content);
 	    		responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
@@ -456,6 +457,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				Map<String, Object> responseMap = new HashMap<>();
 				responseMap.put("type", "vacationApprovalReviewsAlarm");
 				responseMap.put("title", nofication_title);
+				responseMap.put("nofication_type", nofication_type);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
@@ -560,6 +562,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	             Map<String, Object> responseMap = new HashMap<>();
 	             responseMap.put("type", "vacationAppApproveAlarm");
 	             responseMap.put("title", nofication_title);
+			     responseMap.put("nofication_type", noficationDto.getNofication_type());
 	             responseMap.put("content", noficationDto.getNofication_content());
 	             responseMap.put("data", unreadCounts);
 				  String currentTime = getCurrentFormattedDateTime();
@@ -661,6 +664,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				Map<String, Object> responseMap = new HashMap<>();
 				responseMap.put("type", "vacationAppRejectAlarm");
 				responseMap.put("title", nofication_title);
+				responseMap.put("nofication_type", noficationDto.getNofication_type());
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
@@ -780,6 +784,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				Map<String, Object> responseMap = new HashMap<>();
 				responseMap.put("type", "approvalAlarm");
 				responseMap.put("title", nofication_title);
+				responseMap.put("nofication_type", noficationDto.getNofication_type());
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
@@ -867,6 +872,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				Map<String, Object> responseMap = new HashMap<>();
 				responseMap.put("type", "approvalReviewsAlarm");
 				responseMap.put("title", nofication_title);
+				responseMap.put("nofication_type", noficationDto.getNofication_type());
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
@@ -971,6 +977,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	             Map<String, Object> responseMap = new HashMap<>();
 	             responseMap.put("type", "appApproveAlarm");
 	             responseMap.put("title", nofication_title);
+			     responseMap.put("nofication_type", noficationDto.getNofication_type());
 	             responseMap.put("content", noficationDto.getNofication_content());
 	             responseMap.put("data", unreadCounts);
 				  String currentTime = getCurrentFormattedDateTime();
@@ -1070,6 +1077,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 				Map<String, Object> responseMap = new HashMap<>();
 				responseMap.put("type", "appRejectAlarm");
 				responseMap.put("title", nofication_title);
+				responseMap.put("nofication_type", noficationDto.getNofication_type());
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
 				String currentTime = getCurrentFormattedDateTime();
