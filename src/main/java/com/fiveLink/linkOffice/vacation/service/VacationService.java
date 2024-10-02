@@ -183,4 +183,9 @@ public class VacationService {
         return vacationMapper.checkTypeName(map);
     }
 
+    //사용자 별 휴가 개수
+    public int userVacationCount(Long memberNo) {
+        return vacationMapper.userVacationCount(memberNo);
+    }
+
 }

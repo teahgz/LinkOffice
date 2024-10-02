@@ -48,13 +48,14 @@
 	            </div>
             </div>
 			<div class="main_item_box custom-height-4">
-	            <a class="main_link" th:href="@{/휴가 링크}">
+	            <a class="main_link" th:href="@{/employee/vacationapproval/list}">
 		            <span class="main_box_title">
 	            		휴가 현황
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 	            	</span>
 	            </a>
             	<h3>휴가 현황</h3>
+				<p id="vacationDays">2024년 기준 본인의 남은 휴가 개수를 불러오는 중...</p>
             </div> 
             <div class="main_item_box custom-height-11"> 
 	     		<h3>날씨</h3>
@@ -173,5 +174,6 @@
     <script src="/js/employee/weather/weather.js"></script>
     <script src="/js/employee/schedule/homeSchedule.js"></script>
     <script src="/js/employee/meeting/homeMeeting.js"></script>
+	<script src="/js/employee/vacationapproval/homeVacationCount.js"></script>
      </th:block>
 </html>

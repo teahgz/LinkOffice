@@ -1,6 +1,8 @@
 package com.fiveLink.linkOffice.vacation.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationStandardDto;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
 import com.fiveLink.linkOffice.vacation.service.VacationService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class VacationViewController {
@@ -69,6 +72,16 @@ public class VacationViewController {
         model.addAttribute("vacationStandard", vacationStandard);
         //휴가 생성 페이지로 이동
         return "admin/vacation/vacation";
+    }
+
+    //사용자 별 휴가 개수
+    @GetMapping("/user/vacationCount/{vacationMemberNo}")
+    @ResponseBody
+    public Map<String, Object> userVacationCount(@PathVariable("vacationMemberNo")Long vacationMemberNo) {
+        int result = vacationService.userVacationCount(vacationMemberNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("remainingVacationDays", result);
+        return response;
     }
 }
 

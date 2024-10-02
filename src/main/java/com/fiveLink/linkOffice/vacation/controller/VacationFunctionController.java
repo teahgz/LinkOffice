@@ -57,7 +57,7 @@ public class VacationFunctionController {
 
                     if (vacationService.addVacation(dto) > 0) {
                         resultMap.put("res_code", "200");
-                        resultMap.put("res_msg", "성공적으로 생성되었습니다.");
+                        resultMap.put("res_msg", "휴가 종류가 추가되었습니다.");
                     }
                 }
 
@@ -70,7 +70,7 @@ public class VacationFunctionController {
 
                 if (vacationService.addVacation(dto) > 0) {
                     resultMap.put("res_code", "200");
-                    resultMap.put("res_msg", "성공적으로 생성되었습니다.");
+                    resultMap.put("res_msg", "휴가 종류가 추가되었습니다.");
                 }
 
             }
@@ -100,7 +100,7 @@ public class VacationFunctionController {
 
                 if(vacationService.addTypeVacation(dto)>0) {
                     resultMap.put("res_code", "200");
-                    resultMap.put("res_msg", "성공적으로 생성되었습니다.");
+                    resultMap.put("res_msg", "휴가가 생성되었습니다.");
                 }
 
 
@@ -168,7 +168,7 @@ public class VacationFunctionController {
             if (vacationService.checkTypeName(params) > 0) {
                 if (vacationService.addTypeVacation(dto) > 0) {
                     resultMap.put("res_code", "200");
-                    resultMap.put("res_msg", "성공적으로 수정되었습니다.");
+                    resultMap.put("res_msg", "종류 수정이 완료되었습니다.");
                 }
             }
 
@@ -280,7 +280,7 @@ public class VacationFunctionController {
 
             if (vacationService.checkStandard(dto) > 0) {
                 resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "성공적으로 처리되었습니다.");
+                resultMap.put("res_msg", "휴가 기준이 설정되었습니다.");
             }
         } catch (Exception e) {
             e.printStackTrace();

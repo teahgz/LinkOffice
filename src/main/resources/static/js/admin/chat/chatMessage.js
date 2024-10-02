@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
+document.getElementById('header_location_text').style.display = 'none';
 
 if (sendButton && messageInput) {
     function toggleSendButton() {
