@@ -3,10 +3,10 @@ let folderList = [];
 
 $(function () {
 	// 알림
-	window.functionTypes = [2];
-	if (window.functionTypes.includes(2)) {
-	    markNotificationsAsRead(2);
-	 }
+    window.functionType = 2;
+    if (window.functionType === 2) {
+        markNotificationsAsRead(window.functionType);
+    }
 	 
 	const location_text = document.getElementById('header_location_text');
 	location_text.innerHTML = '문서함&emsp;&gt;&emsp;부서 문서함';	
