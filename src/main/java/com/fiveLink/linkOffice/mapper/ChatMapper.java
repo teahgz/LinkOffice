@@ -1,11 +1,9 @@
 package com.fiveLink.linkOffice.mapper;
 
+import com.fiveLink.linkOffice.chat.domain.ChatMember;
 import com.fiveLink.linkOffice.chat.domain.ChatMemberDto;
-import com.fiveLink.linkOffice.chat.domain.ChatMessageDto;
-import com.fiveLink.linkOffice.vacation.domain.VacationDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ public interface ChatMapper {
     //채팅방 목록 가져오기
     List<ChatMemberDto> selectChatList(Long memberNo);
     //채팅 내용 가져오기
-    List<Map<String, Object>> getChatMessages(Long roomNo);
+    List<Map<String, Object>> getChatMessages(Map<String, Object> params);
     //채팅방 갯수 번호
     int countRoomNo();
     //채팅방 목록 디비 입력 이름+부서
@@ -32,23 +30,32 @@ public interface ChatMapper {
     String selectMemberChatRoomName(Long chatRoomNo);
     //채팅방 멤버 가져오기
     List<Long> getMemberInfo(Long chatRoomNo);
-
     //개인 채팅방 정보 가져오기
     List<ChatMemberDto> getMembersByChatRoomNo(Long chatRoomNo);
-
     // 채팅방 나가기
     int chatRoomOut(Map<String, Object> params);
-
     // 채팅방 고정
     int chatRoomPin(Map<String, Object> params);
-
     // 채팅방 고정 여부
     int selectChatPin(Map<String, Object> params);
     //참여자 수
     int countParicipant(Long chatRoomNo);
-
     // 채팅방 별 안읽은 메시지 읽기
     List<Long> markMessagesAsReadForChatRoom(Map<String, Object> params);
     //채팅방 별 안읽은 메시지 개수
     List<Map<String, Object>> getUnreadCounts(Long memberNo);
+
+    List<Long> findChatRoomsByMember(Long selectedMembers);
+
+    List<Long> findMembersByChatRoom(Long chatRoomNo);
+
+    //한 채팅방 참여자 번호
+    List<Long> findChatRoomMembers(Map<String, Object> params);
+
+    //한 채팅방 참여자 안읽은 개수
+    int chatRoomUnread(Map<String, Object> params);
+
+    //채팅 메시지
+    String getChatMessageText(Long chatRoom);
+
 }

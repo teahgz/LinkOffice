@@ -1,53 +1,21 @@
 @charset "UTF-8";
 
 .list_member {
-    position: relative;
+	margin: auto;
     width: 80%;
-    max-width: 1300px;
-    margin: 50px auto;
     padding: 40px;
     box-sizing: border-box;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
 }
 
 .search_sort_container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 20px;
 }
 
-.search_container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.download_container{
-	margin-bottom: 20px;
-	float: right;
-}
-
-.download_button{
-	padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    font-size: 16px;
-}
-
-.download_button:hover {
-    background-color: #9CAFC7;
-}
-
 select, .search_text {
-    padding: 12px 18px;
+    padding: 10px 18px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 13px;
     transition: border-color 0.3s;
 }
 
@@ -57,7 +25,7 @@ select:focus, .search_text:focus {
 }
 
 select {
-    width: 120px;
+    width: 100px;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
@@ -75,7 +43,7 @@ select {
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 .search_button:hover {
@@ -87,7 +55,7 @@ select {
 }
 
 #sort {
-	margin-left:430px;
+	float: right;
 }
 
 .employee_table {
@@ -97,14 +65,14 @@ select {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .employee_table th, .employee_table td {
-    padding: 18px 15px;
+	padding: 11px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 15px;
+    font-size: 13px;
 }
 
 .employee_table th {
@@ -112,7 +80,7 @@ select {
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: 13px;
 }
 
 .employee_table tr:last-child td {
@@ -120,6 +88,7 @@ select {
 }
 
 .employee_table tbody tr {
+	font-size: 13px;
     transition: background-color 0.3s;
 }
 
@@ -130,12 +99,11 @@ select {
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
 }
 
 .pagination button {
     margin: 0 5px;
-    padding: 10px 15px;
+    padding: 8px 13px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;
@@ -151,4 +119,21 @@ select {
     background-color: #B1C2DD;
     color: white;
     border-color: #B1C2DD;
+}
+.download_container{
+	margin-bottom: 20px;
+	float: right;
+}
+
+.download_button{
+	padding: 10px 13px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 13px;
+}
+
+.download_button:hover {
+    background-color: #9CAFC7;
 }

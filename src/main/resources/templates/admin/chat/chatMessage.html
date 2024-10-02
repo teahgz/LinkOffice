@@ -8,13 +8,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 
 
-    <section th:each="member : ${memberdto}">
+    <section class="chatSection" th:each="member : ${memberdto}">
         <input type="hidden" id="currentMember" th:value="${member.member_no}"/>
         <div class="chatArea">
             <div class="chatContainer">
                 <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
                     <div id="chatRoomTitleContainer">
-                        <h3 id="chatListTitle">메신저</h3>
+                        <h3 id="chatListTitle"><i class="fa-solid fa-comment" style="margin-left: 10px; margin-right: 10px;"></i>메신저</h3>
                     </div>
                     <div id ="listButtons">
 
@@ -34,37 +34,42 @@
                         <i class="fa-solid fa-times"></i>
                     </button>
                 </div>
-                <div class="chatList" id="chatList" th:each="chat:${chatList}">
-                    <!-- 채팅 목록 항목 -->
-                    <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${chat.chat_room_no} + ')'">
-                        <h3><p th:text="${chat.chat_member_room_name}"></p></h3>
-                        <div class="pin">
-                            <i class="fa-solid fa-thumbtack" th:if="${chat.chat_member_pin == 1}" ></i>
+                <div class="chatList-container">
+                    <div class="chatList" id="chatList" th:each="item : ${combinedChatList}">
+                        <!-- 채팅 목록 항목 -->
+                        <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${item.chatMember.chat_room_no} + ')'">
+                           <i th:if="${item.chatType == 0}" class="fa-solid fa-user" style="font-size: 15px; margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
+                            <i th:if="${item.chatType == 1}" class="fa-solid fa-users" style="font-size: 15px; margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
+                            <h3><p th:text="${item.chatMember.chat_member_room_name}"></p></h3>
+                            <div class="pin">
+                                <i class="fa-solid fa-thumbtack" th:if="${item.chatMember.chat_member_pin == 1}"></i>
+                            </div>
+                            <!-- 읽지 않은 메시지 개수 표시 -->
+                            <div class="unread-count-container">
+                                <span class="unread-count"></span>
+                            </div>
+                            <input type="hidden" id="memberNo" th:value="${item.chatMember.member_no}"/>
+                            <input type="hidden" id="chatRoomNo" th:value="${item.chatMember.chat_room_no}" />
                         </div>
-                        <!-- 읽지 않은 메시지 개수 표시 -->
-                        <div class="unread-count-container">
-                            <span class="unread-count"></span>
-                        </div>
-                        <input type="hidden" id="memberNo" th:value="${member.member_no}"/>
-                        <input type="hidden" id="chatRoomNo" th:value="${chat.chat_room_no}" />
                     </div>
                 </div>
+
             </div>
 
             <div class="chatElement">
-                <div class="chatHeader">
+                <div class="chatHeader" style="height: 93.94px;">
                     <div class="chatInfo">
-                        <h4 id="chatRoomTitle">채팅방을 선택해주세요</h4>
+                        <h4 id="chatRoomTitle">메신저방을 선택해주세요</h4>
                         <div class ="countParticipant" id="countParticipant" style="display:none;">
                             <i class="fa-solid fa-user"></i>
-                            <span></span>
+                            <span id="participantCountSpan"></span>
                         </div>
                     </div>
 
                     <div class ="chatHeader-buttons" id="chatHeader-buttons" style="display:none;">
-                        <button id="searchChatContent" class="btn btn-primary no-style">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
+<!--                        <button id="searchChatContent" class="btn btn-primary no-style">-->
+<!--                            <i class="fa-solid fa-magnifying-glass"></i>-->
+<!--                        </button>-->
                         <div class="chatDropdown">
                             <button id="openDrop" class="btn btn-primary no-style">
                                 <i class="fa-solid fa-bars"></i>
@@ -76,14 +81,14 @@
                                 <a href="#" id="pinDeleteChatItem" class="chat-dropdown-item" style="display:none;">
                                     <i class="fa-solid fa-thumbtack-slash"></i> <span class="menu-text">고정해제</span>
                                 </a>
-                                <a href="#" id="notifyChatItem" class="chat-dropdown-item">
-                                    <i class="fa-solid fa-bell-slash"></i> <span class="menu-text">알림끄기</span>
-                                </a>
-                                <a href="#" id="notifyOnChatItem" class="chat-dropdown-item" style="display:none;">
-                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">알림켜기</span>
-                                </a>
+<!--                                <a href="#" id="notifyChatItem" class="chat-dropdown-item">-->
+<!--                                    <i class="fa-solid fa-bell-slash"></i> <span class="menu-text">알림끄기</span>-->
+<!--                                </a>-->
+<!--                                <a href="#" id="notifyOnChatItem" class="chat-dropdown-item" style="display:none;">-->
+<!--                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">알림켜기</span>-->
+<!--                                </a>-->
                                 <a href="#" id="addChatItem" class="chat-dropdown-item">
-                                    <i class="fa-solid fa-plus"></i> <span class="menu-text">추가</span>
+                                    <i class="fa-solid fa-plus"></i> <span class="menu-text">초대</span>
                                 </a>
                                 <a href="#" id="editChatRoomButton" class="chat-dropdown-item">
                                     <i class="fa-regular fa-pen-to-square"></i> <span class="menu-text">수정</span>
@@ -100,7 +105,7 @@
                         <!-- 여기에 채팅 메시지가 표시 -->
                     </div>
                 </div>
-                <div class="chatInput">
+                <div class="chatInput" id="chatInput" style="display:none;">
                     <input type="hidden" id="userNo" th:value="${member.member_no}">
                     <input type="hidden" id="userName" th:value="${member.member_name}">
                     <input type="text" id="messageInput" class="message-input" placeholder="메시지를 입력하세요.">

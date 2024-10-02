@@ -1,4 +1,6 @@
 $(function () {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '문서함&emsp;&gt;&emsp;휴지통';	
     // memberNo 받아오기 
     var memberNo = document.getElementById("mem_no").textContent;
     const csrfToken = $('input[name="_csrf"]').val();
@@ -9,6 +11,16 @@ $(function () {
     let totalPages = 0;
     let currentPage = 0;
     
+    $('#select_delete').prop('disabled', true);
+    $('#update_button').prop('disabled', true);
+    
+	// 체크박스 상태 변경 이벤트
+    $(document).on('change', '.file_checkbox', function() {
+        const checkedFiles = $('.file_checkbox:checked').length > 0;
+        $('#select_delete').prop('disabled', !checkedFiles);
+        $('#update_button').prop('disabled', !checkedFiles);
+    });    
+    
     // 날짜 포맷 함수
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -16,35 +28,7 @@ $(function () {
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const day = ('0' + date.getDate()).slice(-2);
         return `${year}-${month}-${day}`;
-    }
-	    // 모든 파일 사이즈 가져오기 
-    function getAllFileSize(){
-		$.ajax({
-            type: 'GET',
-            url: '/bin/fileSize',
-            data: { memberNo: memberNo },
-            dataType: 'json',
-            success: function(data) {
-				const totalSize = 10;
-				const currentSize = $('#current_size_text');
-				const currentPercent = $('#print_size');	
-				const sizeBar = $('#bar_foreground');
-				if(data != null){
-					currentSize.text('');	
-					currentSize.text('10GB 중 ' + data + 'GB 사용');	
-					currentPercent.text('');
-					currentPercent.text('저장용량(' + (data/totalSize)*100 + '% 사용 중)');		
-					sizeBar.css('width', (data/totalSize)*100+'%');							
-				} else{
-					currentSize.text('');	
-					currentSize.text('10GB 중 0GB 사용');	
-					currentPercent.text('');
-					currentPercent.text('저장용량(0% 사용 중)');	
-					sizeBar.css('width', '0%');									
-				}
-			}
-		});
-	}
+    }   
     // 휴지통 파일 목록을 불러오기
     function loadFiles(searchInput = '') {
         $.ajax({
@@ -64,7 +48,7 @@ $(function () {
                 endDate.setHours(23, 59, 59, 999); 
 
                 const filteredFiles = fileList.filter(file => {
-                    const fileDate = new Date(file.document_file_upload_date);
+                    const fileDate = new Date(file.document_file_update_date);
                     const isDateInRange = fileDate >= startDate && fileDate <= endDate;
                     const normalizedFileName = file.document_ori_file_name.normalize('NFC');
                     const normalizedSearchInput = searchInput.trim().normalize('NFC');
@@ -90,8 +74,7 @@ $(function () {
 				$('#select_all').prop('checked', false);
                 // 파일 목록이 존재할 때
                 if (filteredFiles.length > 0) {
-                    $('.document_file_list').show();
-                    $('.box_size').show();	                
+                    $('.document_file_list').show();                
                     // 체크박스 활성화 
 	                $('#select_all').prop('disabled', false).prop('checked', false);                 
                     // 한 페이지에 10개씩 추가 
@@ -111,8 +94,23 @@ $(function () {
                             </td>
                             <td>${formatDate(file.document_file_update_date)}</td>
                             <td>${file.document_file_size}</td>
-                            <td><input type="button" value="복구" class="file_update_button"></td>
-                            <td><input type="button" class="delete_button" value="영구 삭제" id="${file.document_file_no}"></td>
+                            <td>
+                            <svg class="file_update_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                            <path d="M163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 
+                            0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 
+                            32l96 0 7.2-14.3C140.6 6.8 151.7 0 163.8 0zM32 128l384 0 0 320c0 35.3-28.7 
+                            64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm192 64c-6.4 0-12.5 2.5-17 
+                            7l-80 80c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39L200 408c0 13.3 10.7 
+                            24 24 24s24-10.7 24-24l0-134.1 39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 
+                            0-33.9l-80-80c-4.5-4.5-10.6-7-17-7z"/></svg>
+                            </td>
+                            <td>
+                            <svg class="delete_button" id="${file.document_file_no} "xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path d="M290.7 57.4L57.4 290.7c-25 25-25 65.5 0 90.5l80 80c12 12 28.3 
+                            18.7 45.3 18.7L288 480l9.4 0L512 480c17.7 0 32-14.3 32-32s-14.3-32-32-32l-124.1 
+                            0L518.6 285.3c25-25 25-65.5 0-90.5L381.3 57.4c-25-25-65.5-25-90.5 0zM297.4 416l-9.4 
+                            0-105.4 0-80-80L227.3 211.3 364.7 348.7 297.4 416z"/></svg>
+                            </td>
                         `;
                         fileTableBody.appendChild(row);
                     });
@@ -152,6 +150,8 @@ $(function () {
                 $('#select_all').on('change', function() {
                     const isChecked = this.checked; 
                     $('.file_checkbox').prop('checked', isChecked); 
+	                $('#select_delete').prop('disabled', !isChecked);
+	                $('#update_button').prop('disabled', !isChecked);                    
                 });
  	            // 파일 선택 삭제
 	            $('#select_delete').on('click', function() {
@@ -163,13 +163,10 @@ $(function () {
 	                    selectedFileNos.push(fileNo); 
 	                });
 	                if (selectedFileNos.length > 0) {
+						$('#select_delete').prop('disabled', false);
 	                    deleteSelectedFile(selectedFileNos);
 	                } else {
-	                    Swal.fire({
-	                        icon: 'warning',
-	                        text: '삭제할 파일을 선택해 주세요.',
-	                        confirmButtonText: '확인'
-	                    });
+	                    $('#select_delete').prop('disabled', true);
 	                }
 	            });      
 	            // 파일 복구 
@@ -187,13 +184,10 @@ $(function () {
 	                    selectedFileNos.push(fileNo); 
 	                });
 	                if (selectedFileNos.length > 0) {
+						$('#update_button').prop('disabled', false);
 	                    updateSelectedFile(selectedFileNos);
 	                } else {
-	                    Swal.fire({
-	                        icon: 'warning',
-	                        text: '복구할 파일을 선택해 주세요.',
-	                        confirmButtonText: '확인'
-	                    });
+	                    $('#update_button').prop('disabled', true);
 	                }
 	            }); 
             }
@@ -281,7 +275,7 @@ $(function () {
 	function deleteFile(fileNo){
 		Swal.fire({
 			icon: 'warning',
-		    text: '정말 영구 삭제하시겠습니까?',
+		    text: '파일을 영구 삭제하시겠습니까?',
 		    showCancelButton: true,
 		    confirmButtonText: '확인',
 		    cancelButtonText: '취소'
@@ -323,7 +317,7 @@ $(function () {
 	function deleteSelectedFile(fileNos) {
 	    Swal.fire({
 	        icon: 'warning',
-	        text: '정말 삭제하시겠습니까?',
+	        text: '파일을 영구 삭제하시겠습니까?',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
 	        cancelButtonText: '취소'
@@ -406,6 +400,7 @@ $(function () {
             },
 			success: function(response){
 				if (response.res_code === '200') {
+					if(response.res_status == 0){						
 	                    Swal.fire({
 	                        icon: 'success',
 	                        text: response.res_msg,
@@ -413,6 +408,15 @@ $(function () {
 	                    });
 	            	loadFiles();
 	            	getAllFileSize();
+					} else{
+						Swal.fire({
+	                        icon: 'success',
+	                        html: "복구할 수 있는 폴더가 존재하지 않는 파일을 제외한<br>모든 파일 복구가 완료되었습니다.",
+	                        confirmButtonText: '확인'
+	                    });
+	            	loadFiles();
+	            	getAllFileSize();
+					}
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -452,17 +456,28 @@ $(function () {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
-    
+
+    // 삭제 버튼 클릭 시 자동으로 초기 지정 날짜로 설정
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = oneYearAgoStr;
+        }
+    });
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; 
+        }
+    });
+        
     // 파일 검색 
-   $('#search_button').on('click', function(){
+    $('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
 		loadFiles(searchInput);
-   });
+    });
 
     // 페이지가 로드될 때 파일 목록을 불러옴
     $(document).ready(function() {
         loadFiles(); // 페이지 로드 시 파일 목록 로드
-        getAllFileSize();
 
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
@@ -479,17 +494,5 @@ $(function () {
             startDateLimit();
             loadFiles();
         });
-    });
-
-    // 시작 날짜를 끝나는 날보다 나중 날짜로 설정 못하게 하는 함수 
-    function startDateLimit() {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-        // endDate가 startDate보다 이전일 때 startDate를 endDate와 같게 설정
-        if (endDate < startDate) {
-            startDateInput.value = formatDate(endDate);
-        }        
-        // startDate의 최대값을 endDate로 설정
-        startDateInput.max = formatDate(endDate);
-    }
+    });  
 });

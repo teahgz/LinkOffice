@@ -14,7 +14,6 @@ public class MyLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 	                                   Authentication authentication) throws IOException, ServletException {
-	    // 성공 시 리다이렉트할 URL 설정
 	    response.sendRedirect("/");
 	}
 }

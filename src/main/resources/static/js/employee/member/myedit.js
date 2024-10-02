@@ -24,8 +24,8 @@ pwform.addEventListener('submit', (e) => {
 			document.getElementById('myModal').style.display = 'none';
 		}else {
 	        Swal.fire({
-	            icon: 'error',
-	            text: '비밀번호가 일치하지 않습니다!',
+	            icon: 'warning',
+	            text: '비밀번호가 일치하지 않습니다.',
 	            confirmButtonColor: '#B1C2DD', 
 	            confirmButtonText: '확인'
 	        }).then(() => {
@@ -177,3 +177,6 @@ form.addEventListener('submit', (e) => {
         }
     })
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '마이페이지&emsp;&gt;&emsp;정보 수정';

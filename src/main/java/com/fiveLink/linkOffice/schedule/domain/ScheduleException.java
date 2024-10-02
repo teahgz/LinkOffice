@@ -20,9 +20,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "fl_schedule_exception")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED) 
 @Setter
+@Getter
 @Builder
 public class ScheduleException {
 
@@ -32,10 +32,10 @@ public class ScheduleException {
     private Long scheduleExceptionNo;
 
     @Column(name = "schedule_no")
-    private Long scheduleNo;
-
-    @Column(name = "schedule_exception_type")
-    private Long scheduleExceptionType;
+    private Long scheduleNo; 
+    
+    @Column(name = "member_no")
+    private Long memberNo; 
 
     @Column(name = "schedule_exception_date")
     private String scheduleExceptionDate;
@@ -51,11 +51,29 @@ public class ScheduleException {
 
     @Column(name = "schedule_exception_end_date")
     private String scheduleExceptionEndDate;
+    
+    @Column(name = "schedule_exception_start_time")
+    private String scheduleExceptionStartTime;
 
-    @Column(name = "schedule_exception_category_no")
-    private Long scheduleExceptionCategoryNo;
+    @Column(name = "schedule_exception_end_time")
+    private String scheduleExceptionEndTime;
+    
+    @Column(name = "schedule_exception_allday")
+    private Long scheduleExceptionAllday;
 
+    @Column(name = "schedule_category_no")
+    private Long scheduleCategoryNo;
+
+    @Column(name = "schedule_exception_type")
+    private Long scheduleExceptionType; 
+    
+    @Column(name = "department_no")
+    private Long departmentNo; 
+    
     @CreationTimestamp
     @Column(name = "schedule_exception_create_date")
     private LocalDateTime scheduleExceptionCreateDate;
+    
+    @Column(name = "schedule_exception_status")
+    private Long scheduleExceptionStatus;
 }

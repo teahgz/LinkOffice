@@ -16,20 +16,21 @@
 }
 
 .modal-content {
-    background-color: #fefefe;
-    padding: 20px;
+background-color: #fefefe;
+    padding: 40px;
     border: 1px solid #888;
-    width: 300px;  
+    width: 300px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-radius: 15px;
 }
 
 .close {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 18px;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
@@ -100,10 +101,12 @@
 }
 
 .my_profile {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+    width: 50%;
+    height: 100%;
+    margin: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .profile_card {
@@ -244,7 +247,7 @@
 }
 
 .input_pw {
-    width: 43%;
+    width: 48%;
     padding-right: 40px;
     padding: 8px;
     box-sizing: border-box;
@@ -260,7 +263,7 @@
 
 .toggle_icon {
     position: absolute;
-    right: 200px;
+    right: 150px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;

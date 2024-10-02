@@ -31,6 +31,7 @@ import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.domain.PositionDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 import com.fiveLink.linkOffice.organization.service.PositionService;
+import com.fiveLink.linkOffice.util.AESUtil;
 
 
 @Controller
@@ -49,17 +50,38 @@ public class MemberViewController {
 	
 	// 내정보 페이지
 	@GetMapping("/employee/member/mypage")
-	public String myPage(Model model) {
+	public String myPage(Model model) throws Exception {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+	    String memberNational = memberdto.get(0).getMember_national();
+	    
+	    String decryptedNational = null;
+	    
+		if (!memberdto.isEmpty()) {
+		     decryptedNational = AESUtil.decrypt(memberNational);
+		}
+		memberdto.get(0).setMember_national(decryptedNational);	
+		
 	    model.addAttribute("memberdto", memberdto);
 	    return "employee/member/mypage";
 	}
 	// 정보 수정 페이지
 	@GetMapping("/employee/member/myedit")
-	public String myedit(Model model) {
+	public String myedit(Model model) throws Exception {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		
+	    String memberNational = memberdto.get(0).getMember_national();
+	    
+	    String decryptedNational = null;
+	    
+		if (!memberdto.isEmpty()) {
+		     decryptedNational = AESUtil.decrypt(memberNational);
+		} 
+		
+		memberdto.get(0).setMember_national(decryptedNational);	
+		
 	    model.addAttribute("memberdto", memberdto);
 		return "employee/member/myedit";
 	}
@@ -187,12 +209,22 @@ public class MemberViewController {
 
 	// [전주영] 관리자 사원 상세 조회 
 	@GetMapping("/admin/member/detail/{member_no}")
-	public String detail(@PathVariable("member_no") Long memberNo, Model model) {
+	public String detail(@PathVariable("member_no") Long memberNo, Model model) throws Exception {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		
 		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
+		
+	    String memberNational = memberDtoList.get(0).getMember_national();
 	    
+	    String decryptedNational = null;
+	    
+		if (!memberDtoList.isEmpty()) {
+		     decryptedNational = AESUtil.decrypt(memberNational);
+		} 
+		
+		memberDtoList.get(0).setMember_national(decryptedNational);
+
 		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	        // 날짜를 문자열로 변환
@@ -220,6 +252,17 @@ public class MemberViewController {
 	        List<DepartmentDto> departments = departmentService.getAllDepartments();
 	        List<PositionDto> positions = positionService.getAllPositionsForSelect();
 
+		    String memberNational = memberDtoList.get(0).getMember_national();
+		    
+		    String decryptedNational = null;
+		    
+			if (!memberDtoList.isEmpty()) {
+			     decryptedNational = AESUtil.decrypt(memberNational);
+			} else {
+			}
+			
+			memberDtoList.get(0).setMember_national(decryptedNational);
+			
 	        model.addAttribute("memberdto", memberdto);
 	        model.addAttribute("memberDtoList", memberDtoList);
 	        model.addAttribute("departments", departments);
@@ -254,11 +297,11 @@ public class MemberViewController {
 	
 	// [전주영] 사용자 사원 상세 조회 
 	@GetMapping("/employee/member/detail/{member_no}")
-	public String memberDetail(@PathVariable("member_no") Long memberNo, Model model) {
+	public String memberDetail(@PathVariable("member_no") Long memberNo, Model model) throws Exception {
 		Long member_no = memberService.getLoggedInMemberNo();
 		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
 		List<MemberDto> memberDtoList = memberService.getMembersByNo(memberNo);
-	    
+		
 		  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	        // 날짜를 문자열로 변환

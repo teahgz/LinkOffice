@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberFileService;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.util.AESUtil;
 
 @Controller
 public class MemberApiController {
@@ -173,21 +174,25 @@ public class MemberApiController {
 			dto.setMember_name(name);
 			
 			dto.setMember_pw("1111");
-			
+
 			List<MemberDto> memberDtoList = memberService.getAllMembers();
-			String national = nationalNumberFront + "-" + nationalNumberBack;
 			
+			String national = nationalNumberFront + "-" + nationalNumberBack;
+			String encryptedNational = AESUtil.encrypt(national);
+			
+			String decryptedNational = null;
 			for (MemberDto memberDto : memberDtoList) {
-			    String memberNational = memberDto.getMember_national();
-			    if (national.equals(memberNational)) {
-			    	response.put("res_code", "409");
-			    	response.put("res_msg", "중복 주민번호를 가진 사원이 있습니다");
-			    	return response;
-			    	
-			    }else {
-			    	dto.setMember_national(national);
+			    decryptedNational = AESUtil.decrypt(memberDto.getMember_national());
+
+			    if (decryptedNational.equals(national)) {
+			        response.put("res_code", "400");
+			        response.put("res_msg", "일치하는 주민번호가 있습니다.");
+			        return response;
 			    }
 			}
+
+			dto.setMember_national(encryptedNational);
+			
 			
 			dto.setMember_hire_date(hireDate);
 			String mobile = mobile1 + "-" + mobile2 + "-" + mobile3;
@@ -202,7 +207,7 @@ public class MemberApiController {
 			
 			if(memberService.createMember(dto) != null) {
 				response.put("res_code", "200");
-			    response.put("res_msg", "사원 등록을 성공하였습니다.");
+			    response.put("res_msg", "사원을 등록하였습니다.");
 			}
 			
 		}catch(Exception e) {
@@ -220,7 +225,7 @@ public class MemberApiController {
 			 @RequestParam("national_number_front") String national1,
 			 @RequestParam("national_number_mid") String national2,
 			 @RequestParam("national_number_back") String national3,
-			 @RequestParam("new_password") String newPw){
+			 @RequestParam("new_password") String newPw) throws Exception{
 		 Map<String, String> response = new HashMap<>();
 		    response.put("res_code", "404");
 		    response.put("res_msg", "비밀번호 변경 중 오류가 발생하였습니다.");
@@ -229,31 +234,45 @@ public class MemberApiController {
 		    
 		    List<MemberDto> memberDtoList = memberService.getAllMembers();
 		    
-		    // 받아온 주민번호 값
 		    String userNational = national1 +"-" + national2 + national3;
 		    
-		    for (MemberDto memberDto : memberDtoList) {
-		    	String memberNumber = memberDto.getMember_number();
-		    	String memberNational = memberDto.getMember_national();
-		    	// 사원 번호가 같으면
-			    if (memberNumber.equals(userId)) {
-			    	// 주민번호가 같으면
-			    	dto.setMember_number(userId);
-			    	if(!memberNational.equals(userNational)) {
-			    		response.put("res_code", "409");
-					    response.put("res_msg", "사번과 등록된 주민번호가 일치하지 않습니다!");
-					    return response;
-			    	} else {
-			    		dto.setMember_pw(newPw);
-			    	}
-			    }
-			}
+		    boolean memberExists = false; 
 		    
-		    if(memberService.pwchange(dto) != null) {
-				response.put("res_code", "200");
-			    response.put("res_msg", "비밀번호가 변경되었습니다.");
-			}
+		    String decryptedNational = null;
+		    
+		    for (MemberDto memberDto : memberDtoList) {
+		    	
+		        String memberNumber = memberDto.getMember_number();
+		        String memberNational = memberDto.getMember_national();
+		        decryptedNational = AESUtil.decrypt(memberNational);
+
+		        if (memberNumber.equals(userId)) {
+		            memberExists = true; 
+		            dto.setMember_number(userId);
+
+		            if (!decryptedNational.equals(userNational)) {
+		                response.put("res_code", "409");
+		                response.put("res_msg", "등록된 주민번호와 일치하지 않습니다.");
+		                return response; 
+		            } else {
+		                dto.setMember_pw(newPw); 
+		            }
+		        }
+		    }
+
+		    if (!memberExists) {
+		        response.put("res_code", "404");
+		        response.put("res_msg", "등록된 아이디가 아닙니다.");
+		        return response;
+		    }
+
+		    if (memberService.pwchange(dto) != null) {
+		        response.put("res_code", "200");
+		        response.put("res_msg", "비밀번호가 변경되었습니다.");
+		    }
+
 		    return response;
+
 	}
 	
 	// [전주영] 사원 상태 변경
@@ -279,9 +298,6 @@ public class MemberApiController {
 	@PutMapping("/admin/member/edit/{member_no}")
 	public Map<String,String> edit(@PathVariable("member_no") Long memberNo,
 			@RequestParam("profile_img") MultipartFile profileImage,
-            @RequestParam("member_name") String name,
-            @RequestParam("national_number_front") String nationalNumberFront,
-            @RequestParam("national_number_back") String nationalNumberBack,
             @RequestParam("hire_date") String hireDate,
             @RequestParam("mobile1") String mobile1,
             @RequestParam("mobile2") String mobile2,
@@ -311,11 +327,6 @@ public class MemberApiController {
 	    	}
 	    }
 	    
-	    memberdto.setMember_name(name);
-	    
-		String national = nationalNumberFront + "-" + nationalNumberBack;
-		
-		memberdto.setMember_national(national);
 		
 		memberdto.setMember_hire_date(hireDate);
 		
@@ -331,7 +342,7 @@ public class MemberApiController {
 	    
 	    if(memberService.memberEdit(memberdto) != null) {
 	    	response.put("res_code", "200");
-	    	response.put("res_msg", "정보 수정을 성공하였습니다.");
+	    	response.put("res_msg", "정보를 수정하였습니다.");
 
 	    }
 	    

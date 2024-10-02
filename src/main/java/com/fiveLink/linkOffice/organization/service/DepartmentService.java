@@ -38,21 +38,35 @@ public class DepartmentService {
         return buildHierarchy(mapToDto(departments));
     }
 
-    public List<DepartmentDto> getSubDepartmentByName(Long departmentNo) { 
+    public List<DepartmentDto> getSubDepartmentByName(Long departmentNo) {
         List<Department> subDepartments = departmentRepository.findSubDepartmentsByDepartmentName(departmentNo);
+        
         return subDepartments.stream()
-                             .map(this::mapToDto)  
-                             .collect(Collectors.toList());
+	         .map(department -> {
+	             DepartmentDto dto = mapToDto(department);
+	             Long memberCount = memberRepository.countByDepartmentNoAndMemberStatus(department.getDepartmentNo(), 0L);
+	             dto.setMemberCount(memberCount);
+	             return dto;
+	         })
+	         .collect(Collectors.toList());
     }
-    
-    // 특정 부서의 정보 반환
+ 
     public Optional<DepartmentDto> getDepartmentById(Long id) {
         return departmentRepository.findById(id).map(department -> {
             DepartmentDto dto = mapToDto(department);
             dto.setSubDepartments(getSubDepartmentByName(department.getDepartmentNo()));
+             
+            Long memberCount = memberRepository.countByDepartmentNoAndMemberStatus(department.getDepartmentNo(), 0L);
+            dto.setMemberCount(memberCount);
+             
+            Long subMemberCount = dto.getSubDepartments().stream()
+                .mapToLong(subDept -> memberRepository.countByDepartmentNoAndMemberStatus(subDept.getDepartment_no(), 0L))
+                .sum();
+            dto.setSubMemberCount(subMemberCount);  
+
             return dto;
         });
-    }
+    } 
 
     // 부서 등록
     @Transactional
@@ -237,4 +251,11 @@ public class DepartmentService {
 	   
        return mapToDto(subDepartments);
    }
+   
+   // [서혜원] 일정 부서 조회
+   public List<DepartmentDto> getSecondDepartments() {
+       List<Department> departments = departmentRepository.findAllByDepartmentStatusAndDepartmentHighNotOrderByDepartmentHighAscDepartmentNameAsc(0L, 0L);
+       return mapToDto(departments);
+   } 
+    
 } 

@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 삭제
 	deleteButtons.forEach(button => {
         button.addEventListener('click', function() {
-            var categoryId = parseInt(this.getAttribute('data-category-id'), 10); // 카테고리 ID 가져오기
+            var categoryId = parseInt(this.getAttribute('data-category-id'), 10);  
             
             Swal.fire({
                 text: '카테고리를 삭제하시겠습니까?',
@@ -268,5 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("editScheduleCategoryColor").addEventListener('input', function() {
 	    document.getElementById('edit_colorCode').textContent = this.value; 
 	});
-	 
+	
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '일정 관리&emsp;&gt;&emsp;일정 카테고리 관리'; 
 });

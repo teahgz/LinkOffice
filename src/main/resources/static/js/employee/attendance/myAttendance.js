@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '근태 조회';
     // work_date와 근태를 담을 배열
     var attendanceDates = [];
     
@@ -132,7 +134,7 @@ function attendanceCalendar(today, attendanceDates, holidays) {
     var todayDate = new Date();
 
     // 기존 행 삭제
-    while (calendarTable.rows.length > 2) {
+    while (calendarTable.rows.length > 1) {
         calendarTable.deleteRow(calendarTable.rows.length - 1);
     }
 
@@ -247,9 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function startDateLimit() {
         const startDate = new Date(startDateInput.value);
         const endDate = new Date(endDateInput.value);
-
         if (endDate < startDate) {
-            endDateInput.value = formatDate(startDate);
+            startDateInput.value = formatDate(endDate);
         }
         startDateInput.max = formatDate(endDate);
     }
@@ -266,7 +267,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
-	
+
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = firstDayStr; // 삭제 시 기본값으로 설정
+        }
+    });
+
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; // 삭제 시 기본값으로 설정
+        }
+    });
+    	
 	// memberNo의 값 
     const memberNo = document.getElementById('mem_no').textContent;
     // 전체 데이터를 저장할 배열 

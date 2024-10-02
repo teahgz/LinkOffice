@@ -46,7 +46,7 @@ body {
 .custom-height-9 { height: 220px; }
 .custom-height-10 { height: 160px; }
 .custom-height-11 { height: 180px; } */
-
+.custom-height-7 { height: 700px; }
 #main-content {
     display: flex;
     flex: 1;
@@ -54,8 +54,7 @@ body {
 
 section {
     flex: 1;
-    padding: 20px;
-    background: #f0f0f0;
+    margin-top: -30px; 
     display: flex; 
     gap: 15px;
 }
@@ -135,8 +134,7 @@ section {
 	padding-top : 1px;
 }
 
-.custom-height-7, .custom-height-8 {
-	font-family: 'LeferiPoint-BlackA';
+.custom-height-7, .custom-height-8 { 
     display: flex;  
     flex-direction: column;  
     align-items: center;  
@@ -175,11 +173,12 @@ section {
 .employee-profile {
     display: flex;
     align-items: center;
+	justify-content: space-evenly;    
 }
 
 .employee-info .user_photo {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     margin-right: 15px;
 }
@@ -187,6 +186,7 @@ section {
 .employee-details {
     display: flex;
     flex-direction: column;
+    gap:15px;
 }
 
 .employee-name {
@@ -197,45 +197,238 @@ section {
     margin-top: 20px;
 }
 
+.employee-department {
+    color: #666;
+    font-size: 20px;
+    font-weight: bold;
+}
 .employee-position {
     font-size: 14px;
     color: #666;
 }
 
-.divider {
-    border: none;
-    border-top: 1px solid #eee;
-    margin: 15px 0;
+/* 날씨 css */
+.weather_div{
+	display: flex;
+}
+.weather_left_div{
+	text-align: center;
+	width: 50%;
+}
+.weather_right_div{
+	font-size: 15px;
+	margin-top: 5px;
+}
+.weather_location{
+	display: flex;
+	justify-content: center;
+	font-size: 14px;
+	margin-top: 5px;
+}
+#weather_location_text{
+	color: #666;
+}
+#weather_icon{
+	width: 120px;
+}
+#weather_now_temp{
+	font-size: 27px;
+	font-weight: bolder;
+	margin-bottom: 10px;
+}
+#map_location_icon{
+	width: 15px;
+	height: 15px;
+	margin-right: 2px;
+}
+.weather_temp{
+	display: flex;
+	justify-content: space-between;
+}
+#weather_temp_max{
+	margin-top: 5px;
+}
+#weather_temp_min{
+	margin-top: 5px;
+}
+#weather_pop{
+	margin-top: 5px;
+}
+#weather_humidity{
+	margin-top: 5px;
 }
 
+/* 결재 */
 .approval-title {
-    font-size: 16px;
-    color: #555;
+    color: #333;
     margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
 }
-
+      
 .approval-status {
     list-style-type: none;
     padding: 0;
     display: flex;
     justify-content: space-between;
+    gap: 15px;
 }
-
+      
 .approval-status li {
-    text-align: center;
-    flex: 1;
+     text-align: center;
+     padding: 10px;
+     width: calc(33.33% - 10px); 
+     border-radius: 8px;
+     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     
+ }
+ .approval-status li:nth-child(1) {
+     background-color: #FFF3E0;
+     border: 1px solid #FFE0B2;
+ }
+ .approval-status li:nth-child(2) {
+     background-color: #E8F5E9;
+     border: 1px solid #C8E6C9;
+ }
+ .approval-status li:nth-child(3) {
+     background-color: #E8EAF6;
+     border: 1px solid #C5CAE9;
+ }
+ .approval-status span:first-child {
+     display: block;
+     font-weight: bold;
+     margin-bottom: 5px;
+     color: #666;
+     font-size: 0.9em;
+ }
+ .approval-status span:last-child {
+     color: #333;
+     font-weight: bold;
+ }
+ 
+ .app_ata{
+ 	text-decoration: none;
+ 	display:flex;
+ }
+.approval_btn_con {
+    display: flex;
+    justify-content: space-between;
 }
 
-.approval-status li span:first-child {
-    font-size: 14px;
-    color: #888;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.approval-status li span:last-child {
-    font-size: 18px;
+.approval_btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
     font-weight: bold;
-    color: #333;
-    display: block;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    margin-top:20px;
+}
+
+.app_primary {
+    background-color: #B1C2DD;
+    color: #000000;
+}
+
+.app_primary:hover {
+    transform: scale(0.98);
+}
+.app_arrow{
+	width: 15px;
+    height: 15px;
+    padding-top: 3px;
+    margin-left: 2px;
+}
+
+/* 회의실 */
+.fc {
+    cursor: pointer;
+}
+ 
+.fc-daygrid-day {
+    cursor: pointer;
+}
+.fc-day-sun .fc-col-header-cell-cushion {
+	color: red;
+}
+.fc-day-sat .fc-col-header-cell-cushion {
+	color: blue;
+}
+	 
+.fc-daygrid-day.fc-day-sun .fc-daygrid-day-number{ 		
+	color: red;
+}
+.fc-daygrid-day.fc-day-sat .fc-daygrid-day-number{		
+	color: blue;
+}
+
+
+.fc .fc-button.fc-button-primary {
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d;
+    font-size : 20px;
+    font-weight: 550;
+}
+
+.fc .fc-button.fc-button-primary:hover {
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
+}
+ 
+.fc-prev-button {
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d;
+}
+
+.fc-prev-button:hover {
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
+}
+ 
+.fc-next-button {
+    background-color: transparent; 
+    border:none;
+    color: #9d9d9d; 
+} 
+.fc-daygrid-day {
+    max-height: 30px;  
+}  
+.google-holiday {
+	text-align: right;  
+} 
+
+.fc-header-toolbar {
+	font-size : 11px;	
+}
+.fc-next-button:hover {
+    background-color: transparent; 
+    border:none;
+    color: #2692f2;
+}
+.fc-button, .fc-button:focus, .fc-button:active {
+    outline: none !important; 
+    box-shadow: none !important; 
+    border: none !important;  
+}
+
+.fc-button:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.fc .fc-button.fc-button-primary.fc-button-active {
+    background-color: transparent; 
+    border:none;
+    color: black;
+    font-weight: 550;
 }

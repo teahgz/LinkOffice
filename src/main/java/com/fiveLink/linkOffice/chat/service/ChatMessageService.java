@@ -29,8 +29,13 @@ public class ChatMessageService {
         ChatMessage chat = chatMessageDto.toEntity();
         chatMessageRepository.save(chat);
     }
-    public List<Map<String, Object>> getChatMessages(Long roomNo) {
-        return chatMapper.getChatMessages(roomNo);
+    public List<Map<String, Object>> getChatMessages(Long roomNo, Long currentMember) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("roomNo", roomNo);
+        paramMap.put("memberNo", currentMember);
+
+        // Map을 파라미터로 전달
+        return chatMapper.getChatMessages(paramMap);
     }
     public List<Long> markMessagesAsReadForChatRoom(Long memberNo, Long chatRoomNo){
         Map<String, Object> params = new HashMap<>();
@@ -50,5 +55,8 @@ public class ChatMessageService {
     public List<Map<String, Object>> getUnreadCounts(Long memberNo) {
         return chatMapper.getUnreadCounts(memberNo);
     }
-
+    //채팅 내용 가져오기
+    public String getChatMessageText(Long chatRoom) {
+        return chatMapper.getChatMessageText(chatRoom);
+    }
 }

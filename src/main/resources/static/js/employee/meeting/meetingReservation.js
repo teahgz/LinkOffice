@@ -92,56 +92,115 @@ document.addEventListener("DOMContentLoaded", function () {
     timeSlots.push('23:00');
 
     var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'ko', 
-        buttonText: {
-            today: '오늘' 
-        },
-        validRange: {
-	      start: today 
-	    },	
-        dateClick: function (info) {
-            selectedDate = info.dateStr;  
-            fetchReservations(selectedDate);
-            
-            document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
-                cell.style.backgroundColor = ''; 
-            });
-            const selectedCell = document.querySelector(`[data-date="${selectedDate}"]`);
-            
-            if (selectedCell) {
-                selectedCell.style.backgroundColor = '#a6bef7';
-                document.getElementById('pick_date_text').innerText = '';
-                document.getElementById('pick_date_text').innerText = formatDate(selectedDate);
-            } 
-        },
-        // '일' 삭제
-        dayCellContent: function (info) {
-		    var number = document.createElement("a");
-		    number.classList.add("fc-daygrid-day-number");
-		    number.innerHTML = info.dayNumberText.replace("일", '').replace("日","");
-		    if (info.view.type === "dayGridMonth") {
-		      return {
-		        html: number.outerHTML
-		      };
-		    }
-		    return {
-		      domNodes: []
-		    };
-		},
-    });
-    calendar.render();
+    function initializeCalendar(data) { 
+	    const mergedEvents = {};
 	
-    // 회의실 전체 정보
+	    data.forEach(function(reservation) {
+	        const date = reservation.meeting_reservation_date.split('T')[0]; 
+	
+	        if (!mergedEvents[date]) {
+	            mergedEvents[date] = {
+	                id: reservation.meeting_reservation_no,  
+	                title: '📌',  
+	                start: date,  
+	                count: 1, 
+	                extendedProps: {
+	                    meeting_reservations: [],
+	               		className : 'meeting_ping'
+	                }
+	            };
+	        } else {
+	            mergedEvents[date].count += 1; 
+	        }
+	 
+	        mergedEvents[date].extendedProps.meeting_reservations.push(reservation);
+	    });
+	 
+	    const events = Object.values(mergedEvents).map(event => ({
+	        id: event.id,
+	        title: `${event.title}`,  
+	        backgroundColor: 'transparent',
+	        borderColor: 'transparent',
+	        textColor: '#000000',
+	        start: event.start,
+	        extendedProps: event.extendedProps
+	    }));
+	
+	    calendar = new FullCalendar.Calendar(calendarEl, {
+	        initialView: 'dayGridMonth',
+	        locale: 'ko', 
+	        buttonText: {
+	            today: '오늘' 
+	        },
+	        validRange: {
+	            start: today 
+	        },
+	        events: events,
+	        dateClick: function(info) {
+	            selectedDate = info.dateStr;  
+	            fetchReservations(selectedDate);
+	            
+	            document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
+	                cell.style.backgroundColor = ''; 
+	            });
+	            const selectedCell = document.querySelector(`[data-date="${selectedDate}"]`);
+	            
+	            if (selectedCell) {
+	                selectedCell.style.backgroundColor = '#a6bef7';
+	                document.getElementById('pick_date_text').innerText = '';
+	                document.getElementById('pick_date_text').innerText = formatDate(selectedDate);
+	            } 
+	        },
+	        eventClick: function(info) {
+	            const eventDate = new Date(info.event.start);
+	            eventDate.setDate(eventDate.getDate() + 1); 
+	            const formattedDate = eventDate.toISOString().split('T')[0]; 
+	
+	            fetchReservations(formattedDate); 
+	            highlightSelectedDate(formattedDate); 
+	        },
+	        // '일' 삭제
+	        dayCellContent: function(info) {
+	            var number = document.createElement("a");
+	            number.classList.add("fc-daygrid-day-number");
+	            number.innerHTML = info.dayNumberText.replace("일", '').replace("日","");
+	
+	            if (info.view.type === "dayGridMonth") {
+	                return {
+	                    html: number.outerHTML
+	                };
+	            }
+	            return {
+	                domNodes: []
+	            };
+	        },
+	        eventDidMount: function(info) { 
+	            info.el.style.cursor = 'pointer'; 
+	        }, 
+	    });
+	
+	    calendar.render();
+	}
+	
+	function highlightSelectedDate(date) {
+	    document.querySelectorAll('.fc-daygrid-day').forEach(cell => {
+	        cell.style.backgroundColor = ''; 
+	    });
+	    const selectedCell = document.querySelector(`[data-date="${date}"]`);
+	    
+	    if (selectedCell) {
+	        selectedCell.style.backgroundColor = '#a6bef7'; 
+	        document.getElementById('pick_date_text').innerText = formatDate(date); 
+	    } 
+	}
+
     $.ajax({
         url: '/api/meetings',
         type: 'GET',
         success: function(data) {
             meetings = data;
             renderMeetingRooms(meetings); 
-            fetchReservations(today);
-            console.log(meetings);
+            fetchReservations(today); 
             populateRoomSelect(data); 
             data.forEach(room => {
                 roomSelect.append(`<option value="${room.meeting_no}">${room.meeting_name}</option>`);
@@ -181,6 +240,16 @@ document.addEventListener("DOMContentLoaded", function () {
             } 
         });
     } 
+    
+    // 전체 예약 내역
+    $.ajax({
+        url: '/all/reservations',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            initializeCalendar(data); 
+        } 
+    });
     
 	// 예약 현황 테이블
 	function updateReservationTable(reservations, date) {
@@ -227,8 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	                    time < r.meeting_reservation_end_time
 	                );
 	
-	                if (reservation) { 
-						console.log(reservation);
+	                if (reservation) {  
 	                    const startTimeIndex = timeSlots.indexOf(reservation.meeting_reservation_start_time);
 	                    const endTimeIndex = timeSlots.indexOf(reservation.meeting_reservation_end_time);
 	                    const colspan = endTimeIndex - startTimeIndex + 1; 
@@ -510,8 +578,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $.ajax({
             url: '/meeting/chart',
             method: 'GET',
-            success: function(data) {
-                console.log('조직도 데이터:', data);
+            success: function(data) { 
                 $('#organization-chart').jstree({ 
                     'core': {
                         'data': data,
@@ -711,6 +778,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }).then(() => {
                     location.reload();
                 });
+                
+				const memberNo = $('#memberNo').val();
+		        const selectedMembers = $('#selectedMembers').val();
+		        const reservationDate = $('#reservation_date').val(); 
+		        
+		        alarmSocket.send(JSON.stringify({
+		            type: 'noficationParticipantMeeting', 
+		            memberNo: memberNo,
+		            participants: selectedMembers,
+		            reservationDate: reservationDate 
+		        })); 
             } else {
                 Swal.fire({
                     text: response.res_msg,
@@ -723,5 +801,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } 
     });
 });
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '회의실&emsp;&gt;&emsp;회의실 예약'; 
 
 });

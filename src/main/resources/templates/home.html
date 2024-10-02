@@ -4,7 +4,8 @@
      <th:block layout:fragment="content">
        	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
 		<link th:href="@{/css/employee/attendance/attendance.css}" rel="stylesheet" type="text/css">
-       	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+       	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+		<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js'></script>
 	<section sec:authorize="hasAnyAuthority('USER')" th:each="member : ${memberdto}">
         <div class="left-column">
 			<div class="main_item_box left-top custom-height-1 employee-info">
@@ -14,37 +15,21 @@
 				<div class="employee-profile">
 				<img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}" alt="사원 사진" class="user_photo">
 					<div class="employee-details">
+						<span class="employee-department" th:text="${member.department_name}"></span> 
+					<div>
 						<span class="employee-name" th:text="${member.member_name}"></span>
-						<span class="employee-position" th:text="${member.department_name}"></span> 
 						<span class="employee-position" th:text="${member.position_name}"></span>
 					</div>
+					</div>
 				</div>
-				<hr class="divider">
-				<h3 class="approval-title">전자결재</h3>
-				<ul class="approval-status">
-					<li><span>진행함</span> <span th:text="${progressCount}"></span></li>
-					<li><span>내역함</span> <span th:text="${approvalCount}"></span></li>
-					<li><span>참조함</span> <span th:text="${referenceCount}"></span></li>
-				</ul>
-			</div>
-			<div class="main_item_box left-bottom custom-height-2">
-            	<a class="main_link" th:href="@{/일정 링크}">
-	         	    <span class="main_box_title">
-	            		일정
-	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
-	            	</span>
-	            </a>
-            	<h3>일정</h3>
-            </div>
-        </div>
-        <div class="middle-column">
-            <div class="main_item_box custom-height-3">
+			</div> 
+			<div class="main_item_box custom-height-3">
             	<a class="main_link" th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">
 	            	<span class="main_box_title">
 	            		근태 조회
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 	            	</span>
-	            </a>
+	            </a> 
             	<div class="attendance">
                 	<span id="clock" th:text="${time}"></span> 
                 	<div class="attendance_button">
@@ -59,13 +44,10 @@
                 			th:disabled="${isCheckedIn == 'true'}">출근</button>
 	                		<button type="submit" id="check_out_button">퇴근</button>
                 		</form>
-                	</div>
-                	<a id="attendance_check" th:href="@{/employee/attendance/myAttendance/{no}(no=${member.member_no})}">
-					    근태 조회
-					</a>   	
+                	</div> 	
 	            </div>
             </div>
-            <div class="main_item_box custom-height-4">
+			<div class="main_item_box custom-height-4">
 	            <a class="main_link" th:href="@{/휴가 링크}">
 		            <span class="main_box_title">
 	            		휴가 현황
@@ -73,7 +55,31 @@
 	            	</span>
 	            </a>
             	<h3>휴가 현황</h3>
-            </div>
+            </div> 
+            <div class="main_item_box custom-height-11"> 
+	     		<h3>날씨</h3>
+	     		<div class="weather_div">
+	     			<div class="weather_left_div">
+	     				<img id="weather_icon"/>
+	    				    <div class="weather_location">
+	    						<img th:src="@{/img/map_location.png}" alt="map_location_icon" id="map_location_icon"/>
+	    						<div id="weather_location_text">금천구 가산동</div>
+	    					</div>
+	     			</div>
+	     			
+	     			<div class="weather_right_div">
+	     				<div class="weather_temp">
+	     					<div id="weather_now_temp"></div>
+	     				</div>           
+	     				<div id="weather_temp_min"></div>
+	     				<div id="weather_temp_max"></div>
+	     				<div id="weather_pop"></div>
+	     				<div id="weather_humidity"></div>
+	     			</div>
+	     		</div>
+	         </div>
+        </div>
+        <div class="middle-column"> 
             <div class="main_item_box custom-height-5">
             	<a class="main_link" th:href="@{/공지사항 링크}">
 	        		<span class="main_box_title">
@@ -91,37 +97,72 @@
 	            	</span>
 	            </a>
             	<h3>설문</h3>
-            </div>
+            </div> 
         </div>
         <div class="right-column">
+        	<div class="main_item_box left-bottom custom-height-2">
+				<input type="hidden" id="schedule_memberNo" th:value="${member.member_no}"> 
+				<input type="hidden" id="schedule_departmentNo" th:value="${member.department_no}"> 
+			    <a class="main_link" th:href="@{/employee/schedule}">
+			        <span class="main_box_title">
+			            일정
+			            <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+			        </span>
+			    </a>  
+			    <div id="calendar"></div>
+				<div id="schedule_list">
+				    <div id="schedule_home_date"></div>
+				    <ul id="schedule_selected_date_list"></ul>
+				</div>
+			    
+			</div>
             <div class="right-top"> 
                 <div class="main_item_box custom-height-7">
-                	<a class="main_link" th:href="@{/회의실 링크}">
-	                	<img th:src="@{/img/main_meeting_reservation.png}" alt="meeting reservation" class="meeting_reservation_img"/>
-	                	<h3>회의실 예약</h3>
+                	<a class="main_link" th:href="@{/employee/meeting/reservation}">
+	                	<span class="main_box_title">
+				            회의실 예약
+				            <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
+				        </span>
 	                </a>
-                </div> 
-                <div class="main_item_box custom-height-8">
-                	<a class="main_link" th:href="@{/employee/member/list}">
-	                	<img th:src="@{/img/main_address_book.png}" alt="address_book" class="address_book_img"/>
-	                	<h3>주소록</h3>
-	                </a>
+	                <div id="meeting_calendar"></div> 
+					<div id="meeting_reservation_list">
+					    <div id="meeting_home_date"></div>
+					    <ul id="meeting_selected_date_list"></ul> 
+					</div>  
                 </div>  
-            </div>
-            <div class="right-bottom">
-                <div class="main_item_box custom-height-9">
-                <div class="main_box_title">
-            		통합 알림
-            	</div>
-                	<h3>통합 알림</h3>
-                </div>
+            </div> 
+			
+            <div class="right-bottom"> 
                 <div class="main_item_box custom-height-10"> 
-                	<h3>점심</h3>
-                	<a class="main_link" th:href="@{/organizationChart}">조직도</a>
+			        <div class="approval_btn_con">
+			        <h3 class="approval-title">전자결재</h3>
+			            <a th:href="@{/employee/approval/create}" class="approval_btn app_primary">결재 작성</a>
+			        </div>
+			        <ul class="approval-status">
+			            <li>
+			            	<a class="app_ata" th:href="@{/employee/approval/progress}">
+			            	<span>진행함</span> 
+			            	<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow"/>
+			            	</a>
+			            	<span th:text="${progressCount}"></span>
+			            </li>
+			            <li>
+				            <a class="app_ata" th:href="@{/employee/approval/history}">
+				            <span>내역함</span> 
+			            	<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow"/>				            
+				            </a>
+				            <span th:text="${approvalCount}"></span>
+			            </li>
+			            <li>
+				            <a class="app_ata" th:href="@{/employee/approval/references}">
+				            <span>참조함</span>
+							<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow"/> 
+				            </a>
+				            <span th:text="${referenceCount}"></span>
+			            </li>
+			        </ul>
                 </div>
-                <div class="main_item_box custom-height-11"> 
-            		<h3>날씨</h3>
-                </div>
+
             </div>
         </div>
     </section>
@@ -129,5 +170,8 @@
     hello
     </section>
     <script src="/js/employee/attendance/attendance.js"></script>
+    <script src="/js/employee/weather/weather.js"></script>
+    <script src="/js/employee/schedule/homeSchedule.js"></script>
+    <script src="/js/employee/meeting/homeMeeting.js"></script>
      </th:block>
 </html>

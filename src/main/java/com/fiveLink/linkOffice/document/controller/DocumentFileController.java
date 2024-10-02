@@ -71,7 +71,7 @@ public class DocumentFileController {
 	        
 	        Member member = memberRepository.findByMemberNo(memberNo);
 	        DocumentFolder folder = documentFolderRepository.findByDocumentFolderNo(folderNo);
-	        String savedFileName = documentFileService.fileUpload(file, folderNo);
+	        String savedFileName = documentFileService.fileUpload(file);
 	        
 	        if(savedFileName != null) {
 	        	DocumentFile documentFile = DocumentFile.builder()
@@ -108,7 +108,7 @@ public class DocumentFileController {
 	        			int result = documentFileService.saveFile(documentFile);
 	    	        	if(result > 0) {
 	    	        		resultMap.put("res_code", "200");
-	    	    	        resultMap.put("res_msg", "업로드 되었습니다.");
+	    	    	        resultMap.put("res_msg", "파일이 업로드되었습니다.");
 	    	        	}
 	        		}
 	        	} else if(folder.getDocumentBoxType() == 2L) {
@@ -121,7 +121,7 @@ public class DocumentFileController {
 	        			int result = documentFileService.saveFile(documentFile);
 	    	        	if(result > 0) {
 	    	        		resultMap.put("res_code", "200");
-	    	    	        resultMap.put("res_msg", "업로드 되었습니다.");
+	    	    	        resultMap.put("res_msg", "파일이 업로드되었습니다.");
 	    	        	}
 	        		}
 	        	}
@@ -143,7 +143,7 @@ public class DocumentFileController {
         int result = documentFileService.saveFile(file);
     	if(result > 0) {
     		resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "삭제 완료되었습니다.");
+	        resultMap.put("res_msg", "삭제되었습니다.");
     	}
 		return resultMap;
 	}
@@ -170,7 +170,7 @@ public class DocumentFileController {
 	    
 	    if (deletedCount == fileNos.size()) {
 	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "삭제 완료되었습니다.");
+	        resultMap.put("res_msg", "삭제되었습니다.");
 	    } 
 	    return resultMap;
 	}
@@ -205,7 +205,7 @@ public class DocumentFileController {
         
     	if(dbResult > 0 && fileResult > 0) {
     		resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "영구 삭제 완료되었습니다.");
+	        resultMap.put("res_msg", "영구 삭제되었습니다.");
     	}
 		return resultMap;
 	}
@@ -234,7 +234,7 @@ public class DocumentFileController {
 	    }	    
 	    if (deletedCount == fileNos.size()) {
 	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "영구 삭제 완료되었습니다.");
+	        resultMap.put("res_msg", "파일이 영구 삭제되었습니다.");
 	    } 
 	    return resultMap;
 	}
@@ -272,7 +272,7 @@ public class DocumentFileController {
         }       
     	if(result > 0) {
     		resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "파일 복구가 완료되었습니다.");
+	        resultMap.put("res_msg", "파일이 복구되었습니다.");
     	}
 		return resultMap;
 	}
@@ -317,10 +317,11 @@ public class DocumentFileController {
 	    	if(result > 0) {
 	    		if(updateCount == fileNos.size()) {
 	    			resultMap.put("res_code", "200");
-	    			resultMap.put("res_msg", "모든 파일 복구가 완료되었습니다.");	    			
+	    			resultMap.put("res_status", 0);	    			
+	    			resultMap.put("res_msg", "파일이 복구되었습니다.");	    			
 	    		} else {
 	    			resultMap.put("res_code", "200");
-	    			resultMap.put("res_msg", "복구할 수 있는 폴더가 존재하지 않는 파일을 제외한 모든 파일 복구가 완료되었습니다.");	
+	    			resultMap.put("res_status", 1);	
 	    		}
 	    	} 
 	    }	    

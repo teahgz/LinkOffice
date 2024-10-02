@@ -9,30 +9,11 @@
         <section>
         	<div id="mem_no" style="display: none;" th:text="${member.member_no}"></div>
         	<div id="dept_no" style="display: none;" th:text="${member.department_no}"></div>
-        	<div id="title">        	
-	        	<h1>휴지통</h1>     
-        	</div>
             <div class="document_folder_list">
-                <div class="document_folder_tree">
-	                <div class="box_size" style="display: none">
-	                	<div class="current_size_percent">                		
-	                		<img src="/img/cloud.png" id="cloud">
-	                		<div id="print_size"></div>
-	                	</div>
-	                	<div class="size_bar">
-		                	<div id="bar_background">
-		                		<div id="bar_foreground"></div>
-		                	</div>
-	                	</div>
-	                	<div id="current_size_text"></div>
-	                </div>
-                </div>
-                <hr>
                 <div class="document_file_div">
 	                <div class="document_file_list" style="display: none;">
 	                	<div class="document_search">
 	                		<div class="search_range">
-	                			<div id="range">기간</div>   
 	                			<div class="range_calendar">
 	                				<input type="date" id="start_date">
 	                				<span id="wave">~</span>
@@ -40,7 +21,6 @@
 	                			</div>       
 	                		</div>
 	                		<div class="search_name">
-	                			<div id="file_name">파일명</div>  
 	                			<input type="text" id="file_name_input" placeholder="파일명을 입력하세요."> 
 	                			<input type="button" id="search_button" value="검색">
 	                		</div> 		
@@ -57,31 +37,29 @@
 	                			</select>
 	                		</div>
 	                	</div>
-	                	<table class="file_table">
-	                		<thead class="table_head">
-	                            <tr>
-	                            	<th style="width: 5%"><input type="checkbox" id="select_all"></th>
-	                                <th style="width: 40%">파일명</th>
-	                                <th style="width: 10%">문서함</th>
-	                                <th style="width: 15%">삭제일</th>
-	                                <th style="width: 12%">용량</th>
-	                                <th style="width: 8%">복구</th>
-	                                <th style="width: 10%">영구 삭제</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody id="file_table_body">
-	                            <!-- 리스트는 AJAX로 불러옴 -->
-	                        </tbody>
-	                        <tfoot id="table_foot">
-	                            <tr>
-	                                <td colspan="7">
-	                                    <div class="pagination" id="pagination">
-	                                        <!-- 페이지 버튼 ajax -->
-	                                    </div>
-	                                </td>
-	                            </tr>
-	                        </tfoot>
-	                	</table>
+	                	<div class="table_div">
+		                	<table class="file_table">
+		                		<thead class="table_head">
+		                            <tr>
+		                            	<th style="width: 5%"><input type="checkbox" id="select_all"></th>
+		                                <th style="width: 40%">파일명</th>
+		                                <th style="width: 10%">문서함</th>
+		                                <th style="width: 15%">삭제일</th>
+		                                <th style="width: 12%">용량</th>
+		                                <th style="width: 8%">복구</th>
+		                                <th style="width: 10%">영구 삭제</th>
+		                            </tr>
+		                        </thead>
+		                        <tbody id="file_table_body">
+		                            <!-- 리스트는 AJAX로 불러옴 -->
+		                        </tbody>
+		                	</table>
+	                	</div>
+                        <div class="pagination_div">
+                        	<div class="pagination" id="pagination">
+                            	<!-- 페이지 버튼 ajax -->
+                            </div>
+                        </div>
 	                </div>
                 </div>
         	</div>

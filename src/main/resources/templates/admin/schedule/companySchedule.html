@@ -3,30 +3,41 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/admin/schedule/companySchedule.css}"
-		rel="stylesheet" type="text/css">
-	<script
-		src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-	<script
-		src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js'></script>
+	<link th:href="@{/css/admin/schedule/companySchedule.css}" rel="stylesheet" type="text/css">
+	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+	<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js'></script>
 	<section>
-		<h1>사내 일정</h1>
-		<div>
-			<button id="addEventBtn">등록</button>
-			<div id="calendar"></div>
+        <div id="header"> 
+            
+        </div>
+		<div class="search-container">
+		    <select id="searchCategory">
+		        <option value="all">전체</option>
+		        <option value="content">내용</option>
+		        <option value="categoryName">카테고리</option>
+		    </select>
+		    <input type="text" id="searchInput" placeholder="검색어를 입력하세요." />
+		    <input type="date" id="searchstartDate" placeholder="시작일" />
+		    <input type="date" id="searchendDate" placeholder="종료일" />
+		    <button id="searchButton">검색</button>
+		    
+		    <button id="addEventBtn">일정 등록</button>
 		</div>
-	</section>
+
+        <div id="calendar"></div>
+    </section>
 
 	<!-- 등록 모달 -->
 	<div id="eventModal" class="modal">
-	    <div class="modal-content">
+	    <div class="modal-content" id="create_company_schedule">
 	        <span class="add_close close" id="closeModalBtn">&times;</span>
-	        <h2 class="modal-title">사내 일정 등록</h2>
+	        <h2 class="modal-title" id="modal-title">사내 일정 등록</h2>
 	        <hr class="create_hr">
 	        <form id="eventForm">
 	            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 	            <input type="hidden" id="eventId">
-	            <input type="hidden" id="isRecurring">
+	            <input type="hidden" id="isRecurring"> 
+	            <input type="hidden" id="isException_create"> 
 	            
 	            <div class="form-group">
 	                <label for="eventTitle">일정 제목</label>
@@ -82,9 +93,9 @@
 	                <textarea id="description" name="description"></textarea>
 	            </div>  
 	            
-	            <div class="form-group">
+	            <div class="form-group button-group">
 	                <button type="submit" class="modal_in_btn" id="create_modal_submit">저장</button>
-	                <button type="button" id="closeModalBtn2">취소</button>
+	                <button type="button" id="closeModalBtn2" class="cancel_in_btn">취소</button>
 	            </div>
 	        </form>
 	    </div>
@@ -94,6 +105,7 @@
 	<div id="eventViewModal" class="event_view_modal" style="display: none;">
 	    <div class="event_modal-content"> 
 	    	<input type="hidden" id="eventId">
+	    	<input type="hidden" id="isException">
 		    <div class="modal-schedule-button">
 		    	<span class="modal-schedule-button-two">
 		            <button id="editEventBtn"><i class="fa-solid fa-pencil"></i></button> 
@@ -120,6 +132,7 @@
 	<!-- 반복 일정 -->
 	<div id="eventRepeatModal" class="event_repeat_modal" style="display: none;">
 	    <div class="event_repeat-content"> 
+	    	<div class="event_repeat_title" id="event_repeat_title">반복 일정 수정</div>
 		    <div>
 			    <input type="radio" id="editThisEvent" name="repeatEditOption" value=1>
 			    <label for="editThisEvent">이 일정</label>
@@ -132,8 +145,10 @@
 			    <input type="radio" id="editAllEvents" name="repeatEditOption" value=3>
 			    <label for="editAllEvents">모든 일정</label>
 		    </div>
-		    <button id="event_repeat_modal_btn">확인</button>
-		    <button id="event_repeat_close_btn">취소</button>
+		    <div class="event_repeat_btns">
+		    	<button id="event_repeat_modal_btn">확인</button>
+		    	<button id="event_repeat_close_btn">취소</button>
+		    </div> 
 	    </div>
 	</div>
 

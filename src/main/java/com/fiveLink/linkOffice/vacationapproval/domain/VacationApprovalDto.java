@@ -44,6 +44,10 @@ public class VacationApprovalDto {
 	
 	private String member_position;
 	
+	// [서혜원] 사원 일정 휴가 조회
+	private String position_name;
+	private String department_name;
+	private Long department_no;
 	
 	private List<VacationApprovalFileDto> files;
 	private List<VacationApprovalFlowDto> flows;

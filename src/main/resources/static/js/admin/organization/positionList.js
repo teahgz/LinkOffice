@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     var createModal = document.getElementById("createModal");
-    // var editModal = document.getElementById("editModal");
+    var editModal = document.getElementById("editModal");
     var openModalBtn = document.getElementById("openModal");
     var closeButtons = document.getElementsByClassName("close");
     var createForm = document.getElementById("positionForm");
-    // var editForm = document.getElementById("editForm");
+    var editForm = document.getElementById("editForm");
     var csrfToken = document.querySelector('input[name="_csrf"]').value;
 
     if (openModalBtn) {
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // 수정
-/*    document.querySelectorAll("button#editButton").forEach(function (editButton) {
+    document.querySelectorAll("button#editButton").forEach(function (editButton) {
         editButton.onclick = function () {
             var positionId = this.getAttribute("data-position-id");
 
@@ -42,15 +42,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         };
-    });*/
+    }); 
 
     // 삭제
     document.querySelectorAll("button#deleteButton").forEach(function (deleteButton) {
         deleteButton.onclick = function () {
             var positionId = this.getAttribute("data-position-id");
 
-            Swal.fire({
-                title: '직위 삭제',
+            Swal.fire({ 
                 text: '직위를 삭제하시겠습니까?',
                 icon: 'warning',
                 showCancelButton: true,
@@ -80,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             } else {
                                 Swal.fire({ 
 								    text: response.res_msg,
-								    icon: 'error', 
+								    icon: 'warning', 
 								    confirmButtonColor: '#B1C2DD', 
 								    confirmButtonText: '확인', 
 								});
@@ -159,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     } else {
                         Swal.fire({ 
 						    text: response.res_msg,
-						    icon: 'error', 
+						    icon: 'warning', 
 						    confirmButtonColor: '#B1C2DD', 
 						    confirmButtonText: '확인', 
 						});
@@ -173,14 +172,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 수정
-    /*if (editForm) {
+    if (editForm) {
         editForm.onsubmit = function (event) {
             event.preventDefault();
 
             var positionId = document.getElementById("editPositionId").value;
             var positionName = document.getElementById("editPositionName").value;
             var positionHigh = document.getElementById("editPositionHigh").value;
-
+			 
             $.ajax({
                 type: "POST",
                 url: "/position/update",
@@ -195,19 +194,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 success: function (response) {
                     if (response.res_code === "200") {
-                        Swal.fire("수정 성공", response.res_msg, "success").then(() => {
+                        Swal.fire({ 
+						    	text: response.res_msg,
+							    icon: 'success', 
+							    confirmButtonColor: '#B1C2DD', 
+							    confirmButtonText: '확인', 
+							}).then(() => {
                             location.reload();
                         });
                     } else {
-                        Swal.fire("수정 실패", response.res_msg, "error");
+                        Swal.fire({ 
+						    text: response.res_msg,
+						    icon: 'warning', 
+						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonText: '확인', 
+						});
                     }
                 },
-                error: function () {
-                    Swal.fire("서버 오류", "서버 요청 중 오류가 발생했습니다.", "error");
-                }
             });
         };
-    }*/
+    } 
     
     const positionLinks = document.querySelectorAll('.position_li a');  
     const currentUrl = window.location.href;  
@@ -224,4 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
             link.classList.add('selected');
         });
     });
+    
+    const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '조직 관리&emsp;&gt;&emsp;직위 관리';
 });

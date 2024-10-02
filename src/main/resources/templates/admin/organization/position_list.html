@@ -2,12 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorate="~{include/layout}"> 
-<th:block layout:fragment="content"> 
-<meta name="_csrf" content="${_csrf.token}">
-<meta name="_csrf_header" content="${_csrf.headerName}"> 
-    <link th:href="@{/css/admin/organization/positionList.css}" rel="stylesheet" type="text/css">   
-    <section>
-    	<h1>직위 관리</h1>  
+<th:block layout:fragment="content">
+<link th:href="@{/css/admin/organization/positionList.css}" rel="stylesheet" type="text/css">   
+    <section> 
         <div class="container">
             <div class="content-wrapper">
                 <div class="list">
@@ -32,6 +29,7 @@
                         <p><strong>상위 직위명</strong> <span class="th_text2" th:text="${position.position_high_name}"></span></p>
                     </div>
                     <div class="details-actions">
+                    	<button id="editButton" th:data-position-id="${position.position_no}">수정</button>
                         <button id="deleteButton" th:data-position-id="${position.position_no}">삭제</button>
                     </div>
                 </div>
@@ -66,7 +64,35 @@
             </form>
         </div>
     </div> 
-
+	
+	<!-- 수정 모달 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>직위 수정</h2><br>
+            <hr>
+            <form id="editForm">
+                <input type="hidden" id="editPositionId" name="positionId"/>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                
+                <div class="form-group">
+	                <label for="editPositionName">직위명</label>
+	                <input type="text" id="editPositionName" name="positionName" required> 
+	            </div>
+	            
+	            <div class="form-group">   
+	                <label for="editPositionHigh">상위 직위</label>
+	                <select id="editPositionHigh" name="positionHigh">
+	                    <option value="0">선택 없음</option>
+	                    <th:block th:each="pos : ${topLevelPositionsUpdate}">
+	                        <option th:value="${pos.position_no}" th:text="${pos.position_name}"></option>
+	                    </th:block>
+	                </select><br><br>
+	            </div>   
+                <button type="submit">수정</button>
+            </form>
+        </div>
+    </div> 
     <script th:src="@{/js/admin/organization/positionList.js}"></script> 
-</th:block>
-</html>
+    </th:block> 
+</html> 

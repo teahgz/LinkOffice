@@ -1,5 +1,6 @@
 package com.fiveLink.linkOffice.chat.service;
 
+import com.fiveLink.linkOffice.chat.domain.ChatMember;
 import com.fiveLink.linkOffice.chat.domain.ChatRoom;
 import com.fiveLink.linkOffice.chat.domain.ChatRoomDto;
 import com.fiveLink.linkOffice.chat.repository.ChatRoomRepository;
@@ -9,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ChatRoomService {
@@ -105,5 +105,41 @@ public class ChatRoomService {
         return result;
 
     }
+
+    public boolean isDuplicateChatRoom(Long memberNo, List<Long> selectedMembers) {
+        selectedMembers.add(memberNo);
+        Set<Long> chatRoomNumbers = new HashSet<>();
+
+        for (Long selectedMember : selectedMembers) {
+            List<Long> chatRooms = chatMapper.findChatRoomsByMember(selectedMember);
+            chatRoomNumbers.addAll(chatRooms);
+        }
+
+        for (Long chatRoomNo : chatRoomNumbers) {
+            List<Long> roomMembers = chatMapper.findMembersByChatRoom(chatRoomNo);
+
+            if (roomMembers.containsAll(selectedMembers) && roomMembers.size() == selectedMembers.size()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Long> findChatRoomMembers(Long roomNo, Long senderNo){
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomNo", roomNo);
+        params.put("memberNo", senderNo);
+        return chatMapper.findChatRoomMembers(params);
+    }
+
+    public int chatUnreadCount(Long currentRoom, Long memberNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomNo", currentRoom);
+        params.put("memberNo", memberNo);
+        System.out.println("service: "+ currentRoom +memberNo);
+        return chatMapper.chatRoomUnread(params);
+    }
+
+
 
 }

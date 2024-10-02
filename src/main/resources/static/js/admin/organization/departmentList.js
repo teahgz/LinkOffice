@@ -47,9 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
         deleteButton.onclick = function () {
             var departmentId = this.getAttribute("data-department-id");
 
-            Swal.fire({
-                title: '부서 삭제',
-                text: '부서를 삭제하시겠습니까?',
+            Swal.fire({ 
+                html: '부서를 삭제하시겠습니까?<br/>상위 부서 삭제 시 하위 부서가 함께 삭제됩니다.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#EEB3B3',
@@ -78,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             } else {
                                 Swal.fire({ 
 								    text: response.res_msg,
-								    icon: 'error', 
+								    icon: 'warning', 
 								    confirmButtonColor: '#B1C2DD', 
 								    confirmButtonText: '확인', 
 								});
@@ -262,6 +261,9 @@ document.addEventListener("DOMContentLoaded", function () {
             selectedLink.classList.add('selected');
         }
     }
+    
+    const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '조직 관리&emsp;&gt;&emsp;부서 관리';
     
 });
  

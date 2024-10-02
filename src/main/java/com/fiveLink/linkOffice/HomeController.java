@@ -3,7 +3,10 @@ package com.fiveLink.linkOffice;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +14,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fiveLink.linkOffice.approval.service.ApprovalService;
 import com.fiveLink.linkOffice.attendance.domain.AttendanceDto;
 import com.fiveLink.linkOffice.attendance.service.AttendanceService;
+import com.fiveLink.linkOffice.meeting.domain.MeetingParticipantDto;
+import com.fiveLink.linkOffice.meeting.domain.MeetingReservationDto;
+import com.fiveLink.linkOffice.meeting.service.MeetingReservationService;
+import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.service.DepartmentService;
+import com.fiveLink.linkOffice.schedule.domain.Schedule;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleCategoryDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleException;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleExceptionDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleExceptionParticipantDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleParticipantDto;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
+import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
+import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
+import com.fiveLink.linkOffice.schedule.service.ScheduleService;
+import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
+import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,14 +54,29 @@ public class HomeController {
 	private final MemberService memberService;
 	private final AttendanceService attendanceService;
 	private final ApprovalService approvalService;
+	private final ScheduleService scheduleService;
+	 
+	private final ScheduleCategoryService scheduleCategoryService; 
+	private final DepartmentService departmentService;  
+	private final VacationApprovalService vacationApprovalService; 
+	private final MemberRepository memberRepository;
+	private final MeetingReservationService meetingReservationService;
 
 	@Autowired
 	public HomeController(MemberService memberService,
-			AttendanceService attendanceService, ApprovalService approvalService) {
+			AttendanceService attendanceService, ApprovalService approvalService, ScheduleService scheduleService,
+			ScheduleCategoryService scheduleCategoryService, DepartmentService departmentService,
+			VacationApprovalService vacationApprovalService, MemberRepository memberRepository, MeetingReservationService meetingReservationService) {
 		this.memberService = memberService;
 		this.attendanceService = attendanceService;
 		this.approvalService = approvalService;
-		
+		this.scheduleService = scheduleService;
+		 
+		this.scheduleCategoryService = scheduleCategoryService; 
+		this.departmentService = departmentService;
+		this.vacationApprovalService = vacationApprovalService;
+		this.memberRepository = memberRepository;
+		this.meetingReservationService = meetingReservationService;
 	}
 
 	@GetMapping("/login")
@@ -55,11 +95,6 @@ public class HomeController {
 		return "pwchange";
 	}
 
-	@GetMapping("/error")
-	public String error() {
-		return "error";
-	}
-	  
 	@GetMapping({"/",""})
 	public String home(HttpServletRequest request, Model model) {
 
@@ -111,13 +146,246 @@ public class HomeController {
 		    
 		    // [박혜선] 출퇴근 여부 전달
 		    model.addAttribute("isCheckedIn", isCheckedIn);
-		    model.addAttribute("isCheckedOut", isCheckedOut);
-		    
-		    
+		    model.addAttribute("isCheckedOut", isCheckedOut); 
+		     
 		    return "home";
 		
 	}
+	
+	// [서혜원] 관리자 - 월간 일정
+	@ResponseBody
+	@GetMapping("/home/api/company/schedules")
+	public List<ScheduleDto> getSchedules() {
+		List<Schedule> schedules = scheduleService.getAllSchedules();
+
+		List<ScheduleDto> scheduleDtos = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			scheduleDtos.add(dto);
+		} 
+		return scheduleDtos;
+	}
+
+	// [서혜원] 관리자 - 반복 일정
+	@ResponseBody
+	@GetMapping("/home/api/repeat/schedules")
+	public List<ScheduleRepeatDto> getRepeatSchedules() {
+		List<ScheduleRepeat> scheduleRepeats = scheduleService.getAllRepeatSchedules();
+
+		List<ScheduleRepeatDto> scheduleRepeatDtos = new ArrayList<>();
+		for (ScheduleRepeat scheduleRepeat : scheduleRepeats) {
+			ScheduleRepeatDto dto = ScheduleRepeatDto.toDto(scheduleRepeat);
+			scheduleRepeatDtos.add(dto);
+		}
+ 
+		return scheduleRepeatDtos;
+	}
+	
+    // [서혜원] 예외 일정
+	@ResponseBody
+	@GetMapping("/home/api/company/exception/schedules")
+	public List<ScheduleExceptionDto> getExceptionSchedules() {
+	    List<ScheduleException> exceptionSchedules = scheduleService.getAllExceptionSchedules();
+
+	    List<ScheduleExceptionDto> scheduleExceptionDtos = new ArrayList<>();
+	    for (ScheduleException scheduleException : exceptionSchedules) {
+	        ScheduleExceptionDto dto = ScheduleExceptionDto.toDto(scheduleException);
+	         
+	        String memberName = memberRepository.findById(scheduleException.getMemberNo())
+	                .map(Member::getMemberName)
+	                .orElse("사원");
+
+	        String positionName = "직위";
+	        String departmentName = "부서";
+	         
+	        List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(scheduleException.getMemberNo());
+	        
+	        if (!memberInfo.isEmpty()) {
+	            Object[] row = memberInfo.get(0);
+	            positionName = (String) row[1];
+	            departmentName = (String) row[2];
+	        }
+	         
+	        dto.setMember_name(memberName);
+	        dto.setDepartment_name(departmentName);
+	        dto.setPosition_name(positionName);
+
+	        scheduleExceptionDtos.add(dto);
+	    }
+
+	    return scheduleExceptionDtos;
+	}
+
+	// [서혜원] 개인 일정
+	@ResponseBody
+	@GetMapping("/home/api/personal/schedules/{memberNo}")
+	public List<ScheduleDto> getpersonalSchedules(@PathVariable("memberNo") Long memberNo) {
+		List<Schedule> schedules = scheduleService.getAllpersonalSchedules(memberNo);
+		
+		List<ScheduleDto> personalResult = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			personalResult.add(dto);
+		}   
+		return personalResult;
+	} 
+	 
+	// [서혜원] 부서 일정
+	@ResponseBody
+	@GetMapping("/home/api/department/schedules")
+	public List<ScheduleDto> getpersonalSchedules() {
+		List<Schedule> schedules = scheduleService.getAlldepartmentSchedules();
+
+		List<ScheduleDto> departmentResult = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto dto = ScheduleDto.toDto(schedule);
+			
+            String positionName = "직위";
+            String departmentName = "부서"; 
+			List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(schedule.getMemberNo()); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+              
+	        dto.setDepartment_name(departmentName);
+	        dto.setPosition_name(positionName);
+			departmentResult.add(dto);
+		} 
+		return departmentResult;
+	} 
+	
+	// [서혜원] 참여자 일정 
+	@ResponseBody
+	@GetMapping("/home/api/participate/schedules")
+	public List<ScheduleDto> getparticipateSchedules() {
+	    List<Schedule> schedules = scheduleService.getAllparticipateSchedules();
+	    
+	    List<ScheduleDto> participateResult = new ArrayList<>(); 
+	    for (Schedule schedule : schedules) { 
+	        ScheduleDto dto = ScheduleDto.toDto(schedule);
+	         
+	        String memberName = memberRepository.findById(schedule.getMemberNo())
+	                .map(Member::getMemberName)
+	                .orElse("사원"); 
+	        
+            String positionName = "직위";
+            String departmentName = "부서"; 
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(schedule.getMemberNo()); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+            
+	        dto.setMember_name(memberName); 
+	        dto.setDepartment_name(departmentName);
+	        dto.setPosition_name(positionName);
+	        
+	        participateResult.add(dto);
+	    }  
+	    return participateResult;
+	}
+
+	
+	// [서혜원] 참여자 정보  
+	@GetMapping("/home/api/participate/member/schedules/{scheduleNo}/{memberNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMemberSchedules(@PathVariable("scheduleNo") Long scheduleNo, @PathVariable("memberNo") Long memberNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleParticipantDto> participants = scheduleService.getParticipantsByReservationNoOwn(scheduleNo, memberNo);
+	     
+	    response.put("participants", participants); 
+	    return response;
+	} 
+	
+	// [서혜원] 부서 정보
+    @ResponseBody
+    @GetMapping("/home/api/schedule/department/list")
+    public List<DepartmentDto> getAllDepartments() {
+        List<DepartmentDto> departments = departmentService.getSecondDepartments(); 
+        return departments;
+    }
 
 
+    // [서혜원] 예외 일정 참여자 정보  
+	@GetMapping("/home/api/participate/member/schedules/exception/{scheduleExceptionNo}/{memberNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMemberExceptionSchedules(@PathVariable("scheduleExceptionNo") Long scheduleExceptionNo, @PathVariable("memberNo") Long memberNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleExceptionParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleExceptionNo, memberNo);
+	     
+	    response.put("participants", participants);  
+	    return response;
+	}
 
+	// [서혜원] 예외 일정 참여자
+	@GetMapping("/home/employee/schedule/participate/exception/{scheduleNo}")
+	@ResponseBody
+	public Map<String, Object> getExceptionScheduleParticipant(@PathVariable("scheduleNo") Long scheduleNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<ScheduleExceptionParticipantDto> participants = scheduleService.getParticipantsByExceptionReservationNo(scheduleNo);
+	     
+	    response.put("participants", participants);
+	    
+	    return response;
+	}
+	
+	// [서혜원] 휴가 정보
+	@GetMapping("/home/api/employee/vacation/schedules")
+	@ResponseBody
+	public Map<String, Object> getVacationSchedules() {
+        Map<String, Object> response = new HashMap<>();
+         
+        List<VacationApprovalDto> vacationSchedules = vacationApprovalService.getApprovedVacationSchedules();
+         
+        response.put("vacationSchedules", vacationSchedules);
+        
+        return response;
+    }
+	
+	// [서혜원] 회의 정보
+	@GetMapping("/home/api/employee/meeting/schedules")
+	@ResponseBody
+	public Map<String, Object> getMeetingSchedules() {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    List<MeetingReservationDto> meetingSchedules = meetingReservationService.getMeetingSchedules();
+	    
+	    response.put("meetingSchedules", meetingSchedules);
+	    
+	    return response;
+	} 
+	
+	// [서혜원] 회의실 참여자
+	@GetMapping("/home/api/employee/meeting/schedules/{scheduleNo}/{memberNo}")
+	@ResponseBody
+	public Map<String, Object> getparticipateMeeting(@PathVariable("scheduleNo") Long scheduleNo, @PathVariable("memberNo") Long memberNo) {
+	    Map<String, Object> response = new HashMap<>();
+	     
+	    List<MeetingParticipantDto> participants = meetingReservationService.getParticipantsByMeetingNoOwn(scheduleNo, memberNo);
+	     
+	    response.put("participants", participants); 
+	    return response;
+	}  
+	
+	// [서혜원] 일정 카테고리	
+	@GetMapping("/home/categories")
+	@ResponseBody
+	public List<ScheduleCategoryDto> getAlladminScheduleCategory() { 
+		return scheduleCategoryService.getAlladminScheduleCategory();
+	}
+	
+	// [서혜원] 회의실 예약 내역
+	@GetMapping("/home/reservations")
+	@ResponseBody
+	public List<MeetingReservationDto> getReservations() { 
+	    List<MeetingReservationDto> reservations = meetingReservationService.getAllReservations(); 
+	    return reservations;
+	}
+
+	
 }

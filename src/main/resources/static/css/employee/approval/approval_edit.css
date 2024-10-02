@@ -1,9 +1,5 @@
 @charset "UTF-8";
 
-.main_container {
-    font-size: 14px;
-}
-
 .container {
     display: flex;
     justify-content: center;
@@ -12,17 +8,19 @@
 
 .editor-container {
     background-color: #f8f9fa;
-    border-radius: 12px;
-    max-width: 800px;
-    width: 100%;
+    border-radius: 12px; 
+    max-width: 800px; 
+    width: 70%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 60px 80px 30px;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    padding: 60px 89px 30px;
+    margin-top: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
     gap: 20px;
+    margin:auto;
 }
+
 
 input, select {
     padding: 8px;
@@ -36,11 +34,9 @@ input:focus, select:focus {
     border-color: #B1C2DD;
 }
 
-
-
 .ck.ck-editor {
-    max-width: 800px;
-    min-width: 800px;
+    max-width: 700px;
+    min-width: 700px;
 }
 
 .ck-editor__editable {
@@ -48,16 +44,11 @@ input:focus, select:focus {
     max-height: 500px;
 }
 
-
 .approve_container {
-    position: absolute; 
-    top: 0; 
-    right: 0;
-    display: flex; 
-    align-items: flex-start; 
+    display: flex;
+    justify-content: right;
     gap: 10px; 
 }
-
 
 .app_member {
     display: flex;
@@ -86,23 +77,13 @@ input:focus, select:focus {
     opacity: 0.8;
 }
 
-
-.button_container {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-right: 30px;
-    gap: 20px; 
-}
-
-
 .submit_button {
     padding: 8px 15px;
-    background-color: #B3C7EE; 
+    background-color: #B3C7EE;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    text-decoration: none; 
+    text-decoration: none;
     font-size: 14px;
     color: #000000;
 }
@@ -113,6 +94,7 @@ input:focus, select:focus {
     background-color: #C0C0C0;
     border: none;
     border-radius: 5px;
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -122,6 +104,7 @@ input:focus, select:focus {
     gap: 10px; 
     position: relative;
 }
+
 
 .form-group div {
     gap: 10px;
@@ -139,33 +122,6 @@ input:focus, select:focus {
     flex: 1; 
     max-width: 300px; 
 }
-
-.approversDisplay, .referencesDisplay, .reviewersDisplay {
-    width: 120px;
-    height: 150px;
-    border: 1px solid #000;
-    display: flex;
-    flex-direction: column;
-    overflow: visible;
-}
-
-.app_nav {
-    width: 120px;
-    height: 50px;
-    border: 1px solid #000;
-    flex-direction: column;
-}
-
-
-.file-list-container {
-    margin-bottom: 20px; 
-}
-
-.file-list-container span {
-    display: block; 
-    margin-bottom: 5px;
-}
-
 
 .approval_line_section {
     margin-top: 20px;
@@ -204,4 +160,27 @@ input:focus, select:focus {
     align-items: center;
     justify-content: center;
     height: 60px;
+}
+
+
+.preview_button {
+    padding: 8px 15px;
+    background-color: #f9e1e1; 
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    width:100px;
+}
+
+.button_container {
+	display: flex;
+    justify-content: flex-end; 	
+    gap: 10px;
+    position: relative;
+}
+
+
+.cancel_button, .submit_button, .preview_button:hover {
+    opacity: 0.8;
 }

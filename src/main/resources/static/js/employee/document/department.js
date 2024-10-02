@@ -2,6 +2,8 @@
 let folderList = [];
 
 $(function () {
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '문서함&emsp;&gt;&emsp;부서 문서함';	
 	// 전역 변수로 selectedFolderNo 정의
 	let selectedFolderNo = null;
 	// 폴더 이름 변경 여부 
@@ -17,6 +19,16 @@ $(function () {
     let totalPages = 0;
     let currentPage = 0;
 
+    $('#select_delete').prop('disabled', true);
+    $('#select_down').prop('disabled', true);
+
+	// 체크박스 상태 변경 이벤트
+    $(document).on('change', '.file_checkbox', function() {
+        const checkedFiles = $('.file_checkbox:checked').length > 0;
+        $('#select_delete').prop('disabled', !checkedFiles);
+        $('#select_down').prop('disabled', !checkedFiles);
+    });
+    
     // 날짜 포맷 함수
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -25,7 +37,6 @@ $(function () {
         const day = ('0' + date.getDate()).slice(-2);
         return `${year}-${month}-${day}`;
     }
-
     // 폴더 리스트 받아오기
     function getFolders() {
 		return new Promise((resolve, reject) => {
@@ -157,7 +168,7 @@ $(function () {
     }
 
     // 선택된 폴더의 파일 목록을 불러오기
-    function loadFiles(folderNo, searchInput = '', searchOption = 'file_name') {
+    function loadFiles(folderNo, searchInput = '', searchOption = 'search_all') {
         $.ajax({
             type: 'GET',
             url: '/folder/file',
@@ -179,8 +190,11 @@ $(function () {
 	                const fileDate = new Date(file.document_file_upload_date);
 	                const isDateInRange = fileDate >= startDate && fileDate <= endDate;
 	                const normalizedFileName = file.document_ori_file_name.normalize('NFC');
+	                const allName = normalizedFileName+file.member_name.toLowerCase();
 	                let isSearchMatch = false;
-	                if(searchOption === 'file_name'){
+	                if(searchOption === 'search_all'){
+						isSearchMatch = allName.includes(searchInput.toLowerCase().trim());
+					} else if(searchOption === 'file_name'){
 						isSearchMatch = normalizedFileName.includes(searchInput.toLowerCase().trim());					
 					} else{
 						isSearchMatch = file.member_name.toLowerCase().includes(searchInput.toLowerCase().trim());
@@ -220,18 +234,46 @@ $(function () {
                         row.innerHTML = `
                         	<td><input type="checkbox" class="file_checkbox" id="${file.member_no}"></td>
                             <td>${file.document_ori_file_name}</td>
-                            <td>${file.member_no == memberNo ? '본인' : (file.member_name + file.position_name)}</td>
-                            <td>${formatDate(file.document_file_upload_date)}</td>
-                            <td>${file.document_ori_file_name.endsWith('.pdf') ? 
-					            `<a href="/document/file/view/${file.document_file_no}" class="file_show_button" target="_blank">미리보기</a>` : ''}
-					        </td>
+                            <td>${file.member_no == memberNo ? '본인' : (file.member_name + ' ' + file.position_name)}</td>
+                            <td>${formatDate(file.document_file_update_date)}</td>
+	                        <td>${file.document_ori_file_name.endsWith('.pdf') ? 
+	                            `<a href="/document/file/view/${file.document_file_no}" target="_blank">
+	                            <svg class="file_show_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+	                            <path d="M64 464l48 0 0 48-48 0c-35.3 0-64-28.7-64-64L0 64C0 28.7 28.7 0 
+	                            64 0L229.5 0c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3L384 304l-48 
+	                            0 0-144-80 0c-17.7 0-32-14.3-32-32l0-80L64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 
+	                            16 16zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 
+	                            16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 
+	                            24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 
+	                            26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 
+	                            16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 
+	                            0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 
+	                            0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"/></svg></a>` 
+	                            : ''}
+	                        </td>
                             <td>${file.document_file_size}</td>
-                            <td>
-							    <a href="/document/file/download/${file.document_file_no}" class="file_down_button">다운로드</a>
+							<td>
+							    <a href="/document/file/download/${file.document_file_no}">
+							    <svg class="file_down_button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							    <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 
+							    242.7-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 
+							    12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 
+							    274.7 288 32zM64 352c-35.3 0-64 28.7-64 64l0 32c0 35.3 28.7 64 64 64l384 0c35.3 
+							    0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-101.5 0-45.3 45.3c-25 25-65.5 25-90.5 
+							    0L165.5 352 64 352zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
+							    </a>
 							</td>
                             <td>
 					            ${file.member_no == memberNo ? 
-					                `<input type="button" class="delete_button" value="삭제" id="${file.document_file_no}">` : ''}
+					            `<svg class="delete_button" id="${file.document_file_no}"
+	                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+	                            <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 
+	                            17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 
+	                            64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 
+	                            512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 
+	                            16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 
+	                            8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 
+	                            16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"/></svg>` : ''}
 					        </td>
                         `;
                         fileTableBody.appendChild(row);
@@ -273,8 +315,10 @@ $(function () {
 	            });
 	            // th 체크박스 클릭하면 전부 선택
 	             $('#select_all').on('change', function() {
-                	const isChecked = this.checked; // 상단 체크박스 상태
-                	$('.file_checkbox').prop('checked', isChecked); // 모든 파일 체크박스 상태 변경
+                	const isChecked = this.checked; 
+                	$('.file_checkbox').prop('checked', isChecked); 
+                	$('#select_delete').prop('disabled', !isChecked);
+	                $('#select_down').prop('disabled', !isChecked);
             	});
             	// 파일 선택 삭제
 				$('#select_delete').on('click', function() {
@@ -303,12 +347,9 @@ $(function () {
 				        });
 				    } else if (fileNos.length > 0) {
 				        deleteSelectedFile(fileNos); 
+				        $('#select_delete').prop('disabled', false);	
 				    } else {
-				        Swal.fire({
-				            icon: 'warning',
-				            text: '삭제할 파일을 선택해 주세요.',
-				            confirmButtonText: '확인'
-				        });
+				        $('#select_delete').prop('disabled', true);	
 				    }
 				});
 				// 파일 선택 다운
@@ -319,6 +360,7 @@ $(function () {
 				        selectedFileNos.push(fileNo);
 				    });
 				    if (selectedFileNos.length > 0) {
+						$('#update_button').prop('disabled', false);
 				        selectedFileNos.forEach(fileNo => {
 				            const downloadLink = document.createElement('a');
 				            downloadLink.href = `/document/file/download/${fileNo}`;
@@ -328,11 +370,7 @@ $(function () {
 				            document.body.removeChild(downloadLink);
 				        });
 				    } else {
-				        Swal.fire({
-				            icon: 'warning',
-				            text: '다운할 파일을 선택해 주세요.',
-				            confirmButtonText: '확인'
-				        });
+				        $('#update_button').prop('disabled', true);	
 				    }
 				});
             }
@@ -423,7 +461,7 @@ $(function () {
     }
     
     // 폴더가 없을 때 폴더 생성 버튼 
-    $('#first_folder_add').on('click', function(event){
+    $('#first_folder_add, #document_no_folder_msg').on('click', function(event){
 		event.preventDefault();
 		$('.modal_div').show();
 		$('.first_folder_add_modal').show();
@@ -434,7 +472,7 @@ $(function () {
 		const folderName = $('#first_folder_name').val();
 		if(folderName.trim() === ''){
 			Swal.fire({
-        		text: '폴더영을 입력해주세요.',
+        		text: '폴더명을 입력해주세요.',
         		icon: 'warning',
         		confirmButtonText: '확인'
     		});
@@ -472,7 +510,9 @@ $(function () {
                             	tree.select_node(newFolderNo);
                             	openFolderToNode(newFolderNo);
                             	loadFiles(newFolderNo);
-                        	});			                     				
+                        	});	
+                        	$('#first_folder_name').val('');			      
+                        	$('.first_folder_add_modal').hide();               				
                         	$('.document_no_folder').hide();
                     		$('.document_select_folder').show();
                     		$('.folder_buttons').show();
@@ -492,7 +532,6 @@ $(function () {
 	// X 버튼 
 	$('.cancel_div').on('click', function(){
 		$('.modal_div').hide();
-		$('.first_folder_add_div').hide();
 		$('.change_name_modal').hide();
 		$('.folder_create_modal').hide();
 		$('.file_upload_modal').hide();
@@ -520,7 +559,7 @@ $(function () {
 	    
 	    if (newFolderName.trim() === '') {
 	        Swal.fire({
-	            text: '새로운 폴더명을 입력해주세요.',
+	            text: '폴더명을 입력해주세요.',
 	            icon: 'warning',
 	            confirmButtonText: '확인'
 	        });
@@ -560,7 +599,7 @@ $(function () {
                         isFolderNameChange = true;
                         openFolderToNode(selectedFolderNo);
                         loadFiles(selectedFolderNo);
-	                    
+	                    $('.change_name_modal').hide();	
 	                    $('.document_no_folder').hide();
 	                    $('.document_select_folder').show();
 	                    $('.folder_buttons').show();
@@ -597,7 +636,7 @@ $(function () {
 	    
 	    if (folderName.trim() === '') {
 	        Swal.fire({
-	            text: '생성할 폴더명을 입력해주세요.',
+	            text: '폴더명을 입력해주세요.',
 	            icon: 'warning',
 	            confirmButtonText: '확인'
 	        });
@@ -639,7 +678,7 @@ $(function () {
                             tree.select_node(newFolderId);
                             openFolderToNode(newFolderId);
                             loadFiles(newFolderId);
-	
+							$('.folder_create_modal').hide();	
 	                        $('.document_no_folder').hide();
 	                        $('.document_select_folder').show();
 	                        $('.folder_buttons').show();
@@ -677,7 +716,7 @@ $(function () {
 	                if (response.res_result == 0) {
 	                    Swal.fire({
 	                        icon: 'warning',
-	                        text: response.res_msg,
+	                        html: "해당 폴더의 하위 폴더가 모두 삭제되고<br>모든 파일이 최상위 폴더로 이동합니다.<br>폴더를 삭제하시겠습니까?",
 	                        showCancelButton: true,
 	                        confirmButtonText: '확인',
 	                        cancelButtonText: '취소'
@@ -736,7 +775,7 @@ $(function () {
 	                } else {
 	                    Swal.fire({
 	                        icon: 'warning',
-	                        text: response.res_msg,
+	                        html: "해당 폴더의 하위 폴더가 모두 삭제되고<br>모든 파일이 휴지통으로 이동합니다.<br>폴더를 삭제하시겠습니까?",
 	                        showCancelButton: true,
 	                        confirmButtonText: '확인',
 	                        cancelButtonText: '취소'
@@ -841,7 +880,14 @@ $(function () {
 		                        text: response.res_msg,
 		                        confirmButtonText: '확인'
 		                    });
-				                  
+		                    
+		                    // 알림 전송 
+		                    alarmSocket.send(JSON.stringify({
+					           	type: 'noficationDocument',
+					           	deptNo: deptNo,
+					           	memberNo: memberNo
+					        }));
+					        				                  
 		                    $('.modal_div').hide();
 		                    $('#file_input').val('');
 		                    $('.file_upload_modal').hide();
@@ -864,7 +910,7 @@ $(function () {
 	function deleteFile(fileNo){
 		Swal.fire({
 			icon: 'warning',
-		    text: '정말 삭제하시겠습니까?',
+		    text: '파일을 삭제하시겠습니까?',
 		    showCancelButton: true,
 		    confirmButtonText: '확인',
 		    cancelButtonText: '취소'
@@ -906,7 +952,7 @@ $(function () {
 	function deleteSelectedFile(fileNos) {
 	    Swal.fire({
 	        icon: 'warning',
-	        text: '정말 삭제하시겠습니까?',
+	        text: '파일을 삭제하시겠습니까?',
 	        showCancelButton: true,
 	        confirmButtonText: '확인',
 	        cancelButtonText: '취소'
@@ -973,12 +1019,24 @@ $(function () {
 	// startDate와 endDate를 오늘 이후의 날짜를 설정할 수 없게 설정 
     startDateInput.max = todayStr;
     endDateInput.max = todayStr;
+    
+    // 삭제 버튼 클릭 시 자동으로 초기 지정 날짜로 설정
+    startDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = oneYearAgoStr;
+        }
+    });
+    endDateInput.addEventListener('input', function() {
+        if (!this.value) {
+            this.value = todayStr; 
+        }
+    });    
 
     // 파일 검색 
-   $('#search_button').on('click', function(){
+    $('#search_button').on('click', function(){
 		const searchInput = $('#file_name_input').val();
 		loadFiles(selectedFolderNo, searchInput);
-   });
+    });
 
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {

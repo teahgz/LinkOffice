@@ -19,7 +19,11 @@ public class ScheduleParticipantDto {
     private Long schedule_no;
     private Long member_no;
     private Long schedule_participant_status;
-
+ 
+	private String memberName;
+	private String positionName;
+	private String departmentName;
+	
     public ScheduleParticipant toEntity() {
         return ScheduleParticipant.builder()
                 .scheduleParticipantNo(schedule_participant_no)

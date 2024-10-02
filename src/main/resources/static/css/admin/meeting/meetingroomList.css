@@ -135,11 +135,7 @@ button:hover {
 
 .member-section {
     width: 100%; 
-    padding: 30px 50px;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    padding: 30px 50px; 
 }
 
 .button-container {
@@ -182,14 +178,15 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    background-color: white;
 } 
 
 .meetingRoom_table th, .meetingRoom_table td {
-    padding: 18px 15px;
+	padding: 11px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 15px;
+    font-size: 13px;
 }
 
 .meetingRoom_table th {
@@ -197,7 +194,7 @@ button:hover {
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: 13px;
 }
 
 .meetingRoom_table tr:last-child td {
@@ -219,7 +216,7 @@ button:hover {
 
 .pagination button {
     margin: 0 5px;
-    padding: 10px 15px;
+    padding: 8px 13px;
     border: 1px solid #ddd;
     background-color: #f8f9fa;
     cursor: pointer;

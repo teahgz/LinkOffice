@@ -22,7 +22,6 @@ public class ChatMemberDto {
     private int chat_member_pin;
     private LocalDateTime chat_member_pin_time;
 
-
     public ChatMember toEntity() {
         return ChatMember.builder()
                 .chatMemberNo(chat_member_no)

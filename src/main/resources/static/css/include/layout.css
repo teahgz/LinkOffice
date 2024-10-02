@@ -36,6 +36,7 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1;
+    background-color: #f5f7fa; 
 }
 
 #main-content {
@@ -46,7 +47,6 @@ body {
 section {
     flex: 1;
     padding: 20px;
-    background: #f0f0f0;
     gap: 15px;
     min-height: 680px;
 }
@@ -81,5 +81,14 @@ h1 {
     align-self: flex-start;
     margin-left: 60px;
     color: #333;
+}
+
+.swal2-confirm {
+	background-color: #B1C2DD;
+	color: black;
+}
+.swal2-cancel{
+	background-color: #C0C0C0;
+	color: black;
 }
 

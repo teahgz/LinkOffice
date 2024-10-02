@@ -143,7 +143,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 
             if (vali_check == false) {
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     text: vali_text,
                     confirmButtonColor: '#B1C2DD',
                     confirmButtonText: "확인"
@@ -185,4 +185,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             }
         });
     });
+    
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '전자 결재 양식 관리&emsp;&gt;&emsp;결재 양식 등록';
     

@@ -36,8 +36,7 @@ $(document).ready(function() {
             url: '/employee/meeting/reservation/detail/modal/' + reservationNo,
             type: 'GET',
             dataType: 'json',
-            success: function(data) {  
-                console.log(data);
+            success: function(data) {   
                 
                 $('#reservationId').val(data.reservation.meeting_reservation_no);
                 $('#reservation_date_input').val(data.reservation.meeting_reservation_date);
@@ -74,10 +73,7 @@ $(document).ready(function() {
                 });
             	// 조직도에서 체크박스 선택 설정
                 setSelectedParticipants(data.participants); 
-            },
-            error: function(xhr, status, error) {
-                console.log("예약 정보를 불러오는 중 오류 발생: " + error);
-            }
+            } 
         });  
     }
 
@@ -340,8 +336,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/meeting/chart',
             method: 'GET',
-            success: function(data) {
-                console.log('조직도 데이터:', data);
+            success: function(data) { 
                 $('#organization-chart').jstree({ 
                     'core': {
                         'data': data,
@@ -429,9 +424,7 @@ $(document).ready(function() {
         });  
         
 		selectedMembers.push(reservationOwnerNo.toString());
-        $('#selectedMembers').val(selectedMembers.join(','));
-        
-        console.log(selectedMembers);
+        $('#selectedMembers').val(selectedMembers.join(',')); 
 
         localStorage.setItem('selectedMembers', JSON.stringify(selectedMembers));
     }  
@@ -548,6 +541,17 @@ $(document).ready(function() {
 	                }).then(() => {
 	                    location.reload();
 	                });
+	                
+	                const memberNo = $('#memberNo').val();
+			        const selectedMembers = $('#selectedMembers').val();
+			        const reservationDate = $('#reservation_date_input').val(); 
+			         
+			        alarmSocket.send(JSON.stringify({
+			            type: 'noficationParticipantMeeting', 
+			            memberNo: memberNo,
+			            participants: selectedMembers,
+			            reservationDate: reservationDate 
+			        })); 
 	            } else {
 	                Swal.fire({
 	                    text: response.res_msg,
@@ -563,8 +567,7 @@ $(document).ready(function() {
 	 
 	// 예약 취소  
 	$('#cancelReservationButton').on('click', function() { 
-	    const reservationNo = $(this).data('reservation-no');
-	    console.log(reservationNo);
+	    const reservationNo = $(this).data('reservation-no'); 
 	    
 	    cancelReservation(reservationNo); 
 	});
@@ -623,4 +626,8 @@ $(document).ready(function() {
     if (reservationDate <= today && reservationStartTime < currentTime) { 
         reservationButtons.style.display = 'none';
     }
+     
+	const location_text = document.getElementById('header_location_text');
+	location_text.innerHTML = '회의실&emsp;&gt;&emsp;예약 내역';
+ 
 });

@@ -93,7 +93,7 @@
 }
  
 /* 조직도 모달 내부 목록 */
- #selected-members {
+ #selected-members, #selected-member {
     margin-bottom: 30px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -166,5 +166,33 @@
     background-repeat: no-repeat;
 } 
 
+.jstree-search { 
+    font-style: normal !important;
+    color: #0059ff !important; 
+}
+
 /* ------------------------------ */
 /* 조직도 모달 관련 공통 css입니다. 상단 절대 수정 금지 */
+
+/*채팅 추가 조직도*/
+ #selected-add-members {
+    margin-bottom: 30px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    min-height: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+ #addButton {
+     background-color: #B1C2DD;
+     color: rgb(0, 0, 0);
+     border: none;
+     padding: 10px 15px;
+     border-radius: 5px;
+     cursor: pointer;
+     transition: background-color 0.3s;
+     margin-top: 40px;
+ }

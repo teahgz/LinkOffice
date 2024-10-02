@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.chat.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +25,7 @@ public class ChatRead {
     private Long memberNo;
 
     @Column(name="chat_read_date")
+    @CreationTimestamp
     private LocalDateTime chatReadDate;
 
 }

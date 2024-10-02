@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class ChatRoomController {
@@ -38,6 +40,7 @@ public class ChatRoomController {
             if (result > 0) {
                 response.put("success", true);
                 response.put("message", "채팅방에서 성공적으로 나갔습니다.");
+
             } else {
                 response.put("success", false);
                 response.put("message", "채팅방 나가기에 실패했습니다.");
@@ -117,5 +120,21 @@ public class ChatRoomController {
         response.put("count", status);
         return ResponseEntity.ok(response);
     }
+    //중복 확인
+    @PostMapping("/api/chat/checkDuplicateChatRoom")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkDuplicateChatRoom( @RequestBody Map<String, Object> requestBody) {
+        Long memberNo = Long.parseLong(requestBody.get("currentMemberNo").toString());
+        List<Long> selectedMembers = ((List<?>) requestBody.get("selectedMembers")).stream()
+                .map(member -> Long.parseLong(member.toString()))
+                .collect(Collectors.toList());
+        System.out.println("test : "+ selectedMembers);
+        System.out.println("test : "+ memberNo);
+        boolean isDuplicate = chatRoomService.isDuplicateChatRoom(memberNo, selectedMembers);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
 }
