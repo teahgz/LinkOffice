@@ -475,9 +475,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
  	// 삭제
- 	$(document).on('change', '.meetingCheckbox', function() {
+ 	document.getElementById('selectAllCheckbox').addEventListener('change', function() {
+    	const isChecked = this.checked;
+	    document.querySelectorAll('.meetingCheckbox').forEach(function(checkbox) {
+	        checkbox.checked = isChecked;
+	    });
 	    updateDeleteButtonState();
 	});
+
+ 	$(document).on('change', '.meetingCheckbox', function() {
+	    updateDeleteButtonState();
+	     
+	    const allChecked = $('.meetingCheckbox').length === $('.meetingCheckbox:checked').length;
+	    $('#selectAllCheckbox').prop('checked', allChecked);
+	});
+
 
 	function updateDeleteButtonState() {
 	    const anyChecked = $('.meetingCheckbox:checked').length > 0;
@@ -485,9 +497,9 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
  	document.getElementById('deleteMeetingButton').addEventListener('click', function () {
-        var selectedIds = Array.from(document.querySelectorAll('.meetingCheckbox:checked')).map(function (checkbox) {
-            return checkbox.getAttribute('data-id');
-        });
+	    var selectedIds = Array.from(document.querySelectorAll('.meetingCheckbox:checked')).map(function (checkbox) {
+	        return checkbox.getAttribute('data-id');
+	    });
 
 
         Swal.fire({ 

@@ -25,6 +25,9 @@ document.getElementById('sortOrderSelect').addEventListener('change', function()
 });
 
 function fetchPermissionMembers(element) {
+	$('#selectAllCheckbox').prop('checked', false);
+    $('.member-checkbox').prop('checked', false)
+    
     selectedMenuNo = element.getAttribute('data-id');
     const menuNo = selectedMenuNo;
     const functionName = element.textContent;
@@ -73,6 +76,9 @@ function displayMembers(data, page) {
     const memberListTableBody = document.getElementById('memberList').getElementsByTagName('tbody')[0];
     memberListTableBody.innerHTML = ''; 
     selectedMembers = []; 
+    
+    $('#selectAllCheckbox').prop('checked', false);  
+    $('.member-checkbox').prop('checked', false);
 
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -378,7 +384,25 @@ $('#confirmButton').click(function() {
 
 $(document).on('change', '.member-checkbox', function() {
     updateDeleteButtonState();
+    updateSelectAllCheckbox();  
 });
+
+$('#selectAllCheckbox').change(function() {
+    const isChecked = this.checked;
+    $('.member-checkbox').prop('checked', isChecked);
+    updateDeleteButtonState();
+});
+
+function updateDeleteButtonState() {
+    const anyChecked = $('.member-checkbox:checked').length > 0;
+    $('#deleteButton').prop('disabled', !anyChecked);
+}
+
+function updateSelectAllCheckbox() {
+    const totalCheckboxes = $('.member-checkbox').length;  
+    const checkedCheckboxes = $('.member-checkbox:checked').length;  
+    $('#selectAllCheckbox').prop('checked', totalCheckboxes === checkedCheckboxes);  
+} 
 
 function updateDeleteButtonState() {
     const anyChecked = $('.member-checkbox:checked').length > 0;
