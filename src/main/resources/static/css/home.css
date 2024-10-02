@@ -431,3 +431,40 @@ section {
     color: black;
     font-weight: 550;
 }
+
+/*휴가 현황*/
+.approvalState {
+    position: relative;
+    display: flex; /* flexbox 사용 */
+    flex-direction: column; /* 세로 정렬 */
+
+}
+
+.vacationApproval_btn_con {
+    margin-bottom: 10px;
+    align-self: flex-end;
+}
+
+#vacationDays {
+    background-color: #ffffff;
+    border: 2px solid #007BFF;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#vacationDays span {
+    display: block;
+    font-size: 16px;
+    color: #555;
+}
+
+#vacationDays strong {
+    font-size: 24px;
+    color: #333;
+}
+.vacationApproval {
+    margin:0;
+    color: black;
+}

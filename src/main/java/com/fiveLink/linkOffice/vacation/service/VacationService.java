@@ -188,4 +188,9 @@ public class VacationService {
         return vacationMapper.userVacationCount(memberNo);
     }
 
+    //사용자별 연차
+    public String memberHireDate(Long memberNo){
+        return vacationMapper.memberHireDate(memberNo);
+    }
+
 }
