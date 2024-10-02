@@ -64,6 +64,10 @@ public class SurveyService {
         this.surveyAnswerOptionRepository = surveyAnswerOptionRepository;
     }
     
+    public void deleteSurvey(Long surveyNo) {
+        surveyRepository.deleteById(surveyNo);
+    }
+    
     @Transactional
     public Survey updateCompleteSurvey(SurveyDto dto) {
         LOGGER.info("Survey update process started for survey ID: {}", dto.getSurvey_no());
@@ -343,17 +347,16 @@ public class SurveyService {
     
     private List<SurveyDto> convertToDtoList(List<Object[]> surveys) {
         Set<Long> seenSurveyNos = new HashSet<>();
-        
+
         return surveys.stream()
             .filter(objects -> {
                 Survey survey = (Survey) objects[0];
-                // 중복된 설문 번호는 제외
-                return seenSurveyNos.add(survey.getSurveyNo());
+                return seenSurveyNos.add(survey.getSurveyNo());  // 중복된 설문 번호는 제외
             })
             .map(objects -> {
                 Survey survey = (Survey) objects[0];
-                Integer participantStatus = (Integer) objects[1];
-                
+                Integer participantStatus = objects[1] != null ? (Integer) objects[1] : 0; 
+
                 return SurveyDto.builder()
                     .survey_no(survey.getSurveyNo())
                     .survey_title(survey.getSurveyTitle())

@@ -18,6 +18,7 @@
         <h1>설문 작성하기</h1><br>
         <form id="surveyForm">
             <label for="surveyTitle">설문 제목</label><br>
+            <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
             <input type="text" id="surveyTitle" name="survey_title" placeholder="설문 제목을 입력하세요."><br>
 
             <label for="surveyPeriod">설문 기간</label><br>
@@ -366,7 +367,8 @@
                 success: function(response) {
                     if (response.res_code === "200") {
                         alert(response.res_msg);
-                        location.href = '/employee/survey/myList';
+                        var memberNo = document.getElementById('memberNo').value;
+                        location.href = '/employee/survey/myList/'+ memberNo;
                     } else {
                         alert(response.res_msg);
                     }

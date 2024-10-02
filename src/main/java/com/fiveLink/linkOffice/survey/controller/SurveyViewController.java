@@ -41,6 +41,7 @@ public class SurveyViewController {
         this.surveyService = surveyService;
     }
     
+    // 정렬 방식 처리
     private Sort getSortOption(String sort) {
         if ("latest".equals(sort)) {
             return Sort.by(Sort.Order.desc("surveyStartDate"));
@@ -50,29 +51,32 @@ public class SurveyViewController {
         return Sort.by(Sort.Order.desc("surveyStartDate"));
     }
     
+    // 내가 만든 설문 목록 페이지
     @GetMapping("/employee/survey/myList/{member_no}")
     public String surveyMyList(
         @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
         @RequestParam(value = "sort", defaultValue = "latest") String sort,
         Model model,
         SurveyDto searchDto) {
-        
-        Long memberNo = memberService.getLoggedInMemberNo();
+
+        Long memberNo = memberService.getLoggedInMemberNo();  // 로그인된 멤버 정보 가져오기
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-        
         model.addAttribute("memberdto", memberdto);
-        model.addAttribute("currentSort", sort);  
-        
+        model.addAttribute("currentSort", sort);
+
+        // 정렬 방식 설정
         Sort sortOption = getSortOption(sort);
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
+        // 설문 목록 페이징 처리
         Page<SurveyDto> surveyPage = surveyService.getAllSurveyPage(sortedPageable, searchDto, memberNo);
-
         model.addAttribute("surveyList", surveyPage.getContent());
         model.addAttribute("page", surveyPage);
         model.addAttribute("searchDto", searchDto);
+
         return "employee/survey/survey_my_list";
     }
+
     
     // 설문 결과 페이지 (주관식 및 객관식 응답 포함)
     @GetMapping("/employee/survey/result/{survey_no}")

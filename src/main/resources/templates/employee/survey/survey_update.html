@@ -464,7 +464,8 @@
                 success: function(response) {
                     if (response.res_code === "200") {
                         alert(response.res_msg);
-                        location.href = '/employee/survey/myList';
+                        var memberNo = $('#memberNo').val(); // memberNo 값을 가져옴
+                        location.href = '/employee/survey/myList/' + memberNo;
                     } else {
                         alert(response.res_msg);
                     }
