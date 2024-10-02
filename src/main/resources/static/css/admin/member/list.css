@@ -59,6 +59,7 @@ select {
 }
 
 .employee_table {
+	background-color: #ffffff;
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -126,14 +127,16 @@ select {
 }
 
 .download_button{
-	padding: 10px 13px;
-    border: none;
+    color: #000080;
+    padding: 10px 13px;
     border-radius: 6px;
+    border: none;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .download_button:hover {
     background-color: #9CAFC7;
+    color: black;
 }
