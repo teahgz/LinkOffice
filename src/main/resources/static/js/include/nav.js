@@ -184,16 +184,15 @@ function showNotification(title, content, memberNo, time, type, pk) {
             const notificationType = this.getAttribute('data-notification-type');
             const notificationNo = this.getAttribute('data-notification-no');
             const notificationTypePk = this.getAttribute('data-notification-type-pk');
-            if (noficationTypeUrl[notificationType]) {
-                if(notificationTypePk == null){
-                window.location.href = noficationTypeUrl[notificationType];
-				}else{
-                window.location.href = noficationTypeUrl[notificationType]+notificationTypePk;
-					
-				}
-			}else {
-                console.log('알 수 없는 알림 타입:', notificationType);
-            }
+			if (noficationTypeUrl[notificationType]) {
+			    if (notificationTypePk === null || notificationTypePk === '') {
+			        window.location.href = noficationTypeUrl[notificationType]; 
+			    } else {
+			        window.location.href = noficationTypeUrl[notificationType] + notificationTypePk; 
+			    }
+			} else {
+			    console.log('알 수 없는 알림 타입:', notificationType);
+			}
         });
     }
 
@@ -500,7 +499,7 @@ function connectWebSocket() {
                             addMarkAsReadListener();
                         }
                         message.data.forEach(function(item) {
-                            showNotification(title, item.content, item.memberNo, message.timestamp, 1);
+                            showNotification(title, item.content, item.memberNo, message.timestamp, 1, "");
                             const listItem = document.createElement('li');
 
                             listItem.setAttribute('data-notification-no', item.nofication_pk);
@@ -557,7 +556,7 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 11);
+                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
@@ -588,7 +587,7 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 11);
+                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
@@ -619,7 +618,7 @@ function connectWebSocket() {
                         addMarkAsReadListener();
                     }
                     message.data.forEach(function(item) {
-                        showNotification(title, content, item.memberNo, message.timestamp, 13);
+                        showNotification(title, content, item.memberNo, message.timestamp, 13, "");
                         const listItem = document.createElement('li');
 
                         listItem.setAttribute('data-notification-no', item.nofication_pk);
