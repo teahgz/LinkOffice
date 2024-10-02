@@ -1,5 +1,294 @@
 package com.fiveLink.linkOffice.survey.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fiveLink.linkOffice.member.domain.MemberDto;
+import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.notice.domain.NoticeDto;
+import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
+import com.fiveLink.linkOffice.organization.service.DepartmentService;
+import com.fiveLink.linkOffice.survey.domain.SurveyAnswerOptionDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyQuestionDto;
+import com.fiveLink.linkOffice.survey.domain.SurveyTextDto;
+import com.fiveLink.linkOffice.survey.service.SurveyService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@Controller
 public class SurveyApiController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SurveyApiController.class);
+	private final DepartmentService departmentService;
+	private final MemberService memberService;
+	private final SurveyService surveyService;
+
+	@Autowired
+	public SurveyApiController(DepartmentService departmentService, MemberService memberService,
+			SurveyService surveyService) {
+		this.departmentService = departmentService;
+		this.memberService = memberService;
+		this.surveyService = surveyService;
+	}
+	@GetMapping("/employee/survey/organizationChart")
+	@ResponseBody
+	public List<Map<String, Object>> getOrganizationChart() {
+		List<DepartmentDto> departments = departmentService.getAllDepartments();
+		List<MemberDto> members = memberService.getAllMembersChartOut();
+		return buildTree(departments, members);
+	}
+	
+	
+	@GetMapping("/employee/survey/qupdate/{survey_no}")
+	public String qupdateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
+	    List<DepartmentDto> departments = departmentService.getAllDepartments();
+	    List<MemberDto> members = memberService.getAllMembersChartOut();
+	    SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+
+	    // 질문 리스트 조회
+	    List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+
+	    model.addAttribute("departments", departments);
+	    model.addAttribute("dto", dto);
+	    model.addAttribute("members", members);
+	    model.addAttribute("questions", questions); // 질문 리스트 추가
+
+	    return "employee/survey/survey_update";
+	}
+	
+	// 설문 데이터 생성 및 업데이트 처리
+	@PostMapping("/employee/qupdate/{survey_no}")
+	@ResponseBody
+	public Map<String, String> updateSurvey(@RequestBody SurveyDto surveyDto, @PathVariable("survey_no") Long surveyNo) {
+	    Map<String, String> resultMap = new HashMap<>();
+
+	    Long member_no = memberService.getLoggedInMemberNo();
+	    surveyDto.setMember_no(member_no);
+	    surveyDto.setSurvey_no(surveyNo); // survey_no를 DTO에 설정
+
+	    try {
+	        // 설문 업데이트 처리
+	        surveyService.updateCompleteSurvey(surveyDto);  // update 메소드로 수정
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "설문이 성공적으로 업데이트되었습니다.");
+	    } catch (Exception e) {
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "설문 처리 중 오류가 발생했습니다: " + e.getMessage());
+	        LOGGER.error("Survey update error: ", e);
+	    }
+
+	    return resultMap;
+	}
+
+	// 설문 생성 페이지로 이동
+	@GetMapping("/employee/survey/create/{member_no}")
+	public String showSurveyCreatePage(Model model) {
+		List<DepartmentDto> departments = departmentService.getAllDepartments();
+		List<MemberDto> members = memberService.getAllMembersChartOut(); // 본인 제외한 사원 목록
+
+		model.addAttribute("departments", departments);
+		model.addAttribute("members", members);
+
+		return "employee/survey/survey_create";
+	}
+
+	
+
+	// 설문 데이터 생성 및 업데이트 처리
+	@PatchMapping("/employee/survey/create")
+	@ResponseBody
+	public Map<String, String> createSurvey(@RequestBody SurveyDto surveyDto, Model model) {
+		Map<String, String> resultMap = new HashMap<>();
+
+		Long member_no = memberService.getLoggedInMemberNo();
+		surveyDto.setMember_no(member_no);
+
+		try {
+
+			// 설문 생성 또는 업데이트
+			surveyService.createCompleteSurvey(surveyDto);
+			resultMap.put("res_code", "200");
+			resultMap.put("res_msg", "설문이 성공적으로 생성.");
+		} catch (Exception e) {
+			resultMap.put("res_code", "500");
+			resultMap.put("res_msg", "설문 처리 중 오류가 발생했습니다: " + e.getMessage());
+			LOGGER.error("Survey creation error: ", e);
+		}
+
+		return resultMap;
+	}
+
+	@PostMapping("/employee/survey/questionDetail")
+	@ResponseBody
+	public Map<String, String> submitSurvey(HttpServletRequest request,
+			@ModelAttribute SurveyAnswerOptionDto surveyAnswerOptionDto, @ModelAttribute SurveyTextDto surveyTextDto) {
+
+		Map<String, String> resultMap = new HashMap<>();
+		try {
+			Long memberNo = memberService.getLoggedInMemberNo();
+			LOGGER.info("Logged in memberNo: {}", memberNo);
+
+			// 참가자 정보 설정
+			surveyAnswerOptionDto.setSurvey_participant_no(memberNo);
+			surveyTextDto.setSurvey_participant_no(memberNo);
+
+			// 객관식 응답 처리
+			String[] optionNos = request.getParameterValues("survey_option_no");
+			String[] questionNos = request.getParameterValues("survey_question_no");
+
+			if (optionNos != null && questionNos != null) {
+				for (int i = 0; i < optionNos.length; i++) {
+					surveyAnswerOptionDto.setSurvey_option_no(Long.parseLong(optionNos[i]));
+					surveyService.saveSurveyAnswerOption(surveyAnswerOptionDto);
+				}
+			}
+
+			// 주관식 응답 처리 (객관식 응답 저장 후 한 번만 처리)
+			if (surveyTextDto.getSurvey_text_answer() != null) {
+				surveyService.saveSurveyTextAnswer(surveyTextDto);
+			}
+
+			resultMap.put("res_code", "200");
+			resultMap.put("res_msg", "설문 응답이 성공적으로 저장되었습니다.");
+		} catch (Exception e) {
+			LOGGER.error("Error during survey submission: {}", e.getMessage());
+			resultMap.put("res_code", "500");
+			resultMap.put("res_msg", "설문 응답 처리 중 오류가 발생했습니다: " + e.getMessage());
+		}
+
+		return resultMap;
+	}
+	
+	
+
+	@PostMapping("/employee/update/{survey_no}")
+	@ResponseBody
+	public Map<String, String> updateSurvey(
+	        SurveyDto dto, 
+	        HttpServletRequest request,
+	        @ModelAttribute SurveyAnswerOptionDto surveyAnswerOptionDto, 
+	        @ModelAttribute SurveyTextDto surveyTextDto) {
+
+	    Map<String, String> resultMap = new HashMap<>();
+	    try {
+	        Long memberNo = memberService.getLoggedInMemberNo();
+	        LOGGER.info("Logged in memberNo: {}", memberNo);
+
+	        // 참가자 정보 설정
+	        surveyAnswerOptionDto.setSurvey_participant_no(memberNo);
+	        surveyTextDto.setSurvey_participant_no(memberNo);
+
+	        // 객관식 응답 처리
+	        String[] optionNos = request.getParameterValues("survey_option_no");
+	        if (optionNos != null) {
+	            for (String optionNo : optionNos) {
+	                surveyAnswerOptionDto.setSurvey_option_no(Long.parseLong(optionNo));
+	                surveyService.updateSurveyAnswerOption(surveyAnswerOptionDto);
+	            }
+	        }
+
+	        // 주관식 응답 처리
+	        if (surveyTextDto.getSurvey_text_answer() != null) {
+	            LOGGER.info("Text Answer: {}", surveyTextDto.getSurvey_text_answer());
+	            surveyService.updateSurveyTextAnswer(surveyTextDto);
+	        }
+
+	        resultMap.put("res_code", "200");
+	        resultMap.put("res_msg", "설문 응답이 성공적으로 수정되었습니다.");
+	    } catch (Exception e) {
+	        LOGGER.error("Error during survey update: {}", e.getMessage());
+	        resultMap.put("res_code", "500");
+	        resultMap.put("res_msg", "설문 응답 수정 중 오류가 발생했습니다: " + e.getMessage());
+	    }
+
+	    return resultMap;
+	}
+
+
+
+
+
+	// 트리 구조 생성 메서드
+	private List<Map<String, Object>> buildTree(List<DepartmentDto> departments, List<MemberDto> members) {
+		Map<Long, Map<String, Object>> departmentMap = new HashMap<>();
+		Map<Long, List<MemberDto>> membersByDepartment = new HashMap<>();
+
+		// 부서별 구성원 그룹화
+		for (MemberDto member : members) {
+			List<MemberDto> departmentMembers = membersByDepartment.getOrDefault(member.getDepartment_no(),
+					new ArrayList<>());
+			departmentMembers.add(member);
+			membersByDepartment.put(member.getDepartment_no(), departmentMembers);
+		}
+
+		// 부서 트리 구성
+		for (DepartmentDto dept : departments) {
+			Map<String, Object> node = new HashMap<>();
+			node.put("id", "dept_" + dept.getDepartment_no());
+			node.put("text", dept.getDepartment_name());
+			node.put("type", "department");
+			node.put("children", new ArrayList<>());
+			departmentMap.put(dept.getDepartment_no(), node);
+		}
+
+		List<Map<String, Object>> result = new ArrayList<>();
+		for (DepartmentDto dept : departments) {
+			if (dept.getDepartment_high() == 0) {
+				Map<String, Object> departmentNode = buildDepartmentHierarchy(dept, departmentMap, membersByDepartment);
+				if (departmentNode != null) {
+					result.add(departmentNode);
+				}
+			}
+		}
+		return result;
+	}
+
+	// 부서와 구성원 계층구조 생성
+	private Map<String, Object> buildDepartmentHierarchy(DepartmentDto dept,
+			Map<Long, Map<String, Object>> departmentMap, Map<Long, List<MemberDto>> membersByDepartment) {
+		Map<String, Object> node = departmentMap.get(dept.getDepartment_no());
+		List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
+
+		if (dept.getSubDepartments() != null && !dept.getSubDepartments().isEmpty()) {
+			for (DepartmentDto subDept : dept.getSubDepartments()) {
+				Map<String, Object> subDeptNode = buildDepartmentHierarchy(subDept, departmentMap, membersByDepartment);
+				if (subDeptNode != null) {
+					children.add(subDeptNode);
+				}
+			}
+		}
+
+		List<MemberDto> deptMembers = membersByDepartment.get(dept.getDepartment_no());
+		if (deptMembers != null) {
+			for (MemberDto member : deptMembers) {
+				Map<String, Object> memberNode = new HashMap<>();
+				memberNode.put("id", "member_" + member.getMember_no());
+				memberNode.put("text", member.getMember_name() + " " + member.getPosition_name());
+				memberNode.put("type", "member");
+				children.add(memberNode);
+			}
+		}
+
+		if (children.isEmpty()) {
+			return null;
+		} else {
+			return node;
+		}
+	}
 
 }

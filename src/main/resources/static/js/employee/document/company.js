@@ -317,6 +317,13 @@ $(function () {
 	                $('#select_delete').prop('disabled', !isChecked);
 	                $('#select_down').prop('disabled', !isChecked);                	
             	});
+            	// 하위 체크박스 클릭 시 th 체크박스 상태 변경
+				$('.file_checkbox').on('change', function() {
+				    const allChecked = $('.file_checkbox').length === $('.file_checkbox:checked').length;
+				    $('#select_all').prop('checked', allChecked);
+				    $('#select_delete').prop('disabled', $('.file_checkbox:checked').length === 0);
+				    $('#update_button').prop('disabled', $('.file_checkbox:checked').length === 0);
+				});
             	// 파일 선택 삭제
 				$('#select_delete').on('click', function() {
 				    const fileNos = []; 
@@ -366,6 +373,10 @@ $(function () {
 				            downloadLink.click();
 				            document.body.removeChild(downloadLink);
 				        });
+				        $('.file_checkbox:checked').prop('checked', false);
+				        $('#select_all:checked').prop('checked', false);
+				        $('#select_delete').prop('disabled', true);
+    					$('#select_down').prop('disabled', true);
 				    } else {
 				       $('#select_delete').prop('disabled', true);
 				    }
@@ -968,6 +979,8 @@ $(function () {
 	                        });
 	                        loadFiles(selectedFolderNo); 
 	                        getAllFileSize();
+				        	$('#select_delete').prop('disabled', true);
+    						$('#select_down').prop('disabled', true);
 	                    } else {
 	                        Swal.fire({
 	                            icon: 'error',

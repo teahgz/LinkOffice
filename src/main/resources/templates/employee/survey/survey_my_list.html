@@ -2,8 +2,8 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/employee/survey/survey_my_list.css}" rel="stylesheet"
-		type="text/css">
+	<link th:href="@{/css/employee/survey/survey_my_list.css}"
+		rel="stylesheet" type="text/css">
 	<section>
 		<h1>내가 만든 설문</h1>
 		<div class="list_survey_list">
@@ -40,70 +40,72 @@
 			</div>
 
 			<table class="survey_table">
-    <thead>
-        <tr>
-            <th>번호</th>
-            <th>상태</th>
-            <th>설문 제목</th>
-            <th>기간</th>
-        </tr>
-    </thead>
+				<thead>
+					<tr>
+						<th>번호</th>
+						<th>상태</th>
+						<th>설문 제목</th>
+						<th>기간</th>
+					</tr>
+				</thead>
 
-    <tbody>
-        <th:block th:if="${#lists.isEmpty(surveyList)}">
-            <tr>
-                <td colspan="4">조회된 목록이 없습니다.</td>
-            </tr>
-        </th:block>
+				<tbody>
+					<th:block th:if="${#lists.isEmpty(surveyList)}">
+						<tr>
+							<td colspan="4">조회된 목록이 없습니다.</td>
+						</tr>
+					</th:block>
 
-        <th:block th:if="${!#lists.isEmpty(surveyList)}">
-            <tr th:each="survey, status : ${surveyList}" th:data_survey_no="${survey.survey_no}" class="survey_row">
-                <td th:text="${status.index + 1}"></td>
-                <td th:text="${survey.survey_status == 0 ? '진행중' : '마감'}"></td>
-                <!-- 설문 제목에 링크 추가 -->
-                <td>
-                    <a th:href="@{/employee/survey/result/{survey_no}(survey_no=${survey.survey_no})}" th:text="${survey.survey_title}"></a>
-                </td>
-                <td th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></td>
-            </tr>
-        </th:block>
-    </tbody>
-</table>
+					<th:block th:if="${!#lists.isEmpty(surveyList)}">
+						<tr th:each="survey, status : ${surveyList}"
+							th:data_survey_no="${survey.survey_no}" class="survey_row">
+							<td th:text="${status.index + 1}"></td>
+							<td th:text="${survey.survey_status == 0 ? '진행중' : '마감'}"></td>
+							<td><a
+								th:href="@{/employee/survey/result/{survey_no}(survey_no=${survey.survey_no})}"
+								th:text="${survey.survey_title}"></a></td>
+							<td
+								th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
 
-		
-		<div class="pagination">
-		  <th:block th:if="${page.totalElements > 1}"> 
-		    <button th:if="${page.number > 0}"
-		            th:onclick="|location.href='@{/employee/survey/myList(page=0, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;&lt;
-		    </button>
-		    <button th:if="${page.hasPrevious()}"
-		            th:onclick="|location.href='@{/employee/survey/myList(page=${page.number - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;
-		    </button>
-		    <th:block th:with="totalPages=${page.totalPages}, currentPage=${page.number}">
-		      <th:block th:with="
+
+			<div class="pagination">
+				<th:block th:if="${page.totalElements > 1}">
+					<button th:if="${page.number > 0}"
+						th:onclick="|location.href='@{/employee/survey/myList(page=0, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;&lt;
+					</button>
+					<button th:if="${page.hasPrevious()}"
+						th:onclick="|location.href='@{/employee/survey/myList(page=${page.number - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&lt;
+					</button>
+					<th:block
+						th:with="totalPages=${page.totalPages}, currentPage=${page.number}">
+						<th:block
+							th:with="
 		          startPage=${currentPage >= totalPages - 1 ? totalPages - 3 : (currentPage <= 1 ? 0 : currentPage - 1)}, 
 		          endPage=${currentPage >= totalPages - 1 ? totalPages - 1 : (currentPage <= 1 ? 2 : currentPage + 1)}">
-		        <span th:if="${totalPages > 0}"
-		              th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
-		          <button th:classappend="${i == currentPage} ? 'active'"
-		                  th:onclick="|location.href='@{/employee/survey/myList(page=${i}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|"
-		                  th:text="${i + 1}">
-		          </button>
-		        </span>
-		      </th:block>
-		    </th:block>
-		    <button th:if="${page.hasNext()}"
-		            th:onclick="|location.href='@{/employee/survey/myList(page=${page.number + 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;
-		    </button>
-		    <button th:if="${page.number < page.totalPages - 1}"
-		            th:onclick="|location.href='@{/employee/survey/myList(page=${page.totalPages - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;&gt;
-		    </button>
-		  </th:block>
-		
-		  <th:block th:if="${page.totalElements == 1}">
-		    <button class="active">1</button>
-		  </th:block>
-		</div>
+							<span th:if="${totalPages > 0}"
+								th:each="i : ${#numbers.sequence(startPage < 0 ? 0 : startPage, endPage >= totalPages ? totalPages - 1 : endPage)}">
+								<button th:classappend="${i == currentPage} ? 'active'"
+									th:onclick="|location.href='@{/employee/survey/myList(page=${i}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|"
+									th:text="${i + 1}"></button>
+							</span>
+						</th:block>
+					</th:block>
+					<button th:if="${page.hasNext()}"
+						th:onclick="|location.href='@{/employee/survey/myList(page=${page.number + 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;
+					</button>
+					<button th:if="${page.number < page.totalPages - 1}"
+						th:onclick="|location.href='@{/employee/survey/myList(page=${page.totalPages - 1}, search_type=${searchDto?.search_type}, search_text=${searchDto?.search_text}, sort=${currentSort})}'|">&gt;&gt;
+					</button>
+				</th:block>
+
+				<th:block th:if="${page.totalElements == 1}">
+					<button class="active">1</button>
+				</th:block>
+			</div>
 		</div>
 	</section>
 </th:block>

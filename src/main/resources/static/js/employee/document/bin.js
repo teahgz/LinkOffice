@@ -153,6 +153,13 @@ $(function () {
 	                $('#select_delete').prop('disabled', !isChecked);
 	                $('#update_button').prop('disabled', !isChecked);                    
                 });
+                // 하위 체크박스 클릭 시 th 체크박스 상태 변경
+				$('.file_checkbox').on('change', function() {
+				    const allChecked = $('.file_checkbox').length === $('.file_checkbox:checked').length;
+				    $('#select_all').prop('checked', allChecked);
+				    $('#select_delete').prop('disabled', $('.file_checkbox:checked').length === 0);
+				    $('#update_button').prop('disabled', $('.file_checkbox:checked').length === 0);
+				});
  	            // 파일 선택 삭제
 	            $('#select_delete').on('click', function() {
 	                const selectedFileNos = []; 
@@ -299,7 +306,6 @@ $(function () {
 			                        confirmButtonText: '확인'
 			                    });
 			            	loadFiles();
-			            	getAllFileSize();
 	                    } else {
 	                        Swal.fire({
 		                        icon: 'error',
@@ -341,8 +347,9 @@ $(function () {
 	                            text: response.res_msg,
 	                            confirmButtonText: '확인'
 	                        });
-	                        loadFiles(); 
-	                        getAllFileSize();
+	                        loadFiles();
+	                        $('#select_delete').prop('disabled', true);
+    						$('#update_button').prop('disabled', true);
 	                    } else {
 	                        Swal.fire({
 	                            icon: 'error',
@@ -375,7 +382,6 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	            	loadFiles();
-	            	getAllFileSize();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -407,7 +413,6 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	            	loadFiles();
-	            	getAllFileSize();
 					} else{
 						Swal.fire({
 	                        icon: 'success',
@@ -415,7 +420,6 @@ $(function () {
 	                        confirmButtonText: '확인'
 	                    });
 	            	loadFiles();
-	            	getAllFileSize();
 					}
                 } else {
                     Swal.fire({
@@ -424,7 +428,9 @@ $(function () {
                         confirmButtonText: '확인'
                     });
                 }
-                 $('#file_name_input').val(''); 
+                $('#select_delete').prop('disabled', true);
+    			$('#update_button').prop('disabled', true);
+                $('#file_name_input').val(''); 
 			}
 		});	
 	}

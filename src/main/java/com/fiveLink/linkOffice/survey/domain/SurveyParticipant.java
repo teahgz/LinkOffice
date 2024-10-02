@@ -35,13 +35,13 @@ public class SurveyParticipant {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long surveyParticipantNo;
 	
-	@ManyToOne
-    @JoinColumn(name = "survey_no")
-    private Survey survey;
-	
-	@ManyToOne
-    @JoinColumn(name = "member_no")
-    private Member member;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "survey_no", nullable = false)
+	private Survey survey;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_no", nullable = false)
+	private Member member;
 	
 	@Column(name="survey_participant_status")
 	private Integer surveyParticipantStatus;

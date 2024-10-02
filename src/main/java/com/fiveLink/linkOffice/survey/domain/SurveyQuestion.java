@@ -35,9 +35,9 @@ public class SurveyQuestion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long surveyQuestionNo;
 	
-	@ManyToOne
-    @JoinColumn(name = "survey_no")
-    private Survey survey;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "survey_no", nullable = false)
+	private Survey survey;
 	
 	@Column(name="survey_question_text")
 	private String surveyQuestionText;

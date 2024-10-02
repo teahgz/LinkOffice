@@ -54,7 +54,10 @@
 	            		<img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="main_arrow_img"/>
 	            	</span>
 	            </a>
-            	<h3>휴가 현황</h3>
+			        <div class="approval_btn_con">
+			        <h3 class="approval-title">휴가 현황</h3>
+			            <a th:href="@{/employee/vacationapproval/create}" class="approval_btn app_primary">+ 휴가 신청</a>
+			        </div>
             </div> 
             <div class="main_item_box custom-height-11"> 
 	     		<h3>날씨</h3>
@@ -136,7 +139,7 @@
                 <div class="main_item_box custom-height-10"> 
 			        <div class="approval_btn_con">
 			        <h3 class="approval-title">전자결재</h3>
-			            <a th:href="@{/employee/approval/create}" class="approval_btn app_primary">결재 작성</a>
+			            <a th:href="@{/employee/approval/create}" class="approval_btn app_primary">+ 결재 작성</a>
 			        </div>
 			        <ul class="approval-status">
 			            <li>
