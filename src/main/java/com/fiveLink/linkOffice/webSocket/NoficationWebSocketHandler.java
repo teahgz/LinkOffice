@@ -1161,6 +1161,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	  			Map<String, Object> responseMap = new HashMap<>();
 	  			responseMap.put("type", "noficationDepartmentSchedule");
 	  			responseMap.put("title", nofication_title);
+	  			responseMap.put("nofication_type", nofication_type);
 	  			responseMap.put("content", nofication_content);
 	  			responseMap.put("data", msg);
 				String currentTime = getCurrentFormattedDateTime();
@@ -1236,6 +1237,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	  			responseMap.put("type", "noficationParticipantSchedule");
 	  			responseMap.put("title", nofication_title);
 	  			responseMap.put("content", nofication_content);
+	  			responseMap.put("nofication_type", nofication_type);
 	  			responseMap.put("data", msg);
 				String currentTime = getCurrentFormattedDateTime();
 				responseMap.put("timestamp", currentTime);
@@ -1281,7 +1283,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         
 	  	List<Map<String, Object>> msg = new ArrayList<>();
 		String nofication_content = memberName+"님이 회의에 참여자로 등록했습니다.<br>회의 일시 : " + reservationDateObj;
-		String nofication_title = "일정";
+		String nofication_title = "회의";
 		int nofication_type = 13; 
 
 	  	for (Long participantId : participantIds) {  
@@ -1313,6 +1315,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	  			responseMap.put("content", nofication_content);
 	  			responseMap.put("data", msg);
 				String currentTime = getCurrentFormattedDateTime();
+				responseMap.put("nofication_type", nofication_type);
 				responseMap.put("timestamp", currentTime);
 				responseMap.put("pk", null); //전자결재 pk값
 	  			String unreadMessage = objectMapper.writeValueAsString(responseMap);
