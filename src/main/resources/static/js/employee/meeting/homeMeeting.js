@@ -15,21 +15,21 @@ document.addEventListener('DOMContentLoaded', function() {
         } 
     });
 
-    function initializeCalendar(reservations) {
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: 'ko',
-            headerToolbar: {
-                left: 'prev,next',
-                center: 'title',
-                right: 'today'
-            },
-            buttonText: {
+   function initializeCalendar(reservations) {
+	    calendar = new FullCalendar.Calendar(calendarEl, {
+	        initialView: 'dayGridMonth',
+	        locale: 'ko',
+	        headerToolbar: {
+	            left: 'prev,next',
+	            center: 'title',
+	            right: 'today'
+	        },
+	        buttonText: {
 	            today: '오늘'
 	        },
-            contentHeight: 'auto',
+	        contentHeight: 'auto',
 	        handleWindowResize: true,
-	        fixedWeekCount: false, 
+	        fixedWeekCount: false,
 	        googleCalendarApiKey: 'AIzaSyBaQi-ZLyv7aiwEC6Ca3C19FE505Xq2Ytw',
 	        eventSources: [
 	            {
@@ -42,63 +42,69 @@ document.addEventListener('DOMContentLoaded', function() {
 	                type: 'holiday'
 	            },
 	            {
-	                events: reservations.map(function(reservation) {
-		                return {
-		                    id: reservation.meeting_reservation_no,
-		                    title: reservation.meeting_name,
-		                    start: reservation.meeting_reservation_date,
-		                    extendedProps: {
-		                        startTime : reservation.meeting_reservation_start_time,
-		                        endTime : reservation.meeting_reservation_end_time,
-		                        purpose: reservation.meeting_reservation_purpose,
-		                        participantCount: reservation.participant_count,
-		                        member_name : reservation.member_name,
-		                        member_no : reservation.member_no,
-		                        departmentName : reservation.department_name,
-		                        positionName : reservation.position_name
-		                    }
-		                }
-		            }),
+	                events: function(fetchInfo, successCallback) { 
+	                    const groupedReservations = reservations.reduce((acc, reservation) => {
+	                        const date = reservation.meeting_reservation_date;
+	                        if (!acc[date]) {
+	                            acc[date] = [];
+	                        }
+	                        acc[date].push(reservation);
+	                        return acc;
+	                    }, {});
+	 
+	                    const events = Object.entries(groupedReservations).map(([date, dateReservations]) => {
+	                        return {
+	                            start: date,
+	                            display: 'block',
+	                            color : '#ffc1c1',
+	                            classNames: ['hidden-event'],
+	                            extendedProps: {
+	                                reservations: dateReservations
+	                            }
+	                        };
+	                    }); 
+	                    successCallback(events);
+	                }
 	            }
-	        ], 
-            dayCellContent: function(info) {
-                var number = document.createElement("a");
-                number.classList.add("fc-daygrid-day-number");
-                number.innerHTML = info.dayNumberText.replace("일", '').replace("日", "");
-
-                var wrapper = document.createElement("div");
-                wrapper.classList.add("fc-daygrid-day-top");
-                wrapper.appendChild(number);
-
-                if (info.view.type === "dayGridMonth") {
-                    return { domNodes: [wrapper] };
-                }
-                return { domNodes: [] };
-            },
-            dateClick: function(info) {
-                displayReservations(info.dateStr, reservations);
-            },
-            eventClick: function(info) {
+	        ],
+	        dayCellContent: function(info) {
+	            var number = document.createElement("a");
+	            number.classList.add("fc-daygrid-day-number");
+	            number.innerHTML = info.dayNumberText.replace("일", '').replace("日", "");
+	
+	            var wrapper = document.createElement("div");
+	            wrapper.classList.add("fc-daygrid-day-top");
+	            wrapper.appendChild(number);
+	
+	            if (info.view.type === "dayGridMonth") {
+	                return { domNodes: [wrapper] };
+	            }
+	            return { domNodes: [] };
+	        },
+	        dateClick: function(info) {
+	            displayReservations(info.dateStr, reservations);
+	        },
+	        eventClick: function(info) {
+				info.jsEvent.preventDefault();
 	            const eventDate = new Date(info.event.start);
-	            eventDate.setDate(eventDate.getDate() + 1); 
-	            const formattedDate = eventDate.toISOString().split('T')[0]; 
-	            displayReservations(formattedDate, reservations); 
+	            eventDate.setDate(eventDate.getDate() + 1);
+	            const formattedDate = eventDate.toISOString().split('T')[0];
+	            displayReservations(formattedDate, reservations);
 	        },
 	        eventDidMount: function(info) {
-	            info.el.style.cursor = 'pointer';
 	            if (info.event.extendedProps.description === '공휴일') {
 	                const dateCell = info.el.closest('.fc-daygrid-day');
 	                if (dateCell) {
 	                    const dateCellContent = dateCell.querySelector('.fc-daygrid-day-number');
 	                    if (dateCellContent) {
 	                        dateCellContent.style.color = '#FF0000';
-	                    } 
+	                    }
 	                }
-	            }
+	            }  
 	        }
-        });
-        calendar.render();
-    }
+	    });
+	    calendar.render();
+	}
 
     function displayReservations(date, reservations) {
         var reservationList = document.getElementById('meeting_selected_date_list');
@@ -114,14 +120,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (dayReservations.length === 0) {
-            reservationList.innerHTML = '<div>예약이 없습니다.</div>';
+            reservationList.innerHTML = '<div class="meeting_no_reservation">예약이 없습니다.</div>';
         } else {
-            dayReservations.forEach(function(reservation) {
-                var div = document.createElement('div');
-                div.textContent = '[' + reservation.meeting_name + '] ' +  reservation.meeting_reservation_start_time + ' ~ ' + reservation.meeting_reservation_end_time 
-                + ' ' + reservation.member_name + ' ' + reservation.position_name + ' (' + reservation.participant_count + '명)';
-                reservationList.appendChild(div);
-            });
-        }
+		    dayReservations.forEach(function(reservation) {
+		        var div = document.createElement('div');
+		        div.classList.add('meeting_list_div');  
+		        div.textContent = '[' + reservation.meeting_name + '] ' + reservation.meeting_reservation_start_time + ' ~ ' + reservation.meeting_reservation_end_time 
+		        + ' ' + reservation.member_name + ' ' + reservation.position_name + ' (' + reservation.participant_count + '명)';
+		        reservationList.appendChild(div);
+		    });
+		} 
     }
 });

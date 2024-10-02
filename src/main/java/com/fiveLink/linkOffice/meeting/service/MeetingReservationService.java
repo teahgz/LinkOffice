@@ -340,7 +340,7 @@ public class MeetingReservationService {
     } 
     
     public List<MeetingReservationDto> getAllReservations() { 
-        List<MeetingReservation> reservations = meetingReservationRepository.findAll();
+        List<MeetingReservation> reservations = meetingReservationRepository.findAllByMeetingReservationStatusOrderByMeetingReservationStartTimeAsc(0L);
  
         return reservations.stream().map(reservation -> {
         	String memberName = memberRepository.findById(reservation.getMemberNo())
