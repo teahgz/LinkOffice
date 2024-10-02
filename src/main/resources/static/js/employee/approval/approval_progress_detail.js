@@ -1,19 +1,17 @@
 const approvalTitle = document.getElementById('approval_title').innerHTML;
 
 // 모달 창 기안 취소
-document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById("myModal");
     const closeModal = document.querySelector(".close");
-
-    document.querySelector('.cancel_button').addEventListener('click', function() {
-        modal.style.display = "flex";
-    });
 
     closeModal.addEventListener('click', function() {
         modal.style.display = "none";
     });
 
-    document.getElementById('confirm_cancel_button').addEventListener('click', function() {
+  function approvalCancel(){
+        modal.style.display = "flex";
+        
+	    document.getElementById('confirm_cancel_button').addEventListener('click', function() {
         const cancelReason = document.getElementById('cancel_reason').value;
         const appNo = document.querySelector('#approval_no').value;
         const csrfToken = document.getElementById("csrf_token").value;
@@ -59,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+  }
+document.addEventListener('DOMContentLoaded', function() {
     
     	// 미리보기
 			document.getElementById('previewButton').addEventListener('click', function() {
