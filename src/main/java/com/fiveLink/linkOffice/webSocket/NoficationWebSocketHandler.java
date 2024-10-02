@@ -1281,7 +1281,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         
 	  	List<Map<String, Object>> msg = new ArrayList<>();
 		String nofication_content = memberName+"님이 회의에 참여자로 등록했습니다.<br>회의 일시 : " + reservationDateObj;
-		String nofication_title = "일정";
+		String nofication_title = "회의";
 		int nofication_type = 13; 
 
 	  	for (Long participantId : participantIds) {  
