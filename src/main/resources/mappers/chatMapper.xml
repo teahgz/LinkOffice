@@ -198,7 +198,13 @@
         SELECT COUNT(cm.chat_message_no) AS unread_count
         FROM fl_chat_message cm
         LEFT JOIN fl_chat_read_status cr ON cm.chat_message_no = cr.chat_message_no AND cr.member_no = #{memberNo}
-        WHERE cr.chat_read_no IS NULL AND cm.chat_room_no IS NOT NULL AND cm.chat_room_no = #{chatRoomNo}
+        JOIN fl_chat_member ctm ON cm.chat_room_no = ctm.chat_room_no
+        WHERE cr.chat_read_no IS NULL
+        AND cm.chat_room_no IS NOT NULL
+        AND cm.chat_room_no = #{chatRoomNo}
+        AND cm.chat_message_create_date >= ctm.chat_member_join_date
+        AND ctm.member_no = #{memberNo}
+        AND ctm.chat_member_par = 0
     </select>
 
     <!-- 채팅 메시지 -->
