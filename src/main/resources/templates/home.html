@@ -55,13 +55,19 @@
 	            	</span>
 	            </a>
 
-            	<h3>휴가 현황</h3>
-				      <p id="vacationDays">2024년 기준 본인의 남은 휴가 개수를 불러오는 중...</p>
+			        <div class="approvalState">
+						<div class="vacationApproval_btn_con">
+							<a th:href="@{/employee/vacationapproval/create}" class="vacationApproval">+ 휴가 신청</a>
+						</div>
 
-			        <div class="approval_btn_con">
-			        <h3 class="approval-title">휴가 현황</h3>
-			            <a th:href="@{/employee/vacationapproval/create}" class="approval_btn app_primary">+ 휴가 신청</a>
-			        </div>
+						<div id="vacationDays">
+							<span id="vacationYear">입사일 기준</span>
+							<span id="vacationTitle">지급 휴가 개수</span>
+							<strong id="vacationCount">0</strong>
+							<span  id="vacationTitle2">남은 휴가 개수</span>
+							<strong id="vacationRemainCount">0</strong>
+						</div>
+					</div>
 
             </div> 
             <div class="main_item_box custom-height-11"> 

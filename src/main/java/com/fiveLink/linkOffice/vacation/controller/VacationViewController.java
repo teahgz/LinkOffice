@@ -1,5 +1,8 @@
 package com.fiveLink.linkOffice.vacation.controller;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +82,20 @@ public class VacationViewController {
     @ResponseBody
     public Map<String, Object> userVacationCount(@PathVariable("vacationMemberNo")Long vacationMemberNo) {
         int result = vacationService.userVacationCount(vacationMemberNo);
+        int type = vacationService.selectVacationStandardStatus();
+        String date = vacationService.selectVacationDesignated(type);
+        String hire = vacationService.memberHireDate(vacationMemberNo);
+        LocalDate hireDate = LocalDate.parse(hire);
+
+        int yearSinceJoin = Period.between(hireDate, LocalDate.now()).getYears();
+
+        int count = vacationService.contVacationYear(yearSinceJoin);
+
         Map<String, Object> response = new HashMap<>();
         response.put("remainingVacationDays", result);
+        response.put("count", count);
+        response.put("date", date);
+        response.put("yearSinceJoin", yearSinceJoin);
         return response;
     }
 }
