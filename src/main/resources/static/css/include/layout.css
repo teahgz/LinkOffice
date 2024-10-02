@@ -36,7 +36,7 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1;
-     background-color: #f5f7fa; 
+    background-color: #f5f7fa; 
 }
 
 #main-content {

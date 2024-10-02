@@ -241,7 +241,13 @@ textarea {
  
 #calendar {
 	margin:auto;
+	flex-grow: 1;
+    padding: 20px; 
+    overflow-y: auto;   
+    height: 100vh;
+    width : 1400px;
 } 
+
 .fc-daygrid-day {
     height: 150px;  
 }  
@@ -562,8 +568,8 @@ textarea {
     gap: 10px;
     align-items: center;
     padding: 20px;
-    margin-left: 240px;
-    margin-bottom: 40px;
+    margin-left: 190px;
+    margin-bottom: 40px; 
 }
 
 #searchCategory,

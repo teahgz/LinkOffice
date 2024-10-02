@@ -39,7 +39,7 @@ public class PositionController {
         List<PositionDto> topLevelPositions = positionService.getAllPositionsForSelect();
         Long memberNo = memberService.getLoggedInMemberNo();
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
-        List<PositionDto> activePositions = positionService.getActivePositions();
+        List<PositionDto> activePositions = positionService.getActivePositions(id);
         
         model.addAttribute("memberdto", memberDto);
         model.addAttribute("positions", positions);

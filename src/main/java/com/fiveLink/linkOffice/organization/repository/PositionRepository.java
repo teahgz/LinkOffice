@@ -24,5 +24,5 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     
     List<Position> findAllByPositionStatus(Long status);
     
-    List<Position> findByPositionStatusOrderByPositionLevelAsc(Long status);
+    List<Position> findByPositionStatusAndPositionNoNotOrderByPositionLevelAsc(Long status, Long positionNo);
 } 

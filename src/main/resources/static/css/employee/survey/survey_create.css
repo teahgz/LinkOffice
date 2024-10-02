@@ -1,0 +1,117 @@
+@charset "UTF-8";
+ #surveyForm {
+            background-color: transparent;
+            width: 100%;
+            max-width: 1000px;
+            padding: 0;
+        }
+
+        /* 입력 필드 크기 조정 */
+        #surveyForm input[type="text"],
+        #surveyForm input[type="date"],
+        #surveyForm textarea {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 버튼 크기 조정 */
+        #surveyForm button {
+            width: 100%;
+            max-width: 150px;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        #surveyForm button[type="button"] {
+            background-color: #6c757d;
+        }
+
+        #surveyForm button[type="submit"] {
+            background-color: #007bff;
+        }
+
+        /* 질문 리스트 영역 */
+        .question-item {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            position: relative; /* 삭제 버튼 위치를 위해 추가 */
+        }
+
+        .question-item input[type="text"],
+        .question-item select {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* 삭제 버튼 스타일 */
+        .remove-question {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            color: red;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .remove-question:hover {
+            color: darkred;
+        }
+
+        /* Flex로 수직 중앙 정렬 */
+        .option-input {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* 선택된 사원 표시 부분 */
+        #selected-members-outside {
+            margin-top: 10px;
+            font-weight: bold;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        #selected-members-outside div {
+            padding: 8px 12px;
+            background-color: #f5f5f5;
+            border-radius: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #selected-members-outside div:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* 옵션 삭제 버튼 */
+        .remove-option {
+            margin-left: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .remove-option:hover {
+            color: red;
+        }

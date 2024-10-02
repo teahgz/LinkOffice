@@ -290,7 +290,7 @@ public class DocumentFileController {
         int result = 0;
 	    int updateCount = 0;
 
-	    // 리스트로 가져온 파일들을 하나씩 삭제 
+	    // 리스트로 가져온 파일들을 하나씩 복구
 	    for (Long fileNo : fileNos) {
 	    	DocumentFile file = documentFileRepository.findByDocumentFileNo(fileNo);	    	
 	    	Long memberNo = file.getMember().getMemberNo();
@@ -310,6 +310,9 @@ public class DocumentFileController {
 	        		file.setDocumentFolder(parentFolder);
 	        		file.setDocumentFileUpdateDate(LocalDateTime.now());
 	        		result = documentFileService.saveFile(file);  
+		        	if(result > 0) {
+		        		updateCount++;
+		        	}
 	        	} else {
 	        		resultMap.put("res_msg", "복구할 수 있는 폴더가 존재하지 않습니다.");
 	        	}
@@ -317,11 +320,11 @@ public class DocumentFileController {
 	    	if(result > 0) {
 	    		if(updateCount == fileNos.size()) {
 	    			resultMap.put("res_code", "200");
-	    			resultMap.put("res_status", 0);	    			
+	    			resultMap.put("res_status", "0");	    			
 	    			resultMap.put("res_msg", "파일이 복구되었습니다.");	    			
 	    		} else {
 	    			resultMap.put("res_code", "200");
-	    			resultMap.put("res_status", 1);	
+	    			resultMap.put("res_status", "1");	
 	    		}
 	    	} 
 	    }	    

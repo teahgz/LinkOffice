@@ -18,7 +18,7 @@ public class SurveyOptionDto {
 	private Long survey_option_no;
 	private Long survey_question_no;
 	private String survey_question_text;
-	private String survey_option_answer; 
+	private String survey_option_answer;
 	
 	public SurveyOption toEntity() {
 		return SurveyOption.builder()

@@ -16,11 +16,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
@@ -50,7 +50,7 @@ public class SurveyViewController {
         return Sort.by(Sort.Order.desc("surveyStartDate"));
     }
     
-    @GetMapping("/employee/survey/myList")
+    @GetMapping("/employee/survey/myList/{member_no}")
     public String surveyMyList(
         @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
         @RequestParam(value = "sort", defaultValue = "latest") String sort,
@@ -74,7 +74,7 @@ public class SurveyViewController {
         return "employee/survey/survey_my_list";
     }
     
- // 설문 결과 페이지 (주관식 및 객관식 응답 포함)
+    // 설문 결과 페이지 (주관식 및 객관식 응답 포함)
     @GetMapping("/employee/survey/result/{survey_no}")
     public String surveyResult(@PathVariable("survey_no") Long surveyNo, Model model) {
         // 설문 상세 정보
@@ -102,8 +102,6 @@ public class SurveyViewController {
                 LOGGER.info("Survey No: {}, Question No: {}, Participant: {}, Answer: {}", surveyNo, questionNo, answer[0], answer[1]);
             });
         });
-
-
         model.addAttribute("dto", dto);
         model.addAttribute("questions", questions);
         model.addAttribute("totalParticipants", totalParticipants);
@@ -112,11 +110,69 @@ public class SurveyViewController {
         model.addAttribute("participationRates", participationRates);
         model.addAttribute("chartData", chartData);
         model.addAttribute("textAnswers", textAnswers);
-
         return "employee/survey/survey_question_myResult";
     }
     
-    @GetMapping("/employee/survey/endList")
+    // 설문 상세 페이지 (참여 여부에 따라 상세 페이지 분기)
+    @GetMapping("/employee/survey/detail/{survey_no}")
+    public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
+        Long memberNo = memberService.getLoggedInMemberNo();
+        SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+        List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+
+        // 설문 참여 여부 확인
+        boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
+
+        // 기본 데이터 추가
+        model.addAttribute("dto", dto);
+        model.addAttribute("questions", questions);
+
+        if (hasParticipated) {
+            int totalParticipants = surveyService.getTotalParticipants(surveyNo);
+            int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
+            int notParticipatedParticipants = totalParticipants - completedParticipants;
+            
+            
+            
+            // 참여율 계산 및 추가
+            Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
+            model.addAttribute("participationRates", participationRates);
+
+            // 각 질문별 응답 수 가져오기
+            Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
+            model.addAttribute("optionAnswerCounts", optionAnswerCounts);
+
+            // 차트 데이터 준비 (각 질문별 옵션 응답 수를 차트 형식으로 변환)
+            Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
+            model.addAttribute("chartData", chartData);
+
+            // 통계 데이터 추가
+            model.addAttribute("totalParticipants", totalParticipants);
+            model.addAttribute("completedParticipants", completedParticipants);
+            model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
+
+            return "employee/survey/survey_question_result"; 
+        } else {
+            return "employee/survey/survey_question_detail"; 
+        }
+    }
+
+    @GetMapping("/employee/survey/update/{survey_no}")
+	public String updateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
+    	 Long memberNo = memberService.getLoggedInMemberNo();
+         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+
+         // 기본 데이터 추가
+         model.addAttribute("dto", dto);
+         model.addAttribute("questions", questions);
+
+	    return "employee/survey/survey_question_update";
+	}
+
+    
+    
+    @GetMapping("/employee/survey/endList/{member_no}")
     public String surveyEndList(
             @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(value = "sort", defaultValue = "latest") String sort,
@@ -141,7 +197,7 @@ public class SurveyViewController {
         return "employee/survey/survey_end_list";
     }
     
-    @GetMapping("/employee/survey/ingList")
+    @GetMapping("/employee/survey/ingList/{member_no}")
     public String surveyIngList(
             @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(value = "sort", defaultValue = "latest") String sort,
@@ -167,46 +223,9 @@ public class SurveyViewController {
     }
     
 
-    @GetMapping("/employee/survey/detail/{survey_no}")
-    public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
-        Long memberNo = memberService.getLoggedInMemberNo();
-        SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
-        List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+    
 
-        // 설문 참여 여부 확인
-        boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
-
-        model.addAttribute("dto", dto);
-        model.addAttribute("questions", questions);
-
-        if (hasParticipated) {
-            int totalParticipants = surveyService.getTotalParticipants(surveyNo);
-            int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
-            int notParticipatedParticipants = totalParticipants - completedParticipants;
-
-            // 설문 참여율 계산 및 추가
-            Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
-            model.addAttribute("participationRates", participationRates);
-
-            // 옵션별 응답 수 데이터를 서비스에서 가져와 모델에 추가
-            Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
-            model.addAttribute("optionAnswerCounts", optionAnswerCounts);
-
-            // 차트 데이터 준비 (각 질문별 옵션 응답 수를 구글 차트 형식으로 변환)
-            Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
-            model.addAttribute("chartData", chartData);
-
-            model.addAttribute("totalParticipants", totalParticipants);
-            model.addAttribute("completedParticipants", completedParticipants);
-            model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
-
-            return "employee/survey/survey_question_result"; 
-        } else {
-            return "employee/survey/survey_question_detail";
-        }
-    }
-
-    // 차트 데이터 변환 메서드
+    // 차트 데이터를 준비하는 메서드
     private Map<Long, List<List<Object>>> prepareChartData(Map<Long, List<Object[]>> optionAnswerCounts) {
         Map<Long, List<List<Object>>> chartData = new HashMap<>();
 
@@ -214,14 +233,14 @@ public class SurveyViewController {
             Long questionNo = entry.getKey();
             List<Object[]> options = entry.getValue();
             List<List<Object>> data = new ArrayList<>();
-            data.add(Arrays.asList("Option", "Votes")); 
+            data.add(Arrays.asList("Option", "Votes")); // 차트 제목 추가
 
             for (Object[] option : options) {
                 String optionAnswer = (String) option[0];
                 Long answerCount = (Long) option[1];
-                data.add(Arrays.asList(optionAnswer, answerCount));
+                data.add(Arrays.asList(optionAnswer, answerCount)); // 옵션과 응답 수 추가
             }
-            chartData.put(questionNo, data);
+            chartData.put(questionNo, data); // 질문 번호에 대한 차트 데이터 저장
         }
         return chartData;
     }

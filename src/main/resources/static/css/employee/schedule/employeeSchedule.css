@@ -811,3 +811,30 @@ label {
 .dropdown-list li:hover {
     background-color: #f0f0f0;
 }
+
+.jstree-search { 
+    font-style: normal !important;
+    color: #0059ff !important; 
+}
+
+#par_create_name {
+	margin-bottom: 10px;
+}
+
+#eventViewComment {
+	margin-bottom: 20px;
+}
+
+.category_department_container {
+    display: flex;           
+    align-items: center;   
+    gap: 10px;             
+}
+
+#meeting_name {
+	margin-top: 20px;
+}
+#departmentName { 
+	margin-bottom: 10px; 
+	font-weight: 500;
+}

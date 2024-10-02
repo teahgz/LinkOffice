@@ -568,3 +568,7 @@ hr {
 	margin-top : -15px;
 }
 
+.jstree-search { 
+    font-style: normal !important;
+    color: #0059ff !important; 
+}

@@ -541,7 +541,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	         noficationDto.setNofication_content('"'+vacationApproval.getVacation_approval_title()+'"'+" 문서의 결재가 완료되었습니다.");
 	         noficationDto.setNofication_receive_no(vaAppMemberNo);
 	         noficationDto.setNofication_title(nofication_title);
-	         noficationDto.setNofication_type(nofication_type);
+	         noficationDto.setNofication_type(14);
 	         noficationDto.setMember_no(senderNo);
 			 noficationDto.setNofication_type_pk(vaAppNo);
 
@@ -570,7 +570,9 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	          }
 	       }
 	}	
-
+	
+	
+	
 	// 다음 결재자 
 	public Long findNextVacationApproverMemberNo(List<VacationApprovalFlowDto> approvalDtos, Long senderNo) {
 		for (int i = 0; i < approvalDtos.size(); i++) {
@@ -657,7 +659,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 			if (s.isOpen()) {
 				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, Object> responseMap = new HashMap<>();
-				responseMap.put("type", "appRejectAlarm");
+				responseMap.put("type", "vacationAppRejectAlarm");
 				responseMap.put("title", nofication_title);
 				responseMap.put("content", noficationDto.getNofication_content());
 				responseMap.put("data", unreadCounts);
@@ -950,7 +952,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	         noficationDto.setNofication_content('"'+approval.getApproval_title()+'"'+" 문서의 결재가 완료되었습니다.");
 	         noficationDto.setNofication_receive_no(approvalMemberNo);
 	         noficationDto.setNofication_title(nofication_title);
-	         noficationDto.setNofication_type(nofication_type);
+	         noficationDto.setNofication_type(15);
 	         noficationDto.setMember_no(senderNo);
 	         noficationDto.setNofication_type_pk(approvalNo);
 
