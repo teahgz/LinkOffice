@@ -379,6 +379,59 @@ public class DocumentApiController {
      }
      return resultMap;
    }
+   
+   // 자식 폴더를 삭제하는 메소드 
+   public void deleteChildFolders(Long parentFolderNo, DocumentFolder parentFolder) {
+	    List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(parentFolderNo);
+	    
+	    for (DocumentFolder childFolder : childFolders) {
+	        // 자식 폴더의 파일리스트 가져오기
+	        List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), 0L);
+	        
+	        // 자식 폴더의 파일을 최상위 폴더로 옮김
+	        if (childFileList != null && !childFileList.isEmpty()) {
+	            for (DocumentFile file : childFileList) {
+	                file.setDocumentFolder(parentFolder);
+	                file.setDocumentFileUpdateDate(LocalDateTime.now());
+	                // 파일 저장
+	                documentFileRepository.save(file);
+	            }
+	        }
+	        
+	        // 자식 폴더도 재귀적으로 삭제
+	        deleteChildFolders(childFolder.getDocumentFolderNo(), parentFolder);
+	        
+	        // 자식 폴더 삭제
+	        childFolder.setDocumentFolderStatus(1L);
+	        childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+	        documentFolderRepository.save(childFolder);
+	    }
+	}   
+	// 자식 폴더를 재귀적으로 삭제하는 메소드 
+	public void deleteChildFolders(Long parentFolderNo) {
+	    List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(parentFolderNo);
+	    
+	    if (childFolders != null && !childFolders.isEmpty()) {
+	        for (DocumentFolder childFolder : childFolders) {
+	            // 자식 폴더의 파일 리스트를 휴지통으로 옮김
+	            List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), 0L);
+	            if (childFileList != null && !childFileList.isEmpty()) {
+	                for (DocumentFile file : childFileList) {
+	                    file.setDocumentFileStatus(1L);
+	                    file.setDocumentFileUpdateDate(LocalDateTime.now());
+	                    // 파일 저장
+	                    documentFileRepository.save(file);
+	                }
+	            }
+	            // 자식 폴더도 재귀적으로 삭제
+	            deleteChildFolders(childFolder.getDocumentFolderNo());
+	            // 자식 폴더 삭제
+	            childFolder.setDocumentFolderStatus(1L);
+	            childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
+	            documentFolderRepository.save(childFolder);
+	        }
+	    }
+	}
    // 최상위 폴더가 존재하는 개인 폴더 삭제 
    @PostMapping("/document/personal/folder/delete")
    @ResponseBody
@@ -401,9 +454,7 @@ public class DocumentApiController {
        // 현재 폴더의 파일리스트 
        List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
        // 최상위 폴더 
-       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
-       // 자식 폴더 
-       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
+       DocumentFolder parentFolder = documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);     
        
        // 최상위 폴더로 파일리스트를 옮김 
        Long parentFolderNo = parentFolder.getDocumentFolderNo();
@@ -415,29 +466,10 @@ public class DocumentApiController {
                documentFileRepository.save(file);
            }
        }
-       // 자식 폴더가 존재하는 경우
-       if (childFolders != null && !childFolders.isEmpty()) {
-           for (DocumentFolder childFolder : childFolders) {
-               // 각 자식 폴더의 파일리스트 가져오기
-               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
-               
-               // 자식 폴더의 파일을 최상위 폴더로 옮김
-               if (childFileList != null && !childFileList.isEmpty()) {
-                   for (DocumentFile file : childFileList) {
-                	   file.setDocumentFolder(parentFolder);
-                	   file.setDocumentFileUpdateDate(LocalDateTime.now());              
-                       // 파일 저장
-                       documentFileRepository.save(file);
-                   }
-               }
-               // 자식 폴더도 삭제
-               childFolder.setDocumentFolderStatus(1L);
-               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
-               
-               // 자식 폴더 저장
-               documentFolderRepository.save(childFolder);
-           }
-       }
+       
+       // 자식 폴더를 재귀적으로 삭제하는 메소드
+       deleteChildFolders(folderNo, parentFolder);  
+       
        documentfolder.setDocumentFolderStatus(1L);
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
@@ -463,41 +495,20 @@ public class DocumentApiController {
              
        List<DocumentFile> documentFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(folderNo, fileStatus);
        DocumentFolder documentfolder = documentFolderRepository.findByDocumentFolderNo(folderNo);
+
+       // 자식 폴더를 재귀적으로 삭제하는 메소드 호출
+       deleteChildFolders(folderNo);
        
-       // 파일리스트를 휴지통으로 옮김 
+       // 현재 폴더의 파일 리스트를 휴지통으로 옮김 
        if (documentFileList != null && !documentFileList.isEmpty()) {
            for (DocumentFile file : documentFileList) {
-        	   file.setDocumentFileUpdateDate(LocalDateTime.now());
-        	   file.setDocumentFileStatus(1L);
-               // 새 파일 저장
+               file.setDocumentFileUpdateDate(LocalDateTime.now());
+               file.setDocumentFileStatus(1L);
+               // 파일 저장
                documentFileRepository.save(file);
            }
        }
-       // 자식 폴더 조회
-       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
-       
-       // 각 자식 폴더의 파일 리스트를 휴지통으로 옮김
-       if (childFolders != null && !childFolders.isEmpty()) {
-           for (DocumentFolder childFolder : childFolders) {
-               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
-               
-               if (childFileList != null && !childFileList.isEmpty()) {
-                   for (DocumentFile file : childFileList) {
-                	   file.setDocumentFileStatus(1L);
-                	   file.setDocumentFileUpdateDate(LocalDateTime.now());
-                       
-                       // 새 파일 저장
-                       documentFileRepository.save(file);
-                   }
-               }
-               // 자식 폴더도 삭제
-               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
-               childFolder.setDocumentFolderStatus(1L);
-               
-               // 자식 폴더 저장
-               documentFolderRepository.save(childFolder);
-           }
-       }
+
        documentfolder.setDocumentFolderStatus(1L);
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
@@ -532,8 +543,6 @@ public class DocumentApiController {
        // 최상위 폴더 
        DocumentFolder parentFolder 
        		= documentFolderRepository.findByMemberMemberNoAndDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(memberNo, docBoxType, docParentNo, folderStatus);
-       // 자식 폴더 
-       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
        
        // 최상위 폴더로 파일리스트를 옮김 
        Long parentFolderNo = parentFolder.getDocumentFolderNo();
@@ -544,28 +553,9 @@ public class DocumentApiController {
                documentFileRepository.save(file);
            }
        }
-       // 자식 폴더가 존재하는 경우
-       if (childFolders != null && !childFolders.isEmpty()) {
-           for (DocumentFolder childFolder : childFolders) {
-               // 각 자식 폴더의 파일리스트 가져오기
-               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
-               
-               // 자식 폴더의 파일을 최상위 폴더로 옮김
-               if (childFileList != null && !childFileList.isEmpty()) {
-                   for (DocumentFile file : childFileList) {
-                	   file.setDocumentFolder(parentFolder);
-
-                       // 새 파일 저장
-                       documentFileRepository.save(file);
-                   }
-               }
-               // 자식 폴더도 삭제
-               childFolder.setDocumentFolderStatus(1L);
-               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
-               // 자식 폴더 저장
-               documentFolderRepository.save(childFolder);
-           }
-       }
+       // 자식 폴더를 재귀적으로 삭제하는 메소드
+       deleteChildFolders(folderNo, parentFolder);  
+       
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        documentfolder.setDocumentFolderStatus(1L);
        if(documentFolderService.deleteFolder(documentfolder) > 0) {
@@ -600,9 +590,7 @@ public class DocumentApiController {
        // 최상위 폴더 
        DocumentFolder parentFolder 
        		= documentFolderRepository.findByDocumentBoxTypeAndDocumentFolderParentNoAndDocumentFolderStatus(docBoxType, docParentNo, folderStatus);
-       // 자식 폴더 
-       List<DocumentFolder> childFolders = documentFolderRepository.findByDocumentFolderParentNo(folderNo);
-       
+      
        // 최상위 폴더로 파일리스트를 옮김 
        Long parentFolderNo = parentFolder.getDocumentFolderNo();
        if (documentFileList != null && !documentFileList.isEmpty()) {
@@ -613,28 +601,9 @@ public class DocumentApiController {
                documentFileRepository.save(file);
            }
        }
-       // 자식 폴더가 존재하는 경우
-       if (childFolders != null && !childFolders.isEmpty()) {
-           for (DocumentFolder childFolder : childFolders) {
-               // 각 자식 폴더의 파일리스트 가져오기
-               List<DocumentFile> childFileList = documentFileRepository.findByDocumentFolderDocumentFolderNoAndDocumentFileStatus(childFolder.getDocumentFolderNo(), fileStatus);
-               
-               // 자식 폴더의 파일을 최상위 폴더로 옮김
-               if (childFileList != null && !childFileList.isEmpty()) {
-                   for (DocumentFile file : childFileList) {
-                	   file.setDocumentFolder(parentFolder);
-                       // 새 파일 저장
-                       documentFileRepository.save(file);
-                   }
-               }
-               // 자식 폴더도 삭제
-               childFolder.setDocumentFolderUpdateDate(LocalDateTime.now());
-               childFolder.setDocumentFolderStatus(1L);
-
-               // 자식 폴더 저장
-               documentFolderRepository.save(childFolder);
-           }
-       }
+       // 자식 폴더를 재귀적으로 삭제하는 메소드
+       deleteChildFolders(folderNo, parentFolder);  
+       
        documentfolder.setDocumentFolderStatus(1L);
        documentfolder.setDocumentFolderUpdateDate(LocalDateTime.now());
        if(documentFolderService.deleteFolder(documentfolder) > 0) {

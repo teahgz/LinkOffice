@@ -103,7 +103,8 @@ function bellUnreadCount() {
            });
 }
 const noficationTypeUrl={
-     1: `/api/chat/${headerCurrentMember}`
+     1: `/api/chat/${headerCurrentMember}`,
+     11: `http://localhost:8080/employee/schedule`
 }
 
 //통합 알림 리스트
@@ -154,6 +155,8 @@ function unreadNoficationList() {
                         const notificationType = listItem.getAttribute('data-notification-type');
                         if (notificationType === '1') {
                             window.location.href = noficationTypeUrl[1];
+                        } else if (notificationType === '11' || notificationType === '12' || notificationType === '13') {
+                            window.location.href = noficationTypeUrl[11];
                         } else {
                             console.log('다른 타입의 알림 클릭:', noficationType);
                         }
