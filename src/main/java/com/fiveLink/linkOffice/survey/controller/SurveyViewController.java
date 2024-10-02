@@ -59,7 +59,7 @@ public class SurveyViewController {
         Model model,
         SurveyDto searchDto) {
 
-        Long memberNo = memberService.getLoggedInMemberNo();  // 로그인된 멤버 정보 가져오기
+        Long memberNo = memberService.getLoggedInMemberNo(); 
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("currentSort", sort);
@@ -86,7 +86,9 @@ public class SurveyViewController {
 
         // 설문에 대한 질문들 (객관식, 주관식)
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
-
+        
+        
+        
         // 참여자 통계
         int totalParticipants = surveyService.getTotalParticipants(surveyNo);
         int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
@@ -96,7 +98,10 @@ public class SurveyViewController {
         Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
         Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
         Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
-
+        
+        Long memberNo = memberService.getLoggedInMemberNo(); 
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        model.addAttribute("memberdto", memberdto);
         // 주관식 답변도 포함
         Map<Long, List<Object[]>> textAnswers = surveyService.getTextAnswersBySurvey(surveyNo);
         

@@ -67,18 +67,19 @@
 
 					<th:block th:if="${!#lists.isEmpty(noticeList)}">
 						<tr th:each="notice, iterStat : ${noticeList}"
-							th:data_notice_no="${notice.notice_no}" class="member_row">
+							th:data_notice_no="${notice.notice_no}" class="member_row"
+							th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|">
 							<td th:text="${iterStat.index + 1}"></td>
-							<td><a
-								th:href="@{/admin/notice/list/{no}(no=${notice.notice_no})}">
-									<span th:if="${notice.notice_importance == 1}"
-									style="color: red; font-weight: bold;">[중요] </span> <span
-									th:text="${notice.notice_title}"></span>
-							</a></td>
+							<td><span th:if="${notice.notice_importance == 1}"
+								style="color: red; font-weight: bold;">[중요] </span> <span
+								th:text="${notice.notice_title}"></span> 
+							</td>
 							<td th:text="${notice.notice_create_date}"></td>
-							<td th:text="${notice.member_name} + ' ' + ${notice.position_name} "></td>
+							<td
+								th:text="${notice.member_name}"></td>
 						</tr>
 					</th:block>
+
 				</tbody>
 			</table>
 
@@ -109,8 +110,8 @@
 		</div>
 	</section>
 	<script>
-	const location_text = document.getElementById('header_location_text');
-	location_text.innerHTML = '공지사항';
+		const location_text = document.getElementById('header_location_text');
+		location_text.innerHTML = '공지사항';
 	</script>
 </th:block>
 </html>
