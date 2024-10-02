@@ -640,6 +640,11 @@ public class ScheduleApiController {
 		for (Schedule schedule : schedules) {
 			ScheduleDto dto = ScheduleDto.toDto(schedule);
 			
+	        String memberName = memberRepository.findById(schedule.getMemberNo())
+	                .map(Member::getMemberName)
+	                .orElse("사원"); 
+	        
+	        
             String positionName = "직위";
             String departmentName = "부서"; 
 			List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(schedule.getMemberNo()); 
@@ -650,6 +655,7 @@ public class ScheduleApiController {
               
 	        dto.setDepartment_name(departmentName);
 	        dto.setPosition_name(positionName);
+	        dto.setMember_name(memberName);
 			departmentResult.add(dto);
 		} 
 		return departmentResult;
