@@ -593,12 +593,11 @@ textarea{
 .fc-event-title-container {
 	z-index: 1;
 }
-
-/* Main layout */
+ 
 .employee_section {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100vh; 
 }
  
 #header {
@@ -614,6 +613,7 @@ textarea{
     cursor: pointer;
     margin-bottom: 30px;
     width: 230px;
+    margin-left : 20px;
     border-radius: 10px;
     font-size: 18px;
     font-weight: 600px; 
@@ -629,6 +629,10 @@ textarea{
 }
 .department-checkbox {
 	margin-left: 20px;
+	background-color: #f8f9fa;
+	border: 1px solid #e0e0e0;
+	border-radius: 5px;
+	padding: 30px 0 15px 15px;
 } 
 
 label {
@@ -672,7 +676,7 @@ label {
 .bottom_area {
     display: flex;
     flex: 1;
-    overflow: hidden;
+    overflow: hidden; 
 }
  
 .schedule-filters {
@@ -680,6 +684,7 @@ label {
     padding: 20px;
     overflow-y: auto;
     border-right: 1px solid #ccc;
+    margin-top : 30px; 
 }
 
 .schedule-filters > div {
@@ -689,9 +694,14 @@ label {
 #calendar {
     flex: 1;
     padding: 20px 90px;
-    overflow-y: auto;
+    overflow-y: auto; 
+} 
+
+.fc-scrollgrid-sync-inner {
+	background-color: transparent;
+	padding: 10px 0;
+	font-size: 18px; 
 }
- 
 .fc {
     height: 100% !important;
 }
@@ -743,9 +753,42 @@ label {
 	margin-bottom: 30px;
 }
 
+.fc .fc-toolbar {
+  padding: 1.5rem; 
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333333;
+} 
+ 
+.fc-event {
+  border: none;
+  border-radius: 5px; 
+  padding: 2px 15px;
+  font-size: 0.85em;
+  transition: opacity 0.2s;
+  margin-bottom: 3px; 
+}
+ 
 .button-group {
 	margin-left : 70px;
 	margin-top: 10px;
+}
+
+.fc .fc-day-today {
+  background-color: rgb(177, 194, 221, 0.2)!important;
+}
+
+.fc-more-link {
+  color: #666666;
+  background-color: #f0f0f0;
+  padding: 2px 5;
+  border-radius: 3px; 
+  font-weight: 550; 
+  margin-left: 10px;
 }
 
 .modal_in_btn {
@@ -838,3 +881,13 @@ label {
 	margin-bottom: 10px; 
 	font-weight: 500;
 }
+
+
+.fc th { 
+  font-weight: 500;
+  color: #666666; 
+  border-bottom: 1px solid #e0e0e0;
+}
+
+
+
