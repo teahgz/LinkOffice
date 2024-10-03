@@ -421,14 +421,11 @@ if (sendButton && messageInput) {
           if (message.chatRoomNo && message.memberInfoList) {
               const currentMemberNo = parseInt(document.getElementById('currentMember').value, 10);
               const memberInfo = message.memberInfoList.find(info => info.memberNo === currentMemberNo);
-
+              const chatListContainer = document.querySelector('.chatList-container');
+              const newChatList = document.createElement('div');
+              newChatList.id ='chatList';
+              newChatList.classList.add('chatList');
               if (memberInfo) {
-                  createChatListIfNotExists();
-                  const chatListContainer = document.querySelector('.chatList-container');
-                  const chatList = document.getElementById('chatList');
-                  console.log("chatListContainer"+chatListContainer);
-                  console.log("chatList"+chatList);
-
                   const newChatItem = document.createElement("div");
                   newChatItem.classList.add("chatItem");
                   newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
@@ -439,68 +436,57 @@ if (sendButton && messageInput) {
                       <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
                       <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
                   `;
-                  if (chatList) {
-                      const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
-                      const existingItems = chatList.querySelectorAll('.chatItem');
+                   newChatList.appendChild(newChatItem);
 
-                      if (pinnedItems.length > 0) {
-                          // 고정된 항목이 있는 경우, 새로운 항목을 핀된 항목 아래에 추가
-                          const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                          lastPinnedItem.after(newChatItem);
-                      } else if (existingItems.length > 0) {
-                          // 기존 chatList가 존재하면 가장 위에 새로운 항목 추가
-                          chatList.insertBefore(newChatItem, chatList.firstChild);
-                      } else {
-                          // 기존 chatList가 없으면 마지막에 추가
-                          chatList.appendChild(newChatItem);
-                      }
-                  }
+                   const pinnedItems = chatListContainer.querySelectorAll('.chatItem .fa-thumbtack');
+                   if (pinnedItems.length > 0) {
+                       const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                       lastPinnedItem.after(newChatList);
+                   } else {
+                       chatListContainer.insertBefore(newChatList,chatListContainer.firstChild);
+                   }
 
               }
               resetSelectedMembers();
               $('#organizationChartModal').modal('hide');
           }
       }else if (message.type === "groupChatCreate") {
-         if (message.chatRoomNo){
-            createChatListIfNotExists();
-            message.members.forEach(member => {
-                // 멤버 번호가 현재 로그인된 사용자 번호와 같을 때만 목록 추가
-                if (member === currentMember) {
-                    const chatListContainer = document.querySelector('.chatList-container');
-                    const chatList = document.getElementById('chatList');
+         if (message.chatRoomNo) {
+                 let chatListContainer = document.querySelector('.chatList-container');
 
-                    const newChatItem = document.createElement("div");
-                    newChatItem.classList.add("chatItem");
-                    newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
+                 const newChatList = document.createElement('div');
+                 newChatList.id ='chatList';
+                 newChatList.classList.add('chatList');
+                 message.members.forEach(member => {
 
-                    // 그룹 채팅의 경우 그룹 이름을 사용
-                    newChatItem.innerHTML = `
-                        <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
-                        <h3><p>${message.names}</p></h3>
-                        <input type="hidden" id="memberNo" value="${currentMember}"/>
-                        <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
-                    `;
-                    if (chatList) {
-                          const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
-                          const existingItems = chatList.querySelectorAll('.chatItem');
+                     if (member === currentMember) {
+                         const newChatItem = document.createElement("div");
+                         newChatItem.classList.add("chatItem");
+                         newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
-                          if (pinnedItems.length > 0) {
-                              // 고정된 항목이 있는 경우, 새로운 항목을 핀된 항목 아래에 추가
-                              const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                              lastPinnedItem.after(newChatItem);
-                          } else if (existingItems.length > 0) {
-                              // 기존 chatList가 존재하면 가장 위에 새로운 항목 추가
-                              chatList.insertBefore(newChatItem, chatList.firstChild);
-                          } else {
-                              // 기존 chatList가 없으면 마지막에 추가
-                              chatList.appendChild(newChatItem);
-                          }
-                    }
-                }
-            });
-              resetSelectedMembers();
-              $('#organizationChartModal').modal('hide');
-         }
+                         newChatItem.innerHTML = `
+                             <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
+                             <h3><p>${message.names}</p></h3>
+                             <input type="hidden" id="memberNo" value="${currentMember}"/>
+                             <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
+                         `;
+                        newChatList.appendChild(newChatItem);
+
+                         const pinnedItems = chatListContainer.querySelectorAll('.chatItem .fa-thumbtack');
+                           if (pinnedItems.length > 0) {
+                               const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                               lastPinnedItem.after(newChatList);
+                           } else {
+
+                               chatListContainer.insertBefore(newChatList,chatListContainer.firstChild);
+                           }
+
+                     }
+                 });
+
+                 resetSelectedMembers();
+                 $('#organizationChartModal').modal('hide');
+             }
       } else if (message.type === "chatRoomUpdate") {
            const updatedChatRoomNo = message.roomNo;
            const updatedChatRoomName = message.updatedChatRoomName;
@@ -542,13 +528,15 @@ if (sendButton && messageInput) {
          }
          // 기존에 동일한 채팅방이 없을 때만 추가
          if (!existingChatRoom) {
-             createChatListIfNotExists();
              const chatListContainer = document.querySelector('.chatList-container');
-             const chatList = document.getElementById('chatList');
+
+             const newChatList = document.createElement('div');
+             newChatList.id ='chatList';
+             newChatList.classList.add('chatList');
+
              const newChatItem = document.createElement("div");
              newChatItem.classList.add("chatItem");
              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
-
 
              newChatItem.innerHTML = `
                 <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
@@ -556,32 +544,15 @@ if (sendButton && messageInput) {
                 <input type="hidden" id="memberNo" value="${currentMember}"/>
                 <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />
              `;
-             if (chatList) {
-                const pinnedItems = chatList.querySelectorAll('.chatItem .fa-thumbtack');
-                const existingItems = chatList.querySelectorAll('.chatItem');
-                if (pinnedItems.length > 0) {
-                   const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                   lastPinnedItem.after(newChatItem);
-                } else if (existingItems.length > 0) {
+             newChatList.appendChild(newChatItem);
+             const pinnedItems = chatListContainer.querySelectorAll('.chatItem .fa-thumbtack');
+             if (pinnedItems.length > 0) {
+                 const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                 lastPinnedItem.after(newChatList);
+             } else {
+                 chatListContainer.insertBefore(newChatList,chatListContainer.firstChild);
+              }
 
-                   chatList.insertBefore(newChatItem, chatList.firstChild);
-                } else {
-                   chatList.appendChild(newChatItem);
-                }
-             }
-             const chatRoomExists = document.querySelector(`input[value="${chatRoomNo}"]`);
-             if (!chatRoomExists) {
-                const newChatItem = document.createElement("div");
-                newChatItem.classList.add("chatItem");
-                newChatItem.setAttribute("onclick", `handleChatRoomClick(${chatRoomNo})`);
-                newChatItem.innerHTML = `
-                   <h3><p>${chatRoomName}</p></h3>
-                   <input type="hidden" id="memberNo" value="${document.getElementById('currentMember').value}" />
-                   <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />
-                `;
-                const chatList = document.getElementById('chatList');
-                chatList.insertBefore(newChatItem, chatList.firstChild);
-             }
          }
       }else if(message.type === "updateUnreadCount") {
                 const chatRoomNo = message.chatRoomNo;
@@ -688,17 +659,27 @@ if (sendButton && messageInput) {
        }
    };
 
-  // chatList가 없을 경우 생성하는 함수
-  function createChatListIfNotExists() {
-      let chatList = document.getElementById('chatList');
-      if (!chatList) {
-          chatList = document.createElement('div');
-          chatList.id = 'chatList';
-          chatList.classList.add('chatList');
-          const chatContainer = document.querySelector('.chatList-container');
-          chatContainer.appendChild(chatList);
-      }
-  }
+// chatList가 없을 경우 생성하는 함수
+function createChatListIfNotExists() {
+
+    let chatList = document.getElementById('chatList');
+
+    if (!chatList) {
+
+        chatList = document.createElement('div');
+        chatList.id = 'chatList';
+        chatList.classList.add('chatList');
+
+        const chatContainer = document.querySelector('.chatList-container');
+
+        if (chatContainer) {
+            chatContainer.appendChild(chatList);
+        } else {
+            console.error("chatList-container를 찾을 수 없습니다.");
+        }
+    }
+}
+
 
 
 
