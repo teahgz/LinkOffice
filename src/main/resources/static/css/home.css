@@ -569,6 +569,78 @@ section {
     border-bottom: none;
 }
 
+/* 공지사항 테이블 스타일 */
+.important-notices-container {
+    margin-top: 20px;
+    max-width: 100%; 
+    overflow-x: auto; 
+}
+
+.important-notices-container h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.important-notices-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.important-notices-table th, .important-notices-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+
+.important-notices-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    font-size: 15px;
+    color: #333;
+}
+
+.important-notices-table td {
+    font-size: 14px;
+    color: #333;
+}
+
+
+.important-notices-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.important-notices-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+.important-notices-table th:nth-child(1), 
+.important-notices-table td:nth-child(1) {
+    width: 10%;
+}
+
+.important-notices-table th:nth-child(2),
+.important-notices-table td:nth-child(2) {
+    width: 50%;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.important-notices-table th:nth-child(3),
+.important-notices-table td:nth-child(3),
+.important-notices-table th:nth-child(4),
+.important-notices-table td:nth-child(4) {
+    width: 20%;
+}
+
+.important-notices-table tbody td {
+    padding: 10px 5px;
+}
+
 .event_view_modal {
     display: none;
     position: fixed;
