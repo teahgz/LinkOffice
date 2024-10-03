@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            const selectedCell = document.querySelector(`[data-date="${selectedDate}"]`);
 	
 	            if (selectedCell) {
-	                selectedCell.style.backgroundColor = '#a6bef7';
+	                selectedCell.style.backgroundColor = '#ede400';
 	                document.getElementById('pick_date_text').innerText = formatDate(selectedDate);
 	            }
 	        },
