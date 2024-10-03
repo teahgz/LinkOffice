@@ -315,7 +315,16 @@
     display: block;
     color: #666;
 }
+.system-message {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
 
+.system-message .system-content p {
+    margin: 0;
+    padding: 5px 0;
+}
 /*그룹명 모달*/
 .modal-content {
     border-radius: 10px;

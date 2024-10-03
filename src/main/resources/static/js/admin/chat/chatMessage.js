@@ -521,10 +521,23 @@ if (sendButton && messageInput) {
          const countPeople = message.countPeople;
          const existingChatRoom = document.querySelector(`input[type="hidden"][value="${chatRoomNo}"]`);
 
+
          if(currentChatRoomNo === chatRoomNo){
             console.log(countPeople);
             const participantCount = document.getElementById('participantCountSpan');
             participantCount.textContent = countPeople;
+            const messageElement = document.createElement('div');
+             messageElement.classList.add("system-message", "messageItem");
+             messageElement.innerHTML = `
+                <div class="message-ele">
+                    <div class="system-content">
+                        <p>${message.invitedNames}님이 초대되었습니다.</p>
+                    </div>
+                </div>
+            `;
+
+            const chatContainer = document.getElementById('chatContent');
+            chatContainer.appendChild(messageElement);
          }
          // 기존에 동일한 채팅방이 없을 때만 추가
          if (!existingChatRoom) {
@@ -701,10 +714,10 @@ if (sendButton && messageInput) {
         };
         socket.send(JSON.stringify(message));
         document.getElementById("messageInput").value = "";
-        // 알림 소켓에 전송할 알림 메시지 생성
+
          const notificationMessage = {
              type: 'noficationChat',
-             chat_sender_no: chat_sender_no, // 여기서 사용자의 번호로 바꿉니다.
+             chat_sender_no: chat_sender_no,
              chat_room_no: currentChatRoomNo
          };
 
@@ -1007,9 +1020,10 @@ function formatDateTime(date) {
                 return response.json();
             })
             .then(data => {
-            console.log(data);
+             console.log(data);
 
                 displayChatMessages(data);
+                console.log();
             })
             .catch(error => {
                 console.error('전송 중 오류 발생', error);
@@ -1055,31 +1069,40 @@ function formatDateTime(date) {
         messages.forEach(function(message) {
             const messageElement = document.createElement("div");
             const formattedTime = new Date(message.chatMessageCreateDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (message.senderNo === memberNo) {
+                messageElement.classList.add("my-message", "messageItem");
+                messageElement.innerHTML = `
+                    <div class="message-ele">
+                        <span class="message-time">${formattedTime}</span>
+                        <div class="message-content">
+                            <p>${message.chatContent}</p>
+                        </div>
+                    </div>
+                `;
+            } else if (message.senderNo === 0) {
 
-             if (message.senderNo === memberNo) {
-                        messageElement.classList.add("my-message", "messageItem");
-                        messageElement.innerHTML = `
-                            <div class="message-ele">
-                                <span class="message-time">${formattedTime}</span>
-                                <div class="message-content">
-                                    <p>${message.chatContent}</p>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        messageElement.classList.add("other-message", "messageItem");
-                        messageElement.innerHTML = `
-                            <div class="message-sender">
-                                <strong>${message.senderName}</strong>
-                            </div>
-                            <div class="message-ele">
-                                <div class="message-content">
-                                    <p>${message.chatContent}</p>
-                                </div>
-                                <span class="message-time">${formattedTime}</span>
-                            </div>
-                        `;
-                    }
+                messageElement.classList.add("system-message", "messageItem");
+                messageElement.innerHTML = `
+                    <div class="message-ele">
+                        <div class="system-content">
+                            <p>${message.chatContent}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageElement.classList.add("other-message", "messageItem");
+                messageElement.innerHTML = `
+                    <div class="message-sender">
+                        <strong>${message.senderName}</strong>
+                    </div>
+                    <div class="message-ele">
+                        <div class="message-content">
+                            <p>${message.chatContent}</p>
+                        </div>
+                        <span class="message-time">${formattedTime}</span>
+                    </div>
+                `;
+            }
             chatContentDiv.appendChild(messageElement);
         });
 
@@ -1314,35 +1337,35 @@ function formatDateTime(date) {
 //            });
 //        }
 
-
-    function updateSelectedMembersAdd(selectedIds, instance) {
-        const selectedMembersContainer = $('#selected-member'); // 선택된 멤버 표시할 곳
-        selectedMembersContainer.empty();
-
-        const selectedNodes = instance.get_selected(true);
-        selectedMembers = [];
-        selectNames = [];
-
-        selectedNodes.forEach(function(node) {
-            if (node.original.type === 'member') {
-                const memberId = node.id;
-                const memberNumber = memberId.replace('member_', '');
-
-                if (!selectedMembers.includes(memberNumber)) {
-                    const memberElement = $('<div class="selected-member"></div>');
-                    const memberName = $('<span></span>').text(node.text);
-
-                    memberElement.append(memberName);
-                    selectedMembersContainer.append(memberElement);
-                    selectedMembers.push(memberNumber);
-                    selectNames.push(node.text);
-                }
-            }
-        });
-
-        // 저장된 선택된 멤버를 로컬 저장소에 저장
-        localStorage.setItem('selectedMembersAdd', JSON.stringify(selectedMembers));
-    }
+//
+//    function updateSelectedMembersAdd(selectedIds, instance) {
+//        const selectedMembersContainer = $('#selected-member'); // 선택된 멤버 표시할 곳
+//        selectedMembersContainer.empty();
+//
+//        const selectedNodes = instance.get_selected(true);
+//        selectedMembers = [];
+//        selectNames = [];
+//
+//        selectedNodes.forEach(function(node) {
+//            if (node.original.type === 'member') {
+//                const memberId = node.id;
+//                const memberNumber = memberId.replace('member_', '');
+//
+//                if (!selectedMembers.includes(memberNumber)) {
+//                    const memberElement = $('<div class="selected-member"></div>');
+//                    const memberName = $('<span></span>').text(node.text);
+//
+//                    memberElement.append(memberName);
+//                    selectedMembersContainer.append(memberElement);
+//                    selectedMembers.push(memberNumber);
+//                    selectNames.push(node.text);
+//                }
+//            }
+//        });
+//
+//        // 저장된 선택된 멤버를 로컬 저장소에 저장
+//        localStorage.setItem('selectedMembersAdd', JSON.stringify(selectedMembers));
+//    }
      function updateSelectedMembersAdd(selectedIds, instance) {
          const selectedMembersContainer = $('#selected-member');
          selectedMembersContainer.empty();
@@ -1366,7 +1389,7 @@ function formatDateTime(date) {
                     memberElement.append(memberName);
                 } else {
                     newMembers.push(memberNumber);
-
+                    selectNames.push(node.text);
                     const removeButton = $('<button class="remove-member">&times;</button>');
                     memberElement.append(memberName).append(removeButton);
                     removeButton.click(function() {
@@ -1380,7 +1403,7 @@ function formatDateTime(date) {
                 }
                  selectedMembersContainer.append(memberElement);
                  selectedMembers.push(memberNumber);
-                 selectNames.push(node.text);
+
              }
          });
 
@@ -1432,7 +1455,8 @@ function formatDateTime(date) {
                 type: "chatRoomAdd",
                 currentChatRoomNo: currentChatRoomNo,
                 newMembers : newMembers,
-                name: name
+                name: name,
+                selectNames : selectNames
             };
 
             socket.send(JSON.stringify(add));
