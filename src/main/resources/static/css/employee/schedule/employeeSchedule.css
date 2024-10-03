@@ -8,7 +8,7 @@ section {
     flex-grow: 1;
     padding: 20px;
     height: calc(100% - 100px);  
-    overflow-y: auto;  
+    overflow-y: auto;   
 }
 .checkbox-group {
     margin-bottom: 15px;

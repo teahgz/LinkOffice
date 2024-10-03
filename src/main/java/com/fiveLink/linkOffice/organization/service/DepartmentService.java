@@ -254,7 +254,7 @@ public class DepartmentService {
    
    // [서혜원] 일정 부서 조회
    public List<DepartmentDto> getSecondDepartments() {
-       List<Department> departments = departmentRepository.findAllByDepartmentStatusAndDepartmentHighNotOrderByDepartmentHighAscDepartmentNameAsc(0L, 0L);
+       List<Department> departments = departmentRepository.findAllByCustomCondition();
        return mapToDto(departments);
    } 
     

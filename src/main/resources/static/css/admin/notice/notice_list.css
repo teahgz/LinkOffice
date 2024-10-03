@@ -139,7 +139,7 @@ select:focus, .search_text:focus {
 
 .pagination button.active {
     background-color: #B1C2DD;
-    color: black;
+    color: white;
     border-color: #B1C2DD;
 }
 
