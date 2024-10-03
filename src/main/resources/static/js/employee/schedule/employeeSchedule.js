@@ -1595,7 +1595,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.getElementById('par_create_name').style.display = 'none'; 
 		document.getElementById('par_join_name').style.display = 'none'; 
 		document.getElementById('meeting_name').style.display = 'none'; 
-	 	  
+	 	document.getElementById('departmentName').style.display = 'block';  
+	 	 
 	    if(allDay && startDate === endDate) {
 	    	dateRange.textContent = `${startDate}`; 
 		} else if(!allDay) {  
@@ -1612,12 +1613,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (event.extendedProps.type === 'departmentResult' && event.extendedProps.member_no !== Number(memberNo)) {  
 		    document.getElementById('editEventBtn').style.display = 'none';
 		    document.getElementById('deleteEventBtn').style.display = 'none';
+		    document.getElementById('departmentName').style.display = 'block'; 
 		} else if (event.extendedProps.type === 'scheduleDtos') {  
 		    document.getElementById('editEventBtn').style.display = 'none';
 		    document.getElementById('deleteEventBtn').style.display = 'none';
+		    document.getElementById('departmentName').style.display = 'none'; 
 		} else if (event.extendedProps.type === 'participateResult' && event.extendedProps.member_no !== Number(memberNo)) {  
 		    document.getElementById('editEventBtn').style.display = 'none';
 		    document.getElementById('deleteEventBtn').style.display = 'none';
+		    document.getElementById('departmentName').style.display = 'none'; 
 		}
 		else {
 		    document.getElementById('editEventBtn').style.display = 'block';
