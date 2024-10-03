@@ -8,7 +8,7 @@
         <div th:each = "member : ${memberdto}">
 
             <input type ="hidden" id="headerCurrentMember" th:value="${member.member_no}"/>
-
+			<input type ="hidden" id="headerCurrentDepartment" th:value="${member.department_no}"/>
              <div id="header_wrap">
                 <div class="header_logo">
                     <a th:href="@{/}">

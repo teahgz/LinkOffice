@@ -40,10 +40,10 @@ public class DocumentViewController {
 	}
 	
 	// 개인 문서함 : 사원번호를 받아옴 
-	@GetMapping("/employee/document/personal/{member_no}")
-	public String documentPersonalPage(Model model,
-			@PathVariable("member_no") Long memberNo
+	@GetMapping("/employee/document/personal")
+	public String documentPersonalPage(Model model
 			) {		
+		Long memberNo = memberService.getLoggedInMemberNo();
 		// memberDto 불러오기
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo); 
 		model.addAttribute("memberdto", memberdto);
@@ -76,9 +76,9 @@ public class DocumentViewController {
 	// 부서 문서함 : 부서 번호를 받아옴 
 	@GetMapping("/employee/document/department/{department_no}")
 	public String documentDepartmentPage(Model model,
-			@PathVariable("department_no") Long departmentNo,
-			@RequestParam("memberNo") Long memberNo
+			@PathVariable("department_no") Long departmentNo
 			) {
+		Long memberNo = memberService.getLoggedInMemberNo();
 		// memberDto 불러오기
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	    
@@ -103,9 +103,8 @@ public class DocumentViewController {
 	
 	// 사내 문서함 
 	@GetMapping("/employee/document/company")
-	public String documentCompanyPage(Model model, 
-			@RequestParam("memberNo") Long memberNo) {
-
+	public String documentCompanyPage(Model model) {
+		Long memberNo = memberService.getLoggedInMemberNo();
 		// memberDto 불러오기
 	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 
@@ -128,9 +127,9 @@ public class DocumentViewController {
    }
    
    // 휴지통 
-   @GetMapping("/employee/document/bin/{member_no}")
-   public String documentBinPage(Model model,
-		   @PathVariable("member_no") Long memberNo) {
+   @GetMapping("/employee/document/bin")
+   public String documentBinPage(Model model) {
+	   Long memberNo = memberService.getLoggedInMemberNo();
 	   // memberDto 불러오기
 	   List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
 	   
@@ -145,11 +144,11 @@ public class DocumentViewController {
        return ResponseEntity.ok(fileList);
    }
    
-   // 휴지통 파일 사이즈 
-   @GetMapping("/bin/fileSize")
-   public ResponseEntity<Double> getBinFileSize(
-		   @RequestParam("memberNo") Long memberNo) throws IOException{
-	   double allFileSize = documentFileService.getBinFileSize(memberNo);
-	   return ResponseEntity.ok(allFileSize);
-   }
+//   // 휴지통 파일 사이즈 
+//   @GetMapping("/bin/fileSize")
+//   public ResponseEntity<Double> getBinFileSize(
+//		   @RequestParam("memberNo") Long memberNo) throws IOException{
+//	   double allFileSize = documentFileService.getBinFileSize(memberNo);
+//	   return ResponseEntity.ok(allFileSize);
+//   }
 }

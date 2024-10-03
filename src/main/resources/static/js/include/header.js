@@ -1,6 +1,7 @@
 // 초기 세션 시간 (초) 설정
 let remainingTime = 1800;
 const headerCurrentMember = document.getElementById('headerCurrentMember').value; //현재 로그인한 사용자 정보
+const headerCurrentDepartment = document.getElementById('headerCurrentMember').value;
 const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
 // 페이지 로드 시 호출
@@ -117,7 +118,8 @@ const noficationTypeUrl={
      9 : `/employee/approval/approval_history_detail/`,
      10 : `/employee/approval/approval_reject_detail/`,
      14 : `/employee/vacationapproval/detail/`,
-     15 : `/employee/approval/approval_progress_detail/`
+     15 : `/employee/approval/approval_progress_detail/`,
+     2 : `/employee/document/department/${headerCurrentDepartment}`
 }
 
 //통합 알림 리스트
@@ -194,7 +196,9 @@ function unreadNoficationList() {
                             window.location.href = noficationTypeUrl[14]+notificationTypePk;
                         } else if (notificationType === '15') {
                             window.location.href = noficationTypeUrl[15]+notificationTypePk;
-                        } else {
+                        } else if (notificationType === '2'){
+							window.location.href = noficationTypeUrl[2]+notificationTypePk;
+						} else {
 
                             console.log('다른 타입의 알림 클릭:', noficationType);
                         }

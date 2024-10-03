@@ -519,33 +519,43 @@ function connectWebSocket() {
                             notificationModal.insertBefore(listItem, notificationModal.children[1]);
                         });
                     }
-                } else if(message.type === 'documentAlarm'){
-                    const title = message.title;
-                    const content = message.content;
-                    //실시간 추가를 위한
-                        if (notificationModal.children.length <= 1) {
-                            notificationModal.innerHTML = `
-                               <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
-                            `;
-                            addMarkAsReadListener();
-                        }
-                        message.data.forEach(function(item) {
-                            if (Number(item.memberNo) === currentMember) {
-                                 showNotification(title, content, item.memberNo,  message.timestamp);
-                                const listItem = document.createElement('li');
-
-                                listItem.setAttribute('data-notification-no', item.nofication_pk);
-                                listItem.innerHTML = `
-                                    <strong style="margin-bottom: 5px;">${title}</strong>
-                                    <p>${content}</p>
-                                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
-                                    <hr style="border: none; margin: 10px 0;">
-                                `;
-
-                                notificationModal.insertBefore(listItem, notificationModal.children[1]);
-                            }
-
-                        });
+				} else if(message.type === 'documentAlarm'){
+				    const title = message.title;
+				    const content = message.content;
+				    //실시간 추가를 위한
+				        if (notificationModal.children.length <= 1) {
+				            notificationModal.innerHTML = `
+				               <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
+				            `;
+				            addMarkAsReadListener();
+				        }
+				        message.data.forEach(function(item) {
+				            if (Number(item.memberNo) === currentMember) {
+								if (currentType === window.functionType) {
+				       				markNotificationsAsRead(window.functionType);
+				       			} else{
+				                  showNotification(title, content, item.memberNo, message.timestamp, 2, "");
+				                  const listItem = document.createElement('li');
+					
+				                  listItem.setAttribute('data-notification-no', item.nofication_pk);
+				                  listItem.setAttribute('data-notification-type', 2);
+				                  listItem.innerHTML = `
+				                      <strong style="margin-bottom: 5px;">${title}</strong>
+				                      <p>${content}</p>
+				                      <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
+				                      <hr style="border: none; margin: 10px 0;">
+				                  `;
+								    listItem.addEventListener('click', () => {
+								        const notificationType = listItem.getAttribute('data-notification-type');
+								        if (notificationType === '2') { 
+								            window.location.href = noficationTypeUrl[2];
+								        } 
+								    });
+				                  notificationModal.insertBefore(listItem, notificationModal.children[1]);								
+								}
+				            }
+				
+				        });
                 } else if(message.type === 'noficationDepartmentSchedule'){
                     const title = message.title;
                     const content = message.content;
@@ -686,7 +696,7 @@ function markApprovalAsRead(functionType, noficationTypePk) {
         .then(response => response.json())
         .then(data => {
             if (data.read) {
-                console.log('읽음 처리 완료');
+                console.log('읽음 처리 완료5qjsdlfRk');
                 bellUnreadCount();
             } else {
                 console.error('읽음 처리 실패');

@@ -3,10 +3,10 @@ let folderList = [];
 
 $(function () {
 	// 알림
-	window.functionTypes = [2];
-	if (window.functionTypes.includes(2)) {
-	    markNotificationsAsRead(2);
-	 }
+    window.functionType = 2;
+    if (window.functionType === 2) {
+        markNotificationsAsRead(window.functionType);
+    }
 	 
 	const location_text = document.getElementById('header_location_text');
 	location_text.innerHTML = '문서함&emsp;&gt;&emsp;부서 문서함';	
@@ -294,29 +294,12 @@ $(function () {
                         fileTableBody.appendChild(row);
                     });
 
-                    // 리스트가 10개가 안 된다면 빈 행 추가로 10개 만들기 
-                    const emptyRows = pageSize - paginatedFiles.length;
-                    for (let i = 0; i < emptyRows; i++) {
-                        const emptyRow = document.createElement('tr');
-                        emptyRow.innerHTML = `
-                        	<td></td>
-                        	<td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        `;
-                        fileTableBody.appendChild(emptyRow);
-                    }
-
                     // 페이징 업데이트 
                     updatePagination();
                 } else {
                     $('.document_file_list').show();
                     $('.document_select_folder').hide();
-                    fileTableBody.innerHTML = '<tr><td colspan="8">파일 목록이 존재하지 않습니다.</td></tr>';
+                    fileTableBody.innerHTML = '<tr><td colspan="8">조회된 목록이 없습니다.</td></tr>';
 
                     // 페이징 버튼 숨기기
                     paginationDiv.innerHTML = '';

@@ -217,6 +217,7 @@ section {
 .weather_left_div{
 	text-align: center;
 	width: 50%;
+	margin-right: 10px;
 }
 .weather_right_div{
 	font-size: 15px;
@@ -232,16 +233,16 @@ section {
 	color: #666;
 }
 #weather_icon{
-	width: 120px;
+	width: 100px;
 }
 #weather_now_temp{
-	font-size: 27px;
+	font-size: 23px;
 	font-weight: bolder;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 #map_location_icon{
-	width: 15px;
-	height: 15px;
+	width: 13px;
+	height: 13px;
 	margin-right: 2px;
 }
 .weather_temp{
@@ -640,3 +641,132 @@ section {
     padding: 10px 5px;
 }
 
+.event_view_modal {
+    display: none;
+    position: fixed;
+    z-index: 999;  
+    left: 400px;
+    top: 50px;  
+    width: 100%;
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.0);
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+}  
+
+#eventModal, .modal-content{
+	 z-index: 999;
+}
+
+#closeScheduleModalBtn { 
+    color: #aaa; 
+    font-size: 26px;
+    font-weight: bold; 
+    padding-left: 20px;
+    margin-bottom: 3px;
+}
+
+#closeScheduleModalBtn:hover,
+#closeScheduleModalBtn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.event_modal-content {
+	z-index:100; 
+	position: fixed;
+    background-color: #ffffff;
+    margin: 300px 650px;
+    padding: 15px 35px; 
+    width: 250px;
+    height:300px;
+    max-width: 300px;
+    border-radius: 8px;
+    border:none;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow:  0 5px 10px rgba(0,0,0,0.4);
+}
+
+#par_create_name {
+	margin-bottom: 10px;
+}
+
+#eventViewComment {
+	margin-bottom: 20px;
+}
+
+.category_department_container {
+    display: flex;           
+    align-items: center;   
+    gap: 10px;             
+}
+
+#meeting_name {
+	margin-top: 20px;
+}
+#departmentName { 
+	margin-bottom: 10px; 
+	font-weight: 500;
+}
+
+#eventViewDateRange {
+	color : #707070;
+	margin-bottom: 15px;
+	font-size : 14px;
+}
+
+#eventViewCategory { 
+	margin-bottom: 10px;
+}
+
+.event_view_hr {
+	margin:20px 0;
+}
+
+#eventViewRepeatInfo, #eventViewCreatedDate{
+	margin-bottom: 10px; 
+}
+
+.modal-schedule-button {
+    float: right;
+    display: flex;
+    align-items: center; 
+} 
+
+.modal-header {
+    margin-top: 50px; 
+    font-size : 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.fc-direction-ltr .fc-daygrid-more-link {
+	margin-top : 7px;
+	margin-left : 5px;
+	font-weight: 550; 
+}
+
+.fc .fc-day-today {
+  background-color: rgb(177, 194, 221, 0.2)!important;
+}
+
+.fc-more-link {
+  color: #666666;
+  background-color: #f0f0f0;
+  padding: 2px 5;
+  border-radius: 3px; 
+  font-weight: 550; 
+  margin-left: 10px;
+}
+
+.fc-event {
+  border: none;
+  border-radius: 5px; 
+  padding: 2px 15px;
+  font-size: 0.85em;
+  transition: opacity 0.2s;
+  margin-bottom: 3px; 
+}
