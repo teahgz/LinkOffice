@@ -53,7 +53,7 @@
 
 .room-info-table-div::-webkit-scrollbar {
     display: block;      
-    width: 14px;
+    width: 12px;
 } 
  
 .room-info-table-div::-webkit-scrollbar-thumb {
@@ -67,7 +67,7 @@
 
 #reservation-table::-webkit-scrollbar {
     display: block;      
-    height: 15px;
+    height: 12px;
 }
 
 #reservation-table::-webkit-scrollbar-thumb {
