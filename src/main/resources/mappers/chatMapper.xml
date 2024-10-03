@@ -38,6 +38,20 @@
 <!--        JOIN fl_member m ON cm.chat_sender_no = m.member_no-->
 <!--        WHERE cm.chat_room_no = #{roomNo}-->
 <!--        ORDER BY cm.chat_message_create_date ASC;-->
+<!--        SELECT-->
+<!--        cm.chat_message_create_date AS chatMessageCreateDate,-->
+<!--        cm.chat_content AS chatContent,-->
+<!--        m.member_name AS senderName,-->
+<!--        cm.chat_room_no AS roomNo,-->
+<!--        cm.chat_sender_no AS senderNo-->
+<!--        FROM fl_chat_message cm-->
+<!--        JOIN fl_member m ON cm.chat_sender_no = m.member_no-->
+<!--        JOIN fl_chat_member ctm ON cm.chat_room_no = ctm.chat_room_no-->
+<!--        WHERE cm.chat_room_no = #{roomNo}-->
+<!--        AND ctm.member_no = #{memberNo}-->
+<!--        AND ctm.chat_member_par = 0-->
+<!--        AND cm.chat_message_create_date >= ctm.chat_member_join_date-->
+<!--        ORDER BY cm.chat_message_create_date ASC;-->
         SELECT
         cm.chat_message_create_date AS chatMessageCreateDate,
         cm.chat_content AS chatContent,
@@ -45,12 +59,14 @@
         cm.chat_room_no AS roomNo,
         cm.chat_sender_no AS senderNo
         FROM fl_chat_message cm
-        JOIN fl_member m ON cm.chat_sender_no = m.member_no
+        LEFT JOIN fl_member m ON cm.chat_sender_no = m.member_no
         JOIN fl_chat_member ctm ON cm.chat_room_no = ctm.chat_room_no
-        WHERE cm.chat_room_no = #{roomNo}
-        AND ctm.member_no = #{memberNo}
+        WHERE ctm.member_no = #{memberNo}
         AND ctm.chat_member_par = 0
         AND cm.chat_message_create_date >= ctm.chat_member_join_date
+        AND (cm.chat_room_no = #{roomNo}  OR cm.chat_sender_no = 0 OR (cm.chat_room_no = ctm.chat_room_no AND cm.chat_content LIKE '%초대%'))
+        AND cm.chat_room_no = #{roomNo}
+        GROUP BY cm.chat_content, cm.chat_sender_no, cm.chat_message_create_date, m.member_name, cm.chat_room_no
         ORDER BY cm.chat_message_create_date ASC;
     </select>
 
@@ -155,7 +171,7 @@
         FROM fl_chat_message cm
         LEFT JOIN fl_chat_read_status cr ON cm.chat_message_no = cr.chat_message_no AND cr.member_no = #{memberNo}
         WHERE cm.chat_room_no = #{chatRoomNo}
-        AND cr.chat_read_no IS NULL;
+        AND cr.chat_read_no IS NULL AND cm.chat_sender_no NOT IN (0)
     </select>
 
     <!-- 채팅방 별 안읽은 개수-->
@@ -167,7 +183,7 @@
         WHERE cr.chat_read_no IS NULL
         AND cm.chat_room_no IS NOT NULL
         AND ctm.member_no = #{memberNo}
-        AND cm.chat_message_create_date >= ctm.chat_member_join_date
+        AND cm.chat_message_create_date >= ctm.chat_member_join_date AND cm.chat_sender_no NOT IN (0)
         GROUP BY cm.chat_room_no;
 
     </select>
@@ -205,6 +221,7 @@
         AND cm.chat_message_create_date >= ctm.chat_member_join_date
         AND ctm.member_no = #{memberNo}
         AND ctm.chat_member_par = 0
+        AND cm.chat_sender_no NOT IN (0)
     </select>
 
     <!-- 채팅 메시지 -->
