@@ -366,6 +366,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     //채팅방 인원수 개수
     private void handleOutCount(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         Object currentChatRoomNoObj = jsonMap.get("chat_room_no");
+        Object currentMemberObj = jsonMap.get("currentMember");
 
         Long currentChatRoomNo;
         if (currentChatRoomNoObj instanceof Integer) {
@@ -376,11 +377,26 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new IllegalArgumentException("채팅방 번호의 오류");
         }
 
+        Long currentMember;
+        if (currentMemberObj instanceof Integer) {
+            currentMember = ((Integer) currentMemberObj).longValue();
+        } else if (currentMemberObj instanceof String) {
+            currentMember = Long.parseLong((String) currentMemberObj);
+        } else {
+            throw new IllegalArgumentException("채팅방 번호의 오류");
+        }
+        String position =  chatRoomService.searchPosition(currentMember);
+        String memberName = chatRoomService.getMemberName(currentMember);
         int unreadCounts = chatRoomService.countParicipant(currentChatRoomNo);
+        String outSentence = memberName + " "+ position;
+        saveOutMessage(outSentence, currentChatRoomNo);//채팅방 나가기
+
         Map<String, Object> response = new HashMap<>();
         response.put("type", "chatMemCount");
         response.put("data", unreadCounts);
         response.put("currentChatRoomNo",currentChatRoomNo);
+        response.put("outSentence",outSentence);
+
         for (WebSocketSession s : sessions.values()) {
             if (s.isOpen()) {
                 String responseJson = new ObjectMapper().writeValueAsString(response);
@@ -388,6 +404,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
         }
       }
+
+    // 나가기 메시지
+    private void saveOutMessage(String sentence, Long currentChatRoomNo) {
+        String inviteMessage = sentence+"님이 나가셨습니다.";
+
+        ChatMessageDto chatMessageDto = new ChatMessageDto();
+        chatMessageDto.setChat_room_no(currentChatRoomNo);
+        chatMessageDto.setChat_sender_no(0L);
+        chatMessageDto.setChat_content(inviteMessage);
+
+        chatMessageService.saveChatMessage(chatMessageDto);
+    }
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);
