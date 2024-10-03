@@ -229,6 +229,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
+		
+	window.functionTypes = [10];
+	const approvalNo = document.getElementById('approval_no').value;
+	if (window.functionTypes.includes(10)) {
+		markApprovalAsRead(10, approvalNo);
+	}				
+		
 });
 
 const location_text = document.getElementById('header_location_text');

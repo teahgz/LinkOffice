@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
 					const y = 10;			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
-			        pdf.save('결재문서.pdf');
+			        pdf.save('휴가문서.pdf');
 			
 			        downloadButton.style.display = 'block'; 
 			    }).catch(error => {
@@ -230,11 +230,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		});
 		
-	window.functionTypes = [8];
-	const approvalNo = document.getElementById('approval_no').value;
-	if (window.functionTypes.includes(8)) {
-		markApprovalAsRead(8, approvalNo);
+	window.functionTypes = [4];
+	console.log("현재 기능 타입"+window.functionTypes);
+	const approvalNo = document.getElementById('vacationapproval_no').value;
+	console.log("번호"+approvalNo);
+	if (window.functionTypes.includes(4)) {
+		markApprovalAsRead(4, approvalNo);
 	}
+
 });
 
 const location_text = document.getElementById('header_location_text');

@@ -371,6 +371,15 @@ function cancelApproval(){
 			};
 
 		});
+		
+		window.functionTypes = [7, 9];
+			const approvalNo = document.querySelector('#approval_no').value;
+
+			if (window.functionTypes.includes(7) || window.functionTypes.includes(9)) {
+				markApprovalAsRead(7, approvalNo);
+				markApprovalAsRead(9, approvalNo);
+			}
+
 });
 
 

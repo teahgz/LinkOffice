@@ -300,5 +300,20 @@ const approvalTitle = document.querySelector('#vacationapproval_title').innerHTM
 	
 			});
 		
+			document.addEventListener('DOMContentLoaded', function() {
+			    window.functionTypes = [6, 14]; 
+					const vapNo = document.querySelector('#vacationapproval_no').value;
+			
+			            
+			            if (window.functionTypes.includes(14)) {
+			                markApprovalAsRead(14, vapNo); 
+			            }
+			
+			            if (window.functionTypes.includes(6)) {
+			                markApprovalAsRead(6, vapNo); 
+			            }
+			
+			});
+		
 const location_text = document.getElementById('header_location_text');
 location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청함&emsp;&gt;&emsp;'+approvalTitle;

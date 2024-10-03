@@ -314,6 +314,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
+		
+		window.functionTypes = [3, 5];
+			const vacationapprovalNo = document.querySelector('#vacationapproval_no').value;
+
+			if (window.functionTypes.includes(3) || window.functionTypes.includes(5)) {
+				markApprovalAsRead(3, vacationapprovalNo);
+				markApprovalAsRead(5, vacationapprovalNo);
+			}		
 });
 
     const rejectModal = document.getElementById("rejectModal");

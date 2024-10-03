@@ -288,6 +288,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
+		
+	window.functionTypes = [15];
+
+	const appNo = document.querySelector('#approval_no').value;
+		if (window.functionTypes.includes(15)) {
+			markApprovalAsRead(15, appNo);
+		}
+		
 });
 
 const location_text = document.getElementById('header_location_text');
