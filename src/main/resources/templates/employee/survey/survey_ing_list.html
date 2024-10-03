@@ -78,7 +78,7 @@
 							<td th:text="${survey.survey_title}"></td>
 							<td
 								th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></td>
-							<td th:text="${survey.member_name}"></td>
+							<td th:text="${survey.member_name} + ' ' + ${survey.position_name}"></td>
 						</tr>
 					</th:block>
 				</tbody>

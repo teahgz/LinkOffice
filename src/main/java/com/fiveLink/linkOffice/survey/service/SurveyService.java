@@ -361,7 +361,13 @@ public class SurveyService {
             })
             .map(objects -> {
                 Survey survey = (Survey) objects[0];
-                Integer participantStatus = objects[1] != null ? (Integer) objects[1] : 0; 
+                Integer participantStatus = objects[1] != null ? (Integer) objects[1] : 0;
+
+                // memberNo를 이용해 직위 정보 가져오기
+                Long memberNo = survey.getMember().getMemberNo();
+                List<Object[]> memberDetails = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
+
+                String positionName = (String) memberDetails.get(0)[1]; 
 
                 return SurveyDto.builder()
                     .survey_no(survey.getSurveyNo())
@@ -369,11 +375,13 @@ public class SurveyService {
                     .survey_start_date(survey.getSurveyStartDate())
                     .survey_end_date(survey.getSurveyEndDate())
                     .survey_status(survey.getSurveyStatus())
-                    .member_name(survey.getMember().getMemberName())
-                    .survey_participant_status(participantStatus)
+                    .member_name(survey.getMember().getMemberName()) 
+                    .position_name(positionName) 
+                    .survey_participant_status(participantStatus) 
                     .build();
             }).collect(Collectors.toList());
     }
+
 
     public Page<SurveyDto> getAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
         Page<Object[]> results = null;  
@@ -464,7 +472,17 @@ public class SurveyService {
     }
 
     public SurveyDto selectSurveyOne(Long surveyNo) {
+
         Survey survey = surveyRepository.findBysurveyNo(surveyNo);
+        
+
+        Long memberNo = survey.getMember().getMemberNo();
+        List<Object[]> memberDetails = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
+        
+  
+        String positionName = memberDetails.get(0)[1] != null ? (String) memberDetails.get(0)[1] : "";
+
+        
         return SurveyDto.builder()
             .survey_no(survey.getSurveyNo())
             .survey_title(survey.getSurveyTitle())
@@ -473,7 +491,8 @@ public class SurveyService {
             .survey_end_date(survey.getSurveyEndDate())
             .survey_status(survey.getSurveyStatus())
             .survey_description(survey.getSurveyDescription())
-            .member_name(survey.getMember().getMemberName())
+            .member_name(survey.getMember().getMemberName())  
+            .position_name(positionName)                      
             .build();
     }
 

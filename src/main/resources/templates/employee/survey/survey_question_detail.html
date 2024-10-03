@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{include/layout}">
-<head>
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{include/layout}">
+<th:block layout:fragment="content">
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link th:href="@{/css/employee/survey/survey_question_detail.css}" rel="stylesheet" type="text/css">
-</head>
-
-<th:block layout:fragment="content">
     <section>
         <div class="container">
             <div class="header">
@@ -18,7 +15,7 @@
                     <br>
                     <h3 th:text="${dto.survey_description}"></h3>
                     <br>
-                    <p>작성자: <span th:text="${dto.member_name}"></span></p>
+                    <p>작성자: <span th:text="${dto.member_name} + ' ' + ${dto.position_name}"></span></p>
                     <p>설문 기간: <span th:text="|${dto.survey_start_date} ~ ${dto.survey_end_date}|"></span></p>
                     <p>설문 상태: <span th:text="${dto.survey_status == 0 ? '진행 중' : '종료'}"></span></p>
                 </div>
@@ -106,6 +103,5 @@
             });
         });
     </script>
-
 </th:block>
 </html>
