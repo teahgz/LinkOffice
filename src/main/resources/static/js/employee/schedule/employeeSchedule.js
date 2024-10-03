@@ -747,7 +747,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dayMaxEvents: 3,
             moreLinkContent: function(args) {
 			    return ' + ' + args.num;
-			 },	
+			},	
             dateClick: function(info) {
 			    selectedDate = info.dateStr;   
 			    $('#eventDate').val(selectedDate);   
