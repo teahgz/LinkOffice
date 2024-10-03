@@ -538,6 +538,7 @@ if (sendButton && messageInput) {
 
             const chatContainer = document.getElementById('chatContent');
             chatContainer.appendChild(messageElement);
+             chatContainer.scrollTop = chatContainer.scrollHeight;
          }
          // 기존에 동일한 채팅방이 없을 때만 추가
          if (!existingChatRoom) {
@@ -608,6 +609,19 @@ if (sendButton && messageInput) {
          if(currentChatRoomNo === chatRoom){
             const participantCount = document.getElementById('participantCountSpan');
             participantCount.textContent = count;
+            const messageElement = document.createElement('div');
+             messageElement.classList.add("system-message", "messageItem");
+             messageElement.innerHTML = `
+                <div class="message-ele">
+                    <div class="system-content">
+                        <p>${message.outSentence}님이 나가셨습니다.</p>
+                    </div>
+                </div>
+            `;
+
+            const chatContainer = document.getElementById('chatContent');
+            chatContainer.appendChild(messageElement);
+             chatContainer.scrollTop = chatContainer.scrollHeight;
          }
 
       } else {
@@ -880,15 +894,15 @@ if (sendButton && messageInput) {
                            'Content-Type': 'application/json',
                            'X-CSRF-Token': csrfToken
                         },
-                        body: JSON.stringify({ currentMember: currentMember }) // 사용자 ID를 서버에 보냄
+                        body: JSON.stringify({ currentMember: currentMember })
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // 성공적으로 처리된 경우, 페이지 리로드
                             socket.send(JSON.stringify({
                                 type: 'outCount',
-                                chat_room_no: currentChatRoomNo
+                                chat_room_no: currentChatRoomNo,
+                                currentMember: currentMember
                             }));
                             window.location.reload();
                         } else {

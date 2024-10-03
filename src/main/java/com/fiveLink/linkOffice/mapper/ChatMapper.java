@@ -58,4 +58,7 @@ public interface ChatMapper {
     //채팅 메시지
     String getChatMessageText(Long chatRoom);
 
+    //멤버 이름
+    String getMemberName(Long memberNo);
+
 }
