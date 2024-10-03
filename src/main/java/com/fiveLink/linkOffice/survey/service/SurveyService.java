@@ -256,9 +256,8 @@ public class SurveyService {
 
         LOGGER.info("SurveyTextDto: {}", surveyTextDto);
 
-        // 주관식 답변이 여러 개라면 반복문으로 처리, 단일 값이라면 바로 저장
         if (surveyTextDto.getSurvey_text_answer() != null) {
-            String textAnswer = surveyTextDto.getSurvey_text_answer();  // 단일 주관식 답변 처리
+            String textAnswer = surveyTextDto.getSurvey_text_answer(); 
             SurveyText surveyText = SurveyText.builder()
                 .surveyParticipant(participant)
                 .surveyQuestion(surveyQuestion)

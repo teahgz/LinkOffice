@@ -11,7 +11,11 @@ import org.springframework.data.repository.query.Param;
 import com.fiveLink.linkOffice.notice.domain.Notice;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
+	
 
+    @Query("SELECT n, m.memberName FROM Notice n JOIN n.member m WHERE n.noticeImportance = 1 ORDER BY n.noticeCreateDate DESC")
+    List<Object[]> findImportantNoticesWithMember();
+    
     Notice findBynoticeNo(Long notice_no);
 
     @Query("SELECT m.memberName FROM Member m WHERE m.memberNumber = :memberNumber")
