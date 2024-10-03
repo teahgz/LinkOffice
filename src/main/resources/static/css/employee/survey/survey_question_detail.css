@@ -12,12 +12,6 @@
     border-radius: 12px;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-}
 
 .header h1, .header h3, .header p {
     margin: 0;

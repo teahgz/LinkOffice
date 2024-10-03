@@ -15,9 +15,7 @@
 				<div th:if="${dto != null}" class="details-and-stats">
 					<div class="details">
 						<br>
-						<p>
-							작성자: <span th:text="${dto.member_name}"></span>
-						</p>
+						<p>작성자: <span th:text="${dto.member_name} + ' ' + ${dto.position_name}"></span></p>
 						<p>
 							작성일: <span th:text="${dto.survey_create_date}"></span>
 						</p>
