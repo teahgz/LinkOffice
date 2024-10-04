@@ -25,6 +25,7 @@ public class AddVacationSchedulerService {
     private final VacationCheckRepository vacationCheckRepository;
     private final MemberService memberService;
     private final VacationService vacationService;
+
     @Autowired
     public AddVacationSchedulerService(MemberRepository memberRepository, VacationService vacationService, VacationCheckRepository vacationCheckRepository, MemberService memberService) {
         this.memberRepository = memberRepository;
@@ -36,14 +37,14 @@ public class AddVacationSchedulerService {
     //@Scheduled(cron = "*/5 * * * * *")
     @Transactional
     public void addVacationScheduler() {
-        if(vacationService.countCheckOneYear() != 0){
-            // 1년 미만 재직자 처리
+
+        if (vacationService.countCheckOneYear() == 1) {
             List<MemberDto> underOneYearMembers = memberService.selectUnderYearMember(1);
             for (MemberDto dto : underOneYearMembers) {
                 if (dto.getMember_vacation_date() == null || dto.getMember_vacation_date().isEmpty()) {
                     if (firstVacation(dto.getMember_hire_date())) {
                         int monthDif = (int) Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).toTotalMonths();
-                        //만약에 테스트용으로 입사기준 날짜가 다다르게 들어갈 경우를 대비해서 3개월 차이 나면 3개입력될 수 있도록 구성
+                        // 입사 기준 날짜에 따라 3개월 차이가 나면 3개 입력되도록 구성
                         vacationService.incrementVacation(dto.getMember_no(), monthDif);
                     }
                 } else {
@@ -52,12 +53,12 @@ public class AddVacationSchedulerService {
                     }
                 }
             }
+        }
 
-        }else if(vacationService.countCheckOneYear() != 0 || vacationService.countCheckOneYear() == 0){
-            // 1년 이상 재직자 처리
+        if (vacationService.countCheckOneYear() == 1 || vacationService.countCheckOneYear() == 0) {
             List<MemberDto> overOneYearMembers = memberService.selectUnderYearMember(0);
             for (MemberDto dto : overOneYearMembers) {
-                String vacationDate = vacationService.selectVacationDesignated(1); //지정일 조회
+                String vacationDate = vacationService.selectVacationDesignated(1); // 지정일 조회
 
                 int vacationStandardStatus = vacationService.selectVacationStandardStatus();
                 String referenceDate = (vacationDate != null) ? vacationDate : dto.getMember_hire_date(); // 입사일 기준
@@ -70,9 +71,8 @@ public class AddVacationSchedulerService {
             }
         }
 
-
-
     }
+
 
     // 입사일 기준 첫 번째 휴가 지급 시점 확인
     private boolean firstVacation(String joiningDate) {

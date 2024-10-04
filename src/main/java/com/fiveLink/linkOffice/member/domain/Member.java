@@ -126,7 +126,7 @@ public class Member {
 
 	//[김채영] 휴가 지급 개수
 	@Column(name="member_vacation_count")
-	private int memberVacationCount;
+	private double memberVacationCount;
 
 	//[김채영] 휴가 지급 날짜
 	@Column(name="member_vacation_date")
