@@ -217,8 +217,8 @@ textarea {
 }
 
 #participate_confirmButton {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -607,8 +607,8 @@ textarea{
 
 #addEventBtn {
     padding: 15px 30px;
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     cursor: pointer;
     margin-bottom: 30px;
@@ -620,7 +620,7 @@ textarea{
 }
 
 #addEventBtn:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 .department-checkbox, .all-checkbox {
 	margin-bottom: 20px;
@@ -661,8 +661,8 @@ label {
     
 #searchButton {
     padding: 10px 20px;
-    background-color: #B1C2DD;
-    color: black;
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;  
     font-size : 15px; 
@@ -670,7 +670,7 @@ label {
 }
 
 #searchButton:hover { 
-    background-color: #9CAFC7; 
+    background-color: #003a82; 
 }
  
 .bottom_area {
@@ -794,8 +794,8 @@ label {
 .modal_in_btn {
 	width : 110px;
     padding: 10px 20px;
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -806,20 +806,20 @@ label {
 .cancel_in_btn {
 	width : 110px;
     padding: 10px 20px;
-    background-color: #C0C0C0;
-    color: rgb(0, 0, 0);
-    border: none;
+	background-color: #f8f9fa;
+	color: #333;
+	border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .cancel_in_btn:hover {
-    background-color: #9b9b9b;
+    background-color: #e9ecef;
 }
 
 .modal_in_btn:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 } 
 
 .custom-dropdown {
