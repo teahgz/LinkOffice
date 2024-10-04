@@ -7,13 +7,14 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #0056b3;
     padding: 10px 20px;
 }
  
 .header_logo_text {
 	font-weight: 800;
 	font-size: 26px;
-	color:#4d72b0;
+	color:#fff;
 	margin-left: 5px;
 	margin-top:5px;
 	margin-bottom:5px;
@@ -59,7 +60,7 @@ a {
 
 .logout_button i {
     font-size: 18px;
-    color: #0000007a;
+   color:#fff;
 }
 
 .user_photo {
@@ -110,12 +111,13 @@ a {
 
 #session-time {
     font-size:12px;
-    color:gray;
+   color:#fff;
 }
 .bell {
     margin-right:1vw;
     cursor: pointer;
     position: relative;
+    color:#fff;
 }
 .notification-bell-modal {
     display: none;
