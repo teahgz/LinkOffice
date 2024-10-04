@@ -434,13 +434,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             if (approvalTitle.trim() === "") {  
                 vali_text += '결재 제목을 입력해주세요.';
                 document.querySelector('#approval_title').focus();
-            } else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
-				 vali_text += '결재선를 지정해주세요.';
-                document.querySelector('#openChart').focus();
-			}  else if(approvers.length === 0 && references.length === 0){
-				 vali_text += '결재자 / 합의자를 지정해주세요.';
-                document.querySelector('#openChart').focus();
-			} else if (editorData.trim() === "") {
+            } else if (editorData.trim() === "") {
                 vali_text += '양식을 선택해주세요.';
                 editor.ui.view.editable.element.focus();  
             } else {

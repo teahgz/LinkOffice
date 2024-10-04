@@ -75,7 +75,7 @@ function previewImage(event) {
             Swal.fire({
                 icon: 'warning',
                 text: 'PNG 또는 JPEG 파일만 등록 가능합니다.',
-                confirmButtonColor: '#B1C2DD',
+                confirmButtonColor: '#0056b3',
                 confirmButtonText: '확인'
             });
 
@@ -128,7 +128,7 @@ createFrm.addEventListener('submit',(e)=>{
 		Swal.fire({
 			icon : 'warning',
 			text : vali_text,
-			confirmButtonColor: '#B1C2DD',
+			confirmButtonColor: '#0056b3',
 			confirmButtonText : "확인"
 		});
 	 } else{
@@ -146,7 +146,7 @@ createFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
-				confirmButtonColor: '#B1C2DD',
+				confirmButtonColor: '#0056b3',
 				confirmButtonText : "확인"
 		}).then((result)=>{
 			location.href = "/admin/member/list";
@@ -155,14 +155,14 @@ createFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'warning',
 				text : data.res_msg,
-				confirmButtonColor: '#B1C2DD',
+				confirmButtonColor: '#0056b3',
 				confirmButtonText : "확인"
 			});	
 			}else {
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
-				confirmButtonColor: '#B1C2DD',
+				confirmButtonColor: '#0056b3',
 				confirmButtonText : "확인"
 					});
 				}
