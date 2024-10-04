@@ -64,39 +64,47 @@ input:focus, select:focus {
 }
 
 .approve_button {
-    padding: 8px 15px;
-    background-color: #B3C7EE;
+    padding: 10px 20px;
+    background-color: #0056b3;
+  	color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    color: #000000;
 }
 
 .approve_button:hover {
-    opacity: 0.8;
+	background-color: #003a82;
 }
 
 .submit_button {
-    padding: 8px 15px;
-    background-color: #B3C7EE;
+    padding: 10px 20px;
+    background-color: #0056b3;
+  	color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    color: #000000;
 }
 
+.submit_button:hover {
+	background-color: #003a82;
+}
 
 .cancel_button {
-    padding: 8px 15px;
-    background-color: #C0C0C0;
-    border: none;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
+}
+
+.cancel_button:hover {
+	background-color: #e9ecef;
 }
 
 .form-group {
@@ -180,8 +188,9 @@ input:focus, select:focus {
 }
 
 .preview_button {
-    padding: 8px 15px;
-    background-color: #f9e1e1; 
+    padding: 10px 20px;
+    background-color: #04AA6D; 
+    color:white;
     border: none;
     border-radius: 5px;
     font-size: 14px;
@@ -197,7 +206,7 @@ input:focus, select:focus {
 }
 
 
-.cancel_button, .submit_button, .preview_button:hover {
+.preview_button:hover {
     opacity: 0.8;
 }
 

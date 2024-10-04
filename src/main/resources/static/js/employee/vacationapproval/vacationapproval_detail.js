@@ -21,7 +21,7 @@ const approvalTitle = document.querySelector('#vacationapproval_title').innerHTM
 	            Swal.fire({
 	                icon: 'warning',
 	                text: '취소 사유를 입력해주세요.',
-	                confirmButtonColor: '#B1C2DD',
+	                confirmButtonColor: '#0056b3',
 	                confirmButtonText: "확인"
 	            });
 	            return;
@@ -43,7 +43,7 @@ const approvalTitle = document.querySelector('#vacationapproval_title').innerHTM
 	                Swal.fire({
 	                    icon: 'success',
 	                    text: data.res_msg,
-	                    confirmButtonColor: '#B1C2DD',
+	                    confirmButtonColor: '#0056b3',
 	                    confirmButtonText: "확인"
 	                }).then(() => {
 	                    location.href = "/employee/vacationapproval/detail/"+vapNo;
@@ -52,7 +52,7 @@ const approvalTitle = document.querySelector('#vacationapproval_title').innerHTM
 	                Swal.fire({
 	                    icon: 'error',
 	                    text: data.res_msg,
-	                    confirmButtonColor: '#B1C2DD',
+	                    confirmButtonColor: '#0056b3',
 	                    confirmButtonText: "확인"
 	                });
 	            }
@@ -211,14 +211,17 @@ const approvalTitle = document.querySelector('#vacationapproval_title').innerHTM
 			            .download_button {
 							float: right;
 						    padding: 8px 15px;
-						    background-color: #B3C7EE;
+						    background-color: #04AA6D;
 						    border: none;
 						    border-radius: 5px;
 						    cursor: pointer;
 						    text-decoration: none;
 						    font-size: 14px;
-						    color: #000000;
+						    color: white;
 			            }
+			            .download_button:hover{
+							opacity: 0.8;
+						}
 			            .content_section{
 						    margin: auto;
 	    					width: 780px;
