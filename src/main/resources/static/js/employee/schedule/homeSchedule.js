@@ -992,15 +992,5 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('eventViewCreatedDate').style.display = 'none';
 	    document.getElementById('event_modal_vacation').style.height = '500px'; 
    		modal.style.display = 'block';  
-	}  
-	 
-	document.getElementById('searchButton').addEventListener('click', filterEvents);
-	document.getElementById('searchstartDate').addEventListener('change', function () {
-	    const startDateValue = this.value; 
-	    const endDateInput = document.getElementById('searchendDate');  
-	 
-	    endDateInput.value = '';
-	 
-	    endDateInput.min = startDateValue;   
-	}); 
+	}   
 });
