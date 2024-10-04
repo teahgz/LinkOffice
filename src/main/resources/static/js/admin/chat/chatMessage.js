@@ -513,7 +513,12 @@ if (sendButton && messageInput) {
                chatNameElement.textContent = updatedChatRoomName;
            }
            const chatRoomTitleElement = document.getElementById("chatRoomTitle");
-           chatRoomTitleElement.textContent = updatedChatRoomName;
+            chatRoomTitleElement.textContent = updatedChatRoomName;
+            const firstLetter = updatedChatRoomName.charAt(0).toUpperCase();
+            const groupImageElement = document.querySelector('.group-image');
+            if (groupImageElement) {
+                groupImageElement.textContent = firstLetter;
+            }
            document.getElementById('chatRoomNameInput').value = '';
 
       }
