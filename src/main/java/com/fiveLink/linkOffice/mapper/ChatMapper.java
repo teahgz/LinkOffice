@@ -54,11 +54,13 @@ public interface ChatMapper {
 
     //한 채팅방 참여자 안읽은 개수
     int chatRoomUnread(Map<String, Object> params);
-
     //채팅 메시지
     String getChatMessageText(Long chatRoom);
 
     //멤버 이름
     String getMemberName(Long memberNo);
-
+    //본인을 제외한 채팅방 목록 사용자의 정보
+    List<Long> selectAnotherUser(Map<String, Object> params);
+    //본인을 제외한 채팅방 목록 사용자의 사진
+    String getProfileImageByMemberNo(Long memberNo);
 }

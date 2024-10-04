@@ -128,7 +128,7 @@
     overflow-y: auto;
 }
 .chatList-container {
-    max-height: 880px;
+    max-height: 1204px;
     overflow-y: auto;
 }
 .chatList-container::-webkit-scrollbar {
@@ -157,6 +157,7 @@
     cursor: pointer;
     display:flex;
     flex-direction:row;
+    align-items:center;
 }
 
 .chatItem:hover {
@@ -497,4 +498,27 @@ margin-top: 10px;
 .custom-cancel-button {
     background-color: #C0C0C0;
     color: white;
+}
+.profile-images {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.group-info {
+    display: flex;
+    align-items: center;
+}
+
+.group-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
 }
