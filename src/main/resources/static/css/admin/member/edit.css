@@ -165,9 +165,26 @@ select option {
 }
 
 .edit_button {
-    background-color: #B1C2DD;
+	padding: 10px 20px;
+	background-color: #0056b3;
+	border-radius: 4px;
+	color: white;
+	border: none;
+}
+
+.edit_button:hover {
+	background-color: #003a82;
 }
 
 .cancel_button {
-    background-color: #C0C0C0;
+	padding: 10px 20px;
+	border-radius: 4px;
+    background-color: #f8f9fa;
+	color: #333;
+	border: 1px solid #ddd;
 }
+
+.cancel_button:hover {
+	background-color: #e9ecef;
+}
+
