@@ -4,7 +4,8 @@
 
 <mapper namespace="com.fiveLink.linkOffice.mapper.ChatMapper"> <!-- namespace 수정 -->
 <!-- 채팅방 목록 가져오기   -->
-    <select id="selectChatList" parameterType="java.lang.Long" resultType="com.fiveLink.linkOffice.chat.domain.ChatMemberDto">SELECT cm.*
+    <select id="selectChatList" parameterType="java.lang.Long" resultType="com.fiveLink.linkOffice.chat.domain.ChatMemberDto">
+        SELECT cm.*
         FROM fl_chat_member cm
         LEFT JOIN (
         SELECT cm.chat_room_no, MAX(cmsg.chat_message_create_date) AS recent_message_date
@@ -235,6 +236,18 @@
     <!-- 멤버이름  -->
     <select id="getMemberName" parameterType="Long" resultType="String">
         SELECT member_name
+        FROM fl_member
+        WHERE member_no = #{memberNo}
+    </select>
+    <!-- 본인을 제외한 사용자들의 정보   -->
+    <select id="selectAnotherUser" parameterType="java.util.Map" resultType="Long">
+        SELECT member_no
+        FROM fl_chat_member
+        WHERE member_no != #{memberNo} AND chat_room_no = #{chatRoomNo}
+    </select>
+    <!--  다른 사용자의 사진 정보   -->
+    <select id="getProfileImageByMemberNo" parameterType="Long" resultType="String">
+        SELECT member_new_profile_img
         FROM fl_member
         WHERE member_no = #{memberNo}
     </select>

@@ -100,13 +100,17 @@
 }
 
 button {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #003a82;
 }
 
 .scheduleCategory_Lists {
@@ -137,11 +141,11 @@ button {
 }
 
 #deleteButton {
-	background-color: #EEB3B3;
+	background-color: #dc3545;
 }
 
 #deleteButton:hover {
-	background-color: #e07676;
+	background-color: #c82333;
 }
 
 .details-content p {

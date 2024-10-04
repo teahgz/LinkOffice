@@ -84,11 +84,11 @@ h1 {
 }
 
 .swal2-confirm {
-	background-color: #B1C2DD;
-	color: black;
+	background-color: #0056b3;
+	color: white;
 }
 .swal2-cancel{
-	background-color: #C0C0C0;
+	background-color: #f8f9fa;
 	color: black;
 }
 

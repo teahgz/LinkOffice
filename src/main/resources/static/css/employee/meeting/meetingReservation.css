@@ -323,8 +323,8 @@ td.available {
 }
 
 #participate_confirmButton {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -333,6 +333,9 @@ td.available {
     margin-top: 40px;    
 } 
 
+#participate_confirmButton {
+	background-color: #003a82;
+}
 .participate_modal-content {
     background-color: #fefefe;
     margin: 5% auto; 
@@ -499,8 +502,8 @@ td.available {
     max-width: 400px;  
     padding: 15px;  
     font-size: 16px; 
-    color: black; 
-    background-color: #B1C2DD;  
+    color: white; 
+    background-color: #0056b3;  
     border: none; 
     border-radius: 5px; 
     cursor: pointer; 
@@ -508,7 +511,7 @@ td.available {
 }
 
 .reserve-button:hover {
-    background-color: #9CAFC7;  
+    background-color: #003a82;  
 } 
 
 textarea{

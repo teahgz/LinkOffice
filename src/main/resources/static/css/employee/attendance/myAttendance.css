@@ -348,7 +348,6 @@
     align-items: center;
 }
 .pagination_button:hover {
-	color: white;
     background-color: #e9ecef;
 }
 .pagination_button.active{
@@ -370,6 +369,5 @@
     align-items: center;
 }
 .go_first_page_button:hover, .go_last_page_button:hover{
-    color: white;
     background-color: #e9ecef;
 }

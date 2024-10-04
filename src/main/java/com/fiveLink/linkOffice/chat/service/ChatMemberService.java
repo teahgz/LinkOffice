@@ -94,4 +94,17 @@ public class ChatMemberService {
     public List<ChatMemberDto> getMembersByChatRoomNo(Long chatRoomNo){
         return chatMapper.getMembersByChatRoomNo(chatRoomNo);
     }
+    public List<Long> selectAnotherUser(Long memberNo, Long chatRoomNo){
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomNo", chatRoomNo);
+        params.put("memberNo", memberNo);
+
+        return chatMapper.selectAnotherUser(params);
+    }
+    public String getProfileImageByMemberNo(Long memberNo) {
+        // 멤버 번호로 프로필 이미지 경로를 가져오는 메서드
+        return chatMapper.getProfileImageByMemberNo(memberNo);
+    }
+
+
 }
