@@ -37,8 +37,9 @@ select {
 }
 
 .search_button {
+	color:white;
     padding: 10px 25px;
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -47,7 +48,7 @@ select {
 }
 
 .search_button:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .search_button:active {
@@ -117,9 +118,9 @@ select {
 }
 
 .pagination button.active {
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     color: white;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 .download_container{
 	margin-bottom: 20px;
@@ -127,7 +128,8 @@ select {
 }
 
 .download_button{
-    color: #000080;
+    background-color: #04AA6D; 
+    color:white;
     padding: 10px 13px;
     border-radius: 6px;
     border: none;
@@ -137,6 +139,5 @@ select {
 }
 
 .download_button:hover {
-    background-color: #9CAFC7;
-    color: black;
+	opacity: 0.8;
 }
