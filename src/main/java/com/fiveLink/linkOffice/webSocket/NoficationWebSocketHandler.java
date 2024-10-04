@@ -154,29 +154,32 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 		
 
         for (Long memberNo : userIdsInChatRoom)  {
+			// 해당 유저가 이미 unreadCounts에 있는지 확인
+			boolean alreadyNotified = unreadCounts.stream()
+					.anyMatch(item -> item.get("memberNo").equals(memberNo));
 			String chatRoomName = chatMemberService.selectChatRoomName(currentRoom, memberNo);
-			// String chatMessage = chatMessageService.getChatMessageText(currentRoom);
-			String nofication_content = "[" + chatRoomName + "]<br><p>메신저가 도착했습니다.</p>";
+			if (chatRoomName != null && !alreadyNotified) {
+				String nofication_content = "[" + chatRoomName + "]<br><p>메신저가 도착했습니다.</p>";
 
+				NoficationDto noficationDto = new NoficationDto();
+				noficationDto.setNofication_content(nofication_content); // 알림내용
+				noficationDto.setNofication_receive_no(memberNo); // 알림 받는 사람
+				noficationDto.setNofication_title(nofication_title); // 알림 제목
+				noficationDto.setNofication_type(nofication_type); // 본인 기능 타입
+				noficationDto.setMember_no(senderNo); // 보내는 사람
 
-			NoficationDto noficationDto = new NoficationDto();
-            noficationDto.setNofication_content(nofication_content);// 알림내용
-            noficationDto.setNofication_receive_no(memberNo);//알림 받는 사람
-            noficationDto.setNofication_title(nofication_title);//알림 제목
-            noficationDto.setNofication_type(nofication_type);//본인 기능 타입
-            noficationDto.setMember_no(senderNo);//보내는 사람
+				if (noficationService.insertAlarm(noficationDto) > 0) {
+					long notificationPk = noficationService.insertAlarmPk(); // 디비에 값을 넣고 해당하는 알림 pk값을 바로 들고오기
+					Map<String, Object> memberUnreadCount = new HashMap<>();
+					memberUnreadCount.put("memberNo", memberNo);
+					memberUnreadCount.put("chatRoomNo", currentRoom);
+					memberUnreadCount.put("nofication_pk", notificationPk);
+					memberUnreadCount.put("content", nofication_content);
+					unreadCounts.add(memberUnreadCount);
+				}
+			}
 
-            if(noficationService.insertAlarm(noficationDto) > 0){
-				long notificationPk = noficationService.insertAlarmPk();//디비에 값을 넣고 해당하는 알림 pk값을 바로 들고오기
-                Map<String, Object> memberUnreadCount = new HashMap<>();
-                memberUnreadCount.put("memberNo", memberNo);
-                memberUnreadCount.put("chatRoomNo", currentRoom);
-				memberUnreadCount.put("nofication_pk", notificationPk);
-				memberUnreadCount.put("content", nofication_content);
-                unreadCounts.add(memberUnreadCount);
-            }
-
-        }
+		}
         for (WebSocketSession s : sessions.values()) {
             if (s.isOpen()) {
                 ObjectMapper objectMapper = new ObjectMapper();

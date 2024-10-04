@@ -10,7 +10,7 @@
                     <div class="vacation_click">
                         <div class="vacation_click_ele">
                             <div class="vacation_ele1">
-                                <h3>연차별 휴가 지정</h3>
+                                <p style="font-weight: 550;">연차별 휴가 지정</p>
                             </div>
                             <div>
                                 <p style="color: red; font-size: 15px;">* 입사일 기준 해당 년도 연차 개수 지정</p>
@@ -149,7 +149,7 @@
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div>
                         <div class="vacation_ele1">
-                            <h3>1년 미만 월차 지급 여부</h3>
+                            <p style="font-weight: 550;">1년 미만 월차 지급 여부</p>
                             <div class="checkButton" style="text-align: center; margin-top: 20px;">
                                 <!-- countCheckOneYear가 0보다 크면 버튼을 비활성화 -->
                                 <button type="submit" th:disabled="${countCheckOneYear > 0}">등록</button>
@@ -157,7 +157,7 @@
                         </div>
                         <!-- 분리되는 부분 -->
                         <div>
-                            <p style="color: red; font-size: 13px;">* 최초 설정만 가능</p>
+                            <p style="color: red; font-size: 15px; padding-left: 20px; padding-right: 15px;">* 최초 설정만 가능</p>
                         </div>
 
                     </div>
@@ -177,7 +177,7 @@
                 <form id="vacationTypeForm" class="vacationTypeForm">
                     <div class="vacationType_click">
                         <div>
-                            <h3>휴가 종류 생성</h3>
+                            <p style="font-weight: 550;">휴가 종류 생성</p>
                         </div>
 
                         <div class="addVacationType_submit" style="text-align: center; margin-top: 20px;">
