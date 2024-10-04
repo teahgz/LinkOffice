@@ -520,9 +520,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const selectedDateEventsList = document.getElementById('schedule_selected_date_list');
 	    selectedDateEventsList.innerHTML = '';  
 	    const home_schedule_date = document.getElementById('schedule_home_date');
-	 
-	    const formattedDate = selectedDate.split('-').join('.'); 
-	    home_schedule_date.innerHTML = formattedDate;  
+	  
+	    home_schedule_date.innerHTML = selectedDate;  
 	
 	    if (selectedDateEvents.length === 0) {
 	        selectedDateEventsList.innerHTML = '<li>일정이 없습니다.</li>';

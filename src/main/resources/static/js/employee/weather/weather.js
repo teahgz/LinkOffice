@@ -88,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         weatherIcon.setAttribute('src', '/img/weather_rainy.png');
                     }
                 } else if(item.category === "POP"){
-					popDiv.innerText = "강수확률 " + item.fcstValue + "%";
+					popDiv.innerText = item.fcstValue + "%";
 				} else if(item.category === "REH"){
-					humidityDiv.innerText = "습도 " + item.fcstValue + "%";
+					humidityDiv.innerText = item.fcstValue + "%";
 				} 
             }           
             if(item.category === 'TMN') { 
@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } 
         });       
         temp.innerText = temperature + "°C";
-        tempMinDiv.innerText = "최저기온 " + tempMin + "°C";
-        tempMaxDiv.innerText = "최고기온 " + tempMax + "°C";
+        tempMinDiv.innerText = tempMin + "°C";
+        tempMaxDiv.innerText = tempMax + "°C";
     }
     getWeather();
 });

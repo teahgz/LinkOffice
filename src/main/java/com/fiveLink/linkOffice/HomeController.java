@@ -169,7 +169,7 @@ public class HomeController {
 		    model.addAttribute("isCheckedOut", isCheckedOut); 
 		    
 		    model.addAttribute("mySurveyList", mySurveyList.getContent());
-		    
+		      
 		    model.addAttribute("importantNotices", importantNotices);
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    boolean isAdmin = authentication.getAuthorities().stream()
