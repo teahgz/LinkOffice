@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.vacation.service.VacationService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFileDto;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalFlowDto;
@@ -28,12 +30,17 @@ public class VacationApprovalApicontroller {
 	private final VacationApprovalService vacationApprovalService;
 	private final VacationApprovalFileService vacationApprovalFileService;
 	private final MemberService memberService;
+	private final VacationService vacationService;
 	
 	@Autowired
-	public VacationApprovalApicontroller (VacationApprovalService vacationApprovalService, VacationApprovalFileService vacationApprovalFileService, MemberService memberService) {
+	public VacationApprovalApicontroller (VacationApprovalService vacationApprovalService, 
+			VacationApprovalFileService vacationApprovalFileService,
+			MemberService memberService,
+			VacationService vacationService) {
 		this.vacationApprovalService = vacationApprovalService;
 		this.vacationApprovalFileService = vacationApprovalFileService;
 		this.memberService = memberService;
+		this.vacationService = vacationService;
 	}
 	
 	// 휴가 결재 등록
@@ -56,7 +63,25 @@ public class VacationApprovalApicontroller {
 	    Map<String, String> response = new HashMap<>();
 	    response.put("res_code", "404");
 	    response.put("res_msg", "휴가 신청 중 오류가 발생했습니다.");
+	    
+	    // 휴가 갯수 감소
+        Long member_no = memberService.getLoggedInMemberNo();
+        MemberDto memberdto = new MemberDto();
+        
+        Double vacation_count = vacationService.vacationType(vacationtype);
 
+        int dateCountInt = Integer.parseInt(dateCount);
+        
+        double totalVacationCount = (vacation_count * dateCountInt);
+
+        memberdto.setMember_no(member_no);
+        memberdto.setMember_vacation_count(totalVacationCount);
+        
+	    if(memberService.updateVacation(memberdto) != null) {
+	    	response.put("res_code", "200");
+	    	response.put("res_msg", "휴가 개수가 감소되었습니다.");
+	    }
+	    
 	    VacationApprovalDto vappdto = new VacationApprovalDto();
 	    vappdto.setVacation_approval_title(vacationapprovalTitle);
 	    vappdto.setVacation_type_no(vacationtype);
@@ -148,6 +173,26 @@ public class VacationApprovalApicontroller {
 	    VacationApprovalDto dto = vacationApprovalService.selectVacationApprovalOne(vapNo);
 	    dto.setVacation_approval_status(3L);
 	    dto.setVacation_approval_cancel_reason(vacationApprovalDto.getVacation_approval_cancel_reason());
+	    
+	    Long vacationtype = dto.getVacation_type_no();
+	    String dateCount = dto.getVacation_approval_total_days();
+	    // 휴가 갯수 복구
+        Long member_no = memberService.getLoggedInMemberNo();
+        MemberDto memberdto = new MemberDto();
+        
+        Double vacation_count = vacationService.vacationType(vacationtype);
+
+        int dateCountInt = Integer.parseInt(dateCount);
+        
+        double totalVacationCount = (vacation_count * dateCountInt);
+
+        memberdto.setMember_no(member_no);
+        memberdto.setMember_vacation_count(totalVacationCount);
+        
+	    if(memberService.updateOriginVacation(memberdto) != null) {
+	    	response.put("res_code", "200");
+	    	response.put("res_msg", "휴가 개수가 복구되었습니다.");
+	    }
 	    
 	    if(vacationApprovalService.cancelVacationApproval(dto) != null) {
 	    	response.put("res_code", "200");
@@ -286,7 +331,29 @@ public class VacationApprovalApicontroller {
 	    response.put("res_code", "404");
 	    response.put("res_msg", "반려 중 오류가 발생하였습니다.");
 	    
+	    VacationApprovalDto dto = vacationApprovalService.selectVacationApprovalOne(vacationApprovalNo);
+	    
 	    Long memberNo = memberService.getLoggedInMemberNo();
+	    
+	    Long vacationtype = dto.getVacation_type_no();
+	    String dateCount = dto.getVacation_approval_total_days();
+	    // 휴가 갯수 복구
+        MemberDto memberdto = new MemberDto();
+        
+        Double vacation_count = vacationService.vacationType(vacationtype);
+
+        int dateCountInt = Integer.parseInt(dateCount);
+        
+        double totalVacationCount = (vacation_count * dateCountInt);
+
+        memberdto.setMember_no(dto.getMember_no());
+        memberdto.setMember_vacation_count(totalVacationCount);
+        
+	    if(memberService.updateOriginVacation(memberdto) != null) {
+	    	response.put("res_code", "200");
+	    	response.put("res_msg", "휴가 개수가 복구되었습니다.");
+	    }
+	    
 	    
 	    vacationApprovalFlowDto.setVacation_approval_no(vacationApprovalNo);
 	    

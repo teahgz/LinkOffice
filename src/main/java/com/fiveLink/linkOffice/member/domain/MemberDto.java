@@ -53,7 +53,7 @@ public class MemberDto {
 	//[김채영] 1년미만 여부
 	private int member_one_under;
 	//[김채영] 휴가 개수
-	private int member_vacation_count;
+	private double member_vacation_count;
 	//[김채영] 지급날짜
 	private String member_vacation_date;
 

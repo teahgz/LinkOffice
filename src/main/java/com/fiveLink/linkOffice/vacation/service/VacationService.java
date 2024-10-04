@@ -192,5 +192,15 @@ public class VacationService {
     public String memberHireDate(Long memberNo){
         return vacationMapper.memberHireDate(memberNo);
     }
+    
+    // 휴가 번호로 해당 휴가 갯수 조회
+    public Double vacationType(Long vacationNo) {
+    	try {
+    		vacationTypeRepository.findVacationTypeCalculateByVacationNo(vacationNo);
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return vacationTypeRepository.findVacationTypeCalculateByVacationNo(vacationNo);
+    }
 
 }
