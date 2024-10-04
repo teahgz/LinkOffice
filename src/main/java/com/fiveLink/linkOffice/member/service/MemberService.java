@@ -342,4 +342,22 @@ public class MemberService {
                 .collect(Collectors.toList());
     } 
     
+    // [전주영] 휴가 갯수 감소
+    @Transactional
+    public Member updateVacation(MemberDto dto) {
+    	MemberDto temp = selectMemberOne(dto.getMember_no());
+    	try {
+            
+    		double currentVacationCount = temp.getMember_vacation_count();
+            
+            if (dto.getMember_vacation_count() > 0) {
+                double updatedVacationCount = currentVacationCount - dto.getMember_vacation_count();
+                temp.setMember_vacation_count(updatedVacationCount);
+            }
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+        return memberRepository.save(temp.toEntity());
+    }
+    
 } 
