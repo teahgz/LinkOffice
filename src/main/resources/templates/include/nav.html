@@ -119,8 +119,8 @@
 					<a href="#" class="dropdown-toggle">비품 관리</a>
 					<div class="dropdown" data-dropdown-id="inventoryDropdown">
 							<ul th:each = "member : ${memberdto}">
-								<li><a th:href="@{/inventory/list/{no}(no=${member.member_no})}">비품 목록</a></li>
 								<li><a th:href="@{/inventory/create/{no}(no=${member.member_no})}">비품 등록</a></li>
+								<li><a th:href="@{/inventory/list/{no}(no=${member.member_no})}">비품 목록</a></li>
 							</ul>
 					</div>
 				</li>
@@ -138,8 +138,8 @@
 					<a href="#" class="dropdown-toggle">일정 관리</a>
 					<div class="dropdown" data-dropdown-id="scheduleDropdown">
 						<ul> 
-							<li><a th:href="@{/schedule/company}">사내 일정</a></li>
 							<li><a th:href="@{/schedule/category}">카테고리 관리</a></li>
+							<li><a th:href="@{/schedule/company}">전사 일정</a></li>
 						</ul>
 					</div>
 				</li>
