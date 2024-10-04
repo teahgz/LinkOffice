@@ -127,8 +127,8 @@
 }
 
 #participate_confirmButton {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+	color: white;	
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -137,6 +137,9 @@
     margin-top: 40px;    
 } 
 
+#participate_confirmButton { 
+	background-color: #003a82;
+}
 .participate_modal-content {
     background-color: #fefefe;
     margin: 5% auto; 
@@ -283,8 +286,7 @@
 .selected-participants {
     display: flex;
     align-items: center;
-    padding: 5px 20px;
-    background-color: #e0e0e0;
+    padding: 5px 20px; 
     border-radius: 20px; 
     margin-bottom: 5px;
     font-size: 14px;
@@ -407,12 +409,12 @@ hr {
 #reservation_submit {
 	width : 110px;
     padding: 10px 20px;
-    background-color: #B1C2DD;
-    color: #B3C7EE;
+    background-color: #0056b3;
+	color: white;
+	border: none;;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
-    color:black;
+    cursor: pointer; 
     transition: background-color 0.3s; 
     margin-left : 490px;
 }
@@ -433,7 +435,7 @@ hr {
 }
 
 #reservation_submit:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .participate_btn {
@@ -452,7 +454,12 @@ hr {
 }
 
 .selected-participants-container {
-	width : 100%;  
+  flex: 1;
+  min-height: 50px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f8f9fa;
 }
 
 /* .reservation_detail {
@@ -629,5 +636,14 @@ hr {
   display: flex;
   flex-direction: column;
   margin: auto;
+}
+
+.selected-participants-container {
+  flex: 1;
+  min-height: 50px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f8f9fa;
 }
  

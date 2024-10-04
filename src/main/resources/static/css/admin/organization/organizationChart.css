@@ -13,8 +13,8 @@
 }
 
 #confirmButton {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: rgb(255, 255, 255);
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -22,6 +22,10 @@
     transition: background-color 0.3s;
     margin-top: 40px;    
 } 
+
+#confirmButton {
+	background-color: #003a82;
+}
 
 .modal-content {
     background-color: #fefefe;
