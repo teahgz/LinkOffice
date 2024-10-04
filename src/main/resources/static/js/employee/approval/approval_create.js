@@ -434,7 +434,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 Swal.fire({
                     icon: 'warning',
                     text: vali_text,
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: "확인"
                 });
             } else {
@@ -461,7 +461,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            Swal.fire({
 			                icon: 'success',
 			                text: data.res_msg,
-			                confirmButtonColor: '#B1C2DD',
+			                confirmButtonColor: '#0056b3',
 			                confirmButtonText: "확인"
 			            }).then((result) => {
 			            	location.href = "/employee/approval/progress";
@@ -470,7 +470,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            Swal.fire({
 			                icon: 'error',
 			                text: data.res_msg,
-			                confirmButtonColor: '#B1C2DD',
+			                confirmButtonColor: '#0056b3',
 			                confirmButtonText: "확인"
 				            });
 				        }
