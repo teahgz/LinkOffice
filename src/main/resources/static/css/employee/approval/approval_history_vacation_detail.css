@@ -164,14 +164,19 @@
 }
 
 .approval_button {
-    padding: 5px 10px;
-    background-color: #B3C7EE;
+	padding: 5px 10px;
+    background-color: #0056b3;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    color: #000000;
+    color: white;
+}
+
+
+.approval_button:hover {
+	background-color: #003a82;
 }
 
 .details_section {
@@ -187,7 +192,8 @@
 .reject_button {
 	display: inline-block;
     padding: 8px 15px;
-    background-color: #EEB3B3; 
+    color:white;
+    background-color: #dc3545; 
     border: none;
     border-radius: 5px;
     font-size: 14px;
@@ -196,19 +202,23 @@
     left: 5px; 
 }
 
-.list_button {
+.reject_button:hover {
     padding: 8px 15px;
-    background-color: #C0C0C0;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
+    background-color: #dc3545; 
 }
 
-.approval_button:hover,
-.list_button:hover,
-.reject_button:hover {
-    opacity: 0.8;
+.list_button {
+	  padding: 10px 20px;
+	  background-color: #f8f9fa;
+	  border: 1px solid #ddd;
+	  border-radius: 4px;
+	  color: #333333;
+	  cursor: pointer;
+	  transition: background-color 0.2s;
+}
+
+.list_button:hover{
+	background-color: #e9ecef;
 }
 
 .vacationapproval_content {
@@ -403,7 +413,8 @@
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
-	background-color: #B1C2DD;
+	background-color: #0056b3;
+	color:white;
 }
 
 #reject_reason {
@@ -423,13 +434,13 @@
 }
 
 .reapproval_button{
-    background-color: #B3C7EE;
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    color: #000000;
 }
 
 .reapproval_button:hover {
@@ -506,10 +517,15 @@
 
 .preview_button {
     padding: 8px 15px;
-    background-color: #f9e1e1; 
+    background-color: #04AA6D; 
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
     width: 100px;
+    color:white;
+}
+
+.preview_button:hover {
+    opacity: 0.8;
 }

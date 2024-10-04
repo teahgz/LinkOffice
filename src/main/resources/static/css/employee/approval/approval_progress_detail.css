@@ -149,19 +149,24 @@
 }
 
 .edit_button {
-    padding: 8px 15px;
-    background-color: #B3C7EE;
+    padding: 10px 20px;
+    background-color: #0056b3;
+  	color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    color: #000000;
+}
+
+.approve_button:hover {
+	background-color: #003a82;
 }
 
 .cancel_button {
-    padding: 8px 15px;
-    background-color: #EEB3B3; 
+    padding: 10px 20px;
+    background-color: #dc3545; 
+    color: white;
     border: none;
     border-radius: 5px;
     font-size: 14px;
@@ -171,19 +176,22 @@
     left: 5px; 
 }
 
-.list_button {
-    padding: 8px 15px;
-    background-color: #C0C0C0;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
+.cancel_button:hover {
+	background-color: #c82333;
 }
 
-.edit_button:hover,
-.list_button:hover,
-.cancel_button:hover {
-    opacity: 0.8;
+.list_button {
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.list_button:hover {
+	background-color: #e9ecef;
 }
 
 .approval_content {
@@ -414,12 +422,15 @@
 
 .preview_button {
     padding: 8px 15px;
-    background-color: #f9e1e1; 
+    background-color: #04AA6D; 
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    width:100px;
-    margin-bottom:20px;
-    
+    width: 100px;
+    color:white;
+}
+
+.preview_button:hover {
+    opacity: 0.8;
 }

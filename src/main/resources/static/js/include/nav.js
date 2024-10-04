@@ -696,7 +696,7 @@ function markApprovalAsRead(functionType, noficationTypePk) {
         .then(response => response.json())
         .then(data => {
             if (data.read) {
-                console.log('읽음 처리 완료5qjsdlfRk');
+                console.log('읽음 처리 완료');
                 bellUnreadCount();
             } else {
                 console.error('읽음 처리 실패');

@@ -75,7 +75,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 		Swal.fire({
 			icon : 'error',
 			text : vali_text,
-			confirmButtonColor: '#B1C2DD', 
+			confirmButtonColor: '#0056b3', 
 			confirmButtonText : "확인"
 		});
 	} else{
@@ -94,7 +94,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'success',
 				text : data.res_msg,
-				confirmButtonColor: '#B1C2DD', 
+				confirmButtonColor: '#0056b3', 
 				confirmButtonText : "확인"
 		}).then((result) => {
 			location.href = ("/login");
@@ -103,7 +103,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
-				confirmButtonColor: '#B1C2DD', 
+				confirmButtonColor: '#0056b3', 
 				confirmButtonText : "확인"
 			}).then(() => {
 				pwChangeFrm.user_id.value = '';
@@ -116,7 +116,7 @@ pwChangeFrm.addEventListener('submit',(e)=>{
 				Swal.fire({
 				icon : 'error',
 				text : data.res_msg,
-				confirmButtonColor: '#B1C2DD', 
+				confirmButtonColor: '#0056b3', 
 				confirmButtonText : "확인"
 			}).then(() => {
 				pwChangeFrm.user_id.value = '';

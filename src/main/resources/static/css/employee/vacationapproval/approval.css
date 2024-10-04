@@ -15,13 +15,22 @@
 }
 
 #confirmButton {
-	background-color: #B1C2DD;
-	color: rgb(0, 0, 0);
+	background-color: #0056b3;
+	color: white;
 	border: none;
 	padding: 10px 15px;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: background-color 0.3s;
+	margin-top: 40px;
+}
+
+#confirmButton:hover {
+	background-color: #003a82;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 5px;
+	cursor: pointer;
 	margin-top: 40px;
 }
 

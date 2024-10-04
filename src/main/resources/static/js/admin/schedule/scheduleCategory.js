@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	            text: '작성한 내용이 저장되지 않습니다.',
 	            icon: 'warning',
 	            showCancelButton: true,
-	            confirmButtonColor: '#B1C2DD',
-	            cancelButtonColor: '#C0C0C0',
+	            confirmButtonColor: '#0056b3',
+	            cancelButtonColor: '#f8f9fa',
 	            confirmButtonText: '확인',
 	            cancelButtonText: '취소',
 	        }).then((result) => {
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	            text: '작성한 내용이 저장되지 않습니다.',
 	            icon: 'warning',
 	            showCancelButton: true,
-	            confirmButtonColor: '#B1C2DD',
-	            cancelButtonColor: '#C0C0C0',
+	            confirmButtonColor: '#0056b3',
+	            cancelButtonColor: '#f8f9fa',
 	            confirmButtonText: '확인',
 	            cancelButtonText: '취소',
 	        }).then((result) => {
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
 			    text: '카테고리명을 입력해 주세요.',
 			    icon: 'warning',
-			    confirmButtonColor: '#B1C2DD',
+			    confirmButtonColor: '#0056b3',
 			    confirmButtonText: '확인',
 			});
             return;
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            Swal.fire({ 
 			                text: response.success,
 			                icon: 'success', 
-			                confirmButtonColor: '#B1C2DD', 
+			                confirmButtonColor: '#0056b3', 
 			                confirmButtonText: '확인', 
 			            }).then(() => {
 			                location.reload();
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            Swal.fire({ 
 						    text: errorMsg,
 						    icon: 'warning', 
-						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonColor: '#0056b3', 
 						    confirmButtonText: '확인', 
 						});
 			        }
@@ -135,8 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 text: '카테고리를 삭제하시겠습니까?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#EEB3B3',
-                cancelButtonColor: '#C0C0C0',
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#f8f9fa',
                 confirmButtonText: '삭제',
                 cancelButtonText: '취소'
             }).then((result) => {
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
                                     text: response.res_msg,
                                     icon: 'success',
-                                    confirmButtonColor: '#B1C2DD',
+                                    confirmButtonColor: '#0056b3',
                                     confirmButtonText: '확인'
                                 }).then(() => {
                                      location.href = "/schedule/category";  
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
                                     text: response.res_msg,
                                     icon: 'error',
-                                    confirmButtonColor: '#B1C2DD',
+                                    confirmButtonColor: '#0056b3',
                                     confirmButtonText: '확인'
                                 });
                             }
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            Swal.fire({
 				    text: '카테고리명을 입력해 주세요.',
 				    icon: 'warning',
-				    confirmButtonColor: '#B1C2DD',
+				    confirmButtonColor: '#0056b3',
 				    confirmButtonText: '확인',
 				});
 	            return;
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            Swal.fire({ 
 			                text: response.success,
 			                icon: 'success', 
-			                confirmButtonColor: '#B1C2DD', 
+			                confirmButtonColor: '#0056b3', 
 			                confirmButtonText: '확인', 
 			            }).then(() => {
 			                location.reload();
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			            Swal.fire({ 
 						    text: errorMsg,
 						    icon: 'warning', 
-						    confirmButtonColor: '#B1C2DD', 
+						    confirmButtonColor: '#0056b3', 
 						    confirmButtonText: '확인', 
 						});
 			        }

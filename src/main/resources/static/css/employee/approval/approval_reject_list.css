@@ -38,16 +38,17 @@ select {
 
 .search_button {
     padding: 10px 25px;
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 13px;
+    color:white;    
 }
 
 .search_button:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .search_button:active {
@@ -117,7 +118,7 @@ select {
 }
 
 .pagination button.active {
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     color: white;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
