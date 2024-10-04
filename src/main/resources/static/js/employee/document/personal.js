@@ -1029,17 +1029,21 @@ $(function () {
 	        }
 	    });       
         // 폴더 선택 변경 함수 
-	    $('#tree').on('select_node.jstree', function(e, data) {
-	        const selectedFolderNo = data.selected[0];
-	        if (selectedFolderNo !== previousFolderNo) {
-	            $('#file_name_input').val(''); 
-	            searchInputValue = '';
-	            loadFiles(selectedFolderNo, searchInputValue = '');
-	            previousFolderNo = selectedFolderNo; 
-	            startDateInput.value = oneYearAgoStr;
-	            endDateInput.value = todayStr;
-	        }
-	    });
+		$('#tree').on('select_node.jstree', function(e, data) {
+		    if (data.selected && data.selected.length > 0) {
+		        const selectedFolderNo = data.selected[0];
+		        if (selectedFolderNo !== previousFolderNo) {
+		            $('#file_name_input').val('');
+		            searchInputValue = '';
+		            loadFiles(selectedFolderNo, searchInputValue = '');
+		            previousFolderNo = selectedFolderNo;
+		            startDateInput.value = oneYearAgoStr;
+		            endDateInput.value = todayStr;
+		        }
+		    } else {
+		        console.error("선택된 폴더가 존재하지 않습니다.");
+		    }
+		});
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
             const selectedFolderNo = $('#tree').jstree('get_selected')[0];
