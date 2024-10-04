@@ -64,6 +64,7 @@
     justify-content: center;
     font-size: 2.3vw;
     cursor: pointer;
+    margin-left: 15vw;
 }
 .folder_buttons{
 	height: 8%;
