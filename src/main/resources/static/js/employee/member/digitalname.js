@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 Swal.fire({
                     icon: 'success',
                     text: data.res_msg,
-                    confirmButtonColor: '#B1C2DD', 
+                    confirmButtonColor: '#0056b3', 
                     confirmButtonText: '확인'
                 }).then(() => {
                     location.href = "/employee/member/digitalname";
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 Swal.fire({
                     icon: 'error',
                     text: data.res_msg,
-                    confirmButtonColor: '#B1C2DD', 
+                    confirmButtonColor: '#0056b3', 
                     confirmButtonText: '확인'
                 });
             }
