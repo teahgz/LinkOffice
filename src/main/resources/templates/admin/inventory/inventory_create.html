@@ -121,38 +121,38 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     var category = document.getElementById("category").value.trim();
     var department = document.getElementById("department").value;
 
-    if (!department) {
-        Swal.fire(null, '부서를 선택해주세요.', 'info');
+    if (!department) { 
+        showAlert('부서를 선택해주세요.');
         return;
     }
     
     if (!inventoryPurchaseDate) {
-        Swal.fire(null, '날짜를 선택해주세요.', 'info');
+    	showAlert('날짜를 선택해주세요.'); 
         return;
     }
 	
     if (!category) {
-        Swal.fire(null, '카테고리를 선택해주세요.', 'info');
+    	showAlert('카테고리를 선택해주세요.');  
         return;
     }
     
     if (!inventoryName) {
-        Swal.fire(null, '비품명을 입력해주세요.', 'info');
+    	showAlert('비품명을 입력해주세요.');   
         return;
     }
 
     if (!inventoryLocation) {
-        Swal.fire(null, '보관 위치를 입력해주세요.', 'info');
+    	showAlert('보관 위치를 입력해주세요.');    
         return;
     }
 
     if (!inventoryPrice) {
-        Swal.fire(null, '가격을 올바르게 입력해주세요.', 'info');
+    	showAlert('가격을 입력해주세요');   
         return;
     }
 
     if (!inventoryQuantity) {
-        Swal.fire(null, '수량을 올바르게 입력해주세요.', 'info');
+    	showAlert('수량을 입력해주세요');    
         return;
     }
     var formData = new FormData(this);  
@@ -180,6 +180,15 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     };
     xhr.send(formData);
 });
+
+function showAlert(message) {
+    Swal.fire({
+        text: message,
+        icon: 'warning',
+        confirmButtonColor: '#0056b3',
+        confirmButtonText: '확인',
+    });
+}
 
 // 카테고리 선택 모달
 var modal = document.getElementById("myModal");

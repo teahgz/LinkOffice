@@ -5,9 +5,7 @@
 	layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
 <th:block layout:fragment="content">
-	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">
-	<link th:href="@{/css/employee/attendance/attendance.css}"
-		rel="stylesheet" type="text/css">
+	<link th:href="@{/css/home.css}" rel="stylesheet" type="text/css">  
 	<script
 		src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 	<script
@@ -23,18 +21,57 @@
 				</span>
 				</a>
 				<div class="employee-profile">
-					<img
-						th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}"
-						alt="사원 사진" class="user_photo">
-					<div class="employee-details">
-						<span class="employee-department"
-							th:text="${member.department_name}"></span>
-						<div>
-							<span class="employee-name" th:text="${member.member_name}"></span>
-							<span class="employee-position" th:text="${member.position_name}"></span>
-						</div>
-					</div>
+				    <img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}"
+				         alt="사원 사진" class="main_user_photo">
+				    <div class="employee-details">
+				        <div class="employee-info">
+				            <span class="employee-name" th:text="${member.member_name}"></span>
+				            <span class="employee-position" th:text="${member.position_name}"></span>
+				        </div>
+				        <span class="employee-department" th:text="${member.department_name}"></span>
+				    </div>
 				</div>
+				
+				<div class="approval_area">
+				    <div class="approval_btn_con"> 
+				        <a th:href="@{/employee/approval/create}" class="approval_btn app_primary">+ 결재 작성</a>
+				    </div>
+				    <ul class="approval-status">
+				        <li>
+				            <a class="app_ata" th:href="@{/employee/approval/progress}">
+				                <span>결재 진행함</span>
+				                <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow" />
+				            </a>
+				            <span th:text="${progressCount}"></span>
+				        </li>
+				        <li>
+				            <a class="app_ata" th:href="@{/employee/approval/history}">
+				                <span>결재 내역함</span>
+				                <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow" />
+				            </a>
+				            <span th:text="${approvalCount}"></span>
+				        </li>
+				        <li>
+				            <a class="app_ata" th:href="@{/employee/approval/references}">
+				                <span>결재 참조함</span>
+				                <img th:src="@{/img/main_arrow.png}" alt="main_arrow" class="app_arrow" />
+				            </a>
+				            <span th:text="${referenceCount}"></span>
+				        </li> 
+				    </ul>
+				    <div class="vacation_area">
+				    	 <div class="vacation_ata">
+				            <span id="vacationTitle">지급 휴가 개수</span>
+				            <span id="vacationCount">0</span>
+				        </div>
+				        <div class="vacation_ata">
+				            <span id="vacationTitle2">남은 휴가 개수</span>
+				            <span id="vacationRemainCount">0</span>
+				        </div>
+				    </div>
+				</div>
+
+					
 			</div>
 			<div class="main_item_box custom-height-3">
 				<a class="main_link"
@@ -52,15 +89,18 @@
 							<input type="hidden" th:name="${_csrf.parameterName}"
 								th:value="${_csrf.token}" /> <input type="hidden"
 								id="attendance_memberNo" th:value="${member.member_no}">
-							<div class="time_display">
-								<span id="check_in_time"
-									th:text="${checkInTime != null ? checkInTime : ''}"></span> <span
-									id="check_out_time"
-									th:text="${checkOutTime != null ? checkOutTime : ''}"></span>
-							</div>
-							<button type="submit" id="check_in_button"
-								th:disabled="${isCheckedIn == 'true'}">출근</button>
+							<button type="submit" id="check_in_button" th:disabled="${isCheckedIn == 'true'}">출근</button>
 							<button type="submit" id="check_out_button">퇴근</button>
+							<div class="time_display">
+							    <div class="time_row">
+							        <span class="time_label">출근 시간</span>
+							        <span id="check_in_time" th:text="${checkInTime != null ? checkInTime : '미등록'}"></span>
+							    </div>
+							    <div class="time_row">
+							        <span class="time_label">퇴근 시간</span>
+							        <span id="check_out_time" th:text="${checkOutTime != null ? checkOutTime : '미등록'}"></span>
+							    </div>
+							</div>  
 						</form>
 					</div>
 				</div>
@@ -131,30 +171,7 @@
 
 		<div class="middle-column">
 			<div class="right-bottom">
-				<div class="main_item_box custom-height-10">
-					<div class="approval_btn_con">
-						<h3 class="approval-title">전자결재</h3>
-						<a th:href="@{/employee/approval/create}"
-							class="approval_btn app_primary">+ 결재 작성</a>
-					</div>
-					<ul class="approval-status">
-						<li><a class="app_ata"
-							th:href="@{/employee/approval/progress}"> <span>진행함</span> <img
-								th:src="@{/img/main_arrow.png}" alt="main_arrow"
-								class="app_arrow" />
-						</a> <span th:text="${progressCount}"></span></li>
-						<li><a class="app_ata"
-							th:href="@{/employee/approval/history}"> <span>내역함</span> <img
-								th:src="@{/img/main_arrow.png}" alt="main_arrow"
-								class="app_arrow" />
-						</a> <span th:text="${approvalCount}"></span></li>
-						<li><a class="app_ata"
-							th:href="@{/employee/approval/references}"> <span>참조함</span>
-								<img th:src="@{/img/main_arrow.png}" alt="main_arrow"
-								class="app_arrow" />
-						</a> <span th:text="${referenceCount}"></span></li>
-					</ul>
-				</div>
+				
 			</div>
 			<div class="main_item_box custom-height-4">
 				<a class="main_link" th:href="@{/employee/vacationapproval/list}">

@@ -193,11 +193,12 @@ button:hover {
 }
 
 #deleteButton {
-	background-color: #EEB3B3;
+	background-color: #dc3545;
+	color : white;
 } 
 
 #deleteButton:hover {
-	background-color: #e07676;
+	background-color: #c82333;
 }
 
 #departmentName, #editDepartmentName{

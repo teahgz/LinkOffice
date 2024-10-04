@@ -90,6 +90,7 @@ h1 {
 .swal2-cancel{
 	background-color: #f8f9fa;
 	color: black;
+	border: 1px solid #ddd;
 }
 
 .header_location_text {
