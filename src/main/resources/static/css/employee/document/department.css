@@ -12,9 +12,10 @@
     margin: 1vw;
     padding: 1vw;
     width: 18%;
-	height: 68vh;
+	height: 66vh;
     font-size: 1.1vw;
     overflow-y: auto;
+    background-color: white;
 }
 #tree{
 	font-size: 0.8vw;
@@ -183,11 +184,10 @@
 #start_date, #end_date{
 	margin-top: 0.6vh;
 	height: 2.7vh;
-	width: 8vw;
+	width: 7.5vw;
 	font-size: 0.8vw;
 	margin-right: 1vw;
-	margin-left: 10px;
-    padding: 0.5vh 0.5vw;
+    padding: 0.5vh 1vw;
 	border: 1px solid #ddd;
     border-radius: 6px;
 }
@@ -202,32 +202,31 @@
 	margin-left: 0.5vw;
 }
 .search_name{
-	margin-right: 1vw;
 	width: 23vw;
 	display: flex;
     justify-content: center; 
 }
 #name_select{
-	width: 5.3vw;
-	height: 4vh;
-	margin-top: 0.5vh;
-	padding: 0.5vh 0.5vw;
+	width: 6.5vw;
+	height: 3.9vh;
+	margin: 0.5vh;
+	padding: 0.5vh 1vw;
 	border-radius: 2px;
-	font-size: 0.8vw;
+	font-size: 0.75vw;
 	border: 1px solid #ddd;
     border-radius: 6px;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: left 3.7vw center;
+    background-position: left 4.2vw center;
     transition: border-color 0.3s;
 }
 #file_name_input{
-	margin: 0.6vh 0 0 0.5vw; 
-	width: 12vw;
+	margin: 0.6vh 0 0 0; 
+	width: 10vw;
 	height: 2.7vh;
-	font-size: 0.9vw;
-	padding: 0.5vh 0 0.5vh 0.5vw;
+	font-size: 0.75vw;
+	padding: 0.5vh 1vw;
 	border: 1px solid #ddd;
     border-radius: 6px;
 }
@@ -236,7 +235,7 @@
     border-color: #B1C2DD;
 }
 #search_button{
-	margin: 0.7vh 0 0 0.5vw;
+	margin: 0.7vh 0 0 0.3vw;
     padding: 1vh 0.8vw;
     background-color: #B1C2DD;
     border: none;
@@ -244,8 +243,8 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.8vw;
-    width: 3.8vw;
-    height: 3.8vh;
+    width: 4.6vw;
+    height: 3.6vh;
     display: flex;
     text-align: center;
     justify-content: center;
@@ -276,8 +275,8 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
-    width: 3.7vw;
-    height: 2.8vh;
+    width: 4vw;
+    height: 3vh;
     text-align: center;
 }
 #change_name_button:hover{
@@ -306,8 +305,8 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
-    width: 3.7vw;
-    height: 2.8vh;
+    width: 4vw;
+    height: 3vh;
     text-align: center;
 }
 #select_delete:hover{
@@ -334,8 +333,8 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
-    width: 3.7vw;
-    height: 2.8vh;
+    width: 4vw;
+    height: 3vh;
     text-align: center;
 }
 #select_down:hover{
@@ -361,8 +360,8 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 0.65vw;
-    width: 3vw;
-    height: 2.8vh;
+    width: 3.5vw;
+    height: 3vh;
     text-align: center;
 }
 #upload_button:hover{
@@ -373,19 +372,18 @@
     transform: scale(0.98);
 }
 #sort_select{
-	width: 5vw;
+	width: 5.7vw;
 	height: 3.3vh;
 	margin-top: 0.2vh;
-	margin-right: 1vw;
-    padding: 0.5vh 0.5vw;
+    padding: 0.5vh 1vw;
 	border-radius: 2px;
-	font-size: 0.8vw;
+	font-size: 0.75vw;
 	border: 1px solid #ddd;
     border-radius: 6px;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: left 3.5vw center;
+    background-position: left 3.6vw center;
     transition: border-color 0.3s;
 }
 #sort_select:focus, #name_select:focus{
@@ -404,7 +402,9 @@
     text-align: center;
 	border-collapse: collapse;
 	table-layout: fixed; 
-	height: 52vh;
+	max-height: 45vh;
+	background-color: white;
+	border-radius: 8px;
 }
 .file_table td { 
 	padding: 0.3vh;
@@ -413,40 +413,42 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	background-color: white;
+	border-radius: 8px;
 }
 .file_table th {
-	height: 2.7vh;
+	height: 2.5vh;
 	padding: 0.8vh;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 0.9vw;
+    font-size: 0.75vw;
     background-color: #f8f9fa;
     border-radius: 8px;
 }
 .file_table tbody tr {
-    height: 4.5vh; 
+    height: 4vh; 
     vertical-align: middle; 
-    font-size: 0.8vw;
+    font-size: 0.75vw;
 }
-
-#table_foot{
-	border-top: solid 2px gray;
+input[type="checkbox"] {
+	height: 1.6vh;
+	width: 1.6vw;
 }
 .file_show_button{
     cursor: pointer;
-    width: 1.1vw;
+    width: 1vw;
     text-align: center;
     fill: #515151;	
  }
 .file_down_button{
     cursor: pointer;
-    width: 1vw;
+    width: 0.9vw;
     text-align: center;
     fill: #515151;  	
 }
 .delete_button{
     cursor: pointer;
-    width: 0.9vw;
+    width: 0.8vw;
     text-align: center;
     fill: #515151;    
 }
@@ -536,7 +538,7 @@
 .first_folder_add_div, .change_folder_name_div,
 .folder_create_div, .file_upload_div{
 	text-align: center;
-	height: 30px;
+	height: 35px;
 	margin-top: 40px;
 }
 .folder_button_div{
@@ -559,9 +561,11 @@
 	width: 95%;
 	height: 100%;
 	font-size: 15px;
+	padding-left: 15px;
 }
 #file_input::file-selector-button {
     background-color: #B1C2DD;
+    width: 23%;
     height: 100%;
     color: black;
     border: none;
@@ -572,7 +576,7 @@
 #file_input{
 	margin-left: 5px;
     width: 98%;
-    height: 30px;
+    height: 35px;
 }
 #first_folder_add_button, #folder_name_change_button, #folder_create_button,
 #file_upload_button{
@@ -585,8 +589,8 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 15px;
-    width: 55px;
-    height: 35px;
+    width: 65px;
+    height: 40px;
     text-align: center;
 }
 #first_folder_add_button:hover, #folder_name_change_button:hover,

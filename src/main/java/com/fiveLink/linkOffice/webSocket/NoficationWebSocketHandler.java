@@ -250,6 +250,7 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	  			ObjectMapper objectMapper = new ObjectMapper();
 	  			Map<String, Object> responseMap = new HashMap<>();
 	  			responseMap.put("type", "documentAlarm");
+	  			responseMap.put("nofication_type", nofication_type);
 	  			responseMap.put("title", nofication_title);
 	  			responseMap.put("content", nofication_content);
 	  			responseMap.put("data", msg);

@@ -30,6 +30,7 @@ public class SurveyDto {
 	private Integer survey_participant_status;
 	private List<Long> participantMemberNos;
 	private List<SurveyQuestionDto> questions;
+	private String position_name;
 	
 	private int search_type = 1;
 	private String search_text;

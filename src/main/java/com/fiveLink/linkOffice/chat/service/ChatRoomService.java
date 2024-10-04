@@ -139,7 +139,9 @@ public class ChatRoomService {
         System.out.println("service: "+ currentRoom +memberNo);
         return chatMapper.chatRoomUnread(params);
     }
-
-
+    //멤버 이름
+    public String getMemberName(Long currentMember){
+        return chatMapper.getMemberName(currentMember);
+    }
 
 }

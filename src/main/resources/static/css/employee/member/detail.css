@@ -94,9 +94,15 @@
 }
 
 #list_button {
-    padding: 8px 15px;
-    background-color: #C0C0C0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#list_button:hover{
+	background-color: #e9ecef;
 }

@@ -596,3 +596,41 @@ textarea {
     background-color: #9CAFC7; 
 }
  
+.fc .fc-day-today {
+  background-color: rgb(177, 194, 221, 0.2)!important;
+}
+
+.fc-more-link {
+  color: #666666;
+  background-color: #f0f0f0;
+  padding: 2px 5;
+  border-radius: 3px; 
+  font-weight: 550; 
+  margin-left: 10px;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333333;
+} 
+ 
+.fc-event {
+  border: none;
+  border-radius: 5px; 
+  padding: 2px 15px;
+  font-size: 0.85em;
+  transition: opacity 0.2s;
+  margin-bottom: 3px; 
+}
+
+.fc th { 
+  font-weight: 500;
+  color: #666666; 
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.fc .fc-toolbar {
+  padding: 1.5rem; 
+  border-bottom: 1px solid #e0e0e0;
+}

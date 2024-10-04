@@ -197,7 +197,7 @@ function attendanceCalendar(today, attendanceDates, holidays) {
         var isWeekend = (new Date(currentYear, currentMonth, i).getDay() === 0 || new Date(currentYear, currentMonth, i).getDay() === 6);
         
         // 날짜 색상 설정
-        var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? '#F79DC2' : 'skyblue') : 'black');
+        var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? 'red' : 'blue') : 'black');
 
         cell.innerHTML = `<div class="date_container">
                     <span class="${todayDate.getFullYear() === currentYear &&
@@ -377,44 +377,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 테이블에 리스트 추가 
         attendanceTable.innerHTML = '';
-        paginatedData.forEach(attendance => {
-            const row = document.createElement('tr');
-            const checkInTime = attendance.check_in_time || '';
-            const checkOutTime = attendance.check_out_time || '';
-            const workDate = new Date(attendance.work_date);
-                
-            // 휴가 상태 
-	        const isVacation = vacationList.some(vacation => {
-	            const startDate = new Date(vacation.vacation_approval_start_date);
-	            const endDate = new Date(vacation.vacation_approval_end_date);
-	            return !checkInTime && new Date(attendance.work_date) >= startDate && new Date(attendance.work_date) <= endDate;
-	        });
+        if(paginatedData.length > 0){
+	        paginatedData.forEach(attendance => {
+	            const row = document.createElement('tr');
+	            const checkInTime = attendance.check_in_time || '';
+	            const checkOutTime = attendance.check_out_time || '';
+	                
+	            // 휴가 상태 
+		        const isVacation = vacationList.some(vacation => {
+		            const startDate = new Date(vacation.vacation_approval_start_date);
+		            const endDate = new Date(vacation.vacation_approval_end_date);
+		            return !checkInTime && new Date(attendance.work_date) >= startDate && new Date(attendance.work_date) <= endDate;
+		        });
+	
+		        const attendanceStatus = checkInTime
+	            ? (parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근')
+	            : (isVacation ? '휴가' : '결근');
+	
+	            row.innerHTML = `
+	                <td>${attendance.work_date}</td>
+	                <td>${checkInTime}</td>
+	                <td>${checkOutTime}</td>
+	                <td>${attendanceStatus}</td>
+	            `;
+	            attendanceTable.appendChild(row);
+	        });			
+		} else{
+			const row = document.createElement('tr');
+			row.innerHTML = `
+	                <td colspan="4">조회된 목록이 없습니다.</td>`;
+	            attendanceTable.appendChild(row);
+		}
 
-	        const attendanceStatus = checkInTime
-            ? (parseInt(checkInTime.split(':')[0], 10) >= 9 ? '지각' : '출근')
-            : (isVacation ? '휴가' : '결근');
-
-            row.innerHTML = `
-                <td>${attendance.work_date}</td>
-                <td>${checkInTime}</td>
-                <td>${checkOutTime}</td>
-                <td>${attendanceStatus}</td>
-            `;
-            attendanceTable.appendChild(row);
-        });
-
-        // 한 페이지에 행을 10개씩 맞추기 위한 빈 행 추가 
-        const emptyRows = pageSize - paginatedData.length;
-        for (let i = 0; i < emptyRows; i++) {
-            const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = `
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            `;
-            attendanceTable.appendChild(emptyRow);
-        }
 		// 페이지 개수 업데이트 
         updatePagination(page);
     }

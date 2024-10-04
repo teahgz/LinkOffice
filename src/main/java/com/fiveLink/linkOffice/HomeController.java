@@ -11,6 +11,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -29,6 +33,8 @@ import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.repository.MemberRepository;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.notice.domain.NoticeDto;
+import com.fiveLink.linkOffice.notice.service.NoticeService;
 import com.fiveLink.linkOffice.organization.domain.DepartmentDto;
 import com.fiveLink.linkOffice.organization.service.DepartmentService;
 import com.fiveLink.linkOffice.schedule.domain.Schedule;
@@ -42,6 +48,8 @@ import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeat;
 import com.fiveLink.linkOffice.schedule.domain.ScheduleRepeatDto;
 import com.fiveLink.linkOffice.schedule.service.ScheduleCategoryService;
 import com.fiveLink.linkOffice.schedule.service.ScheduleService;
+import com.fiveLink.linkOffice.survey.domain.SurveyDto;
+import com.fiveLink.linkOffice.survey.service.SurveyService;
 import com.fiveLink.linkOffice.vacationapproval.domain.VacationApprovalDto;
 import com.fiveLink.linkOffice.vacationapproval.service.VacationApprovalService;
 
@@ -57,6 +65,8 @@ public class HomeController {
 	private final AttendanceService attendanceService;
 	private final ApprovalService approvalService;
 	private final ScheduleService scheduleService;
+	private final NoticeService noticeService;
+	private final SurveyService surveyService;
 	 
 	private final ScheduleCategoryService scheduleCategoryService; 
 	private final DepartmentService departmentService;  
@@ -68,7 +78,8 @@ public class HomeController {
 	public HomeController(MemberService memberService,
 			AttendanceService attendanceService, ApprovalService approvalService, ScheduleService scheduleService,
 			ScheduleCategoryService scheduleCategoryService, DepartmentService departmentService,
-			VacationApprovalService vacationApprovalService, MemberRepository memberRepository, MeetingReservationService meetingReservationService) {
+			VacationApprovalService vacationApprovalService, MemberRepository memberRepository, MeetingReservationService meetingReservationService
+			,NoticeService noticeService, SurveyService surveyService) {
 		this.memberService = memberService;
 		this.attendanceService = attendanceService;
 		this.approvalService = approvalService;
@@ -79,7 +90,8 @@ public class HomeController {
 		this.vacationApprovalService = vacationApprovalService;
 		this.memberRepository = memberRepository;
 		this.meetingReservationService = meetingReservationService;
-	}
+		this.noticeService = noticeService;
+		this.surveyService = surveyService;}
 
 	@GetMapping("/login")
 	public String loginPage(HttpSession session, Model model) {
@@ -127,7 +139,13 @@ public class HomeController {
 	                model.addAttribute("checkOutTime", attendanceDto.getCheck_out_time().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 	            }
 	        }
-
+	        // 중요 공지사항
+	        List<NoticeDto> importantNotices = noticeService.getImportantNotices();
+	        // 설문 목록 조회 (진행중인 설문)
+	        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("surveyStartDate"))); 
+	        SurveyDto searchDto = new SurveyDto();  
+	        Page<SurveyDto> mySurveyList = surveyService.getIngAllSurveyPage(pageable, searchDto, member_no);
+	        
 	        // [전주영] 전자결재 개수 조회
 	        long approvalCount = approvalService.countApprovalHistory(member_no);
 	        long referenceCount = approvalService.countApprovalReferences(member_no);
@@ -149,7 +167,10 @@ public class HomeController {
 		    // [박혜선] 출퇴근 여부 전달
 		    model.addAttribute("isCheckedIn", isCheckedIn);
 		    model.addAttribute("isCheckedOut", isCheckedOut); 
-		     
+		    
+		    model.addAttribute("mySurveyList", mySurveyList.getContent());
+		    
+		    model.addAttribute("importantNotices", importantNotices);
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    boolean isAdmin = authentication.getAuthorities().stream()
 		                         .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("TOTAL_ADMIN"));
@@ -397,6 +418,7 @@ public class HomeController {
 	    List<MeetingReservationDto> reservations = meetingReservationService.getAllReservations(); 
 	    return reservations;
 	}
-
+	
+	
 	
 }

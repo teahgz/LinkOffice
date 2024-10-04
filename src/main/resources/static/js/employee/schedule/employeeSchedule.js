@@ -747,7 +747,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dayMaxEvents: 3,
             moreLinkContent: function(args) {
 			    return ' + ' + args.num;
-			 },	
+			},	
             dateClick: function(info) {
 			    selectedDate = info.dateStr;   
 			    $('#eventDate').val(selectedDate);   
@@ -804,9 +804,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        }
 	        // 부서 일정
 	        else if (event.extendedProps.type === 'departmentResult') {
-	            if (eventDepartmentNo.toString() === userDepartmentNo) {
-	                shouldDisplay = true;  
-	            } else if (selectedDepartments.includes(eventDepartmentNo.toString())) {
+	            if (selectedDepartments.includes(eventDepartmentNo.toString())) {
 	                shouldDisplay = true;  
 	            } else {
 	                shouldDisplay = false;  

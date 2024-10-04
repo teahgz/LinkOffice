@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
+import com.fiveLink.linkOffice.notice.domain.Notice;
 import com.fiveLink.linkOffice.notice.domain.NoticeDto;
 import com.fiveLink.linkOffice.notice.service.NoticeService;
 
@@ -113,5 +114,7 @@ public class NoticeViewController {
     	
     	return "admin/notice/notice_update";
     }
+    
+    
     
 }
