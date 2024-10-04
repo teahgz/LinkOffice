@@ -69,12 +69,10 @@ public class VacationApprovalApicontroller {
         MemberDto memberdto = new MemberDto();
         
         Double vacation_count = vacationService.vacationType(vacationtype);
-        System.out.println("선택휴가의 계산수: " + vacation_count);
 
         int dateCountInt = Integer.parseInt(dateCount);
         
         double totalVacationCount = (vacation_count * dateCountInt);
-        System.out.println("총 휴가 갯수: " + totalVacationCount);
 
         memberdto.setMember_no(member_no);
         memberdto.setMember_vacation_count(totalVacationCount);
@@ -175,6 +173,29 @@ public class VacationApprovalApicontroller {
 	    VacationApprovalDto dto = vacationApprovalService.selectVacationApprovalOne(vapNo);
 	    dto.setVacation_approval_status(3L);
 	    dto.setVacation_approval_cancel_reason(vacationApprovalDto.getVacation_approval_cancel_reason());
+	    
+	    Long vacationtype = dto.getVacation_type_no();
+	    String dateCount = dto.getVacation_approval_total_days();
+	    // 휴가 갯수 감소
+        Long member_no = memberService.getLoggedInMemberNo();
+        MemberDto memberdto = new MemberDto();
+        
+        Double vacation_count = vacationService.vacationType(vacationtype);
+
+        int dateCountInt = Integer.parseInt(dateCount);
+        
+        double totalVacationCount = (vacation_count * dateCountInt);
+
+        memberdto.setMember_no(member_no);
+        memberdto.setMember_vacation_count(totalVacationCount);
+        
+	    if(memberService.updateOriginVacation(memberdto) != null) {
+	    	response.put("res_code", "200");
+	    	response.put("res_msg", "휴가 개수가 복구되었습니다.");
+	    }
+	    
+	    
+
 	    
 	    if(vacationApprovalService.cancelVacationApproval(dto) != null) {
 	    	response.put("res_code", "200");
