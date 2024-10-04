@@ -100,6 +100,8 @@ $(function () {
 	                        $('.document_no_folder').hide();
 	                        $('.folder_buttons').show();
 	                        $('.box_size').show();
+	                        $('.document_folder_tree').show();
+	                        $('#document_hr').show();  	                        
 	                        resolve(); 
 	                    });                    
 	                    $('#tree').on('changed.jstree', function (e, data) {
@@ -806,6 +808,8 @@ $(function () {
                                     	$('.document_file_list').hide();
                                    	 	$('.folder_buttons').hide();
                                    	 	$('.box_size').hide();
+	                        			$('.document_folder_tree').hide();
+	                        			$('#document_hr').hide();                                     	 	
 	                                } else {
 	                                    Swal.fire({
 	                                        icon: 'error',
