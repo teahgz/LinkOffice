@@ -430,25 +430,35 @@ if (sendButton && messageInput) {
                   newChatItem.classList.add("chatItem");
                   newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
-                  newChatItem.innerHTML = `
-                        <i class="fa-solid fa-user" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
-                      <h3><p>${memberInfo.roomName}</p></h3>
-                      <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
-                      <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
-                  `;
-                   newChatList.appendChild(newChatItem);
+                    getMemberImage(currentMemberNo, message.chatRoomNo)
+                        .then(image => {
+                         const profileImage = (image && image.trim() !== '') ? '/linkOfficeImg/member/profile/' + image : '/img/user_profile.png';
 
-                   const pinnedItems = chatListContainer.querySelectorAll('.chatItem .fa-thumbtack');
-                   if (pinnedItems.length > 0) {
-                       const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
-                       lastPinnedItem.after(newChatList);
-                   } else {
-                       chatListContainer.insertBefore(newChatList,chatListContainer.firstChild);
-                   }
+                            newChatItem.innerHTML = `
+                                <img src="${profileImage}"
+                                     alt="프로필 이미지"
+                                     style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;" />
+                                <h3><p>${memberInfo.roomName}</p></h3>
+                                <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
+                                <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
+                            `;
+                            newChatList.appendChild(newChatItem);
 
+                            const pinnedItems = chatListContainer.querySelectorAll('.chatItem .fa-thumbtack');
+                            if (pinnedItems.length > 0) {
+                                const lastPinnedItem = pinnedItems[pinnedItems.length - 1].closest('.chatItem');
+                                lastPinnedItem.after(newChatList);
+                            } else {
+                                chatListContainer.insertBefore(newChatList, chatListContainer.firstChild);
+                            }
+                        })
+                    .catch(error => {
+                        console.error("프로필 이미지 가져오는 중 오류 발생:", error);
+
+                    });
               }
-              resetSelectedMembers();
-              $('#organizationChartModal').modal('hide');
+                resetSelectedMembers();
+                $('#organizationChartModal').modal('hide');
           }
       }else if (message.type === "groupChatCreate") {
          if (message.chatRoomNo) {
@@ -460,12 +470,18 @@ if (sendButton && messageInput) {
                  message.members.forEach(member => {
 
                      if (member === currentMember) {
+                         const firstLetter = message.names.charAt(0).toUpperCase();
+
                          const newChatItem = document.createElement("div");
                          newChatItem.classList.add("chatItem");
                          newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
                          newChatItem.innerHTML = `
-                             <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
+                             <div class="group-info">
+                                 <div class="group-image" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;">
+                                    ${firstLetter}
+                                 </div>
+                             </div>
                              <h3><p>${message.names}</p></h3>
                              <input type="hidden" id="memberNo" value="${currentMember}"/>
                              <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
@@ -658,7 +674,20 @@ if (sendButton && messageInput) {
            }
        }
    };
-
+//실시간 사용자 채팅방 사진
+function getMemberImage(memberNo, chatRoomNo) {
+    return fetch(`/api/getMemberImage/${memberNo}/${chatRoomNo}`)
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('네트워크 응답이 좋지 않습니다.');
+             }
+             return response.text(); // 프로필 이미지를 반환
+         })
+         .catch(error => {
+             console.error("오류 발생:", error);
+             return null; // 오류 발생 시 null 반환
+         });
+}
 // chatList가 없을 경우 생성하는 함수
 function createChatListIfNotExists() {
 
