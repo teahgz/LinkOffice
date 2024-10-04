@@ -363,7 +363,7 @@ $('#confirmButton').click(function() {
                 Swal.fire({ 
 			        text: response.res_msg,
 			        icon: 'success', 
-			        confirmButtonColor: '#B1C2DD', 
+			        confirmButtonColor: '#0056b3', 
 			        confirmButtonText: '확인', 
 			    }).then((result) => {
                     if (result.isConfirmed) {
@@ -417,8 +417,8 @@ $('#deleteButton').click(function() {
         text: '선택한 권한자를 삭제하시겠습니까?',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#EEB3B3',
-        cancelButtonColor: '#C0C0C0',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#f8f9fa',
         confirmButtonText: '삭제',
         cancelButtonText: '취소' 
     }).then((result) => {
@@ -443,7 +443,7 @@ $('#deleteButton').click(function() {
 						Swal.fire({ 
 					        text: response.res_msg,
 					        icon: 'success', 
-					        confirmButtonColor: '#B1C2DD', 
+					        confirmButtonColor: '#0056b3', 
 					        confirmButtonText: '확인', 
 					    }).then(() => {
                             currentPage = 1;  
