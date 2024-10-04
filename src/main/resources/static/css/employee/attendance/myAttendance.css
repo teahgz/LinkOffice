@@ -350,10 +350,10 @@
 .pagination_button:hover {
     background-color: #e9ecef;
 }
-.pagination_button.active{
-	background-color: #B1C2DD;
+.pagination_button.active {
+    background-color: #0056b3;
     color: white;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 .go_first_page_button, .go_last_page_button{
     margin: 15px 5px;
