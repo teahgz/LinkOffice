@@ -545,7 +545,7 @@ if (sendButton && messageInput) {
          // 기존에 동일한 채팅방이 없을 때만 추가
          if (!existingChatRoom) {
              const chatListContainer = document.querySelector('.chatList-container');
-
+            const firstLetter =chatRoomName.charAt(0).toUpperCase();
              const newChatList = document.createElement('div');
              newChatList.id ='chatList';
              newChatList.classList.add('chatList');
@@ -555,7 +555,11 @@ if (sendButton && messageInput) {
              newChatItem.setAttribute("onclick", `handleChatRoomClick(${message.chatRoomNo})`);
 
              newChatItem.innerHTML = `
-                <i class="fa-solid fa-users" style="font-size: 15px; margin-left: 10px; margin-right: 10px; display: flex; align-items:center;"></i>
+                    <div class="group-info">
+                        <div class="group-image" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;">
+                             ${firstLetter}
+                        </div>
+                    </div>
                 <h3><p>${chatRoomName}</p></h3>
                 <input type="hidden" id="memberNo" value="${currentMember}"/>
                 <input type="hidden" id="chatRoomNo" value="${chatRoomNo}" />

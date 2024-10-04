@@ -37,12 +37,11 @@
                     </div>
                     <div class="bell" id="notification-bell" sec:authorize="hasAuthority('USER')">
 
-                        <i class="fa-regular fa-bell" style ="marin-right: 20px; font-size: 20px; color:#fff;"></i>
-    <!--                    <span id="unread-bell-count" class="badge"></span>-->
+                        <i class="fa-regular fa-bell" style ="marin-right: 20px; font-size: 20px; color:#fff;" sec:authorize="hasAuthority('USER')"></i>
                         <!--통합 알림 모달-->
-                        <div class="notification-bell-wrapper">
+                        <div class="notification-bell-wrapper" sec:authorize="hasAuthority('USER')">
 
-                            <ul id="notification-bell-modal" class="notification-bell-modal">
+                            <ul id="notification-bell-modal" class="notification-bell-modal" sec:authorize="hasAuthority('USER')">
                                 <!-- 알림 내용 동적 -->
 
 
