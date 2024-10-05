@@ -79,7 +79,7 @@ public class SurveyApiController {
 
 	    Long member_no = memberService.getLoggedInMemberNo();
 	    surveyDto.setMember_no(member_no);
-	    surveyDto.setSurvey_no(surveyNo); // survey_no를 DTO에 설정
+	    surveyDto.setSurvey_no(surveyNo); 
 
 	    try {
 	        // 설문 업데이트 처리
