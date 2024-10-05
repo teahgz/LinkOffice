@@ -54,7 +54,6 @@
         <input type="text" id="inventoryPrice" name="inventoryPrice">
     </div>
 
-
     <div class="form-group">
         <label for="inventoryQuantity">수량 :</label>
         <input type="text" id="inventoryQuantity" name="inventoryQuantity">
@@ -122,16 +121,7 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     var category = document.getElementById("category").value.trim();
     var department = document.getElementById("department").value;
 
-    // 숫자 유효성 검사 (숫자가 아닌 값이 들어가면 경고)
-    if (isNaN(inventoryPrice) || inventoryPrice === "") {
-        showAlert('가격은 숫자로 입력해주세요.');
-        return;
-    }
-
-    if (isNaN(inventoryQuantity) || inventoryQuantity === "") {
-        showAlert('수량은 숫자로 입력해주세요.');
-        return;
-    }
+    
 
     if (!department) { 
         showAlert('부서를 선택해주세요.');
@@ -155,6 +145,17 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
 
     if (!inventoryLocation) {
     	showAlert('보관 위치를 입력해주세요.');    
+        return;
+    }
+    
+ 	// 숫자 유효성 검사 (숫자가 아닌 값이 들어가면 경고)
+    if (isNaN(inventoryPrice) || inventoryPrice === "") {
+        showAlert('가격은 숫자로 입력해주세요.');
+        return;
+    }
+
+    if (isNaN(inventoryQuantity) || inventoryQuantity === "") {
+        showAlert('수량은 숫자로 입력해주세요.');
         return;
     }
 
