@@ -192,6 +192,36 @@
 		<div class="middle-column">
  
 			<div class="main_item_box custom-height-5">
+<<<<<<< HEAD
+				<h3>공지사항</h3>
+				<table class="important-notices-table">
+					<thead>
+						<tr>
+							<th>번호</th>
+							<th>제목</th>
+							<th>작성일자</th>
+							<th>작성자</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:if="${#lists.isEmpty(noticeList)}">
+							<tr>
+								<td colspan="4">공지사항이 없습니다.</td>
+							</tr>
+						</th:block>
+						<th:block th:if="${!#lists.isEmpty(noticeList)}">
+							<tr th:each="notice, iterStat : ${noticeList}"
+								th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|"
+								class="clickable-row">
+								<td th:text="${iterStat.index + 1}"></td>
+								<td th:text="${notice.notice_title}"></td>
+								<td th:text="${notice.notice_create_date}"></td>
+								<td th:text="${notice.member_name}"></td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+=======
 				<a class="main_link" th:href="@{/admin/notice/list}"> <span
 					class="main_box_title">공지사항
 					<img th:src="@{/img/slide-right.png}" alt="slide-right" class="slide-right_img" />
@@ -222,6 +252,7 @@
 						</tbody>
 					</table>
 				</div>
+>>>>>>> 3d6d660eb4ba3883d81252f9ebf33514afdba085
 			</div>
 
 

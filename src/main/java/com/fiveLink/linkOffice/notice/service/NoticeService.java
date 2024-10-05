@@ -33,22 +33,7 @@ public class NoticeService {
     }
     
     
-    // 중요 공지사항 가져오기
-    public List<NoticeDto> getImportantNotices() {
-        List<Object[]> importantNotices = noticeRepository.findImportantNoticesWithMember();
-        return importantNotices.stream()
-            .map(result -> {
-                Notice notice = (Notice) result[0];
-                String memberName = (String) result[1];
-                return NoticeDto.builder()
-                        .notice_no(notice.getNoticeNo())
-                        .notice_title(notice.getNoticeTitle())
-                        .notice_create_date(notice.getNoticeCreateDate())
-                        .member_name(memberName)
-                        .build();
-            })
-            .collect(Collectors.toList());
-    }
+    
     
     // 중요 공지사항 개수 확인 메서드
     public int countImportantNotices() {

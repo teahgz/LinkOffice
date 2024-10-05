@@ -267,7 +267,8 @@
                 }
             });
         }
-
+        
+        
         // 조직도 모달에서 확인 버튼 클릭 시
         $('#confirmButton').click(function() {
             const selectedMembersContainerOutside = $('#selected-members-outside');
@@ -284,7 +285,7 @@
         });
 
         // 설문 폼 제출 이벤트
-        document.getElementById("surveyForm").addEventListener("submit", function(event) {
+        document.getElementById("surveyForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
             const surveyTitle = document.getElementById("surveyTitle").value;
@@ -292,6 +293,7 @@
             const surveyStartDate = document.getElementById("surveyStartDate").value;
             const surveyEndDate = document.getElementById("surveyEndDate").value;
 
+            // 입력값 유효성 검사
             if (!surveyTitle || !surveyDescription) {
                 alert("설문 제목과 설명을 입력해야 합니다.");
                 return;
@@ -306,7 +308,8 @@
             const questions = [];
             let hasError = false;
 
-            document.querySelectorAll('.question-item').forEach(function(item, index) {
+            // 질문 리스트 처리
+            document.querySelectorAll('.question-item').forEach(function (item, index) {
                 const questionText = item.querySelector('input[type="text"]').value;
                 const questionType = item.querySelector('select').value;
                 const options = [];
@@ -323,10 +326,8 @@
                     return;
                 }
 
-                let surveyQuestionType;
                 if (questionType === 'multiple') {
-                    surveyQuestionType = 0;  
-                    item.querySelectorAll('.option-input input').forEach(function(opt) {
+                    item.querySelectorAll('.option-input input').forEach(function (opt) {
                         if (!opt.value) {
                             alert(`질문 ${index + 1}의 선택형 보기 내용을 입력하세요.`);
                             hasError = true;
@@ -334,13 +335,11 @@
                         }
                         options.push(opt.value);
                     });
-                } else if (questionType === 'text') {
-                    surveyQuestionType = 1; 
                 }
 
                 questions.push({
                     survey_question_text: questionText,
-                    survey_question_type: surveyQuestionType,
+                    survey_question_type: questionType === 'multiple' ? 0 : 1,
                     options: options
                 });
             });
@@ -356,31 +355,52 @@
                 questions: questions
             };
 
-            console.log(data);
-
             $.ajax({
                 url: '/employee/survey/create',
                 method: 'PATCH',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                beforeSend: function(xhr) {
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.res_code === "200") {
                         alert(response.res_msg);
-                        var memberNo = document.getElementById('memberNo').value;
-                        location.href = '/employee/survey/myList/'+ memberNo;
+                        const memberNo = document.getElementById('memberNo').value;
+
+                        const payload = {
+                            type: 'surveyCreateAlarm',
+                            memberNo: memberNo,
+                            surveyTitle: surveyTitle,
+                            participantMemberNos: participantMemberNos  
+                        };
+                        alarmSocket.send(JSON.stringify(payload));
+
+                        location.href = '/employee/survey/myList/' + memberNo;
                     } else {
                         alert(response.res_msg);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     alert('오류 발생: ' + error);
                 }
             });
         });
+        const location_text = document.getElementById('header_location_text');
+    	location_text.innerHTML = '설문조사';
+    	
+    	
+    	document.addEventListener("DOMContentLoaded", function() {
+    	    window.functionType = 15; 
+    	    console.log("현재 기능 타입: " +window.functionType);
+
+    	    if (window.functionType === 15) {
+    	        markNotificationsAsRead(window.functionType);
+    	    }
+    	});
+
     });
+    
     </script>
 
 </th:block>

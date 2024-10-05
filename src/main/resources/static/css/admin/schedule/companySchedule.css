@@ -33,7 +33,7 @@
     margin: 70px auto;
     padding: 20px 40px;
     border: 1px solid #888;
-    width: 80%; 
+    width: 100%; 
     max-width: 600px;
     border-radius: 8px;
     max-height: 90%;
@@ -79,7 +79,7 @@
 .form-group textarea,
 .form-group select {  
     flex: 1;  
-    padding: 5px; 
+    padding: 10px; 
     border: 1px solid #ccc;  
     border-radius: 4px;  
     font-size: 14px;  
@@ -89,23 +89,25 @@ input[type=checkbox] {
 } 
 
 .plus_detail_option {
-	margin-left: 82px;
+	margin-left: 80px;
 	flex: 1;  
     padding: 5px; 
     border: 1px solid #ccc;  
     border-radius: 4px;  
     font-size: 14px; 
-    width : 418px;
+    width : 405px;
+    margin-bottom: 5px;
 }
 
 .plus_detail_option_2 {
-	margin-left: 67px;
+	margin-left: 65px;
 	flex: 1;  
     padding: 5px; 
     border: 1px solid #ccc;  
     border-radius: 4px;  
     font-size: 14px; 
-    width : 418px;
+    width : 410px;
+    margin-bottom: 5px;
 }
 
 textarea {
@@ -427,11 +429,12 @@ textarea {
 } 
 
 .button-group {
-	margin-top:30px;
-	margin-left: 130px;
+    display: flex;
+    justify-content: flex-end;   
 }
+
 .cancel_in_btn {
-	margin-left : 30px;
+	margin-left : 20px;
 	width : 70px;
     padding: 8px 16px;
 	background-color: #f8f9fa;

@@ -39,17 +39,19 @@ public class NoticeViewController {
     // 공지사항 생성 페이지
     @GetMapping("/admin/notice/create/{member_no}")
     public String noticeCreate(@PathVariable("member_no") Long memberNo, Model model) {
+        // memberNo로부터 memberDto 가져오기
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
         model.addAttribute("memberDto", memberDto);
 
-        
+        // 인증 정보에서 사용자 정보 가져오기 (매니저 정보)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String noticeNumber = authentication.getName();
         String noticeName = noticeService.findNoticeNameByNumber(noticeNumber);
         model.addAttribute("manager", noticeName);  
 
-        return "admin/notice/notice_create";
+        return "admin/notice/notice_create"; 
     }
+
     
     private Sort getSortOption(String sort) {
         if ("latest".equals(sort)) {

@@ -106,7 +106,12 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
         	handleParticipantScheduleAlarm(jsonMap, session, type);
         } else if("noficationParticipantMeeting".equals(type)) {
         	handleParticipantMeetingAlarm(jsonMap, session, type);
+        }else if("noticeAlarm".equals(type)) {
+        	handleNoticeAlarm(jsonMap, session, type);
+        }else if("surveyCreateAlarm".equals(type)) {
+        	handleSurveyCreateAlarm(jsonMap, session, type);
         }
+       
         
     }
 
@@ -1326,7 +1331,145 @@ public class NoficationWebSocketHandler extends TextWebSocketHandler {
 	  			s.sendMessage(new TextMessage(unreadMessage));
 	  		}
 	  	}
-	 }   
+	 }
+	
+	// [김민재] 공지사항 알림
+	// 공지사항 알림 전송 처리 메소드 
+	public void handleNoticeAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type) throws Exception {
+	    // 공지사항 작성자 정보 가져오기
+	    Object memberNoObj = jsonMap.get("managerNo");  
+	    Long memberNo;
+	    if (memberNoObj instanceof String) {
+	        memberNo = Long.parseLong((String) memberNoObj);
+	    } else if (memberNoObj instanceof Integer) {
+	        memberNo = ((Integer) memberNoObj).longValue();
+	    } else {
+	        throw new IllegalArgumentException("타입 오류");
+	    }
+
+	    // 모든 사용자 불러오기 (본인 제외)
+	    List<Member> allMembers = memberRepository.findAll();
+
+	    // 공지사항 작성자 이름 가져오기
+	    String memberName = memberRepository.findById(memberNo)
+	            .map(Member::getMemberName)
+	            .orElse("알 수 없는 사용자");
+
+	    // 알림 메시지 생성
+	    String notificationContent = memberName + "님이 새로운 공지사항을 등록했습니다.";
+	    String notificationTitle = "공지사항";
+	    int notificationType = 14;  
+
+	    List<Map<String, Object>> msg = new ArrayList<>();
+
+	    // 모든 사용자에게 공지사항 알림 전송 (공지사항 작성자 제외)
+	    for (Member member : allMembers) {
+	        if (!member.getMemberNo().equals(memberNo)) {  
+	            NoficationDto noficationDto = new NoficationDto();
+	            noficationDto.setNofication_content(notificationContent);  
+	            noficationDto.setNofication_receive_no(member.getMemberNo());  
+	            noficationDto.setNofication_title(notificationTitle);  
+	            noficationDto.setNofication_type(notificationType);  
+	            noficationDto.setMember_no(memberNo);  
+
+	            // 알림 정보를 DB에 저장
+	            if (noficationService.insertAlarm(noficationDto) > 0) {
+	                long notificationPk = noficationService.insertAlarmPk();  
+	                Map<String, Object> notificationData = new HashMap<>();
+	                notificationData.put("memberNo", member.getMemberNo());
+	                notificationData.put("nofication_pk", notificationPk);  
+	                msg.add(notificationData);  
+	            }
+	        }
+	    }
+
+	    for (WebSocketSession s : sessions.values()) {
+	        if (s.isOpen()) {  
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            Map<String, Object> responseMap = new HashMap<>();
+	            responseMap.put("type", "noticeAlarm");
+	            responseMap.put("title", notificationTitle);  
+	            responseMap.put("content", notificationContent);  
+	            responseMap.put("data", msg);  
+	            String currentTime = getCurrentFormattedDateTime(); 
+	            responseMap.put("timestamp", currentTime); 
+	            responseMap.put("pk", null);  
+
+	            String unreadMessage = objectMapper.writeValueAsString(responseMap);
+	            s.sendMessage(new TextMessage(unreadMessage));
+	        }
+	    }
+	}
+
+	// 설문 작성 알림 처리 메소드
+	public void handleSurveyCreateAlarm(Map<String, Object> jsonMap, WebSocketSession session, String type) throws Exception {
+	    // 설문 작성자 정보 가져오기
+	    Object memberNoObj = jsonMap.get("memberNo");
+	    Long memberNo;
+
+	    if (memberNoObj instanceof String) {
+	        memberNo = Long.parseLong((String) memberNoObj);
+	    } else if (memberNoObj instanceof Integer) {
+	        memberNo = ((Integer) memberNoObj).longValue();
+	    } else {
+	        throw new IllegalArgumentException("타입 오류");
+	    }
+
+
+
+	    // 설문 대상자 리스트 가져오기
+	    List<Long> targetMemberNos = (List<Long>) jsonMap.get("participantMemberNos");
+
+	    // 설문 작성자 이름 가져오기
+	    String memberName = memberRepository.findById(memberNo)
+	            .map(Member::getMemberName)
+	            .orElse("알 수 없는 사용자");
+
+	    // 알림 메시지 생성
+	    String notificationContent = targetMemberNos + "님이 새로운 설문을 등록했습니다.";
+	    String notificationTitle = "설문 작성";
+	    int notificationType = 15;  
+
+	    List<Map<String, Object>> msg = new ArrayList<>();
+
+	    // 선택된 설문 대상자에게만 알림 전송
+	    for (Long targetMemberNo : targetMemberNos) {
+	        NoficationDto noficationDto = new NoficationDto();
+	        noficationDto.setNofication_content(notificationContent);  
+	        noficationDto.setNofication_receive_no(targetMemberNo);  
+	        noficationDto.setNofication_title(notificationTitle); 
+	        noficationDto.setNofication_type(notificationType);  
+	        noficationDto.setMember_no(memberNo);  
+
+	        // 알림 정보를 DB에 저장
+	        if (noficationService.insertAlarm(noficationDto) > 0) {
+	            long notificationPk = noficationService.insertAlarmPk(); 
+	            Map<String, Object> notificationData = new HashMap<>();
+	            notificationData.put("memberNo", targetMemberNo);
+	            notificationData.put("nofication_pk", notificationPk); 
+	            msg.add(notificationData);
+	        }
+	    }
+
+	    // WebSocket을 통해 모든 세션에 알림 전송
+	    for (WebSocketSession s : sessions.values()) {
+	        if (s.isOpen()) {
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            Map<String, Object> responseMap = new HashMap<>();
+	            responseMap.put("type", "surveyCreateAlarm");
+	            responseMap.put("title", notificationTitle);
+	            responseMap.put("content", notificationContent);
+	            responseMap.put("data", msg);
+	            String currentTime = getCurrentFormattedDateTime();
+	            responseMap.put("timestamp", currentTime);
+
+	            String unreadMessage = objectMapper.writeValueAsString(responseMap);
+	            s.sendMessage(new TextMessage(unreadMessage));
+	        }
+	    }
+	}
+
+  
 
 	@Override
     public void afterConnectionEstablished(WebSocketSession session) {
