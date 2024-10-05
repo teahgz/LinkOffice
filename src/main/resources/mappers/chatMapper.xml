@@ -251,4 +251,12 @@
         FROM fl_member
         WHERE member_no = #{memberNo}
     </select>
+
+    <!-- 상단 고정 개수 제한  -->
+    <select id="getPinnedChatRoomCount" parameterType="Long" resultType="int">
+        SELECT count(chat_member_pin)
+        FROM fl_chat_member
+        WHERE member_no = #{memberNo} AND chat_member_par = 0
+        AND chat_member_pin = 1
+    </select>
 </mapper>

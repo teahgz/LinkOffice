@@ -1081,7 +1081,7 @@ function formatDateTime(date) {
         return fetch(`/api/chat/pin/status/${chatRoomNo}/${currentMember}`)
               .then(response => {
                           if (!response.ok) {
-                              throw new Error("고정에 실패했습니다.");
+                              throw new Error("최대 10개까지 고정할 수 있습니다.");
                           }
                           return response.json();
                       })

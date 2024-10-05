@@ -68,6 +68,14 @@ public class ChatRoomController {
             Long currentMember = Long.parseLong(requestBody.get("currentMember").toString());
             int status = (int) requestBody.get("statusValue");
 
+            int pinnedChatRoomCount = chatRoomService.getPinnedChatRoomCount(currentMember);
+            System.out.println("pinnedChatRoomCount"+pinnedChatRoomCount);
+            if (status == 1 && pinnedChatRoomCount >= 10) {
+                response.put("success", false);
+                response.put("message", "최대 3개의 채팅방만 상단에 고정할 수 있습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
             String updatedAtStr = requestBody.get("updatedAt").toString();
             LocalDateTime updateTime = null;
             if (status == 1) {
@@ -80,8 +88,6 @@ public class ChatRoomController {
                 updateTime = null;
             }
 
-            
-            // 현재 사용자가 채팅방에서 나가는 로직 처리
             int result = chatRoomService.chatRoomPin(currentChatRoomNo, currentMember, status, updateTime);
 
             if (result > 0) {
@@ -105,7 +111,6 @@ public class ChatRoomController {
     @GetMapping("/api/chat/pin/status/{chatRoomNo}/{currentMember}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> checkPinStatus(@PathVariable("chatRoomNo") Long chatRoomNo, @PathVariable("currentMember") Long currentMember) {
-        System.out.println("test : "+ chatRoomNo);
         int status =  chatRoomService.selectChatPin(chatRoomNo, currentMember);
         Map<String, Object> response = new HashMap<>();
         response.put("isPinned", status);
