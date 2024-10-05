@@ -183,7 +183,7 @@ endDateInput.addEventListener("change", function() {
         Swal.fire({
             icon: 'warning',
             text: "종료일은 시작일보다 이전일 수 없습니다.",
-            confirmButtonColor: '#B1C2DD',
+            confirmButtonColor: '#0056b3',
             confirmButtonText: "확인"
         });
         endDateInput.value = '';
@@ -245,7 +245,7 @@ function calculateDateDifference() {
                 Swal.fire({
                     icon: 'error',
                     text: 'PNG, JPG, PDF, EXCEL만 등록 가능합니다.',
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: '확인'
                 });
                 event.target.value = ''; 
@@ -562,7 +562,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 Swal.fire({
                     icon: 'warning',
                     text: vali_text,
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: "확인"
                 });
             } else {
