@@ -168,7 +168,7 @@
                         icon: 'success',
                         text: data.res_msg
                     }).then(() => {
-                        location.href = '/admin/notice/list';
+                        location.href = '/admin/notice/list/' + memberNo;
                     });
                 } else {
                     Swal.fire({

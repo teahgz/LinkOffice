@@ -192,7 +192,6 @@
 		<div class="middle-column">
  
 			<div class="main_item_box custom-height-5">
-<<<<<<< HEAD
 				<h3>공지사항</h3>
 				<table class="important-notices-table">
 					<thead>
@@ -221,39 +220,8 @@
 						</th:block>
 					</tbody>
 				</table>
-=======
-				<a class="main_link" th:href="@{/admin/notice/list}"> <span
-					class="main_box_title">공지사항
-					<img th:src="@{/img/slide-right.png}" alt="slide-right" class="slide-right_img" />
-				</span>
-				</a> 
-				<div class="important-notices-container notice_list">
-					<table class="important-notices-table">
-						<thead>
-							<tr>
-								<th></th>
-								<th> </th>
-								<th> </th> 
-							</tr>
-						</thead>
-						<tbody>
-							<th:block th:if="${#lists.isEmpty(importantNotices)}">
-								<tr>
-									<td colspan="4">중요 공지사항이 없습니다.</td>
-								</tr>
-							</th:block>
-							<th:block th:if="${!#lists.isEmpty(importantNotices)}">
-								<tr th:each="notice, iterStat : ${importantNotices}" th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|" class="clickable-row">
-									<td><img th:src="@{/img/main_notice_pin.png}" alt="pin" class="main_notice_pin" /></td>
-									<td th:text="${notice.notice_title}"></td>
-									<td th:text="${notice.notice_create_date}"></td> 
-								</tr>
-							</th:block>
-						</tbody>
-					</table>
-				</div>
->>>>>>> 3d6d660eb4ba3883d81252f9ebf33514afdba085
-			</div>
+				
+	</div>
 
 
 			<div class="main_item_box custom-height-6">
