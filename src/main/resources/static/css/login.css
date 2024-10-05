@@ -76,8 +76,8 @@ input[type="password"]:focus {
 
 #login_form{
 	margin-top: 50px;
-    margin-left: 50px;
-    width: 80%;
+    margin-left: 40px;
+    width: 85%;
 }
 
 .toggle_icon {
