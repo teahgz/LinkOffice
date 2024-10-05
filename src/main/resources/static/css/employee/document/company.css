@@ -392,8 +392,8 @@
     font-size: 15px;
 }
 input[type="checkbox"] {
-	height: 14px;
-	width: 14px;
+	height: 15px;
+	width: 15px;
 }
 .file_show_button{
     cursor: pointer;

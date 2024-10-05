@@ -8,14 +8,14 @@
 }
 .attendance_div{
     display: flex;
-	width: 80%;
-	height : 75vh;
+	width: 70%;
+	height : 65vh;
 	margin-top: 20px;
 }
 .today_button{
 	width: 60px;
 	height: 40px;
-	font-size: 20px;
+	font-size: 18px;
 	display: inline-block;
 	cursor: pointer;
 	text-align: center;	
@@ -89,8 +89,7 @@
 }
 .calendar_div{
 	width: 100%;
-	height: 85%;
-	border-radius: 8px;
+	height: 84%;
 	display: flex;
     flex-direction: column;
     align-items: center;
@@ -191,7 +190,7 @@
 /* 달력 안에 근태 bar */
 .date_bar {
     position: absolute;
-    margin-top: 9px;
+    margin-top: 15px;
     left: 50%;
    	transform: translateX(-50%);
    	width: 100%;
@@ -212,14 +211,14 @@
 }
 .count_div{
 	display: flex;
-	margin-top: 30px;
 	width: 100%;
 	height: 50px;
 	align-items: center;
 	justify-content: space-between;
+	margin-top: 10px;
 }
 #attendance_count, #late_count, #absence_count{
-	padding: 13px 8px;
+	padding: 10px 8px;
 	font-size: 15px;
 	display: flex;
     align-items: center; 
@@ -239,9 +238,9 @@
 }
 .search{
 	width: 100%;
-	height: 45px;
+	height: 37px;
 	display: flex;
-	margin-top: 30px;
+	margin-top: 13px;
 	justify-content: space-between;
 }
 .date_div{
@@ -251,7 +250,7 @@
 	border: 1px solid #ddd;
     border-radius: 6px;
 	padding: 2px 15px;
-	font-size: 15px;
+	font-size: 13px;
 }
 #start_date:focus, #end_date:focus{
     outline: none;
@@ -261,7 +260,7 @@
 	width: 100px;
 	padding: 10px 18px;
 	border-radius: 6px;
-	font-size: 15px;
+	font-size: 13px;
 	border: 1px solid #ddd;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
@@ -273,9 +272,9 @@
     border-color: #B1C2DD;
 }
 #sort_select{
-	width: 120px;
+	width: 100px;
 	padding: 10px 18px;
-	font-size: 15px;
+	font-size: 13px;
 	border: 1px solid #ddd;
     border-radius: 6px;
     appearance: none;
@@ -311,7 +310,7 @@
     justify-content: center;
     text-align: center;
 	border-collapse: collapse;
-	table-layout: fixed; 
+	table-layout: fixed;
 }
 .attendance_table td { 
 	padding: 18px 10px;

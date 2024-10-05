@@ -787,8 +787,6 @@ $(function () {
                                     	$('.document_file_list').hide();
                                    	 	$('.folder_buttons').hide();
                                    	 	$('.box_size').hide();
-                                       	$('.document_folder_tree').hide();
-	                        			$('#document_hr').hide();  
 	                                } else {
 	                                    Swal.fire({
 	                                        icon: 'error',

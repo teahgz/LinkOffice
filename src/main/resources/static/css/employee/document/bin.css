@@ -188,8 +188,8 @@
     overflow: hidden; 
 }
 input[type="checkbox"] {
-	height: 14px;
-	width: 14px;
+	height: 15px;
+	width: 15px;
 }
 .file_update_button{
     cursor: pointer;
