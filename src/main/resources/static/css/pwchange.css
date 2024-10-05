@@ -28,7 +28,6 @@ body {
 }
 
 #pwchangeFrm{
-	width: 60%;
     margin-left: 40px;
 }
 
@@ -114,11 +113,11 @@ input:focus{
 }
 
 #national_number_front, #national_number_back {
-	width: 162px;
+	width: 158px;
 }
 
 #national_number_mid {
-	width: 30px; 
+	width: 40px; 
 }
 
 .national_number span {

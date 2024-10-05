@@ -1,35 +1,28 @@
 @charset "UTF-8";
 
 .create_member {
-    position: relative;
-    width: 80%;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
+    margin: auto;
+    height: 700px;
+    width: 1250px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 70px 30px 70px;
+    border-radius: 15px;
 }
 
 .member_card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    max-width: 800px;
-    width: 100%;
-    min-height: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px 20px 60px;
-    margin: 20px auto;
+    margin-top: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    position: relative;
 }
 
 .member_header {
     display: flex;
-    width: 100%;
-    padding: 0 20px;
-    justify-content: space-between;
+    align-items: flex-start;
+    gap: 90px;
+    margin-bottom: 40px;
 }
 
 .profile_header_left {
@@ -39,8 +32,8 @@
 }
 
 .profile_img {
-    width: 120px;
-    height: 120px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -56,7 +49,7 @@
 
 .btn_upload {
     display: inline-block;
-    padding: 10px 15px;
+    padding: 10px 25px;
     background-color: #C0C0C0;
     border-radius: 50px;
     cursor: pointer;
@@ -66,18 +59,18 @@
 
 .file_info {
     color: red;
-    font-size: 0.7rem;
-    margin-top: 10px; 
+    font-size: 15px;
+    margin-top: 20px; 
     margin-left: 40px;
 }
 
 .profile_details {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 40px;
     padding: 0;
     margin: 0;
-    list-style: none;
+    list-style: none; 
     margin-top: 20px;
 }
 
@@ -154,6 +147,7 @@ select option {
     margin-top: 30px;
     justify-content: flex-end; 
     width: 100%;
+    margin-right:50px;
 }
 
 .create_button, .cancel_button {
