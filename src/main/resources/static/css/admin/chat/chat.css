@@ -523,17 +523,17 @@ margin-top: 10px;
     color:white;
     padding: 10px 15px;
 }
-.update-button:disabled {
+#editChatRoomForm button:disabled {
     background-color: #d3d3d3;
     color: #a9a9a9;
     opacity: 0.6;
 }
 .custom-confirm-button {
-    background-color: #B1C2DD;
-    color: white;
+     background-color: #003a82;
+     color:white;
 }
 .custom-cancel-button {
-    background-color: #C0C0C0;
+    background-color: #dc3545;
     color: white;
 }
 .profile-images {
