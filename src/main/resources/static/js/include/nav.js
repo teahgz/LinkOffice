@@ -208,141 +208,141 @@ window.onclick = function(event) {
 let alarmSocket;
 
 function connectWebSocket() {
-	if (!alarmSocket || alarmSocket.readyState === WebSocket.CLOSED) {
-		alarmSocket = new WebSocket(`ws://localhost:8080/websocket/notifications`);
+    if (!alarmSocket || alarmSocket.readyState === WebSocket.CLOSED) {
+        alarmSocket = new WebSocket(`ws://localhost:8080/websocket/notifications`);
 
-		alarmSocket.onopen = function() {
-			console.log("웹소켓이 연결되었습니다.");
-		};
+        alarmSocket.onopen = function() {
+            console.log("웹소켓이 연결되었습니다.");
+        };
 
-		alarmSocket.onclose = function(event) {
-			console.log("웹소켓 연결이 해제되었습니다.", event);
-			// 필요시 재연결 로직
-		};
+        alarmSocket.onclose = function(event) {
+            console.log("웹소켓 연결이 해제되었습니다.", event);
+            // 필요시 재연결 로직
+        };
 
-		alarmSocket.onerror = function(error) {
-			console.error("에러 발생", error);
-		};
+        alarmSocket.onerror = function(error) {
+            console.error("에러 발생", error);
+        };
 
-		alarmSocket.onmessage = function(event) {
-			const message = JSON.parse(event.data);
-			const currentType = message.nofication_type;
-			const notificationModal = document.getElementById('notification-bell-modal');
-			if (message.pk != null) {
-				if (message.type === 'vacationApprovalAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+        alarmSocket.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            const currentType = message.nofication_type;
+            const notificationModal = document.getElementById('notification-bell-modal');
+            if(message.pk != null){
+                if(message.type === 'vacationApprovalAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
                         <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                         `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						const listItem = document.createElement('li');
-						showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        const listItem = document.createElement('li');
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
 
-						listItem.setAttribute('data-notification-no', item.nofication_pk);
-						listItem.setAttribute('data-notification-type', message.nofication_type);
-						listItem.innerHTML = `
+                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
+                        listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                         <hr style="border: none; margin: 10px 0;">
                         `;
 						listItem.addEventListener('click', () => {
-							const notificationType = listItem.getAttribute('data-notification-type');
-							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
-							if (notificationType === '3') {
-								window.location.href = noficationTypeUrl[3] + notificationTypePk;
+								const notificationType = listItem.getAttribute('data-notification-type');
+								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
+								if (notificationType === '3') {
+								window.location.href = noficationTypeUrl[3]+notificationTypePk;
 							}
 						});
-						notificationModal.insertBefore(listItem, notificationModal.children[1]);
-					});
-				} else if (message.type === 'vacationApprovalReviewsAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    });
+                } else if(message.type === 'vacationApprovalReviewsAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                            notificationModal.innerHTML = `
                                <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                             `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						if (Number(item.memberNo) === currentMember) {
-							showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
-							const listItem = document.createElement('li');
+                            addMarkAsReadListener();
+                        }
+                        message.data.forEach(function(item) {
+                            if (Number(item.memberNo) === currentMember) {
+                                 showNotification(title, content, item.memberNo,  message.timestamp, message.nofication_type, message.pk);
+                                const listItem = document.createElement('li');
 
-							listItem.setAttribute('data-notification-no', item.nofication_pk);
-							listItem.setAttribute('data-notification-type', message.nofication_type);
-							listItem.innerHTML = `
+                                listItem.setAttribute('data-notification-no', item.nofication_pk);
+                                listItem.setAttribute('data-notification-type', message.nofication_type);
+                                listItem.innerHTML = `
                                     <strong style="margin-bottom: 5px;">${title}</strong>
                                     <p>${content}</p>
                                     <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                                     <hr style="border: none; margin: 10px 0;">
                                 `;
-							listItem.addEventListener('click', () => {
-								const notificationType = listItem.getAttribute('data-notification-type');
-								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
-								if (notificationType === '4') {
-									window.location.href = noficationTypeUrl[4] + notificationTypePk;
-								}
-							});
-							notificationModal.insertBefore(listItem, notificationModal.children[1]);
-						}
+							    listItem.addEventListener('click', () => {
+							        const notificationType = listItem.getAttribute('data-notification-type');
+							        const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
+							        if (notificationType === '4') {
+							            window.location.href = noficationTypeUrl[4]+notificationTypePk;
+							        }
+							    });
+	                                notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                            }
 
-					});
+                        });
 
-				} else if (message.type === 'vacationAppApproveAlarm') {
-					const title = message.title;
-					const content = message.content;
+                } else if(message.type === 'vacationAppApproveAlarm'){
+                    const title = message.title;
+                    const content = message.content;
 
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                        if (notificationModal.children.length <= 1) {
+                            notificationModal.innerHTML = `
                             <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                             `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
-						const listItem = document.createElement('li');
+                            addMarkAsReadListener();
+                        }
+                        message.data.forEach(function(item) {
+                            showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                            const listItem = document.createElement('li');
 
-						listItem.setAttribute('data-notification-no', item.nofication_pk);
-						listItem.setAttribute('data-notification-type', message.nofication_type);
-						listItem.innerHTML = `
+                            listItem.setAttribute('data-notification-no', item.nofication_pk);
+                            listItem.setAttribute('data-notification-type', message.nofication_type);
+                            listItem.innerHTML = `
                             <strong style="margin-bottom: 5px;">${title}</strong>
                             <p>${content}</p>
                             <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                             <hr style="border: none; margin: 10px 0;">
                             `;
-						listItem.addEventListener('click', () => {
-							const notificationType = listItem.getAttribute('data-notification-type');
-							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
-							if (notificationType === '5') {
-								window.location.href = noficationTypeUrl[5] + notificationTypePk;
-							} else if (notificationType === '14') {
-								window.location.href = noficationTypeUrl[14] + notificationTypePk;
-							}
-						});
-						notificationModal.insertBefore(listItem, notificationModal.children[1]);
-					});
+							listItem.addEventListener('click', () => {
+							    const notificationType = listItem.getAttribute('data-notification-type');
+								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
+							    if (notificationType === '5') {
+							    window.location.href = noficationTypeUrl[5]+notificationTypePk;
+							    } else if(notificationType === '14'){
+								window.location.href = noficationTypeUrl[14]+notificationTypePk;
+								}
+							 });
+                            notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                        });
 
-				} else if (message.type === 'vacationAppRejectAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                } else if(message.type === 'vacationAppRejectAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
                         <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                         `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
-						const listItem = document.createElement('li');
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                        const listItem = document.createElement('li');
 
-						listItem.setAttribute('data-notification-no', item.nofication_pk);
-						listItem.setAttribute('data-notification-type', message.nofication_type);
-						listItem.innerHTML = `
+                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
+                        listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
@@ -352,27 +352,27 @@ function connectWebSocket() {
 							const notificationType = listItem.getAttribute('data-notification-type');
 							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '6') {
-								window.location.href = noficationTypeUrl[6] + notificationTypePk;
+							window.location.href = noficationTypeUrl[6]+notificationTypePk;
 							}
 						});
-						notificationModal.insertBefore(listItem, notificationModal.children[1]);
-					});
-				} else if (message.type === 'approvalAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    });
+                } else if(message.type === 'approvalAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
                         <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                         `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
-						const listItem = document.createElement('li');
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                        const listItem = document.createElement('li');
 
-						listItem.setAttribute('data-notification-no', item.nofication_pk);
-						listItem.setAttribute('data-notification-type', message.nofication_type);
-						listItem.innerHTML = `
+                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
+                        listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
@@ -382,63 +382,63 @@ function connectWebSocket() {
 							const notificationType = listItem.getAttribute('data-notification-type');
 							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '7') {
-								window.location.href = noficationTypeUrl[7] + notificationTypePk;
+							window.location.href = noficationTypeUrl[7]+notificationTypePk;
 							}
 						});
-						notificationModal.insertBefore(listItem, notificationModal.children[1]);
-					});
-				} else if (message.type === 'approvalReviewsAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    });
+                } else if(message.type === 'approvalReviewsAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                            notificationModal.innerHTML = `
                                <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                             `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						if (Number(item.memberNo) === currentMember) {
-							const listItem = document.createElement('li');
-							showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                            addMarkAsReadListener();
+                        }
+                        message.data.forEach(function(item) {
+                            if (Number(item.memberNo) === currentMember) {
+                                const listItem = document.createElement('li');
+                                 showNotification(title, content, item.memberNo,  message.timestamp, message.nofication_type, message.pk);
 
-							listItem.setAttribute('data-notification-no', item.nofication_pk);
-							listItem.setAttribute('data-notification-type', message.nofication_type);
-							listItem.innerHTML = `
+                                listItem.setAttribute('data-notification-no', item.nofication_pk);
+                                listItem.setAttribute('data-notification-type', message.nofication_type);
+                                listItem.innerHTML = `
                                     <strong style="margin-bottom: 5px;">${title}</strong>
                                     <p>${content}</p>
                                     <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                                     <hr style="border: none; margin: 10px 0;">
                                 `;
-							listItem.addEventListener('click', () => {
-								const notificationType = listItem.getAttribute('data-notification-type');
-								const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
-								if (notificationType === '8') {
-									window.location.href = noficationTypeUrl[8] + notificationTypePk;
-								} else if (notificationType === '15') {
-									window.location.href = noficationTypeUrl[15] + notificationTypePk;
-								}
-							});
-							notificationModal.insertBefore(listItem, notificationModal.children[1]);
-						}
+								listItem.addEventListener('click', () => {
+									const notificationType = listItem.getAttribute('data-notification-type');
+									const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
+									if (notificationType === '8') {
+									window.location.href = noficationTypeUrl[8]+notificationTypePk;
+									} else if(notificationType === '15'){
+									window.location.href = noficationTypeUrl[15]+notificationTypePk;
+									}
+								});
+                                notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                            }
 
-					});
+                        });
 
-				} else if (message.type === 'appApproveAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                } else if(message.type === 'appApproveAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
                         <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                         `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
-						const listItem = document.createElement('li');
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                        const listItem = document.createElement('li');
 
-						listItem.setAttribute('data-notification-no', item.nofication_pk);
-						listItem.setAttribute('data-notification-type', message.nofication_type);
-						listItem.innerHTML = `
+                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
+                        listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
@@ -448,27 +448,27 @@ function connectWebSocket() {
 							const notificationType = listItem.getAttribute('data-notification-type');
 							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '9') {
-								window.location.href = noficationTypeUrl[9] + notificationTypePk;
+							window.location.href = noficationTypeUrl[9]+notificationTypePk;
 							}
 						});
-						notificationModal.insertBefore(listItem, notificationModal.children[1]);
-					});
-				} else if (message.type === 'appRejectAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
+                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    });
+                } else if(message.type === 'appRejectAlarm'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (notificationModal.children.length <= 1) {
+                        notificationModal.innerHTML = `
                         <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                         `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
-						const listItem = document.createElement('li');
+                        addMarkAsReadListener();
+                    }
+                    message.data.forEach(function(item) {
+                        showNotification(title, content, item.memberNo, message.timestamp, message.nofication_type, message.pk);
+                        const listItem = document.createElement('li');
 
-						listItem.setAttribute('data-notification-no', item.nofication_pk);
-						listItem.setAttribute('data-notification-type', message.nofication_type);
-						listItem.innerHTML = `
+                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+                        listItem.setAttribute('data-notification-type', message.nofication_type);
+                        listItem.innerHTML = `
                         <strong style="margin-bottom: 5px;">${title}</strong>
                         <p>${content}</p>
                         <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
@@ -478,82 +478,38 @@ function connectWebSocket() {
 							const notificationType = listItem.getAttribute('data-notification-type');
 							const notificationTypePk = listItem.getAttribute('data-notification-type-pk');
 							if (notificationType === '10') {
-								window.location.href = noficationTypeUrl[10] + notificationTypePk;
+							window.location.href = noficationTypeUrl[10]+notificationTypePk;
 							}
 						});
-						notificationModal.insertBefore(listItem, notificationModal.children[1]);
-					});
-				}
-			} else {
+                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    });
+                }
+            } else {
 
-				if (message.type === 'chatAlarm') {
-					const title = message.title;
-					const content = message.content;
-					if (currentType === window.functionType) {
-						markNotificationsAsRead(window.functionType);
-					} else {
-						if (notificationModal.children.length <= 1) {
-							notificationModal.innerHTML = `
+                if (message.type === 'chatAlarm') {
+                    const title = message.title;
+                    const content = message.content;
+                    if (currentType === window.functionType) {
+                        markNotificationsAsRead(window.functionType);
+                    } else {
+                        if (notificationModal.children.length <= 1) {
+                            notificationModal.innerHTML = `
                                <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
                             `;
-							addMarkAsReadListener();
-						}
-						message.data.forEach(function(item) {
-							showNotification(title, item.content, item.memberNo, message.timestamp, 1, "");
-							const listItem = document.createElement('li');
+                            addMarkAsReadListener();
+                        }
+                        message.data.forEach(function(item) {
+                            showNotification(title, item.content, item.memberNo, message.timestamp, 1, "");
+                            const listItem = document.createElement('li');
 
-							listItem.setAttribute('data-notification-no', item.nofication_pk);
-							listItem.setAttribute('data-notification-type', 1);
-							listItem.innerHTML = `
+                            listItem.setAttribute('data-notification-no', item.nofication_pk);
+                            listItem.setAttribute('data-notification-type', 1);
+                            listItem.innerHTML = `
                                 <strong style="margin-bottom: 5px;">${title}</strong>
                                 <p>${item.content}</p>
                                 <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                                 <hr style="border: none; margin: 10px 0;">
                             `;
-<<<<<<< HEAD
-							listItem.addEventListener('click', () => {
-								const notificationType = listItem.getAttribute('data-notification-type');
-								if (notificationType === '1') {
-									window.location.href = noficationTypeUrl[1];
-								}
-							});
-							notificationModal.insertBefore(listItem, notificationModal.children[1]);
-						});
-					}
-				} else if (message.type === 'documentAlarm') {
-					const title = message.title;
-					const content = message.content;
-					//실시간 추가를 위한
-					if (notificationModal.children.length <= 1) {
-						notificationModal.innerHTML = `
-                               <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
-                            `;
-						addMarkAsReadListener();
-					}
-					message.data.forEach(function(item) {
-						if (Number(item.memberNo) === currentMember) {
-							showNotification(title, content, item.memberNo, message.timestamp);
-							const listItem = document.createElement('li');
-
-							listItem.setAttribute('data-notification-no', item.nofication_pk);
-							listItem.innerHTML = `
-                                    <strong style="margin-bottom: 5px;">${title}</strong>
-                                    <p>${content}</p>
-                                    <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
-                                    <hr style="border: none; margin: 10px 0;">
-                                `;
-
-							notificationModal.insertBefore(listItem, notificationModal.children[1]);
-						}
-
-					});
-				} else if (message.type === 'noficationDepartmentSchedule') {
-					const title = message.title;
-					const content = message.content;
-					if (window.functionTypes.includes(currentType)) {
-						markNotificationsAsRead(currentType);
-					} else {
-=======
                         listItem.addEventListener('click', () => {
                             const notificationType = listItem.getAttribute('data-notification-type');
                             if (notificationType === '1') {
@@ -580,7 +536,7 @@ function connectWebSocket() {
 				       			} else{
 				                  showNotification(title, content, item.memberNo, message.timestamp, 2, "");
 				                  const listItem = document.createElement('li');
-					
+
 				                  listItem.setAttribute('data-notification-no', item.nofication_pk);
 				                  listItem.setAttribute('data-notification-type', 2);
 				                  listItem.innerHTML = `
@@ -591,14 +547,14 @@ function connectWebSocket() {
 				                  `;
 								    listItem.addEventListener('click', () => {
 								        const notificationType = listItem.getAttribute('data-notification-type');
-								        if (notificationType === '2') { 
+								        if (notificationType === '2') {
 								            window.location.href = noficationTypeUrl[2];
-								        } 
+								        }
 								    });
-				                  notificationModal.insertBefore(listItem, notificationModal.children[1]);								
+				                  notificationModal.insertBefore(listItem, notificationModal.children[1]);
 								}
 				            }
-				
+
 				        });
                 } else if(message.type === 'noficationDepartmentSchedule'){
                     const title = message.title;
@@ -606,20 +562,19 @@ function connectWebSocket() {
                     if (window.functionTypes.includes(currentType)) {
                         markNotificationsAsRead(currentType);
                     } else {
->>>>>>> 3d6d660eb4ba3883d81252f9ebf33514afdba085
 						if (notificationModal.children.length <= 1) {
-							notificationModal.innerHTML = `
+	                        notificationModal.innerHTML = `
 	                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
 	                        `;
-							addMarkAsReadListener();
-						}
-						message.data.forEach(function(item) {
-							showNotification(title, content, item.memberNo, message.timestamp, 11, "");
-							const listItem = document.createElement('li');
+	                        addMarkAsReadListener();
+	                    }
+	                    message.data.forEach(function(item) {
+	                        showNotification(title, content, item.memberNo, message.timestamp, 11, "");
+	                        const listItem = document.createElement('li');
 
-							listItem.setAttribute('data-notification-no', item.nofication_pk);
-							listItem.setAttribute('data-notification-type', 11);
-							listItem.innerHTML = `
+	                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+	                        listItem.setAttribute('data-notification-type', 11);
+	                        listItem.innerHTML = `
 	                        <strong style="margin-bottom: 5px;">${title}</strong>
 	                        <p>${content}</p>
 	                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
@@ -627,51 +582,51 @@ function connectWebSocket() {
 	                        `;
 
 							listItem.addEventListener('click', () => {
-								const notificationType = listItem.getAttribute('data-notification-type');
-								if (notificationType === '11') {
-									window.location.href = noficationTypeUrl[11];
-								}
-							});
+						        const notificationType = listItem.getAttribute('data-notification-type');
+						        if (notificationType === '11') {
+						            window.location.href = noficationTypeUrl[11];
+						        }
+						    });
 
-							notificationModal.insertBefore(listItem, notificationModal.children[1]);
-						});
+	                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+	                    });
 					}
-				} else if (message.type === 'noficationParticipantSchedule') {
-					const title = message.title;
-					const content = message.content;
-					if (window.functionTypes.includes(currentType)) {
-						markNotificationsAsRead(currentType);
-					} else {
+                } else if(message.type === 'noficationParticipantSchedule'){
+                    const title = message.title;
+                    const content = message.content;
+                    if (window.functionTypes.includes(currentType)) {
+                        markNotificationsAsRead(currentType);
+                    } else {
 						if (notificationModal.children.length <= 1) {
-							notificationModal.innerHTML = `
+	                        notificationModal.innerHTML = `
 	                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
 	                        `;
-							addMarkAsReadListener();
-						}
-						message.data.forEach(function(item) {
-							showNotification(title, content, item.memberNo, message.timestamp, 12, "");
-							const listItem = document.createElement('li');
+	                        addMarkAsReadListener();
+	                    }
+	                    message.data.forEach(function(item) {
+	                        showNotification(title, content, item.memberNo, message.timestamp, 12, "");
+	                        const listItem = document.createElement('li');
 
-							listItem.setAttribute('data-notification-no', item.nofication_pk);
-							listItem.setAttribute('data-notification-type', 12);
-							listItem.innerHTML = `
+	                        listItem.setAttribute('data-notification-no', item.nofication_pk);
+	                        listItem.setAttribute('data-notification-type', 12);
+	                        listItem.innerHTML = `
 	                        <strong style="margin-bottom: 5px;">${title}</strong>
 	                        <p>${content}</p>
 	                        <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
 	                        <hr style="border: none; margin: 10px 0;">
 	                        `;
 
-							listItem.addEventListener('click', () => {
-								const notificationType = listItem.getAttribute('data-notification-type');
-								if (notificationType === '12') {
-									window.location.href = noficationTypeUrl[11];
-								}
-							});
+							 listItem.addEventListener('click', () => {
+						        const notificationType = listItem.getAttribute('data-notification-type');
+						        if (notificationType === '12') {
+						            window.location.href = noficationTypeUrl[11];
+						        }
+						     });
 
-							notificationModal.insertBefore(listItem, notificationModal.children[1]);
-						});
+	                        notificationModal.insertBefore(listItem, notificationModal.children[1]);
+                    	});
 					}
-				} else if (message.type === 'noficationParticipantMeeting') {
+                } else if(message.type === 'noficationParticipantMeeting'){
 					const title = message.title;
 					const content = message.content;
 					if (window.functionTypes.includes(currentType)) {
