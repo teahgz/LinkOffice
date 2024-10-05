@@ -153,7 +153,7 @@
 			</div>
 		</div>
 
-		<div class="right-column">
+		<div class="middle-column">
 			<div class="main_item_box left-bottom custom-height-2">
 				<input type="hidden" id="schedule_memberNo"
 					th:value="${member.member_no}"> <input type="hidden"
@@ -167,9 +167,72 @@
 				<div id="schedule_list">
 					<div id="schedule_home_date"></div>
 					<ul id="schedule_selected_date_list"></ul>
-				</div>
-
+				</div> 
+			</div> 
+			<div class="main_item_box custom-height-6">
+				<a class="main_link" th:href="@{/employee/survey/ingList/{member_no}(member_no=${memberdto[0].member_no})}">
+					<span class="main_box_title"> 설문
+					<img th:src="@{/img/slide-right.png}" alt="slide-right" class="slide-right_img" />
+				</span>
+				</a> 
+				<div class="survey_list">
+					<ul>
+						<th:block th:if="${#lists.isEmpty(mySurveyList)}">
+							<tr>
+								<td class="notice_nothing">설문이 없습니다.</td>
+							</tr>
+						</th:block>
+						<th:block th:if="${!#lists.isEmpty(mySurveyList)}" th:each="survey : ${mySurveyList}"> 
+						    <li class="survey_li">
+						        <a th:href="@{'/employee/survey/detail/' + ${survey.survey_no}}" 
+						           th:text="${survey.survey_title}" 
+						           class="survey_li_title">설문 제목</a> 
+						           
+						        <span class="survey_create_name" th:text="${survey.member_name} + ' ' + ${survey.position_name}"></span> 
+						              
+						        <span class="survey_date" th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></span> 
+						              
+						        <span th:text="${survey.survey_participant_status == 1 ? '참여완료' : '미참여'}" 
+						              th:classappend="${survey.survey_participant_status == 1 ? 'survey_completed' : 'survey_not_completed'}"></span>
+						    </li>
+						</th:block> 
+					</ul>
+				</div> 
 			</div>
+		</div>
+
+		<div class="right-column"> 
+			<div class="main_item_box custom-height-5"> 
+				<a class="main_link" th:href="@{/admin/notice/list}"> <span
+					class="main_box_title">공지사항
+					<img th:src="@{/img/slide-right.png}" alt="slide-right" class="slide-right_img" />
+				</span>
+				</a> 
+				<div class="notice_list">
+					<table class="important-notices-table"> 
+						<tbody>
+							<th:block th:if="${#lists.isEmpty(noticeList)}">
+								<tr>
+									<td class="notice_nothing">공지사항이 없습니다.</td>
+								</tr>
+							</th:block>
+							<th:block th:if="${!#lists.isEmpty(noticeList)}">
+							    <tr th:each="notice, iterStat : ${noticeList}" 
+							        th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|"
+							        class="clickable-row"
+							        th:classappend="${notice.notice_importance == 1} ? 'notice-important'">
+							        <td>
+							            <span th:if="${notice.notice_importance == 1}" class="notice-important-label">중요</span>
+							            <span th:if="${notice.notice_importance == 0}" class="notice-non-label">중요</span>
+							        </td>
+							        <td th:classappend="${notice.notice_importance == 1} ? 'bold-title' : ''" th:text="${notice.notice_title}"></td>
+							        <td th:text="${notice.notice_create_date}"></td>
+							    </tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div> 
+			</div> 
 			<div class="right-top">
 				<div class="main_item_box custom-height-7">
 					<a class="main_link" th:href="@{/employee/meeting/reservation}">
@@ -185,100 +248,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
-
-		</div>
-
-		<div class="middle-column">
- 
-			<div class="main_item_box custom-height-5">
-<<<<<<< HEAD
-				<h3>공지사항</h3>
-				<table class="important-notices-table">
-					<thead>
-						<tr>
-							<th>번호</th>
-							<th>제목</th>
-							<th>작성일자</th>
-							<th>작성자</th>
-						</tr>
-					</thead>
-					<tbody>
-						<th:block th:if="${#lists.isEmpty(noticeList)}">
-							<tr>
-								<td colspan="4">공지사항이 없습니다.</td>
-							</tr>
-						</th:block>
-						<th:block th:if="${!#lists.isEmpty(noticeList)}">
-							<tr th:each="notice, iterStat : ${noticeList}"
-								th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|"
-								class="clickable-row">
-								<td th:text="${iterStat.index + 1}"></td>
-								<td th:text="${notice.notice_title}"></td>
-								<td th:text="${notice.notice_create_date}"></td>
-								<td th:text="${notice.member_name}"></td>
-							</tr>
-						</th:block>
-					</tbody>
-				</table>
-=======
-				<a class="main_link" th:href="@{/admin/notice/list}"> <span
-					class="main_box_title">공지사항
-					<img th:src="@{/img/slide-right.png}" alt="slide-right" class="slide-right_img" />
-				</span>
-				</a> 
-				<div class="important-notices-container notice_list">
-					<table class="important-notices-table">
-						<thead>
-							<tr>
-								<th></th>
-								<th> </th>
-								<th> </th> 
-							</tr>
-						</thead>
-						<tbody>
-							<th:block th:if="${#lists.isEmpty(importantNotices)}">
-								<tr>
-									<td colspan="4">중요 공지사항이 없습니다.</td>
-								</tr>
-							</th:block>
-							<th:block th:if="${!#lists.isEmpty(importantNotices)}">
-								<tr th:each="notice, iterStat : ${importantNotices}" th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|" class="clickable-row">
-									<td><img th:src="@{/img/main_notice_pin.png}" alt="pin" class="main_notice_pin" /></td>
-									<td th:text="${notice.notice_title}"></td>
-									<td th:text="${notice.notice_create_date}"></td> 
-								</tr>
-							</th:block>
-						</tbody>
-					</table>
-				</div>
->>>>>>> 3d6d660eb4ba3883d81252f9ebf33514afdba085
-			</div>
-
-
-			<div class="main_item_box custom-height-6">
-				<a class="main_link"
-					th:href="@{/employee/survey/ingList/{member_no}(member_no=${memberdto[0].member_no})}">
-					<span class="main_box_title"> 설문<img
-						th:src="@{/img/slide-right.png}" alt="slide-right"
-						class="slide-right_img" />
-				</span>
-				</a> 
-				<div class="survey_list">
-					<ul>
-					    <th:block th:each="survey : ${mySurveyList}">
-					        <li class="survey_li">
-					            <a th:href="@{'/employee/survey/detail/' + ${survey.survey_no}}" th:text="${survey.survey_title}" class="survey_li_a">설문 제목</a> 
-					            <span class="survey_create_name" th:text="${survey.member_name}+ ' '+${survey.position_name}"></span> 
-					            <span class="survey_date" th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></span> 
-					            <img th:src="${survey.survey_participant_status == 1 ? '/img/checkbox.png' : '/img/checkbox_empty.png'}" alt="checkbox" 
-					            	 th:id="${survey.survey_participant_status == 1 ? 'survey_completed' : 'survey_not_completed'}"
-					                 class="survey_checkbox" />
-					        </li>
-					    </th:block>
-					</ul>
-				</div>
-
 			</div>
 		</div>
 	</section>
