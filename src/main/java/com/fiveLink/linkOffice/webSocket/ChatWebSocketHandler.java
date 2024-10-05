@@ -283,7 +283,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 responseMap.put("chatRoomNo", currentChatRoomNo);
                 responseMap.put("chatRoomName", chatRoomName);
                 responseMap.put("member", Long.valueOf(members.get(i)));
-                responseMap.put("countPeople", unreadCounts);
+                responseMap.put("countPeople", members.size());
                 responseMap.put("invitedNames", invitedNames.toString());
                 // 초대 메시지를 처음 생성할 때만 전송
                 if (isFirstInvitation) {

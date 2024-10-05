@@ -221,7 +221,9 @@ if (sendButton && messageInput) {
     // 모달이 닫힐 때 검색 내용을 리셋
     $('#organizationChartModal').on('hide.bs.modal', function () {
         $('#organization_search').val(''); // 검색 입력 필드 비우기
-        $('#organization-chart').jstree(true).search(''); // jstree 검색 리셋
+        $('#organization-chart').jstree(true).search('');
+         selectedMembers = [];
+         localStorage.removeItem('selectedMembers');
     });
     // 선택된 사원 업데이트
     function updateSelectedMembers(selectedIds, instance) {
@@ -437,7 +439,7 @@ if (sendButton && messageInput) {
                             newChatItem.innerHTML = `
                                 <img src="${profileImage}"
                                      alt="프로필 이미지"
-                                     style="border-radius: 50%; width: 80px; height: 80px; margin: 20px; margin-left:40px;" />
+                                     style="border-radius: 50%; width: 70px; height: 70px; margin: 20px; margin-left:40px;" />
                                 <h3><p>${memberInfo.roomName}</p></h3>
                                 <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
                                 <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />
@@ -478,7 +480,7 @@ if (sendButton && messageInput) {
 
                          newChatItem.innerHTML = `
                              <div class="group-info">
-                                 <div class="group-image" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;">
+                                 <div class="group-image" style="border-radius: 50%; width: 70px; height: 70px; margin: 20px;">
                                     ${firstLetter}
                                  </div>
                              </div>
@@ -511,28 +513,29 @@ if (sendButton && messageInput) {
                const chatItemDiv = chatItem.closest('.chatItem');
                const chatNameElement = chatItemDiv.querySelector('h3 p');
                chatNameElement.textContent = updatedChatRoomName;
+
+                const firstLetter = updatedChatRoomName.charAt(0).toUpperCase();
+                const groupImageElement = chatItemDiv.querySelector('.group-image');
+                if (groupImageElement) {
+                    groupImageElement.textContent = firstLetter;
+                }
            }
-           const chatRoomTitleElement = document.getElementById("chatRoomTitle");
-            chatRoomTitleElement.textContent = updatedChatRoomName;
-            const firstLetter = updatedChatRoomName.charAt(0).toUpperCase();
-            const groupImageElement = document.querySelector('.group-image');
-            if (groupImageElement) {
-                groupImageElement.textContent = firstLetter;
-            }
+
            document.getElementById('chatRoomNameInput').value = '';
 
       }
       else if (message.type === "memberAdded") {
          const chatRoomNo = message.chatRoomNo;
          const chatRoomName = message.chatRoomName;
-         const countPeople = message.countPeople;
+          const countPeople = parseInt(message.countPeople, 10)
          const existingChatRoom = document.querySelector(`input[type="hidden"][value="${chatRoomNo}"]`);
 
 
          if(currentChatRoomNo === chatRoomNo){
             console.log(countPeople);
             const participantCount = document.getElementById('participantCountSpan');
-            participantCount.textContent = countPeople;
+             const currentMember = parseInt(participantCount.textContent, 10) || 0;
+            participantCount.textContent =currentMember+ countPeople;
             const messageElement = document.createElement('div');
              messageElement.classList.add("system-message", "messageItem");
              messageElement.innerHTML = `
@@ -561,7 +564,7 @@ if (sendButton && messageInput) {
 
              newChatItem.innerHTML = `
                     <div class="group-info">
-                        <div class="group-image" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;">
+                        <div class="group-image" style="border-radius: 50%; width: 70px; height: 70px; margin: 20px;">
                              ${firstLetter}
                         </div>
                     </div>
@@ -646,7 +649,7 @@ if (sendButton && messageInput) {
                    messageElement.classList.add("other-message", "messageItem");
                    messageElement.innerHTML = `
                        <div class="message-sender">
-                           <strong>${message.chat_sender_name}</strong>
+                           <p style="margin-left:8px; margin-bottom:2px;">${message.chat_sender_name}</p>
                        </div>
                        <div class="message-ele">
                            <div class="message-content">
@@ -1126,7 +1129,7 @@ function formatDateTime(date) {
                 messageElement.classList.add("other-message", "messageItem");
                 messageElement.innerHTML = `
                     <div class="message-sender">
-                        <strong>${message.senderName}</strong>
+                        <p style="margin-left:8px; margin-bottom:2px;">${message.senderName}</p>
                     </div>
                     <div class="message-ele">
                         <div class="message-content">
