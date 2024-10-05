@@ -3,25 +3,27 @@
 .myMeetingReservation_list {
 	position: relative; 
 	max-width: 1250px;
-	margin: 40px auto;
-	padding: 30px; 
+	margin: auto; 
+	height: 700px;
+	margin-bottom: 50px;
 }
- 
-.search_sort_container {
-	display: flex;
-	justify-content: space-between;
+
+#startDate, #endDate{
+	padding : 9px;	
+}
+
+.search_sort_container { 
 	align-items: center;
 	margin-bottom: 30px;
 }
 
-.search_container {
-	display: flex;
+.search_container { 
 	align-items: center;
 	gap: 15px;
 }
 
 .search_input {
-	padding: 8px 20px;
+	padding: 10px 20px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	font-size: 14px;
@@ -55,7 +57,7 @@
 
 .select_meetingRoom {
 	width : 110px;
-	padding: 8px 20px;
+	padding: 10px 20px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 14px;
@@ -74,10 +76,10 @@
 }
 
 .reservation_list_table th, .reservation_list_table td {
-	padding: 11px 10px;
+	padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .reservation_list_table th {
@@ -95,7 +97,7 @@
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 40px; 
 }
 
 .pagination button {
@@ -123,5 +125,6 @@
 }
 
 .meeting_sort_date {
-    margin-left: 295px;
+    float:right;
+    padding : 10px;
 } 

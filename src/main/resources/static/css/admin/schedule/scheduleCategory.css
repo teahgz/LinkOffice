@@ -75,6 +75,7 @@
     justify-content: space-between;  
     gap: 20px;  
     padding : 20px 60px;
+    height: 700px;
 }
 
 .scheduleCategory_list_box {
@@ -182,8 +183,8 @@ li.selected a {
 
 .scheduleCategory_Lists a {
     text-decoration: none;
-    font-weight : 400;
-    color: #2994da;
+    font-weight : 500;
+    color: #0056b3;
     font-size: 1rem;
     display: block;
     padding: 10px;

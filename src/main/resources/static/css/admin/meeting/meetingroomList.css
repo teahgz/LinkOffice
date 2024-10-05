@@ -134,8 +134,9 @@ button:hover {
 }
 
 .member-section {
-    width: 100%; 
-    padding: 30px 50px; 
+    width: 1250px;
+    max-height: 700px; 
+    margin : auto;  
 }
 
 .button-container {
@@ -183,10 +184,10 @@ button:hover {
 } 
 
 .meetingRoom_table th, .meetingRoom_table td {
-	padding: 11px 10px;
+	padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .meetingRoom_table th {
@@ -235,7 +236,7 @@ button:hover {
 }
 .meeting_info_text {
 	color : red;
-	font-size:16px;
+	font-size:14px;
 	margin-bottom: 15px;
 }
 .button-container {
@@ -272,17 +273,20 @@ button:hover {
     background-color: #d3d3d3;  
     color: #a9a9a9; 
     cursor: not-allowed;
-} 
-
+}  
 
 #searchMeetingRoom {
 	width : 250px;
 	padding : 13px;
 }
 
+#meeting_search_btn {
+	 padding: 10px 20px;
+}
+
 #addMeetingButton {
 	width : 110px;
-    padding: 8px 16px;
+    padding: 10px 16px;
     background-color: #0056b3;
     color: rgb(255, 255, 255);
     border: none;

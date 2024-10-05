@@ -78,6 +78,7 @@
 				        <button th:onclick="|location.href='@{/meeting/reservation/list(page=${reservations.totalPages - 1}, meetingNo=${meetingNo}, searchText=${searchText}, sortBy=${currentSort}, startDate=${startDate}, endDate=${endDate})}'|">&gt;&gt;</button>
 				    </th:block>
 				</div> 
+			</div>
         </section> 
         <script th:src="@{/js/admin/meeting/meetingReservationList.js}"></script>
     </th:block>
