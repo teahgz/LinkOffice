@@ -637,7 +637,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        moreLinkContent: function(args) {
 			    return ' + ' + args.num;
 			},
-	        dayMaxEvents: 3,
+	        dayMaxEvents: 2,
 	        dateClick: function(info) {
 	            selectedDate = info.dateStr;  
 	
