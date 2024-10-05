@@ -16,10 +16,10 @@
 		               			<button type="button" id="previewButton" class="preview_button">미리보기</button> 
 		                        <p class="vacation_title">휴가 신청서</p>
 		                	</div>
-	                            <div class="form-group">
+	                            <div class="form-group" th:each="member_count : ${mem}">
 	                                <input type="hidden" id="csrf_token" th:value="${_csrf.token}" name="_csrf" />
 	                                <input type="hidden" id="member_no" th:value="${member.member_no}" name="member_no" />
-	                                <input type="hidden" id="member_vacation_count" th:value="${member.member_vacation_count}" name="member_vacation_count" />
+	                                <input type="hidden" id="member_vacation_count" th:value="${member_count.memberVacationCount}" name="member_vacation_count" />
 	                                <div class="field">
 	                                    <strong>제목</strong>
 	                                    <input type="text" id="vacationapproval_title" name="vacationapproval_title">

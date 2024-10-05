@@ -552,7 +552,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			} else if(endDate.trim() === ""){
 				 vali_text += '휴가 기간을 입력해주세요.';
                 document.querySelector('#vacationapproval_end_date').focus();
-			} else if(memVacationCount < dateCount){
+			} else if(parseFloat(memVacationCount) < parseFloat(dateCount)){
 				vali_text += '남은 휴가 갯수가 선택된 기간보다 부족합니다.';
 			} else {
                 vali_check = true;

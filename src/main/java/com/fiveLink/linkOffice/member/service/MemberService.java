@@ -378,4 +378,9 @@ public class MemberService {
     	return memberRepository.save(temp.toEntity());
     }
     
+    // member 조회
+    public Member memberNo(Long member_no) {
+    	return memberRepository.findByMemberNo(member_no);
+    }
+    
 } 

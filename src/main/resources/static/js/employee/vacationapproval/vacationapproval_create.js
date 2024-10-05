@@ -531,6 +531,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			const reviewers = Array.from(document.querySelectorAll('input[id="reviewerNumbers"]')).map(input => input.value);
 			
 			const memVacationCount = document.querySelector('#member_vacation_count').value;
+			console.log("console"+memVacationCount);
+			console.log("dateCount"+dateCount);
 
 		 	let vali_check = false;
             let vali_text = "";
@@ -550,7 +552,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			}  else if(approvers.length === 0 && references.length === 0){
 				 vali_text += '결재자 / 합의자를 지정해주세요.';
                 document.querySelector('#openChart').focus();
-			} else if(memVacationCount < dateCount){
+			} else if(parseFloat(memVacationCount) < parseFloat(dateCount)){
 				vali_text += '남은 휴가 갯수가 선택된 기간보다 부족합니다.';
 			} else {
                 vali_check = true;
