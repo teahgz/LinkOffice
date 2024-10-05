@@ -11,8 +11,8 @@
 		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
 
 	<!-- CSRF 토큰 추가 -->
-	<meta name="_csrf" th:content="${_csrf.token}"/>
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 	<section>
 		<div class="detail_notice">
@@ -46,7 +46,8 @@
 				</div>
 
 				<div class="notice-image" th:if="${dto.notice_new_img != null}">
-					<img th:src="@{'/linkOfficeImg/notice/' + ${dto.notice_new_img}}" alt="Notice Image">
+					<img th:src="@{'/linkOfficeImg/notice/' + ${dto.notice_new_img}}"
+						alt="Notice Image">
 				</div>
 
 				<div class="notice-text">
@@ -55,8 +56,16 @@
 			</div>
 
 			<div class="notice-buttons">
-				<a th:href="@{/admin/notice/update/{no}(no=${dto.notice_no})}" class="btn btn-edit">수정</a>
-				<a class="btn btn-delete" th:onclick="noticeDelete([[${dto.notice_no}]]);">삭제</a>
+
+				<a th:href="@{/admin/notice/update/{no}(no=${dto.notice_no})}"
+					class="btn btn-edit" sec:authorize="hasAuthority('TOTAL_ADMIN')">수정</a>
+
+
+				<a class="btn btn-delete"
+					th:onclick="noticeDelete([[${dto.notice_no}]]);"
+					sec:authorize="hasAuthority('TOTAL_ADMIN')">삭제</a>
+
+
 				<button class="btn btn-back" onclick="window.history.back();">목록</button>
 			</div>
 		</div>
