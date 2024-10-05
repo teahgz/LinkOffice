@@ -1,10 +1,19 @@
 @charset "UTF-8";
 
-.document_folder_list{
+.document_div{
 	display: flex;
     height: 95%;
     width: 100%;
     overflow: hidden; 
+    justify-content: center;
+}
+.document_folder_list{
+	display: flex;
+    height: 95%;
+    width: 80%;
+    overflow: hidden; 
+    justify-content: center;
+    margin-top: 20px;
 }
 .document_folder_tree{
 	border-radius: 8px;
@@ -18,7 +27,7 @@
     background-color: white;
 }
 #tree{
-	font-size: 13px;
+	font-size: 15px;
 	display: block;
 	height: 70%;
 }
@@ -64,7 +73,6 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
-    margin-left: 250px;
 }
 .folder_buttons{
 	height: 10%;
@@ -150,9 +158,13 @@
 #folder_add_button:active{
     transform: scale(0.98);
 }
+#document_hr{
+	height: 69vh;
+}
 .document_file_div{
 	border-radius: 8px;
-	width: 80%;
+	width: 1250px;
+	height: 700px;
 	margin-right: 10px;
 }
 .document_no_file{
@@ -223,28 +235,6 @@
     outline: none;
     border-color: #B1C2DD;
 }
-#search_button{
-	float: right;
-	margin-left: 5px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    font-size: 13px;
-    display: flex;
-    text-align: center;
-    justify-content: center;
-}
-#search_button:hover{
-    background-color: #003a82;
-}
-
-#search_button:active{
-    transform: scale(0.98);
-}
 .folder_name_div{
 	display: flex;
 	height: 50px;
@@ -253,7 +243,7 @@
 }
 #folder_name{
 	margin-right: 10px;
-	font-size: 18px;
+	font-size: 22px;
 }
 #change_name_button{
 	margin-right: 5px;
@@ -327,9 +317,6 @@
 #select_down:active{
     transform: scale(0.98);
 }
-#div_hr{
-	height: 2vh;
-}
 .upload_and_sort{
 	display: flex;
 	align-items: center;
@@ -373,7 +360,7 @@
 .table_div{
 	border-radius: 8px;	
 	border: 1px solid #ddd;
-	margin-top: 10px;
+	margin-top: 20px;
 }
 .file_table{
 	width: 100%;
@@ -384,26 +371,25 @@
 	table-layout: fixed; 
 	background-color: white;
 	border-radius: 8px;
+	overflow: hidden;
 }
 .file_table td { 
-	padding: 9px 10px;
+	padding: 18px 10px;
     text-align: center;
-	border-top: 1px solid #ddd;
-	overflow: hidden;
+	border-top: 1px solid #ddd;	
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 .file_table th {
-	padding: 9px 10px;
+	padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 13px;
+    font-size: 15px;
     background-color: #f8f9fa;
-    border-radius: 8px;
 }
 .file_table tbody tr {
     vertical-align: middle; 
-    font-size: 13px;
+    font-size: 15px;
 }
 input[type="checkbox"] {
 	height: 14px;
@@ -433,7 +419,7 @@ input[type="checkbox"] {
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 40px;
 }
 .pagination_button {
     width: 33px;
@@ -603,4 +589,8 @@ input[type="checkbox"] {
 }
 .swal2-cancel{
 	background-color: #e9ecef;
+}
+.swal2-confirm:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }

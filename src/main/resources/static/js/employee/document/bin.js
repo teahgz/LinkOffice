@@ -268,7 +268,8 @@ $(function () {
 			icon: 'warning',
 		    text: '파일을 영구 삭제하시겠습니까?',
 		    showCancelButton: true,
-		    confirmButtonText: '확인',
+		    confirmButtonColor: '#dc3545',
+		    confirmButtonText: '삭제',
 		    cancelButtonText: '취소'
 		}).then((result) => {
 			if (result.isConfirmed) {
@@ -309,7 +310,8 @@ $(function () {
 	        icon: 'warning',
 	        text: '파일을 영구 삭제하시겠습니까?',
 	        showCancelButton: true,
-	        confirmButtonText: '확인',
+	        confirmButtonColor: '#dc3545',
+	        confirmButtonText: '삭제',
 	        cancelButtonText: '취소'
 	    }).then((result) => {
 	        if (result.isConfirmed) {
@@ -464,12 +466,6 @@ $(function () {
         loadFiles(searchInputValue);
 
     });        
-    // 파일 검색 
-    $('#search_button').on('click', function(){
-		const searchInput = $('#file_name_input').val();
-		loadFiles(searchInput);
-    });
-
     // 페이지가 로드될 때 파일 목록을 불러옴
     $(document).ready(function() {
         loadFiles(); // 페이지 로드 시 파일 목록 로드
