@@ -30,9 +30,9 @@
 
                         <img th:src="${member.member_new_profile_img != null ? '/linkOfficeImg/member/profile/' + member.member_new_profile_img : '/img/user_profile.png'}" class="user_photo" onclick="toggleDropdown(event)" sec:authorize="hasAuthority('USER')"/>
                         <ul class="dropdown_menu" id="dropdownMenu" sec:authorize="hasAuthority('USER')">
-                            <li><a href="#">마이페이지</a></li>
-                            <li><a href="#">정보 수정</a></li>
-                            <li><a href="#">서명 등록</a></li>
+                            <li><a th:href="@{/employee/member/mypage}">내 정보</a></li>
+                            <li><a th:href="@{/employee/member/myedit}">정보 수정</a></li>
+                            <li><a th:href="@{/employee/member/digitalname}">서명 등록</a></li>
                         </ul>
                     </div>
                     <div class="bell" id="notification-bell" sec:authorize="hasAuthority('USER')">

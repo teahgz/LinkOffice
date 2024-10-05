@@ -242,14 +242,14 @@ public class SurveyViewController {
             Long questionNo = entry.getKey();
             List<Object[]> options = entry.getValue();
             List<List<Object>> data = new ArrayList<>();
-            data.add(Arrays.asList("Option", "Votes")); // 차트 제목 추가
+            data.add(Arrays.asList("Option", "Votes")); 
 
             for (Object[] option : options) {
                 String optionAnswer = (String) option[0];
                 Long answerCount = (Long) option[1];
-                data.add(Arrays.asList(optionAnswer, answerCount)); // 옵션과 응답 수 추가
+                data.add(Arrays.asList(optionAnswer, answerCount));
             }
-            chartData.put(questionNo, data); // 질문 번호에 대한 차트 데이터 저장
+            chartData.put(questionNo, data); 
         }
         return chartData;
     }

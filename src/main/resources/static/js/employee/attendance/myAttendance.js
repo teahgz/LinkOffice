@@ -147,14 +147,6 @@ function attendanceCalendar(today, attendanceDates, holidays) {
     for (var i = prevMonthStartDate; i <= prevMonthLastDate.getDate(); i++) {
         var cell = row.insertCell();
         var dateToCheck = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        var dateBar = '';
-
-        // attendanceDates 배열에서 해당 날짜가 있는지 확인
-        var dateEntry = attendanceDates.find(entry => entry.date === dateToCheck);
-        if (dateEntry) {
-            dateBar = `<div class="date_bar ${dateEntry.statusClass}"></div>`;
-        }
-
         var formattedDateToCheck = `${currentYear}${String(currentMonth + 1).padStart(2, '0')}${String(i).padStart(2, '0')}`;
 
         // 전 달 날짜는 회색
@@ -162,7 +154,6 @@ function attendanceCalendar(today, attendanceDates, holidays) {
 
         cell.innerHTML = `<div class="date_container">
                             <span style="color: ${textColor};">${i}</span>
-                            ${dateBar}
                           </div>`;
         cell.align = "center"; 
         cnt += 1;
@@ -198,14 +189,14 @@ function attendanceCalendar(today, attendanceDates, holidays) {
         
         // 날짜 색상 설정
         var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? 'red' : 'blue') : 'black');
-
+		
+		if (todayDate.getFullYear() === currentYear &&
+		    todayDate.getMonth() === currentMonth &&
+		    todayDate.getDate() === i) {
+		    cell.style.backgroundColor = 'rgb(240, 243, 248)';
+		}
         cell.innerHTML = `<div class="date_container">
-                    <span class="${todayDate.getFullYear() === currentYear &&
-                        todayDate.getMonth() === currentMonth &&
-                        todayDate.getDate() === i ? 'today_date' : ''}" 
-                        style="color: ${todayDate.getFullYear() === currentYear &&
-                                todayDate.getMonth() === currentMonth &&
-                                todayDate.getDate() === i ? 'white' : textColor};">${i}</span>
+                    <span style="color: textColor};">${i}</span>
                     ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
                     ${dateBar}
                   </div>`;

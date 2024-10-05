@@ -63,4 +63,7 @@ public interface ChatMapper {
     List<Long> selectAnotherUser(Map<String, Object> params);
     //본인을 제외한 채팅방 목록 사용자의 사진
     String getProfileImageByMemberNo(Long memberNo);
+
+    //상단 채팅방 고정 개수
+    int getPinnedChatRoomCount(Long memberNo);
 }

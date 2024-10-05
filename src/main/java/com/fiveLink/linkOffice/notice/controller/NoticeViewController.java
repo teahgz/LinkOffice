@@ -42,8 +42,11 @@ public class NoticeViewController {
         // memberNo로부터 memberDto 가져오기
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
         model.addAttribute("memberDto", memberDto);
-
-        // 인증 정보에서 사용자 정보 가져오기 (매니저 정보)
+    	
+    	Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		model.addAttribute("memberdto", memberdto);
+		
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String noticeNumber = authentication.getName();
         String noticeName = noticeService.findNoticeNameByNumber(noticeNumber);
@@ -110,6 +113,9 @@ public class NoticeViewController {
     public String updateNoticePage(Model model,
     		@PathVariable("notice_no")Long notice_no) {
     	
+    	Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		model.addAttribute("memberdto", memberdto);
     	NoticeDto dto = noticeService.selectNoticeOne(notice_no);
     	model.addAttribute("dto",dto);
     	

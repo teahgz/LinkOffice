@@ -75,7 +75,7 @@ nav {
 }
 
 .dropdown li {
-    background-color: #d9d9d954;
+    background-color: #d9d9d929;
 }
 .dropdown.show {
     display: block;
@@ -123,7 +123,6 @@ nav {
     display: block;
 }
 .dropdown > ul > li > ul > li {
-    background-color: transparent;
     background-color: transparent;
 }
 #notificationContainer {
