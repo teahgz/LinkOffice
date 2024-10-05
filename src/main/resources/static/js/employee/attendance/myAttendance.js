@@ -198,14 +198,14 @@ function attendanceCalendar(today, attendanceDates, holidays) {
         
         // 날짜 색상 설정
         var textColor = isHoliday ? 'red' : (isWeekend ? (new Date(currentYear, currentMonth, i).getDay() === 0 ? 'red' : 'blue') : 'black');
-
+		
+		if (todayDate.getFullYear() === currentYear &&
+		    todayDate.getMonth() === currentMonth &&
+		    todayDate.getDate() === i) {
+		    cell.style.backgroundColor = 'rgb(240, 243, 248)';
+		}
         cell.innerHTML = `<div class="date_container">
-                    <span class="${todayDate.getFullYear() === currentYear &&
-                        todayDate.getMonth() === currentMonth &&
-                        todayDate.getDate() === i ? 'today_date' : ''}" 
-                        style="color: ${todayDate.getFullYear() === currentYear &&
-                                todayDate.getMonth() === currentMonth &&
-                                todayDate.getDate() === i ? 'white' : textColor};">${i}</span>
+                    <span style="color: textColor};">${i}</span>
                     ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
                     ${dateBar}
                   </div>`;
