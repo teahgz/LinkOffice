@@ -883,8 +883,12 @@ section {
 	color: gray;
 }
 .swal2-confirm {
-	background-color: #B1C2DD;
-	color: black;
+  	background-color: #0056b3;
+  	color: white;
+  	border: none;
+}
+.swal2-confirm:hover{
+	background-color: #003a82;
 }
 
 .time_display {

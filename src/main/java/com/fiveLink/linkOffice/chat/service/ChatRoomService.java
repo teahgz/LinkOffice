@@ -144,4 +144,8 @@ public class ChatRoomService {
         return chatMapper.getMemberName(currentMember);
     }
 
+    //상단 개수 제한
+    public int getPinnedChatRoomCount(Long currentMember) {
+        return chatMapper.getPinnedChatRoomCount(currentMember);
+    }
 }
