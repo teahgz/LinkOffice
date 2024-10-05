@@ -2,19 +2,21 @@
 
 .form_page {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
+    justify-content: center;
 }
 
 .approval_form {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 30px; 
-    width: 100%;
-    max-width: 800px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 1250px;
+    background-color: #ffffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 60px 80px 30px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 20px;
+    margin: auto;
 }
 
 .form_header {

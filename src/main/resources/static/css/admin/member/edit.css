@@ -1,33 +1,29 @@
 @charset "UTF-8";
 
 .my_profile {
-    position: relative;
-    width: 80%;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
+    margin: auto;
+    height: 700px;
+    width: 1250px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 70px 30px 70px;
+    border-radius: 15px;
 }
 
 .profile_card {
-    background-color: #ffffff;
-    border-radius: 12px;
-	height: 530px;
-	width:800px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px 20px 60px;
-    margin: 20px auto;
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    position: relative;
 }
 
 .profile_header {
     display: flex;
-    width: 100%;
-    padding: 0 20px;
+    align-items: flex-start;
+    gap: 40px;
+    margin-bottom: 40px;
+    margin-right: 150px;
 }
 
 .profile_header_left {
@@ -37,8 +33,13 @@
 }
 
 .profile_img {
-	height: 150px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 .profile_img img {
@@ -49,7 +50,7 @@
 
 .upload_button {
     display: inline-block;
-    padding: 10px 15px;
+    padding: 10px 20px;
     background-color: #C0C0C0;
     border-radius: 50px;
     cursor: pointer;
@@ -59,25 +60,46 @@
 
 .file_info {
     color: red;
-    font-size: 0.7rem;
+    font-size: 15px;
     margin-left: 40px;
 }
 
 .divider {
-    width: 100%;
+	margin-bottom:50px;
+    width: 800px;
     border: 0;
     border-top: 1px solid #ddd; 
 }
 
+.profile_details_top {
+	margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    padding: 0;
+    list-style: none; 
+}
+
+.profile_details_top li {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 50px;
+}
+
+.profile_details_top li strong {
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+
 .profile_details {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 35px;
     padding: 0;
     margin: 0;
-    list-style: none;
-    margin-top: 30px;
-    margin-left: 50px;
+    list-style: none; 
 }
 
 #member_name {
@@ -90,8 +112,9 @@
 
 .profile_details li {
     display: flex;
+    justify-content: flex-start;
     align-items: center;
-    gap: 20px;
+    gap: 50px;
 }
 
 .profile_details li strong {
@@ -102,7 +125,8 @@
 .profile_details.paired {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 30px;
+    gap: 30px 50px;
+    margin-left: 180px;
 }
 
 .mobile_number, .internal_number {
@@ -152,7 +176,6 @@ select option {
 .button_container {
     display: flex;
     gap: 10px;
-    margin-top: 30px;
     justify-content: flex-end; 
     width: 100%;
 }
