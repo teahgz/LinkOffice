@@ -1,83 +1,135 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const modifyBtn = document.getElementById('modifyBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const digitalBox = document.querySelector('.digital_box');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas ? canvas.getContext('2d') : null;
-    const currentSignature = document.getElementById('currentSignature');
-    let painting = false;
-	// 수정 버튼
-    if (modifyBtn) {
-        modifyBtn.addEventListener('click', function () {
-            modifyBtn.style.display = 'none';
-            if (saveBtn) saveBtn.style.display = 'inline-block';
-            if (clearBtn) clearBtn.style.display = 'inline-block'; 
-            if (currentSignature) currentSignature.style.display = 'none';
-            if (canvas) {
-                canvas.style.display = 'block';
-                setupCanvas();
-            }
-        });
-    }
+const modifyBtn = document.getElementById('modifyBtn');
+const saveBtn = document.getElementById('saveBtn');
+const clearBtn = document.getElementById('clearBtn');
+const digitalBox = document.querySelector('.digital_box');
+const canvas = document.getElementById('canvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+const currentSignature = document.getElementById('currentSignature');
+let painting = false;
+let lastX = 0;
+let lastY = 0;
 
-    if (canvas) {
-        if (currentSignature) {
-            canvas.style.display = 'none';
-        } else {
-            digitalBox.style.display = 'block';
+function resizeCanvas() {
+    if (canvas && digitalBox) {
+        canvas.width = digitalBox.offsetWidth;
+        canvas.height = digitalBox.offsetHeight;
+    }
+}
+
+// 수정 버튼
+if (modifyBtn) {
+    modifyBtn.addEventListener('click', function () {
+        modifyBtn.style.display = 'none';
+        if (saveBtn) saveBtn.style.display = 'inline-block';
+        if (clearBtn) clearBtn.style.display = 'inline-block';
+        if (currentSignature) currentSignature.style.display = 'none';
+        if (canvas) {
             canvas.style.display = 'block';
+            resizeCanvas();
             setupCanvas();
         }
-    }
+    });
+}
 
-    function setupCanvas() {
-        if (!ctx) return;
-        ctx.lineWidth = 3;
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mousedown', startPainting);
-        canvas.addEventListener('mouseup', stopPainting);
-        canvas.addEventListener('mouseleave', stopPainting);
+if (canvas) {
+    if (currentSignature) {
+        canvas.style.display = 'none';
+    } else {
+        digitalBox.style.display = 'block';
+        canvas.style.display = 'block';
+        resizeCanvas();
+        setupCanvas();
     }
+}
 
-    function startPainting() {
-        painting = true;
-    }
+function setupCanvas() {
+    if (!ctx) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#000000';
 
-    function stopPainting() {
-        painting = false;
-        ctx.beginPath();
-    }
+    canvas.addEventListener('mousedown', startPainting);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopPainting);
+    canvas.addEventListener('mouseout', stopPainting);
 
-    function draw(e) {
-        if (!painting) return;
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(e.offsetX, e.offsetY);
-    }
-	// 지우기 버튼
-    if (clearBtn) {
-        clearBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            clearCanvas();
-        });
-    }
+    canvas.addEventListener('touchstart', handleStart, false);
+    canvas.addEventListener('touchmove', handleMove, false);
+    canvas.addEventListener('touchend', handleEnd, false);
+}
 
-    function clearCanvas() {
-        if (ctx) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-    }
+function startPainting(e) {
+    painting = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+}
 
-    if (saveBtn) {
-        if (currentSignature) {
-            saveBtn.style.display = 'none';
-            clearBtn.style.display = 'none';
-        } else {
-            saveBtn.style.display = 'inline-block';
-        }
+function stopPainting() {
+    painting = false;
+}
+
+function draw(e) {
+    if (!painting) return;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+}
+
+function handleStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousedown", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+}
+
+function handleMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+}
+
+function handleEnd(e) {
+    e.preventDefault();
+    const mouseEvent = new MouseEvent("mouseup", {});
+    canvas.dispatchEvent(mouseEvent);
+}
+
+// 지우기 버튼
+if (clearBtn) {
+    clearBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        clearCanvas();
+    });
+}
+
+function clearCanvas() {
+    if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
+}
+
+if (saveBtn) {
+    if (currentSignature) {
+        saveBtn.style.display = 'none';
+        clearBtn.style.display = 'none';
+    } else {
+        saveBtn.style.display = 'inline-block';
+    }
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+resizeCanvas();
     
 // 전자서명 등록
     const form = document.getElementById('digitalFrm');
