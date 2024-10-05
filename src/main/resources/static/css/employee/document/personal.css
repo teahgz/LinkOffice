@@ -130,7 +130,7 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 13px;
-    padding: 10px 13px;
+    padding: 10px 15px;
     text-align: center;
 }
 #folder_delete_button:hover{
@@ -148,7 +148,7 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 13px;
-    padding: 10px 13px;
+    padding: 10px 15px;
     text-align: center;
 }
 #folder_add_button:hover{
@@ -493,14 +493,14 @@ input[type="checkbox"] {
 	position: fixed;
 	top: 50%;
 	left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -70%);
     background: #fefefe;
     border: 1px solid #888;
     z-index: 1000;
-    width: 360px;
-    height: 240px;
+    width: 430px;
+    height: 300px;
     padding: 30px;
-    border-radius: 5px;
+    border-radius: 8px;
     align-items: center;
 }
 .first_folder_add_div, .change_folder_name_div,
@@ -551,9 +551,9 @@ input[type="checkbox"] {
 }
 #first_folder_add_button, #folder_name_change_button, #folder_create_button,
 #file_upload_button{
-	margin-right: 0.5vw;
-	margin-top: 0.4vh;
-    padding: 0.5vh 0.5vw;
+	margin-right: 5px;
+	margin-top: 40px;
+    padding: 5px;
   	background-color: #0056b3;
   	color: white;
     border: none;
