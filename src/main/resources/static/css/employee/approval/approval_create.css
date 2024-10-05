@@ -7,9 +7,9 @@
 }
 
 .editor-container {
-    background-color: #ffffff;
+    width: 1250px;
+    background-color: #ffffffff;
     border-radius: 12px;
-    max-width: 800px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 60px 80px 30px;
     margin-top: 20px;
@@ -34,8 +34,8 @@ input:focus, select:focus {
 }
 
 .ck.ck-editor {
-    max-width: 800px;
-    min-width: 800px;
+    max-width: 1250px;
+    min-width: 1250px;
 }
 
 .ck-editor__editable {

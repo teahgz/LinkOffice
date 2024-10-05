@@ -7,18 +7,17 @@
 }
 
 .editor-container {
+    width: 1250px;
     background-color: #ffffffff;
-    border-radius: 12px; 
-    max-width: 900px; 
-    width: 70%;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 60px 80px 30px;
-    margin-top: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-start; 
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     gap: 20px;
-    margin:auto;
+    margin: auto;
 }
 .title_button_container{
     justify-content: center;
