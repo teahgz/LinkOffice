@@ -2,7 +2,8 @@
 
 .list_member {
 	margin: auto;
-    width: 80%;
+    width: 1250px;
+    height: 700px; 
     padding: 40px;
     box-sizing: border-box;
 }
@@ -71,10 +72,10 @@ select {
 }
 
 .employee_table th, .employee_table td {
-	padding: 11px 10px;
+	padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .employee_table th {
@@ -99,6 +100,7 @@ select {
 }
 
 .pagination {
+	margin-top:40px;
     display: flex;
     justify-content: center;
 }
