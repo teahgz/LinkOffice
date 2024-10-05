@@ -74,9 +74,9 @@ nav {
     margin: 0;
 }
 
-/*.dropdown li {
-    border-bottom: 1px solid #ddd;
-}*/
+.dropdown li {
+    background-color: #d9d9d954;
+}
 .dropdown.show {
     display: block;
 }
@@ -86,7 +86,6 @@ nav {
     margin-left: 15%;
     text-decoration: none;
     color: #333;
-    background-color: #fff;
     padding: 13px;
 }
 

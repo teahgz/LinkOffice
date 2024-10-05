@@ -59,7 +59,7 @@
     <select id="checkTypeName" parameterType="map" resultType="int">
         SELECT count(*) FROM fl_vacation_type WHERE vacation_type_name = #{name} AND vacation_type_no = #{num}
     </select>
-    <select id="userVacationCount" parameterType="Long" resultType="int">
+    <select id="userVacationCount" parameterType="Long" resultType="double">
         SELECT member_vacation_count FROM fl_member
         WHERE member_no = #{memberNo}
     </select>

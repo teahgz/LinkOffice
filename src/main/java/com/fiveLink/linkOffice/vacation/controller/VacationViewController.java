@@ -81,7 +81,7 @@ public class VacationViewController {
     @GetMapping("/user/vacationCount/{vacationMemberNo}")
     @ResponseBody
     public Map<String, Object> userVacationCount(@PathVariable("vacationMemberNo")Long vacationMemberNo) {
-        int result = vacationService.userVacationCount(vacationMemberNo);
+        double result = vacationService.userVacationCount(vacationMemberNo);
         int type = vacationService.selectVacationStandardStatus();
         String date = vacationService.selectVacationDesignated(type);
         String hire = vacationService.memberHireDate(vacationMemberNo);
@@ -90,7 +90,7 @@ public class VacationViewController {
         int yearSinceJoin = Period.between(hireDate, LocalDate.now()).getYears();
 
         int count = vacationService.contVacationYear(yearSinceJoin);
-
+        System.out.println("result:"+count);
         Map<String, Object> response = new HashMap<>();
         response.put("remainingVacationDays", result);
         response.put("count", count);
