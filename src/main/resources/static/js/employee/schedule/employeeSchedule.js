@@ -756,7 +756,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			    document.getElementById('eventModal').style.display = 'block';
 			    const submitButton = document.getElementById('create_modal_submit');
 				submitButton.textContent = '저장';
-		    }
+		    },
+		     eventTimeFormat: {
+			    hour: '2-digit',    
+			    minute: '2-digit',  
+			    meridiem: false,    
+			    hour12: false       
+		     }
         });
         filterEvents();
         calendar.render();

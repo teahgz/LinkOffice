@@ -1022,8 +1022,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        dataType: 'json',
 	        success: function(data) { 
 	            $('#eventId').val(eventId);  
-	            $('#isRecurring').val('0');   
-	            $('#"isRepeat"').val('1');   
+	            $('#isRecurring').val('0');    
 	            $('#category').val(data.schedule.schedule_category_no);
 	            $('#eventTitle').val(data.schedule.schedule_exception_title);
 	            $('#eventDate').val(data.schedule.schedule_exception_start_date);
