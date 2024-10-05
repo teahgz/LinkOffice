@@ -5,8 +5,9 @@
 
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
-	<div style="display:none;" th:each = "member : ${memberdto}">
+	<div style="display:block;" th:each = "member : ${memberdto}">
 		<input type ="hidden" id="currentMember" th:value="${member.member_no}"/>
+		<input type ="hidden" id="currentMembers" th:value="${member.member_vacation_count}"/>
 	</div>
 	<div id="nav_wrap" >
 		<ul>
@@ -88,10 +89,10 @@
 					<a href="#" class="dropdown-toggle">문서함</a>
 					<div class="dropdown" data-dropdown-id="documentDropdown">
 						<ul th:each = "member : ${memberdto}">
-							<li><a th:href="@{/employee/document/personal/{no}(no=${member.member_no})}">개인 문서함</a></li>
- 							<li><a th:href="@{/employee/document/department/{no}(no=${member.department_no}, memberNo=${member.member_no})}">부서 문서함</a></li>
-							<li><a th:href="@{/employee/document/company(memberNo=${member.member_no})}">사내 문서함</a></li>
-							<li><a th:href="@{/employee/document/bin/{no}(no=${member.member_no})}">휴지통</a></li>
+							<li><a th:href="@{/employee/document/personal}">개인 문서함</a></li>
+ 							<li><a th:href="@{/employee/document/department/{no}(no=${member.department_no})}">부서 문서함</a></li>
+							<li><a th:href="@{/employee/document/company}">사내 문서함</a></li>
+							<li><a th:href="@{/employee/document/bin}">휴지통</a></li>
 						</ul>
 					</div>
 				</li>
@@ -119,8 +120,8 @@
 					<a href="#" class="dropdown-toggle">비품 관리</a>
 					<div class="dropdown" data-dropdown-id="inventoryDropdown">
 							<ul th:each = "member : ${memberdto}">
-								<li><a th:href="@{/inventory/list/{no}(no=${member.member_no})}">비품 목록</a></li>
 								<li><a th:href="@{/inventory/create/{no}(no=${member.member_no})}">비품 등록</a></li>
+								<li><a th:href="@{/inventory/list/{no}(no=${member.member_no})}">비품 목록</a></li>
 							</ul>
 					</div>
 				</li>
@@ -138,8 +139,8 @@
 					<a href="#" class="dropdown-toggle">일정 관리</a>
 					<div class="dropdown" data-dropdown-id="scheduleDropdown">
 						<ul> 
-							<li><a th:href="@{/schedule/company}">사내 일정</a></li>
 							<li><a th:href="@{/schedule/category}">카테고리 관리</a></li>
+							<li><a th:href="@{/schedule/company}">전사 일정</a></li>
 						</ul>
 					</div>
 				</li>

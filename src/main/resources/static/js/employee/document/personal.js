@@ -97,11 +97,13 @@ $(function () {
 	                                loadFiles(selectedFolderNo);
 	                            } 
 	                        } else {
-	                            $('.document_no_folder').show();	                            
+	                            $('.document_no_folder').show();            
 	                        }
 	                        $('.document_no_folder').hide();
 	                        $('.folder_buttons').show();
 	                        $('.box_size').show();
+	                        $('.document_folder_tree').show();
+	                        $('#document_hr').show();
 	                        resolve(); 
 	                    });
 	                    $('#tree').on('changed.jstree', function (e, data) {
@@ -277,28 +279,12 @@ $(function () {
 	                    `;
 	                    fileTableBody.appendChild(row);
 	                });
-	
-	                // 리스트가 10개가 안 된다면 빈 행 추가로 10개 만들기 
-	                const emptyRows = pageSize - paginatedFiles.length;
-	                for (let i = 0; i < emptyRows; i++) {
-	                    const emptyRow = document.createElement('tr');
-	                    emptyRow.innerHTML = `
-	                        <td></td>
-	                        <td></td>
-	                        <td></td>
-	                        <td></td>
-	                        <td></td>
-	                        <td></td>
-	                        <td></td>
-	                    `;
-	                    fileTableBody.appendChild(emptyRow);
-	                }
-	
+
 	                // 페이징 업데이트 
 	                updatePagination();
 	            } else {
 	                $('.document_file_list').show();
-	                fileTableBody.innerHTML = '<tr><td colspan="7">파일 목록이 존재하지 않습니다.</td></tr>';
+	                fileTableBody.innerHTML = '<tr><td colspan="7">조회된 목록이 없습니다.</td></tr>';
 	
 	                // 페이징 버튼 숨기기
 	                paginationDiv.innerHTML = '';
@@ -799,6 +785,8 @@ $(function () {
                                     	$('.document_file_list').hide();
                                    	 	$('.folder_buttons').hide();
                                    	 	$('.box_size').hide();
+                                       	$('.document_folder_tree').hide();
+	                        			$('#document_hr').hide();  
 	                                } else {
 	                                    Swal.fire({
 	                                        icon: 'error',
@@ -1041,17 +1029,21 @@ $(function () {
 	        }
 	    });       
         // 폴더 선택 변경 함수 
-	    $('#tree').on('select_node.jstree', function(e, data) {
-	        const selectedFolderNo = data.selected[0];
-	        if (selectedFolderNo !== previousFolderNo) {
-	            $('#file_name_input').val(''); 
-	            searchInputValue = '';
-	            loadFiles(selectedFolderNo, searchInputValue = '');
-	            previousFolderNo = selectedFolderNo; 
-	            startDateInput.value = oneYearAgoStr;
-	            endDateInput.value = todayStr;
-	        }
-	    });
+		$('#tree').on('select_node.jstree', function(e, data) {
+		    if (data.selected && data.selected.length > 0) {
+		        const selectedFolderNo = data.selected[0];
+		        if (selectedFolderNo !== previousFolderNo) {
+		            $('#file_name_input').val('');
+		            searchInputValue = '';
+		            loadFiles(selectedFolderNo, searchInputValue = '');
+		            previousFolderNo = selectedFolderNo;
+		            startDateInput.value = oneYearAgoStr;
+		            endDateInput.value = todayStr;
+		        }
+		    } else {
+		        console.error("선택된 폴더가 존재하지 않습니다.");
+		    }
+		});
         // 정렬 선택이 변경될 때 파일 목록을 다시 불러옴
         $('#sort_select').on('change', function() {
             const selectedFolderNo = $('#tree').jstree('get_selected')[0];

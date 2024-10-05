@@ -258,15 +258,25 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         List<String> members = (List<String>) jsonMap.get("newMembers");
+        List<String> selectNames = (List<String>) jsonMap.get("selectNames");
 
         ChatMemberDto memberDto = new ChatMemberDto();
-
+        boolean isFirstInvitation = true;
         for(int i = 0; i< members.size(); i++){
             memberDto.setMember_no(Long.valueOf(members.get(i))); //memberNo
             memberDto.setChat_room_no(currentChatRoomNo);
             memberDto.setChat_member_room_name(chatRoomName);
             if(chatMemberService.createMemberRoomOne(memberDto)>0){
                 int unreadCounts = chatRoomService.countParicipant(currentChatRoomNo);
+                // 초대된 멤버 이름들을 조합
+                StringBuilder invitedNames = new StringBuilder();
+                for (String name : selectNames) {
+                    if (invitedNames.length() > 0) {
+                        invitedNames.append(", "); // 구분자 추가
+                    }
+                    invitedNames.append(name);
+                }
+
                 // 새 멤버 정보를 클라이언트에 전송
                 Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("type", "memberAdded");
@@ -274,16 +284,43 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 responseMap.put("chatRoomName", chatRoomName);
                 responseMap.put("member", Long.valueOf(members.get(i)));
                 responseMap.put("countPeople", unreadCounts);
-                for (WebSocketSession s : sessions.values()) {
-                    if (s.isOpen()) {
-                        String responseJson = new ObjectMapper().writeValueAsString(responseMap);
-                        s.sendMessage(new TextMessage(responseJson));
+                responseMap.put("invitedNames", invitedNames.toString());
+                // 초대 메시지를 처음 생성할 때만 전송
+                if (isFirstInvitation) {
+                    for (WebSocketSession s : sessions.values()) {
+                        if (s.isOpen()) {
+                            String responseJson = new ObjectMapper().writeValueAsString(responseMap);
+                            s.sendMessage(new TextMessage(responseJson));
+                        }
                     }
+                    isFirstInvitation = false; // 첫 초대 이후 false로 변경
                 }
             }
         }
+        // 멤버 초대 완료 후 초대 메시지 저장
+        saveInvitationMessage(selectNames, currentChatRoomNo);
 
     }
+
+    // 초대 메시지 저장 메소드
+    private void saveInvitationMessage(List<String> selectNames, Long currentChatRoomNo) {
+        String inviteMessage;
+        if (selectNames.size() == 1) {
+            inviteMessage = selectNames.get(0) + "님이 초대되었습니다.";
+        }
+        else if (selectNames.size() > 1) {
+            inviteMessage = String.join(", ", selectNames) + "님이 초대되었습니다.";
+        } else {
+            return;
+        }
+        ChatMessageDto chatMessageDto = new ChatMessageDto();
+        chatMessageDto.setChat_room_no(currentChatRoomNo);
+        chatMessageDto.setChat_sender_no(0L);
+        chatMessageDto.setChat_content(inviteMessage);
+
+        chatMessageService.saveChatMessage(chatMessageDto);
+    }
+
     //채팅 읽음 처리
     private void handleChatRead(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         Long currentMemberNo = Long.parseLong((String) jsonMap.get("currentMember"));
@@ -329,6 +366,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     //채팅방 인원수 개수
     private void handleOutCount(Map<String, Object> jsonMap, WebSocketSession session ,String type) throws Exception {
         Object currentChatRoomNoObj = jsonMap.get("chat_room_no");
+        Object currentMemberObj = jsonMap.get("currentMember");
 
         Long currentChatRoomNo;
         if (currentChatRoomNoObj instanceof Integer) {
@@ -339,11 +377,26 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             throw new IllegalArgumentException("채팅방 번호의 오류");
         }
 
+        Long currentMember;
+        if (currentMemberObj instanceof Integer) {
+            currentMember = ((Integer) currentMemberObj).longValue();
+        } else if (currentMemberObj instanceof String) {
+            currentMember = Long.parseLong((String) currentMemberObj);
+        } else {
+            throw new IllegalArgumentException("채팅방 번호의 오류");
+        }
+        String position =  chatRoomService.searchPosition(currentMember);
+        String memberName = chatRoomService.getMemberName(currentMember);
         int unreadCounts = chatRoomService.countParicipant(currentChatRoomNo);
+        String outSentence = memberName + " "+ position;
+        saveOutMessage(outSentence, currentChatRoomNo);//채팅방 나가기
+
         Map<String, Object> response = new HashMap<>();
         response.put("type", "chatMemCount");
         response.put("data", unreadCounts);
         response.put("currentChatRoomNo",currentChatRoomNo);
+        response.put("outSentence",outSentence);
+
         for (WebSocketSession s : sessions.values()) {
             if (s.isOpen()) {
                 String responseJson = new ObjectMapper().writeValueAsString(response);
@@ -351,6 +404,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
         }
       }
+
+    // 나가기 메시지
+    private void saveOutMessage(String sentence, Long currentChatRoomNo) {
+        String inviteMessage = sentence+"님이 나가셨습니다.";
+
+        ChatMessageDto chatMessageDto = new ChatMessageDto();
+        chatMessageDto.setChat_room_no(currentChatRoomNo);
+        chatMessageDto.setChat_sender_no(0L);
+        chatMessageDto.setChat_content(inviteMessage);
+
+        chatMessageService.saveChatMessage(chatMessageDto);
+    }
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);

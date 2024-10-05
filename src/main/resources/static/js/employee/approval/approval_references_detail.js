@@ -147,14 +147,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			            .download_button {
 							float: right;
 						    padding: 8px 15px;
-						    background-color: #B3C7EE;
+						    background-color: #04AA6D;
 						    border: none;
 						    border-radius: 5px;
 						    cursor: pointer;
 						    text-decoration: none;
 						    font-size: 14px;
-						    color: #000000;
+						    color: white;
 			            }
+			            .download_button:hover{
+							opacity: 0.8;
+						}
 			            .content_section{
 						    margin: auto;
 	    					width: 780px;
@@ -218,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			        const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; 
 					const y = 10;			
 			        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight); 
-			        pdf.save('휴가문서.pdf');
+			        pdf.save('결재문서.pdf');
 			
 			        downloadButton.style.display = 'block'; 
 			    }).catch(error => {
@@ -229,6 +232,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
+		
+	window.functionTypes = [8];
+	const approvalNo = document.getElementById('approval_no').value;
+	if (window.functionTypes.includes(8)) {
+		markApprovalAsRead(8, approvalNo);
+	}
 });
 
 const location_text = document.getElementById('header_location_text');

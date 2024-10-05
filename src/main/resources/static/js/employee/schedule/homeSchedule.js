@@ -520,9 +520,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const selectedDateEventsList = document.getElementById('schedule_selected_date_list');
 	    selectedDateEventsList.innerHTML = '';  
 	    const home_schedule_date = document.getElementById('schedule_home_date');
-	 
-	    const formattedDate = selectedDate.split('-').join('.'); 
-	    home_schedule_date.innerHTML = formattedDate;  
+	  
+	    home_schedule_date.innerHTML = selectedDate;  
 	
 	    if (selectedDateEvents.length === 0) {
 	        selectedDateEventsList.innerHTML = '<li>일정이 없습니다.</li>';
@@ -586,8 +585,41 @@ document.addEventListener('DOMContentLoaded', function() {
 	            today: '오늘'
 	        },
 	        eventClick: function(info) { 
-				info.jsEvent.preventDefault(); 
-			},
+				 
+				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
+			    pickStartDate = eventStart.toISOString().split('T')[0];
+				 
+			    let eventEnd;
+			    if (info.event.end) { 
+			        if (info.event.allDay) {
+			            eventEnd = new Date(info.event.end.getTime() - 24 * 60 * 60 * 1000 - (info.event.end.getTimezoneOffset() * 60000));
+			        } else {
+			            eventEnd = new Date(info.event.end.getTime() - (info.event.end.getTimezoneOffset() * 60000));
+			        }
+			    } else {
+			        eventEnd = eventStart;
+			    }
+			    pickEndDate = eventEnd.toISOString().split('T')[0];  
+				 
+			    if (info.event.extendedProps.isException) { 
+			        showExceptionEventModal(info.event);
+			    } 
+			    else {
+				    if (info.event.extendedProps.type === 'personalResult' || info.event.extendedProps.type === 'participateResult'
+		            	|| info.event.extendedProps.type === 'scheduleDtos' || info.event.extendedProps.type === 'departmentResult') {
+				        const eventId = info.event.id; 
+				        showEventModalById(calendar, eventId, info.event);
+				    } else if (info.event.extendedProps.type === 'vacationResult') {
+						showVacationModal(info.event);
+					} else if (info.event.extendedProps.type === 'meetingResult') {
+						const eventId = info.event.id;
+				        showMeetingModalById(calendar, eventId, info.event);
+					} else {
+				        info.jsEvent.preventDefault();
+				    }   
+				}
+			    
+            },
 	        dayCellContent: function(info) {
 	            var number = document.createElement("a");
 	            number.classList.add("fc-daygrid-day-number");
@@ -602,6 +634,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	            }
 	            return { domNodes: [] };
 	        },
+	        moreLinkContent: function(args) {
+			    return ' + ' + args.num;
+			},
 	        dayMaxEvents: 3,
 	        dateClick: function(info) {
 	            selectedDate = info.dateStr;  
@@ -667,5 +702,294 @@ document.addEventListener('DOMContentLoaded', function() {
 	        event.setProp('display', shouldDisplay ? 'auto' : 'none');
 	    });
 	}
+	
+	document.getElementById('closeScheduleModalBtn').addEventListener('click', function() {    
+		console.log("close");
+		document.getElementById('eventViewModal').style.display = 'none';
+	});
+	
+	window.addEventListener('click', function(event) {
+	    var modal = document.getElementById('eventViewModal');
+	     
+	    if (event.target === modal) {
+	        modal.style.display = 'none';
+	    }
+	});
+
+ 	// 일정 상세
+	function showEventModalById(calendar, eventId, event) {    
+	    if (!event) {
+	        console.error("일정을 찾을 수 없습니다.");
+	        return;
+	    }
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle');
+	    const dateRange = document.getElementById('eventViewDateRange');
+	    const category = document.getElementById('eventViewCategory');
+	    const comment = document.getElementById('eventViewComment');
+	    const createdDate = document.getElementById('eventViewCreatedDate');
+	    const repeatInfo = document.getElementById('eventViewRepeatInfo'); 
+	    const hiddenEventId = document.getElementById('eventId'); 
+ 		const hiddenIsException = document.getElementById('isException'); 
+ 		hiddenIsException.value = 1;
+	    title.textContent = event.title;
+	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
+	  	
+	    const startDate = pickStartDate;
+	    const endDate = pickEndDate;
+	    const startTime = event.extendedProps.startTime;
+	    const endTime = event.extendedProps.endTime;
+	 	const allDay = event.allDay; 
+	 	
+		document.getElementById('eventViewDateRange').style.display = 'block';
+		document.getElementById('eventViewComment').style.display = 'block';
+	    document.getElementById('eventViewHr').style.display = 'block';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'block';
+	    document.getElementById('eventViewCreatedDate').style.display = 'block';  
+	    document.getElementById('eventViewHr').style.display = 'block';   
+		
+		document.getElementById('par_join').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_join_name').style.display = 'none'; 
+		document.getElementById('meeting_name').style.display = 'none'; 
+	 	document.getElementById('departmentName').style.display = 'block';  
+	 	 
+	    if(allDay && startDate === endDate) {
+	    	dateRange.textContent = `${startDate}`; 
+		} else if(!allDay) {  
+			if(startTime === endTime) { 
+				dateRange.textContent = `${startDate} ${startTime}`;				
+			} 
+			else {
+				dateRange.textContent = `${startDate} ${startTime} ~ ${endTime}`;	
+			}
+		} else {
+			dateRange.textContent = `${startDate} ~ ${endDate}`; 
+		}
+		 
+		if (event.extendedProps.type === 'departmentResult' && event.extendedProps.member_no !== Number(memberNo)) {  
+		    document.getElementById('departmentName').style.display = 'block'; 
+		} else if (event.extendedProps.type === 'scheduleDtos') {  
+		    document.getElementById('departmentName').style.display = 'none'; 
+		} else if (event.extendedProps.type === 'participateResult' && event.extendedProps.member_no !== Number(memberNo)) {  
+		    document.getElementById('departmentName').style.display = 'none'; 
+		}
+		else {
+		} 
+		
+		document.getElementById('event_modal_vacation').style.height = '300px'; 
+		
+		if (event.extendedProps.type === 'participateResult') {
+			document.getElementById('event_modal_vacation').style.height = '500px'; 
+			document.getElementById('par_join').style.display = 'block'; 
+			document.getElementById('par_create_name').style.display = 'block'; 
+			document.getElementById('par_create_name').style.display = 'block'; 
+			document.getElementById('par_join_name').style.display = 'block'; 
+			const createName = document.getElementById('par_create_name');
+			createName.innerHTML = `[등록자]<br>${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+
+		    const joinName = document.getElementById('par_join_name');
+		 
+		    if (event.extendedProps.participant_name && Array.isArray(event.extendedProps.participant_name)) {
+			    joinName.innerHTML = event.extendedProps.participant_name
+			        .map(name => `${name}`).join('<br>');
+			} 
+		    
+		    document.getElementById('event_modal_vacation').style.height = '500px'; 
+		}
+		else if (event.extendedProps.type === 'departmentResult') {
+			document.getElementById('par_join').style.display = 'none'; 
+			document.getElementById('par_create_name').style.display = 'block'; 
+			document.getElementById('par_join_name').style.display = 'none'; 
+			document.getElementById('meeting_name').style.display = 'block'; 
+			const departmentName = document.getElementById('departmentName');
+			departmentName.textContent = event.extendedProps.departmentName + ' 부서 일정';
+			
+			const createName = document.getElementById('par_create_name');
+			createName.innerHTML = `[등록자]<br>${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+		}
+		else {
+			 document.getElementById('par_join').style.display = 'none'; 
+		     document.getElementById('par_create_name').style.display = 'none'; 
+			 document.getElementById('meeting_name').style.display = 'none'; 
+			 document.getElementById('departmentName').style.display = 'none';
+		}
  
+		
+		document.getElementById('isRecurring_view').value = 0;
+	 	hiddenEventId.value = eventId;
+	    comment.textContent = event.extendedProps.comment; 
+	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
+	    repeatInfo.textContent = getRepeatInfoText(event.extendedProps.repeatType, event.extendedProps.repeatDay, event.extendedProps.repeatWeek , event.extendedProps.repeatDate , event.extendedProps.repeatMonth);
+	    modal.style.display = 'block';  
+	}  
+	
+	// 예외 상세 모달
+	function showExceptionEventModal(event) {
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle');
+	    const dateRange = document.getElementById('eventViewDateRange');
+	    const category = document.getElementById('eventViewCategory');
+	    const comment = document.getElementById('eventViewComment');
+	    const createdDate = document.getElementById('eventViewCreatedDate');
+	    const repeatInfo = document.getElementById('eventViewRepeatInfo'); 
+	    const hiddenEventId = document.getElementById('eventId'); 
+		const hiddenIsException = document.getElementById('isException'); 
+		document.getElementById('isRecurring').value = 2;
+		hiddenIsException.value = 0;
+	    title.textContent = event.title;
+	    category.textContent = `[${event.extendedProps.categoryName}]`;
+	   
+		const startDate = pickStartDate;
+	    const endDate = pickEndDate;
+	    const startTime = event.extendedProps.startTime;
+	    const endTime = event.extendedProps.endTime;
+	    document.getElementById('isRecurring_view').value = 2; 
+	    
+		document.getElementById('eventViewDateRange').style.display = 'block';
+		document.getElementById('eventViewComment').style.display = 'block';
+	    document.getElementById('eventViewHr').style.display = 'block';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'block';
+	    document.getElementById('eventViewCreatedDate').style.display = 'block';
+	    document.getElementById('event_repeat_title').style.display = 'block';  
+	    document.getElementById('eventViewHr').style.display = 'block'; 
+    
+		document.getElementById('par_join').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_join_name').style.display = 'none'; 
+		document.getElementById('meeting_name').style.display = 'none'; 
+	     
+	    if(startDate === endDate) {
+	    	dateRange.textContent = `${startDate}`; 
+		} else if(endDate === null) {
+			if(startTime === endTime) {
+				dateRange.textContent = `${startDate} ${startTime}`;				
+			} 
+			else {
+				dateRange.textContent = `${startDate} ${startTime} ~ ${endTime}`;	
+			}
+		} else {
+			dateRange.textContent = `${startDate} ~ ${endDate}`; 
+		}
+		
+		if (event.extendedProps.type === 'participateResult') { 
+			document.getElementById('event_modal_vacation').style.height = '500px'
+			const createName = document.getElementById('par_create_name');
+			createName.innerHTML = `[등록자]<br>${event.extendedProps.memberName} ${event.extendedProps.positionName}`;
+
+		    const joinName = document.getElementById('par_join_name');
+		 	 
+			if (event.extendedProps.excepetion_participant_name && Array.isArray(event.extendedProps.excepetion_participant_name)) {
+			    joinName.innerHTML = event.extendedProps.excepetion_participant_name
+			        .map(name => `${name}`).join('<br>');
+			}
+
+		} 
+		else if (event.extendedProps.type === 'departmentResult') {
+			document.getElementById('par_join').style.display = 'none'; 
+			document.getElementById('par_create_name').style.display = 'none'; 
+			document.getElementById('par_join_name').style.display = 'none'; 
+			document.getElementById('meeting_name').style.display = 'block'; 
+			const departmentName = document.getElementById('departmentName');
+			departmentName.textContent = event.extendedProps.departmentName;
+		}
+		else {
+			 document.getElementById('par_join').style.display = 'none'; 
+		     document.getElementById('par_create_name').style.display = 'none'; 
+			 document.getElementById('meeting_name').style.display = 'none'; 
+			 document.getElementById('departmentName').style.display = 'none';
+		}
+  
+	    hiddenEventId.value = event.extendedProps.exceptionNo; 
+	    comment.textContent = event.extendedProps.comment; 
+	    createdDate.textContent = event.extendedProps.createDate.substr(0,10) + ` 등록`; 
+	    repeatInfo.textContent = '';
+		
+		document.getElementById('event_modal_vacation').style.height = '300px'; 
+	    modal.style.display = 'block';  
+	}
+	
+	function getRepeatInfoText(repeatType, repeatDay, repeatWeek, repeatDate, repeatMonth) { 
+	    let info_type = '';
+	    let info_day = ''; 
+	
+	    switch(repeatType) {
+	        case 1:  
+	            info_type = '매일 반복';
+	            break;
+	        case 2:  
+	            info_type = '매주';
+	            info_day = getDayInformation(repeatDay);  
+	            break;
+	        case 3:  
+	            info_type = `매월 ${repeatDate}일 반복`;
+	            break;
+	        case 4:  
+	            info_type = `매월 ${repeatWeek}번째 ${getDayInformation(repeatDay)} 반복`;
+	            break;
+	        case 5: 
+	            info_type = `매년 ${repeatMonth}월 ${repeatDate}일 반복`;
+	            break;
+	        default:
+	            info_type = '';
+	            break;
+	    }
+	    
+	    return info_type + (info_day ? ' ' + info_day + ' 반복' : '');
+	}
+	 
+	function getDayInformation(day) {
+	    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+	    return days[day];
+	} 
+	
+	function showMeetingModalById(calendar, eventId, event) { 
+	    if (!event) {
+	        console.error("일정을 찾을 수 없습니다.");
+	        return;
+	    }
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle'); 
+	    const category = document.getElementById('eventViewCategory');
+	    const comment = document.getElementById('eventViewComment');   
+	    const dateRange = document.getElementById('eventViewDateRange');  
+	    title.textContent = event.title;
+	    category.textContent = `[` + event.extendedProps.categoryName + `]`;
+	  	comment.textContent = event.extendedProps.meeting_reservation_purpose;
+	    
+		dateRange.textContent = `${event.extendedProps.meeting_date} ${event.extendedProps.meeting_start_time} ~ ${event.extendedProps.meeting_end_time}`;
+
+		document.getElementById('eventViewDateRange').style.display = 'block';
+		document.getElementById('eventViewComment').style.display = 'block';
+	    document.getElementById('eventViewHr').style.display = 'block';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'block';
+	    document.getElementById('eventViewCreatedDate').style.display = 'block';    
+	 	  
+	    document.getElementById('event_modal_vacation').style.height = '500px'; 
+		document.getElementById('par_join').style.display = 'block'; 
+		document.getElementById('par_create_name').style.display = 'block'; 
+		document.getElementById('par_create_name').style.display = 'block'; 
+		document.getElementById('meeting_name').style.display = 'block'; 
+		document.getElementById('par_join_name').style.display = 'block'; 
+	    const createName = document.getElementById('par_create_name');
+	    createName.innerHTML = `[예약자]<br>${event.extendedProps.member_name} ${event.extendedProps.positionName}`;
+	
+	    const joinName = document.getElementById('par_join_name');
+	 
+	    if (event.extendedProps.participant_name && Array.isArray(event.extendedProps.participant_name)) {
+		    joinName.innerHTML = event.extendedProps.participant_name
+		        .map(name => `${name}`).join('<br>');
+		} 
+		
+		const meetingName = document.getElementById('meeting_name');
+		meetingName.textContent = `[회의실] ${event.extendedProps.meeting_name}`;
+	    
+	    document.getElementById('eventViewHr').style.display = 'none'; 
+	    document.getElementById('eventViewRepeatInfo').style.display = 'none';
+	    document.getElementById('eventViewCreatedDate').style.display = 'none';
+	    document.getElementById('event_modal_vacation').style.height = '500px'; 
+   		modal.style.display = 'block';  
+	}   
 });

@@ -111,16 +111,15 @@ document.addEventListener('DOMContentLoaded', function() {
         reservationList.innerHTML = '';
 
         const home_schedule_date = document.getElementById('meeting_home_date');
- 
-        const formattedDate = date.split('-').join('.'); 
-        home_schedule_date.innerHTML = formattedDate; 
+  
+        home_schedule_date.innerHTML = date; 
 
         var dayReservations = reservations.filter(function(reservation) {
             return reservation.meeting_reservation_date.startsWith(date);
         });
 
         if (dayReservations.length === 0) {
-            reservationList.innerHTML = '<div class="meeting_no_reservation">예약이 없습니다.</div>';
+            reservationList.innerHTML = '<li>예약이 없습니다.</li>';
         } else {
 		    dayReservations.forEach(function(reservation) {
 		        var div = document.createElement('div');

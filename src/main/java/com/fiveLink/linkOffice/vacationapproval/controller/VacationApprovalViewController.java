@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fiveLink.linkOffice.approval.domain.ApprovalDto;
+import com.fiveLink.linkOffice.member.domain.Member;
 import com.fiveLink.linkOffice.member.domain.MemberDto;
 import com.fiveLink.linkOffice.member.service.MemberService;
 import com.fiveLink.linkOffice.vacation.domain.VacationTypeDto;
@@ -51,8 +51,12 @@ public class VacationApprovalViewController {
  	public String employeeVacationApprovalCreate(Model model) {
  		Long member_no = memberService.getLoggedInMemberNo();
  		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
- 		List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
  		
+ 		Member mem = memberService.memberNo(member_no);
+ 		
+ 		List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
+ 		System.out.println(mem.getMemberVacationCount());
+ 		model.addAttribute("mem",mem);
  		model.addAttribute("memberdto", memberdto);
  		model.addAttribute("vacationTypeList", vacationTypeList);
  		
@@ -146,8 +150,13 @@ public class VacationApprovalViewController {
  		Long member_no = memberService.getLoggedInMemberNo();
  		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
  		
+ 		Member mem = memberService.memberNo(member_no);
+ 		
+ 		System.out.println(mem.getMemberVacationCount());
+ 		
  		List<VacationTypeDto> vacationTypeList = vacationService.selectVacationTypeList();
  		
+ 		model.addAttribute("mem",mem);
  		model.addAttribute("vacationapprovaldto", vacationapprovaldto);
  		model.addAttribute("memberdto", memberdto);
  		model.addAttribute("vacationTypeList", vacationTypeList);

@@ -394,8 +394,8 @@ textarea {
 
 #addEventBtn {
     padding: 10px 40px;
-    background-color: #B1C2DD;
-    color: black;
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;  
     font-size : 15px; 
@@ -404,7 +404,7 @@ textarea {
 } 
 
 #addEventBtn:hover { 
-	background-color: #9CAFC7;
+	background-color: #003a82;
 }
 
 #allDay {
@@ -414,8 +414,8 @@ textarea {
 .modal_in_btn {
 	width : 70px;
     padding: 8px 16px;
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -423,7 +423,7 @@ textarea {
 }
 
 .modal_in_btn:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 } 
 
 .button-group {
@@ -434,18 +434,17 @@ textarea {
 	margin-left : 30px;
 	width : 70px;
     padding: 8px 16px;
-    background-color: #C0C0C0;
-    color: rgb(0, 0, 0);
-    border: none;
+	background-color: #f8f9fa;
+	color: #333;
+	border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .cancel_in_btn:hover {
-    background-color: #888888;
-} 
-
+    background-color: #e9ecef;
+}  
  
 .custom-picker {
   display: none;
@@ -493,37 +492,6 @@ textarea {
 .button-group {
 	margin-left : 70px;
 	margin-top: 10px;
-}
-
-.modal_in_btn {
-	width : 110px;
-    padding: 10px 20px;
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-right : 5px;
-}
-
-.cancel_in_btn {
-	width : 110px;
-    padding: 10px 20px;
-    background-color: #C0C0C0;
-    color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.cancel_in_btn:hover {
-    background-color: #9b9b9b;
-}
-
-.modal_in_btn:hover {
-    background-color: #9CAFC7;
 } 
 
 .custom-dropdown {
@@ -584,15 +552,53 @@ textarea {
     
 #searchButton {
     padding: 10px 20px;
-    background-color: #B1C2DD;
-    color: black;
-    border: none;
+	background-color: #0056b3;
+	color: white;
+	border: none;
     border-radius: 4px;  
     font-size : 15px; 
     cursor: pointer;
 }
 
 #searchButton:hover { 
-    background-color: #9CAFC7; 
+    background-color: #003a82; 
 }
  
+.fc .fc-day-today {
+  background-color: rgb(177, 194, 221, 0.2)!important;
+}
+
+.fc-more-link {
+  color: #666666;
+  background-color: #f0f0f0;
+  padding: 2px 5;
+  border-radius: 3px; 
+  font-weight: 550; 
+  margin-left: 10px;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333333;
+} 
+ 
+.fc-event {
+  border: none;
+  border-radius: 5px; 
+  padding: 2px 15px;
+  font-size: 0.85em;
+  transition: opacity 0.2s;
+  margin-bottom: 3px; 
+}
+
+.fc th { 
+  font-weight: 500;
+  color: #666666; 
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.fc .fc-toolbar {
+  padding: 1.5rem; 
+  border-bottom: 1px solid #e0e0e0;
+}

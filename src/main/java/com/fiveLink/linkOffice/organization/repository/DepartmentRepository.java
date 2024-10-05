@@ -39,6 +39,12 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Department findByDepartmentNo(Long departmentNo);
     
     // [서혜원] 일정 부서 조회
-    List<Department> findAllByDepartmentStatusAndDepartmentHighNotOrderByDepartmentHighAscDepartmentNameAsc(Long departmentStatus, Long departmentHigh);
+    @Query("SELECT d FROM Department d " +
+            "WHERE d.departmentStatus = 0 " +
+            "AND (d.departmentHigh != 0 " +
+            "OR (d.departmentHigh = 0 " +
+            "AND d.departmentNo NOT IN (SELECT d2.departmentHigh FROM Department d2 WHERE d2.departmentHigh != 0))) " +
+            "ORDER BY d.departmentHigh ASC, d.departmentName ASC")
+     List<Department> findAllByCustomCondition();
      
 }

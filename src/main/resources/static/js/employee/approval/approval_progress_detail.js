@@ -20,7 +20,7 @@ const approvalTitle = document.getElementById('approval_title').innerHTML;
             Swal.fire({
                 icon: 'warning',
                 text: '취소 사유를 입력해주세요.',
-                confirmButtonColor: '#B1C2DD',
+                confirmButtonColor: '#0056b3',
                 confirmButtonText: "확인"
             });
             return;
@@ -42,7 +42,7 @@ const approvalTitle = document.getElementById('approval_title').innerHTML;
                 Swal.fire({
                     icon: 'success',
                     text: data.res_msg,
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: "확인"
                 }).then(() => {
                     location.href = "/employee/approval/approval_reject_detail/"+appNo;
@@ -51,7 +51,7 @@ const approvalTitle = document.getElementById('approval_title').innerHTML;
                 Swal.fire({
                     icon: 'error',
                     text: data.res_msg,
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: "확인"
                 });
             }
@@ -206,14 +206,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			            .download_button {
 							float: right;
 						    padding: 8px 15px;
-						    background-color: #B3C7EE;
+						    background-color: #04AA6D;
 						    border: none;
 						    border-radius: 5px;
 						    cursor: pointer;
 						    text-decoration: none;
 						    font-size: 14px;
-						    color: #000000;
+						    color: white;
 			            }
+			            .download_button:hover{
+							opacity: 0.8;
+						}
 			            .content_section{
 						    margin: auto;
 	    					width: 780px;
@@ -288,6 +291,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			};
 
 		});
+		
+	window.functionTypes = [15];
+
+	const appNo = document.querySelector('#approval_no').value;
+		if (window.functionTypes.includes(15)) {
+			markApprovalAsRead(15, appNo);
+		}
+		
 });
 
 const location_text = document.getElementById('header_location_text');

@@ -76,7 +76,7 @@
         		</form>
         	</div>
             <div class="document_folder_list">
-                <div class="document_folder_tree">
+                <div class="document_folder_tree" style="display: none;">
                 	<!-- AJAX로 폴더 출력 -->
 	                <div id="tree" style="display: none;"></div>
 	                <div class="folder_buttons" style="display: none;">
@@ -96,7 +96,7 @@
 	                	<div id="current_size_text"></div>
 	                </div>
                 </div>
-                <hr>
+                <hr id="document_hr" style="display: none;">
                 <div class="document_file_div">
 	                <div class="document_no_folder" style="display: none;">
 	                    <button id="first_folder_add">+</button>
@@ -141,7 +141,7 @@
 		                            	<th style="width: 5%"><input type="checkbox" id="select_all"></th>
 		                                <th style="width: 42%">파일명</th>
 		                                <th style="width: 15%">등록일</th>
-		                                <th style="width: 9%">파일 보기</th>
+		                                <th style="width: 9%">미리보기</th>
 		                                <th style="width: 12%">용량</th>
 		                                <th style="width: 9%">다운로드</th>
 		                                <th style="width: 8%">삭제</th>
@@ -161,8 +161,8 @@
                 </div>
         	</div>
         </section>
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
     	<script src="/js/employee/document/personal.js"></script>
     </th:block>
 </html>

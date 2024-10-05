@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			Swal.fire({
 				icon : 'error',
 				text : vali_text,
-				confirmButtonColor: '#B1C2DD', 
+				confirmButtonColor: '#0056b3', 
 				confirmButtonText : "확인"
 			});
 			 event.preventDefault();

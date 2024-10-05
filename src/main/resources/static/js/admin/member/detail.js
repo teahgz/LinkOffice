@@ -5,8 +5,8 @@ function confirmEnd(){
 		text:'퇴사처리 하시겠습니까?',
 		icon: 'warning',
 		showCancelButton: true,
-		confirmButtonColor: '#B1C2DD',
-        cancelButtonColor: '#C0C0C0',
+		confirmButtonColor: '#0056b3',
+        cancelButtonColor: '#f8f9fa',
         confirmButtonText: '확인',
         cancelButtonText: '취소'
 	}).then((result) => {
@@ -26,7 +26,7 @@ function confirmEnd(){
 					Swal.fire({
 					icon : 'success',
 					text : data.res_msg,
-					confirmButtonColor: '#C0C0C0',
+					confirmButtonColor: '#0056b3',
 					confirmButtonText : "확인"
 					}).then((result) =>{
 						location.href="/admin/member/detail/"+memberNo;
@@ -35,7 +35,7 @@ function confirmEnd(){
 					Swal.fire({
 					icon : 'error',
 					text : data.res_msg,
-					confirmButtonColor: '#C0C0C0',
+					confirmButtonColor: '#0056b3',
 					confirmButtonText : "확인"
 				});
 			}}

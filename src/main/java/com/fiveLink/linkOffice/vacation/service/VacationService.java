@@ -128,7 +128,7 @@ public class VacationService {
 
 
     //1년미만 재직자 한달에 한번 휴가 지급
-    public void incrementVacation(Long memberNo, int num){
+    public void incrementVacation(Long memberNo, double num){
             Member member = memberRepository.findById(memberNo)
                     .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다"));
             // 휴가 일수 증가
@@ -143,7 +143,7 @@ public class VacationService {
     }
 
     //1년이상 재직자 입사일 기준 경과 시, 휴가 지급
-    public void resetVacation(Long memberNo, int num){
+    public void resetVacation(Long memberNo, double num){
 
             Member member = memberRepository.findById(memberNo)
                     .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다"));
@@ -184,13 +184,23 @@ public class VacationService {
     }
 
     //사용자 별 휴가 개수
-    public int userVacationCount(Long memberNo) {
+    public double userVacationCount(Long memberNo) {
         return vacationMapper.userVacationCount(memberNo);
     }
 
     //사용자별 연차
     public String memberHireDate(Long memberNo){
         return vacationMapper.memberHireDate(memberNo);
+    }
+    
+    // 휴가 번호로 해당 휴가 갯수 조회
+    public Double vacationType(Long vacationNo) {
+    	try {
+    		vacationTypeRepository.findVacationTypeCalculateByVacationNo(vacationNo);
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return vacationTypeRepository.findVacationTypeCalculateByVacationNo(vacationNo);
     }
 
 }

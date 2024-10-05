@@ -53,30 +53,30 @@
 
 .room-info-table-div::-webkit-scrollbar {
     display: block;      
-    width: 14px;
+    width: 12px;
 } 
  
 .room-info-table-div::-webkit-scrollbar-thumb {
-    background-color: rgb(247, 229, 153, 0.5); 
+    background-color: rgb(0, 86, 179, 0.5); 
     border-radius: 10px;    
 }
 
 .room-info-table-div::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(235, 218, 152, 0.5); 
+    background-color: rgb(0, 86, 179, 0.5); 
 }
 
 #reservation-table::-webkit-scrollbar {
     display: block;      
-    height: 15px;
+    height: 12px;
 }
 
 #reservation-table::-webkit-scrollbar-thumb {
-    background-color: rgb(247, 229, 153, 0.5);  
+    background-color: rgb(0, 86, 179, 0.3);  
     border-radius: 10px;   
 }
 
 #reservation-table::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(235, 218, 152, 0.5); 
+    background-color: rgb(0, 86, 179, 0.5); 
 }
 
 #room-info table {
@@ -116,7 +116,7 @@
     font-size : 15px;
 }
 #reservation-table th {
-    background-color: rgb(247, 229, 153, 0.5);
+    background-color: #f2f2f2;
     display:table-cell;
     width:60px;  
     text-align: center;
@@ -286,7 +286,7 @@ td.available {
 
 /* 불가능한 시간 */
 .unavailable {
-    background-color: rgb(196, 196, 196, 0.3); 
+    background-color: rgb(196, 196, 196, 0.2); 
     cursor: not-allowed;
 }
 
@@ -323,8 +323,8 @@ td.available {
 }
 
 #participate_confirmButton {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -333,6 +333,9 @@ td.available {
     margin-top: 40px;    
 } 
 
+#participate_confirmButton {
+	background-color: #003a82;
+}
 .participate_modal-content {
     background-color: #fefefe;
     margin: 5% auto; 
@@ -499,8 +502,8 @@ td.available {
     max-width: 400px;  
     padding: 15px;  
     font-size: 16px; 
-    color: black; 
-    background-color: #B1C2DD;  
+    color: white; 
+    background-color: #0056b3;  
     border: none; 
     border-radius: 5px; 
     cursor: pointer; 
@@ -508,7 +511,7 @@ td.available {
 }
 
 .reserve-button:hover {
-    background-color: #9CAFC7;  
+    background-color: #003a82;  
 } 
 
 textarea{
@@ -691,4 +694,73 @@ select option {
     display: inline-block;
     text-align: center;
     margin-left: 32px; 
-}  
+}   
+
+.fc .fc-day-today {
+  background-color: rgb(29, 70, 145)!important;
+}
+ 
+.fc .fc-daygrid-day-frame {
+	background-color: rgb(255, 255, 255, 0.9);
+}
+
+.reserve-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 20px;
+}
+
+.reserve-button:hover {
+  background-color: #003a82;
+}
+
+#reservation-table th,
+#reservation-table td {
+  padding: 12px; 
+  text-align: center;
+  min-width: 80px; 
+}
+
+.selected-participants-container {
+  flex: 1;
+  min-height: 50px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+ 
+.reservation_btn, .cancel_btn {
+  padding: 10px 30px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reservation_btn {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+}
+
+.reservation_btn:hover {
+  background-color: #003a82;
+}
+
+.cancel_btn {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.cancel_btn:hover {
+  background-color: #e9ecef;
+}

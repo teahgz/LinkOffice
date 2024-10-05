@@ -325,14 +325,17 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            .download_button {
 							float: right;
 						    padding: 8px 15px;
-						    background-color: #B3C7EE;
+						    background-color: #04AA6D;
 						    border: none;
 						    border-radius: 5px;
 						    cursor: pointer;
 						    text-decoration: none;
 						    font-size: 14px;
-						    color: #000000;
+						    color: white;
 			            }
+			            .download_button:hover{
+							opacity: 0.8;
+						}
 			            .content_section{
 						    margin: auto;
 	    					width: 780px;
@@ -431,13 +434,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
             if (approvalTitle.trim() === "") {  
                 vali_text += '결재 제목을 입력해주세요.';
                 document.querySelector('#approval_title').focus();
-            } else if(approvers.length === 0 && references.length === 0 && reviewers.length === 0 ){
-				 vali_text += '결재선를 지정해주세요.';
-                document.querySelector('#openChart').focus();
-			}  else if(approvers.length === 0 && references.length === 0){
-				 vali_text += '결재자 / 합의자를 지정해주세요.';
-                document.querySelector('#openChart').focus();
-			} else if (editorData.trim() === "") {
+            } else if (editorData.trim() === "") {
                 vali_text += '양식을 선택해주세요.';
                 editor.ui.view.editable.element.focus();  
             } else {
@@ -448,7 +445,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
                 Swal.fire({
                     icon: 'warning',
                     text: vali_text,
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: "확인"
                 });
             } else {
@@ -475,7 +472,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            Swal.fire({
 			                icon: 'success',
 			                text: data.res_msg,
-			                confirmButtonColor: '#B1C2DD',
+			                confirmButtonColor: '#0056b3',
 			                confirmButtonText: "확인"
 			            }).then((result) => {
 			            	location.href = "/employee/approval/approval_progress_detail/"+appNo;
@@ -484,7 +481,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            Swal.fire({
 			                icon: 'error',
 			                text: data.res_msg,
-			                confirmButtonColor: '#B1C2DD',
+			                confirmButtonColor: '#0056b3',
 			                confirmButtonText: "확인"
 			            });
 			        }

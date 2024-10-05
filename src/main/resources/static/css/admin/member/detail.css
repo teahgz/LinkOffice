@@ -8,7 +8,7 @@
 }
 
 .profile_card {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     border-radius: 12px; 
     max-width: 800px; 
     width: 100%;
@@ -99,14 +99,15 @@
 .end_button {
     margin-left: 10px; 
     padding: 5px 20px;
-    background-color: #e38a8a;
+    background-color: #dc3545;
+	color:white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .end_button:hover {
-    background-color: #EEB3B3;
+    background-color: #c82333;
 }
 
 .button_container {
@@ -118,24 +119,31 @@
 }
 
 #edit_div {
-	margin-top:6px;
+	margin-top:12px;
 }
 
 #edit_button {
-    padding: 8px 15px;
-    background-color: #B3C7EE; 
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none; 
-    font-size:14px;
-    color: #000000;
+	padding: 10px 20px;
+	background-color: #0056b3;
+	border-radius: 4px;
+	color: white;
+	border: none;
+}
+
+#edit_button:hover {
+	background-color: #003a82;
 }
 
 #list_button {
-    padding: 8px 15px;
-    background-color: #C0C0C0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+	padding: 9px 20px;
+	background-color: #f8f9fa;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	color: #333333;
+	cursor: pointer;
+	font-size:16px;
+}
+
+#list_button:hover {
+	background-color: #e9ecef;
 }

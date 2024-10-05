@@ -38,8 +38,12 @@
                     <div class="chatList" id="chatList" th:each="item : ${combinedChatList}">
                         <!-- 채팅 목록 항목 -->
                         <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${item.chatMember.chat_room_no} + ')'">
-                           <i th:if="${item.chatType == 0}" class="fa-solid fa-user" style="font-size: 15px; margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
-                            <i th:if="${item.chatType == 1}" class="fa-solid fa-users" style="font-size: 15px; margin-left : 10px; margin-right : 10px; display: flex; align-items:center"></i>
+                            <img th:if="${item.chatType == 0}"
+                                 th:src="${item.profileImages[0] != null ? '/linkOfficeImg/member/profile/' + item.profileImages[0] : '/img/user_profile.png'}"
+                                 alt="프로필 이미지" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;   margin-left: 20px;" />
+                            <div class="group-info" th:if="${item.chatType == 1}">
+                                <div class="group-image" th:text="${item.chatMember.chat_member_room_name.charAt(0)}" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;"></div>
+                            </div>
                             <h3><p th:text="${item.chatMember.chat_member_room_name}"></p></h3>
                             <div class="pin">
                                 <i class="fa-solid fa-thumbtack" th:if="${item.chatMember.chat_member_pin == 1}"></i>

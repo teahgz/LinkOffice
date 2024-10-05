@@ -173,9 +173,15 @@ public class HomeController {
 		    model.addAttribute("isCheckedIn", isCheckedIn);
 		    model.addAttribute("isCheckedOut", isCheckedOut); 
 		    
+<<<<<<< HEAD
 		    
 		    
 		 
+=======
+		    model.addAttribute("mySurveyList", mySurveyList.getContent());
+		      
+		    model.addAttribute("importantNotices", importantNotices);
+>>>>>>> 3d6d660eb4ba3883d81252f9ebf33514afdba085
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    boolean isAdmin = authentication.getAuthorities().stream()
 		                         .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("TOTAL_ADMIN"));

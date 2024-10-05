@@ -128,7 +128,7 @@
     overflow-y: auto;
 }
 .chatList-container {
-    max-height: 880px;
+    max-height: 1204px;
     overflow-y: auto;
 }
 .chatList-container::-webkit-scrollbar {
@@ -157,6 +157,7 @@
     cursor: pointer;
     display:flex;
     flex-direction:row;
+    align-items:center;
 }
 
 .chatItem:hover {
@@ -315,7 +316,16 @@
     display: block;
     color: #666;
 }
+.system-message {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
 
+.system-message .system-content p {
+    margin: 0;
+    padding: 5px 0;
+}
 /*그룹명 모달*/
 .modal-content {
     border-radius: 10px;
@@ -488,4 +498,28 @@ margin-top: 10px;
 .custom-cancel-button {
     background-color: #C0C0C0;
     color: white;
+}
+.profile-images {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.group-info {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.group-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 0;
+    background-color: rgb(177, 194, 221);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
 }

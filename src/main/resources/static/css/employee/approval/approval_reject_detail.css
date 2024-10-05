@@ -7,7 +7,7 @@
 
 .main_container {
 	width: 50%;
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px 30px;
@@ -126,6 +126,13 @@
     gap: 20px;
 }
 
+.button_container {
+	display: flex;
+    justify-content: right; 	
+    gap: 20px;
+    position: relative;
+}
+
 .content_section {
     align-content: center;
     display: flex;
@@ -151,49 +158,18 @@
     color: #333;
 }
 
-.button_container {
-	display: flex;
-    justify-content: flex-end; 	
-    gap: 20px;
-    position: relative;
-}
-
-.edit_button {
-    padding: 8px 15px;
-    background-color: #B3C7EE;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 14px;
-    color: #000000;
-}
-
-.cancel_button {
-    padding: 8px 15px;
-    background-color: #EEB3B3; 
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    position: absolute;
-    bottom: 5px; 
-    left: 5px; 
-}
-
 .list_button {
-    padding: 8px 15px;
-    background-color: #C0C0C0;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333333;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.edit_button:hover,
-.list_button:hover,
-.cancel_button:hover {
-    opacity: 0.8;
+.list_button:hover {
+	background-color: #e9ecef;
 }
 
 .approval_content {
@@ -422,12 +398,18 @@
 	font-size: 17px;
 }
 
+
 .preview_button {
     padding: 8px 15px;
-    background-color: #f9e1e1; 
+    background-color: #04AA6D; 
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
-    width:100px;
+    width: 100px;
+    color:white;
+}
+
+.preview_button:hover {
+    opacity: 0.8;
 }

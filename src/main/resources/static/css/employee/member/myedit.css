@@ -16,7 +16,7 @@
 }
 
 .modal-content {
-background-color: #fefefe;
+background-color: #ffffff;
     padding: 40px;
     border: 1px solid #888;
     width: 300px;
@@ -97,7 +97,14 @@ background-color: #fefefe;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
-	background-color: #B1C2DD;
+	background-color: #0056b3;
+	color:white;
+	border: none;
+}
+
+#pwVerifyFrm button:hover {
+	background-color: #003a82;
+	color:white;
 }
 
 .my_profile {
@@ -110,7 +117,7 @@ background-color: #fefefe;
 }
 
 .profile_card {
-	background-color: #f8f9fa;
+	background-color: #ffffff;
 	border-radius: 12px;
 	max-width: 900px;
 	width: 100%;
@@ -263,7 +270,7 @@ background-color: #fefefe;
 
 .toggle_icon {
     position: absolute;
-    right: 150px;
+    right: 180px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
@@ -293,13 +300,33 @@ background-color: #fefefe;
 }
 
 .address_button {
-	background-color: #B1C2DD;
+	background-color: #0056b3;
+	color:white;
+	border: none;
 }
 
 .edit_button {
-	background-color: #B1C2DD;
+	background-color: #0056b3;
+	color:white;
+	border: none;
+}
+
+.address_button:hover {
+	background-color: #003a82;
+	color:white;
+}
+
+.edit_button:hover {
+	background-color: #003a82;
+	color:white;
 }
 
 .cancel_button {
-	background-color: #C0C0C0;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.cancel_button:hover {
+   	background-color: #e9ecef;
 }

@@ -412,14 +412,17 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            .download_button {
 							float: right;
 						    padding: 8px 15px;
-						    background-color: #B3C7EE;
+						    background-color: #04AA6D;
 						    border: none;
 						    border-radius: 5px;
 						    cursor: pointer;
 						    text-decoration: none;
 						    font-size: 14px;
-						    color: #000000;
+						    color: white;
 			            }
+			            .download_button:hover{
+							opacity: 0.8;
+						}
 			            .content_section{
 						    margin: auto;
 	    					width: 780px;
@@ -526,6 +529,10 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			const approvers = Array.from(document.querySelectorAll('input[id="approverNumbers"]')).map(input => input.value);
 			const references = Array.from(document.querySelectorAll('input[id="referenceNumbers"]')).map(input => input.value);
 			const reviewers = Array.from(document.querySelectorAll('input[id="reviewerNumbers"]')).map(input => input.value);
+			
+			const memVacationCount = document.querySelector('#member_vacation_count').value;
+			console.log("console"+memVacationCount);
+			console.log("dateCount"+dateCount);
 
 		 	let vali_check = false;
             let vali_text = "";
@@ -545,6 +552,8 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			}  else if(approvers.length === 0 && references.length === 0){
 				 vali_text += '결재자 / 합의자를 지정해주세요.';
                 document.querySelector('#openChart').focus();
+			} else if(parseFloat(memVacationCount) < parseFloat(dateCount)){
+				vali_text += '남은 휴가 개수가 선택된 기간보다 부족합니다.';
 			} else {
                 vali_check = true;
             }
@@ -586,7 +595,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            Swal.fire({
 			                icon: 'success',
 			                text: data.res_msg,
-			                confirmButtonColor: '#B1C2DD',
+			                confirmButtonColor: '#0056b3',
 			                confirmButtonText: "확인"
 			            }).then((result) => {
 			                location.href = "/employee/vacationapproval/list";
@@ -595,7 +604,7 @@ ClassicEditor.create(document.querySelector('#editor'), editorConfig)
 			            Swal.fire({
 			                icon: 'error',
 			                text: data.res_msg,
-			                confirmButtonColor: '#B1C2DD',
+			                confirmButtonColor: '#0056b3',
 			                confirmButtonText: "확인"
 			            });
 			        }

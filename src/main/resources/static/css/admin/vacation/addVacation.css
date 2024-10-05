@@ -6,15 +6,16 @@
       align-items: center;
 }
 .vacationForms { 
-    max-width: 1200px;
+    width: 70%;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #fff;
     margin-top : 20px;
 }
 .vacationForm {
     margin-bottom : 20px;
+    padding: 30px;
 }
 .vacation_click {
     display: flex;
@@ -112,13 +113,19 @@ button{
     border-radius : 10px;
     border: none;
     cursor: pointer;
-    background-color: #B1C2DD;
+    color:white;
+    background-color: #0056b3;
 }
 .vacationType_click {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom : 1vw;
+
+}
+.vacationTypeForm {
+    padding-left: 30px;
+    padding-right: 30px;
 }
 .vacationTypeFormContainer {
     display: flex;
@@ -140,12 +147,33 @@ button{
 }
 
 .vacationTable {
-   width:100%;
+  width:100%;
   border-collapse: collapse;
-  margin: 2vw 0;
   table-layout: fixed;
+
+}
+.vacationTableArea{
+   max-height: 500px;
+   overflow-y: scroll;
+   margin-bottom: 20px;
+   padding-left: 30px;
+   padding-right: 30px;
+}
+.vacationTableArea::-webkit-scrollbar {
+    margin-left:2px;
+    display: block;
+    width: 12px;
+}
+.vacationTableArea::-webkit-scrollbar-thumb {
+    margin-left:2px;
+    background-color: #ddd;
+    border-radius: 5px;
 }
 
+.vacationTableArea::-webkit-scrollbar-thumb:hover {
+    margin-left:2px;
+    background-color: #ddd;
+}
 table,
 th,
 td {
@@ -203,6 +231,8 @@ th {
 
 .oneUnderForm {
     margin-bottom : 2vw;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .delete-btn {

@@ -62,7 +62,7 @@
 }
 
 .list {
-     background-color: #f9f9f9; 
+    background-color: white; 
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 40px;
@@ -86,7 +86,7 @@
     width: 50%; 
     padding: 20px;
     border: 1px solid #ddd;
-    background-color: #f9f9f9;
+    background-color: white;
 }
 
 .list-header, .details-header {
@@ -100,13 +100,17 @@
 }
 
 button {
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #003a82;
 }
 
 .scheduleCategory_Lists {
@@ -137,11 +141,11 @@ button {
 }
 
 #deleteButton {
-	background-color: #EEB3B3;
+	background-color: #dc3545;
 }
 
 #deleteButton:hover {
-	background-color: #e07676;
+	background-color: #c82333;
 }
 
 .details-content p {
