@@ -40,7 +40,7 @@ public class InventoryViewController {
         this.departmentService = departmentService;
     }
     
-    // 비품 목록 페이지
+ // 비품 목록 페이지
     @GetMapping("/inventory/list/{member_no}")
     public String inventoryList(@PathVariable("member_no") Long memberNo, Model model) {
         // 멤버 정보 조회
@@ -69,6 +69,7 @@ public class InventoryViewController {
             @PathVariable("department_no") Long departmentNo) {
         return inventoryService.selectInventoryByCategoryAndDepartment(inventoryCategoryNo, departmentNo);
     }
+
 
     // 비품 등록 페이지 
     @GetMapping("/inventory/create/{member_no}")

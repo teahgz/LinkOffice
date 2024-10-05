@@ -1,12 +1,11 @@
 @charset "UTF-8";
 
 .container {
-   	margin: auto;
+    margin: auto;
     width: 80%;
     padding: 40px;
     box-sizing: border-box;
 }
-
 
 .header h1, .header h3, .header p {
     margin: 0;
@@ -16,17 +15,14 @@
     margin: 20px 0;
 }
 
-.radio-group {
-    margin: 10px 0;
-}
-
 input[type="radio"], input[type="text"] {
     margin-right: 10px;
 }
 
+/* Submit and Cancel Buttons */
 .submit-buttons {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     margin-top: 20px;
 }
 
@@ -34,18 +30,19 @@ input[type="radio"], input[type="text"] {
     margin: 0 10px;
     padding: 10px 20px;
     border: none;
-    background-color: #007bff;
+    background-color: #B1C2DD;  
     color: white;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s, transform 0.1s;
 }
 
-.submit-buttons button.cancel {
-    background-color: #6c757d;
+.submit-buttons button.cancel-btn {
+    background-color: #EEB3B3; 
 }
 
 .submit-buttons button:hover {
+    background-color: #9CAFC7;  
     opacity: 0.9;
 }
 
@@ -53,16 +50,7 @@ input[type="radio"], input[type="text"] {
     transform: scale(0.98);
 }
 
-.fixed-box {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
+/* 그 외 스타일 */
 table {
     width: 100%;
     border-collapse: separate;

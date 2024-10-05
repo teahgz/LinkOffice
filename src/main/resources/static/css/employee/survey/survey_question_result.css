@@ -85,34 +85,6 @@ input[type="radio"], input[type="text"] {
     margin-right: 10px;
 }
 
-.submit-buttons {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.submit-buttons button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.1s;
-}
-
-.submit-buttons button.cancel {
-    background-color: #6c757d;
-}
-
-.submit-buttons button:hover {
-    opacity: 0.9;
-}
-
-.submit-buttons button:active {
-    transform: scale(0.98);
-}
 
 .fixed-box {
     position: fixed;
@@ -182,3 +154,44 @@ body {
     color: #333;
     line-height: 1.6;
 }
+
+/* 수정 버튼을 우측 하단에 고정 */
+.btn-edit {
+    display: inline-block;
+    background-color: #B3C7EE; 
+    color: white;
+    padding: 7.5px 25px;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    position: fixed; 
+    right: 130px; 
+    bottom: 20px; 
+}
+
+.btn-edit:hover {
+    background-color: #9BB0E5; 
+}
+
+.cancel-btn {
+    display: inline-block;
+    background-color: #6c757d; 
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    position: fixed; 
+    right: 20px;
+    bottom: 20px; 
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268; 
+}
+
+

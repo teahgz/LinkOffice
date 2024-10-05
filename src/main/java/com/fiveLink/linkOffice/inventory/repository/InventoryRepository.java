@@ -22,7 +22,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
             "JOIN i.inventoryCategory ic " +
             "JOIN i.department d " +
             "WHERE d.departmentNo = :departmentNo " +
-            "GROUP BY ic.inventoryCategoryName " +
+            "GROUP BY ic.inventoryCategoryNo, ic.inventoryCategoryName " +
             "ORDER BY ic.inventoryCategoryNo")
     List<Object[]> findCategorySummaryByDepartment(@Param("departmentNo") Long departmentNo);
 

@@ -85,317 +85,327 @@
 <script>
 const location_text = document.getElementById('header_location_text');
 location_text.innerHTML = '비품목록';
-    function fetchInventoryByDepartment() {
-        var departmentNo = document.getElementById("departmentSelect").value;
-        var table = $('#example').DataTable();
 
-        if (!departmentNo) {
-            table.clear(); 
-            table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
-            table.draw();  
-            return;  
-        }
+function showAlert(message) {
+    Swal.fire({
+        text: message,
+        icon: 'warning',
+        confirmButtonColor: '#0056b3',
+        confirmButtonText: '확인',
+    });
+}
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/inventory/department/' + departmentNo, true);
+function fetchInventoryByDepartment() {
+    var departmentNo = document.getElementById("departmentSelect").value;
+    var table = $('#example').DataTable();
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    updateCategoryTable(data);
-                } else {
-                    console.error('요청 실패:', xhr.status, xhr.statusText);
-                }
-            }
-        };
-        xhr.send();
-    }
-
-    function updateCategoryTable(data) {
-        var table = $('#example').DataTable();
+    if (!departmentNo) {
+        showAlert('부서를 선택해주세요.'); 
         table.clear(); 
-
-        if (data.length === 0) {
-            table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
-            table.draw();  
-            table.page.len(-1).draw(); 
-        } else {
-            data.forEach(function(item, index) {
-                var row = `
-                    <tr data-inventory_no="${item.inventory_category_no}">
-                        <td class="details-control"></td>
-                        <td>${index + 1}</td>
-                        <td>${item.inventory_category_name}</td>
-                        <td>${item.inventory_price}</td> 
-                        <td>${item.inventory_quantity}</td> 
-                        <td>${item.inventory_location}</td> 
-                        <td>${item.inventory_purchase_date}</td> 
-                    </tr>
-                `;
-                table.row.add($(row));
-            });
-            table.draw(false);
-            table.page.len(10).draw(); 
-        }
+        table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
+        table.draw();  
+        return;  
     }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/inventory/department/' + departmentNo, true);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                updateCategoryTable(data);
+            } else {
+                console.error('요청 실패:', xhr.status, xhr.statusText);
+            }
+        }
+    };
+    xhr.send();
+}
+
+function updateCategoryTable(data) {
+    var table = $('#example').DataTable();
+    table.clear(); 
+
+    if (data.length === 0) {
+        table.settings()[0].oLanguage.sEmptyTable = "부서를 선택해주세요";
+        table.draw();  
+        table.page.len(-1).draw(); 
+    } else {
+        data.forEach(function(item, index) {
+            var row = `
+                <tr data-inventory_no="${item.inventory_category_no}">
+                    <td class="details-control"></td>
+                    <td>${index + 1}</td>
+                    <td>${item.inventory_category_name}</td>
+                    <td>${item.inventory_price}</td> 
+                    <td>${item.inventory_quantity}</td> 
+                    <td>${item.inventory_location}</td> 
+                    <td>${item.inventory_purchase_date}</td> 
+                </tr>
+            `;
+            table.row.add($(row));
+        });
+        table.draw(false);
+        table.page.len(10).draw(); 
+    }
+}
 
  // 화살표 클릭 시 세부 비품 표시
-    function format(inventory_category_no, row) {
-        var departmentNo = document.getElementById("departmentSelect").value;
-        var detailsHtml = '<table class="child-table"><thead><tr><th>번호</th><th>비품명</th><th>가격</th><th>개수</th><th>위치</th><th>구입일자</th><th>관리자</th></tr></thead><tbody>';
+function format(inventory_category_no, row) {
+    var departmentNo = document.getElementById("departmentSelect").value;
+    var detailsHtml = '<table class="child-table"><thead><tr><th>번호</th><th>비품명</th><th>가격</th><th>개수</th><th>위치</th><th>구입일자</th><th>관리자</th></tr></thead><tbody>';
 
-        fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, function(data) {
-            if (Array.isArray(data) && data.length > 0) {
-                data.forEach(function(item, index) {
-                    detailsHtml += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td><a href="#" class="inventory-name" data-id="${item.inventory_no}" data-item="${item.inventory_name}" data-price="${item.inventory_price}" data-quantity="${item.inventory_quantity}" data-location="${item.inventory_location}" data-purchase-date="${item.inventory_purchase_date}">${item.inventory_name}</a></td>
-                            <td>${item.inventory_price}</td>
-                            <td>${item.inventory_quantity}</td>
-                            <td>${item.inventory_location}</td>
-                            <td>${item.inventory_purchase_date}</td>
-                            <td>${item.member_name + ' 관리자'}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                detailsHtml += '<tr><td colspan="7">세부 정보가 없습니다.</td></tr>';
-            }
-            detailsHtml += '</tbody></table>';
-            row.child(detailsHtml).show();
-        });
-    }
+    fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, function(data) {
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(function(item, index) {
+                detailsHtml += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><a href="#" class="inventory-name" data-id="${item.inventory_no}" data-item="${item.inventory_name}" data-price="${item.inventory_price}" data-quantity="${item.inventory_quantity}" data-location="${item.inventory_location}" data-purchase-date="${item.inventory_purchase_date}">${item.inventory_name}</a></td>
+                        <td>${item.inventory_price}</td>
+                        <td>${item.inventory_quantity}</td>
+                        <td>${item.inventory_location}</td>
+                        <td>${item.inventory_purchase_date}</td>
+                        <td>${item.member_name}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            detailsHtml += '<tr><td colspan="7">세부 정보가 없습니다.</td></tr>';
+        }
+        detailsHtml += '</tbody></table>';
+        row.child(detailsHtml).show();
+    });
+}
 
-    function fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/inventory/category/' + inventory_category_no + '/department/' + departmentNo, true);
+function fetchInventoryByCategoryAndDepartment(inventory_category_no, departmentNo, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/inventory/category/' + inventory_category_no + '/department/' + departmentNo, true);
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    try {
-                        var data = JSON.parse(xhr.responseText);
-                        callback(data);  
-                    } catch (e) {
-                        console.error('Error parsing JSON:', e);
-                    }
-                } else {
-                    console.error('요청 실패:', xhr.status, xhr.statusText);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    callback(data);  
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
                 }
+            } else {
+                console.error('요청 실패:', xhr.status, xhr.statusText);
             }
-        };
+        }
+    };
 
-        xhr.send(); 
-    }
-    
-    $(document).ready(function() {
-        var debounceTimeout;  // 전역 변수로 디바운스 타이머 선언
-        var table = $('#example').DataTable({
-            "paging": true,
-            "ordering": true,
-            "info": false,
-            "autoWidth": false,
-            "pagingType": "full_numbers",
-            "language": {
-                "emptyTable": "부서를 선택해주세요.",
-                "zeroRecords": "검색 결과가 없습니다.",
-                "paginate": {
-                    "first": "<<",
-                    "last": ">>",
-                    "next": ">",
-                    "previous": "<"
-                },
-                "search": "검색 : "
+    xhr.send(); 
+}
+
+$(document).ready(function() {
+    var debounceTimeout;  
+    var table = $('#example').DataTable({
+        "paging": true,
+        "ordering": true,
+        "info": false,
+        "autoWidth": false,
+        "pagingType": "full_numbers",
+        "language": {
+            "emptyTable": "부서를 선택해주세요.",
+            "zeroRecords": "검색 결과가 없습니다.",
+            "paginate": {
+                "first": "<<",
+                "last": ">>",
+                "next": ">",
+                "previous": "<"
             },
-            "drawCallback": function(settings) {
-                var api = this.api();
-                var records = api.rows({ page: 'current' }).data().length;
-                if (records === 0) {
-                    $('.dataTables_paginate').hide();
-                } else {
-                    $('.dataTables_paginate').show();
-                }
-                var pageInfo = api.page.info();
-                if (pageInfo.page === 0) {
-                    $('.paginate_button.previous, .paginate_button.first').hide();
-                } else {
-                    $('.paginate_button.previous, .paginate_button.first').show();
-                }
-                if (pageInfo.page === pageInfo.pages - 1) {
-                    $('.paginate_button.next, .paginate_button.last').hide();
-                } else {
-                    $('.paginate_button.next, .paginate_button.last').show();
-                }
-            }
-        });
-
-        // DataTables 기본 검색 필드에 디바운스 적용
-        $('#example_filter input').unbind() 
-        .on('input', function() {
-            var searchValue = this.value;  
-            clearTimeout(debounceTimeout); 
-
-            // 새 타이머 설정: 300ms 후에 검색 실행
-            debounceTimeout = setTimeout(function() {
-                table.search(searchValue).draw();  
-            }, 400);  
-        });
-       
-        $('.dataTables_length').remove();
-
-        // 화살표 클릭 시 세부 비품 표시
-        $('#example tbody').on('click', 'td.details-control', function() {
-            var tr = $(this).closest('tr');
-            var row = table.row(tr);
-            var inventory_category_no = tr.attr('data-inventory_no');
-
-            if (row.child.isShown()) {
-                row.child.hide();
-                tr.removeClass('shown');
+            "search": "검색 : "
+        },
+        "drawCallback": function(settings) {
+            var api = this.api();
+            var records = api.rows({ page: 'current' }).data().length;
+            if (records === 0) {
+                $('.dataTables_paginate').hide();
             } else {
-                format(inventory_category_no, row);
-                tr.addClass('shown');
+                $('.dataTables_paginate').show();
             }
-        });
-  
-
-
-        // 세부 비품명 클릭 시 모달 표시
-        $('#example tbody').on('click', 'a.inventory-name', function(e) {
-            e.preventDefault();
-
-            var itemNo = $(this).data('id');
-            var itemName = $(this).data('item');
-            var itemPrice = $(this).data('price');
-            var itemQuantity = $(this).data('quantity');
-            var itemLocation = $(this).data('location');
-            var itemPurchaseDate = $(this).data('purchase-date');
-
-            $('#itemNo').val(itemNo);
-            $('#itemName').val(itemName);
-            $('#itemPrice').val(itemPrice);
-            $('#itemQuantity').val(itemQuantity);
-            $('#itemLocation').val(itemLocation);
-            $('#itemPurchaseDate').val(itemPurchaseDate);
-            $('#inventoryModal').show();
-        });
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('inventoryModal')) {
-                document.getElementById('inventoryModal').style.display = 'none';
+            var pageInfo = api.page.info();
+            if (pageInfo.page === 0) {
+                $('.paginate_button.previous, .paginate_button.first').hide();
+            } else {
+                $('.paginate_button.previous, .paginate_button.first').show();
             }
-        };
-        document.querySelector('.close-modal').addEventListener('click', function() {
-            document.getElementById('inventoryModal').style.display = 'none';
-        });
+            if (pageInfo.page === pageInfo.pages - 1) {
+                $('.paginate_button.next, .paginate_button.last').hide();
+            } else {
+                $('.paginate_button.next, .paginate_button.last').show();
+            }
+        }
     });
 
-    function saveChanges() {
-        var csrfToken = $('#csrfToken').val();  
+    // DataTables 기본 검색 필드에 디바운스 적용
+    $('#example_filter input').unbind() 
+    .on('input', function() {
+        var searchValue = this.value;  
+        clearTimeout(debounceTimeout); 
 
-        const formData = {
-            inventory_no: $('#itemNo').val(),  
-            inventory_name: $('#itemName').val(),
-            inventory_price: $('#itemPrice').val(),
-            inventory_quantity: $('#itemQuantity').val(),
-            inventory_location: $('#itemLocation').val(),
-            inventory_purchase_date: $('#itemPurchaseDate').val()
-        };
+        // 새 타이머 설정: 300ms 후에 검색 실행
+        debounceTimeout = setTimeout(function() {
+            table.search(searchValue).draw();  
+        }, 400);  
+    });
+   
+    $('.dataTables_length').remove();
 
-        
-        Swal.fire({
-            title: '정말 수정하시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '수정',
-            cancelButtonText: '취소'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '/inventory/update',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken  
-                    },
-                    success: function(response) {
-                        if(response.res_code === "200") {
-                        	Swal.fire({
-                        	    icon: 'success',
-                        	    text: response.res_msg 
-                        	}).then(() => {
-                                $('#inventoryModal').hide();
-                                fetchInventoryByDepartment(); 
-                            });
-                        } else {
-                        	Swal.fire({
-                        	    icon: 'error',
-                        	    text: response.res_msg 
-                        	});
-                        }
-                    },
-                    error: function() {
-                    	Swal.fire({
-                    	    icon: 'error',
-                    	    text: '수정 중 오류가 발생했습니다.' 
-                    	});
+    // 화살표 클릭 시 세부 비품 표시
+    $('#example tbody').on('click', 'td.details-control', function() {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        var inventory_category_no = tr.attr('data-inventory_no');
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            format(inventory_category_no, row);
+            tr.addClass('shown');
+        }
+    });
+
+
+    // 세부 비품명 클릭 시 모달 표시
+    $('#example tbody').on('click', 'a.inventory-name', function(e) {
+        e.preventDefault();
+
+        var itemNo = $(this).data('id');
+        var itemName = $(this).data('item');
+        var itemPrice = $(this).data('price');
+        var itemQuantity = $(this).data('quantity');
+        var itemLocation = $(this).data('location');
+        var itemPurchaseDate = $(this).data('purchase-date');
+
+        $('#itemNo').val(itemNo);
+        $('#itemName').val(itemName);
+        $('#itemPrice').val(itemPrice);
+        $('#itemQuantity').val(itemQuantity);
+        $('#itemLocation').val(itemLocation);
+        $('#itemPurchaseDate').val(itemPurchaseDate);
+        $('#inventoryModal').show();
+    });
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('inventoryModal')) {
+            document.getElementById('inventoryModal').style.display = 'none';
+        }
+    };
+    document.querySelector('.close-modal').addEventListener('click', function() {
+        document.getElementById('inventoryModal').style.display = 'none';
+    });
+});
+
+function saveChanges() {
+    var csrfToken = $('#csrfToken').val();  
+
+    const formData = {
+        inventory_no: $('#itemNo').val(),  
+        inventory_name: $('#itemName').val(),
+        inventory_price: $('#itemPrice').val(),
+        inventory_quantity: $('#itemQuantity').val(),
+        inventory_location: $('#itemLocation').val(),
+        inventory_purchase_date: $('#itemPurchaseDate').val()
+    };
+
+    Swal.fire({
+    	text: '정말 수정하시겠습니까?',
+        icon: 'warning',
+        confirmButtonColor: '#0056b3',
+        confirmButtonText: '수정',
+        showCancelButton: true,
+        cancelButtonText: '취소'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/inventory/update',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken  
+                },
+                success: function(response) {
+                    if(response.res_code === "200") {
+                        Swal.fire({
+                            icon: 'success',
+                            text: response.res_msg 
+                        }).then(() => {
+                            $('#inventoryModal').hide();
+                            fetchInventoryByDepartment(); 
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            text: response.res_msg 
+                        });
                     }
-                });
-            }
-        });
-    }
-
-    function deleteItem() {
-        const csrfToken = $('#csrfToken').val();
-        const no = $('#itemNo').val();
-
-        Swal.fire({
-            title: '정말 삭제하시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '삭제',
-            cancelButtonText: '취소'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/inventory/delete/${no}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('네트워크 응답이 좋지 않습니다.');
-                    }
-                    return response.json(); 
-                })
-                .then(() => {
-                	Swal.fire({
-                	    icon: 'success',
-                	    text: '삭제되었습니다.' 
-                	}).then(() => {
-                        $('#inventoryModal').hide();
-                        fetchInventoryByDepartment(); 
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        text: '수정 중 오류가 발생했습니다.' 
                     });
-                })
-                .catch(() => {
-                	Swal.fire({
-                	    icon: 'error',
-                	    text: '삭제 중 오류가 발생했습니다.' 
-                	})
+                }
+            });
+        }
+    });
+}
+
+function deleteItem() {
+    const csrfToken = $('#csrfToken').val();
+    const no = $('#itemNo').val();
+
+    Swal.fire({
+        text: '정말 삭제하시겠습니까?',
+        icon: 'warning',
+        confirmButtonColor: '#0056b3',
+        confirmButtonText: '삭제',
+        showCancelButton: true,
+        cancelButtonText: '취소'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/inventory/delete/${no}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 좋지 않습니다.');
+                }
+                return response.json(); 
+            })
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    text: '삭제되었습니다.' 
+                }).then(() => {
+                    $('#inventoryModal').hide();
+                    fetchInventoryByDepartment(); 
                 });
-            }
-        });
-    }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    text: '삭제 중 오류가 발생했습니다.' 
+                });
+            });
+        }
+    });
+}
 
-
-    function closeModal() {
-        $('#inventoryModal').hide();
-    }
+function closeModal() {
+    $('#inventoryModal').hide();
+}
 
 </script>
 
