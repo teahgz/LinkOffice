@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    border-bottom: 1px solid #ddd;
+
 }
 .no-style {
     border: none;
@@ -45,8 +45,8 @@
 
 #chatRoomTitle {
     margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 19px;
+    font-weight: 400;
      flex-grow: 1;
      text-align: left;
 }
@@ -72,6 +72,11 @@
 }
 #searchChatButton {
     margin-right: 3px;
+    font-size: 17px;
+    background-color:transparent;
+}
+#openChart {
+    font-size: 18px;
 }
 .searchContainer {
     display: flex;
@@ -128,7 +133,7 @@
     overflow-y: auto;
 }
 .chatList-container {
-    max-height: 1204px;
+    max-height: 879px;
     overflow-y: auto;
 }
 .chatList-container::-webkit-scrollbar {
@@ -151,6 +156,10 @@
     scrollbar-width: thin;
     scrollbar-color: #888 #f1f1f1;
 }
+#chatListTitle {
+    font-weight:400;
+    font-size:19px;
+}
 .chatItem {
     gap:10px;
     padding: 10px;
@@ -158,6 +167,10 @@
     display:flex;
     flex-direction:row;
     align-items:center;
+    position:relative;
+}
+.chatItem h3 p{
+    font-weight:400;
 }
 
 .chatItem:hover {
@@ -180,6 +193,8 @@
 .pin{
     display:flex;
     align-items:center;
+    color: #8080808f;
+    margin-left: 10px;
 }
 
 .countParticipant {
@@ -187,7 +202,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
+    font-size: 17px;
+    margin-left: 5px;
 }
 .chatInfo {
     display:flex;
@@ -284,11 +300,13 @@
 
 .my-message .message-content {
     background-color: #B1C2DD;
-    padding: 10px;
     margin: 5px;
     max-width: 50%;
     margin-left: auto;
     display: inline-block;
+    border-radius:20px;
+    padding-left:18px;
+    padding-right:18px;
 }
 
 .my-message .message-time {
@@ -296,6 +314,7 @@
     text-align: right;
     color: #666;
     padding: 0 10px;
+    margin-left:8px;
 }
 
 .other-message .message-ele {
@@ -305,7 +324,9 @@
 
 .other-message .message-content {
     background-color: #e3e3e3;
-    padding: 10px;
+    border-radius:20px;
+    padding-left: 18px;
+    padding-right: 18px;
     margin: 5px;
     max-width: 50%;
     display: inline-block;
@@ -315,6 +336,7 @@
 .other-message .message-time {
     display: block;
     color: #666;
+    margin-left:8px;
 }
 .system-message {
     text-align: center;
@@ -337,6 +359,10 @@
 .selected-member-item i {
     margin-right: 5px;
     font-size: 2px;
+}
+.modal-title{
+    font-weight: bold;
+    font-size:18px;
 }
 .group-modal-header {
     border-bottom: none;
@@ -392,7 +418,8 @@
 .modal-footer button {
     border-radius: 5px;
     border:none;
-    background-color: #B1C2DD;
+    background-color: #003a82;
+    color:white;
     padding: 10px 15px;
 
 }
@@ -402,7 +429,11 @@
     align-items: center;
     min-height: calc(100% - 1rem);
 }
-
+#confirmGroupChatName:disabled {
+    background-color: #d3d3d3;
+    border-color: #b0b0b0;
+    color: #a9a9a9;
+}
 
 .send-button:disabled {
     background-color: #d3d3d3;
@@ -417,6 +448,7 @@
 }
 #openDrop {
     margin-bottom:2px;
+    font-size:17px;
 }
 .chatDropdown {
     position: relative;
@@ -431,7 +463,8 @@
     right: 0;
     border-radius: 5px;
     background-color: white;
-    min-width: 140px;
+    min-width: 150px;
+    font-size: 18px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -454,9 +487,14 @@
 .unread-count-container {
     display: flex;
     align-items: center;
+     position: absolute;
+     right: 50px;
+     top: 50%;
+     transform: translateY(-50%);
 }
 .menu-text {
     margin-left: 4px;
+    font-weight: 300;
 }
 #searchChatContent {
     margin-top : 3px;
@@ -467,8 +505,6 @@
 }
 .modal-content-element .close {
     border:none;
-    background-color:white;
-    color: #aaa;
     font-size: 28px;
     cursor: pointer;
 }
@@ -483,20 +519,21 @@ margin-top: 10px;
     width: 65px;
     border-radius: 5px;
     border:none;
-    background-color: #B1C2DD;
+    background-color: #003a82;
+    color:white;
     padding: 10px 15px;
 }
-.update-button:disabled {
+#editChatRoomForm button:disabled {
     background-color: #d3d3d3;
     color: #a9a9a9;
     opacity: 0.6;
 }
 .custom-confirm-button {
-    background-color: #B1C2DD;
-    color: white;
+     background-color: #003a82;
+     color:white;
 }
 .custom-cancel-button {
-    background-color: #C0C0C0;
+    background-color: #dc3545;
     color: white;
 }
 .profile-images {
@@ -523,3 +560,4 @@ margin-top: 10px;
     font-weight: bold;
     margin-right: 10px;
 }
+

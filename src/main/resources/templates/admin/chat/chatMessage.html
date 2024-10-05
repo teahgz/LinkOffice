@@ -28,21 +28,22 @@
                 </div>
 
                 <!-- 검색 창 구역 -->
-                <div id="searchContainer" class="searchContainer" style="display:none;">
-                    <input type="text" id="searchInput" placeholder="메신저방 이름을 입력하세요." oninput="searchMem()">
-                    <button id="cancelSearchButton" onclick="toggleSearch()" class="btn btn-danger no-style">
-                        <i class="fa-solid fa-times"></i>
-                    </button>
-                </div>
+
                 <div class="chatList-container">
+                    <div id="searchContainer" class="searchContainer" style="display:none;">
+                        <input type="text" id="searchInput" placeholder="메신저방 이름을 입력하세요." oninput="searchMem()">
+                        <button id="cancelSearchButton" onclick="toggleSearch()" class="btn btn-danger no-style">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
                     <div class="chatList" id="chatList" th:each="item : ${combinedChatList}">
                         <!-- 채팅 목록 항목 -->
                         <div class="chatItem" th:onclick="'handleChatRoomClick('+ ${item.chatMember.chat_room_no} + ')'">
                             <img th:if="${item.chatType == 0}"
                                  th:src="${item.profileImages[0] != null ? '/linkOfficeImg/member/profile/' + item.profileImages[0] : '/img/user_profile.png'}"
-                                 alt="프로필 이미지" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;   margin-left: 40px;" />
+                                 alt="프로필 이미지" style="border-radius: 50%; width: 70px; height: 70px; margin: 20px;   margin-left: 40px;" />
                             <div class="group-info" th:if="${item.chatType == 1}">
-                                <div class="group-image" th:text="${item.chatMember.chat_member_room_name.charAt(0)}" style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;"></div>
+                                <div class="group-image" th:text="${item.chatMember.chat_member_room_name.charAt(0)}" style="border-radius: 50%; width: 70px; height: 70px; margin: 20px;"></div>
                             </div>
                             <h3><p th:text="${item.chatMember.chat_member_room_name}"></p></h3>
                             <div class="pin">
@@ -80,7 +81,7 @@
                             </button>
                             <div id="chatDropdownMenu" class="chat-dropdown-menu">
                                 <a href="#" id="pinChatItem" class="chat-dropdown-item">
-                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">고정</span>
+                                    <i class="fa-solid fa-thumbtack" style="margin-left:4px;" ></i> <span class="menu-text">고정</span>
                                 </a>
                                 <a href="#" id="pinDeleteChatItem" class="chat-dropdown-item" style="display:none;">
                                     <i class="fa-solid fa-thumbtack-slash"></i> <span class="menu-text">고정해제</span>
@@ -92,13 +93,13 @@
 <!--                                    <i class="fa-solid fa-thumbtack"></i> <span class="menu-text">알림켜기</span>-->
 <!--                                </a>-->
                                 <a href="#" id="addChatItem" class="chat-dropdown-item">
-                                    <i class="fa-solid fa-plus"></i> <span class="menu-text">초대</span>
+                                    <i class="fa-solid fa-plus" style="margin-left:4px;"></i> <span class="menu-text">초대</span>
                                 </a>
                                 <a href="#" id="editChatRoomButton" class="chat-dropdown-item">
-                                    <i class="fa-regular fa-pen-to-square"></i> <span class="menu-text">수정</span>
+                                    <i class="fa-regular fa-pen-to-square"  style="margin-left:5px;"></i> <span class="menu-text">수정</span>
                                 </a>
                                 <a href="#" id="leaveChatItem" class="chat-dropdown-item">
-                                    <i class="fa-solid fa-arrow-right"></i> <span class="menu-text">나가기</span>
+                                    <i class="fa-solid fa-arrow-right" style="margin-left:5px;"></i> <span class="menu-text" style="margin-left: 10px;">나가기</span>
                                 </a>
                             </div>
                         </div>
@@ -152,9 +153,10 @@
                     <div class="group-modal-header">
                         <h5 class="modal-title" id="groupChatNameModalLabel">그룹 채팅방 이름 입력</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <span  class="chart_close" aria-hidden="true">&times;</span>
                         </button>
                     </div>
+
                     <div class="modal-body">
                         <input type="text" id="groupChatNameInput" class="form-control" placeholder="그룹 채팅방 이름을 입력하세요">
                         <div id="selectedMembersList" class="mt-3">
@@ -172,7 +174,7 @@
         <div id="editChatRoomModal" class="modal">
             <div class="modal-content">
                 <div class="modal-content-element">
-                    <h2>채팅방 이름 수정</h2>
+                    <p style="font-weight: bold; font-size: 18px;">채팅방 이름 수정</p>
                     <button type="button" class="close">&times;</button>
                 </div>
 
