@@ -18,7 +18,7 @@
 				<input type="hidden" name="_csrf" th:value="${_csrf.token}"
 					id="csrfToken" /> <input type="hidden" name="notice_no"
 					th:value="${dto.notice_no}" />
-
+				<input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
 				<!-- 제목 -->
 				<div class="header">
 					<label id="titleLabel">제목 :</label> <span id="importantLabel"
@@ -168,7 +168,7 @@
                         icon: 'success',
                         text: data.res_msg
                     }).then(() => {
-                        location.href = '/admin/notice/list/' + memberNo;
+                    	location.href = '/admin/notice/list';
                     });
                 } else {
                     Swal.fire({
