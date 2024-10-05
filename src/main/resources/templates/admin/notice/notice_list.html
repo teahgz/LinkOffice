@@ -112,6 +112,16 @@
 	<script>
 		const location_text = document.getElementById('header_location_text');
 		location_text.innerHTML = '공지사항';
+		
+		
+		document.addEventListener("DOMContentLoaded", function() {
+		    window.functionType = 14; 
+		    console.log("현재 기능 타입: " +window.functionType);
+
+		    if (window.functionType === 1) {
+		        markNotificationsAsRead(window.functionType);
+		    }
+		});
 	</script>
 </th:block>
 </html>

@@ -139,13 +139,18 @@ public class HomeController {
 	                model.addAttribute("checkOutTime", attendanceDto.getCheck_out_time().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 	            }
 	        }
-	        // 중요 공지사항
-	        List<NoticeDto> importantNotices = noticeService.getImportantNotices();
+	        // 공지사항
+	        Pageable noticePageable = PageRequest.of(0, 5);  
+	        NoticeDto noticeSearchDto = new NoticeDto();
+	        Page<NoticeDto> allNotices = noticeService.getAllNoticePage(noticePageable, "latest", noticeSearchDto);  
+
+	        model.addAttribute("noticeList", allNotices.getContent());
+	        
 	        // 설문 목록 조회 (진행중인 설문)
-	        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("surveyStartDate"))); 
+	        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("surveyStartDate"))); 
 	        SurveyDto searchDto = new SurveyDto();  
 	        Page<SurveyDto> mySurveyList = surveyService.getIngAllSurveyPage(pageable, searchDto, member_no);
-	        
+	        model.addAttribute("mySurveyList", mySurveyList.getContent());
 	        // [전주영] 전자결재 개수 조회
 	        long approvalCount = approvalService.countApprovalHistory(member_no);
 	        long referenceCount = approvalService.countApprovalReferences(member_no);
@@ -168,9 +173,9 @@ public class HomeController {
 		    model.addAttribute("isCheckedIn", isCheckedIn);
 		    model.addAttribute("isCheckedOut", isCheckedOut); 
 		    
-		    model.addAttribute("mySurveyList", mySurveyList.getContent());
 		    
-		    model.addAttribute("importantNotices", importantNotices);
+		    
+		 
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    boolean isAdmin = authentication.getAuthorities().stream()
 		                         .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("TOTAL_ADMIN"));

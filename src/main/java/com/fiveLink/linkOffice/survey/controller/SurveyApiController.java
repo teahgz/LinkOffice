@@ -83,7 +83,7 @@ public class SurveyApiController {
 
 	    try {
 	        // 설문 업데이트 처리
-	        surveyService.updateCompleteSurvey(surveyDto);  // update 메소드로 수정
+	        surveyService.updateCompleteSurvey(surveyDto); 
 	        resultMap.put("res_code", "200");
 	        resultMap.put("res_msg", "설문이 성공적으로 업데이트되었습니다.");
 	    } catch (Exception e) {
@@ -99,7 +99,7 @@ public class SurveyApiController {
 	@GetMapping("/employee/survey/create/{member_no}")
 	public String showSurveyCreatePage(Model model) {
 		List<DepartmentDto> departments = departmentService.getAllDepartments();
-		List<MemberDto> members = memberService.getAllMembersChartOut(); // 본인 제외한 사원 목록
+		List<MemberDto> members = memberService.getAllMembersChartOut(); 
 		Long memberNo = memberService.getLoggedInMemberNo();
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
         
