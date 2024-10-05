@@ -510,7 +510,6 @@ function connectWebSocket() {
                                 <em style="display: block; margin-bottom: 5px; float: right;">${message.timestamp}</em>
                                 <hr style="border: none; margin: 10px 0;">
                             `;
-<<<<<<< HEAD
 							listItem.addEventListener('click', () => {
 								const notificationType = listItem.getAttribute('data-notification-type');
 								if (notificationType === '1') {
@@ -553,7 +552,6 @@ function connectWebSocket() {
 					if (window.functionTypes.includes(currentType)) {
 						markNotificationsAsRead(currentType);
 					} else {
-=======
                         listItem.addEventListener('click', () => {
                             const notificationType = listItem.getAttribute('data-notification-type');
                             if (notificationType === '1') {
@@ -561,7 +559,7 @@ function connectWebSocket() {
                             }
                         });
                             notificationModal.insertBefore(listItem, notificationModal.children[1]);
-                        });
+                        
                     }
 				} else if(message.type === 'documentAlarm'){
 				    const title = message.title;
@@ -606,7 +604,7 @@ function connectWebSocket() {
                     if (window.functionTypes.includes(currentType)) {
                         markNotificationsAsRead(currentType);
                     } else {
->>>>>>> 3d6d660eb4ba3883d81252f9ebf33514afdba085
+
 						if (notificationModal.children.length <= 1) {
 							notificationModal.innerHTML = `
 	                        <li id="mark-as-read" class="mark-as-read" style="font-size: 10px; text-align: right; color: gray;">일괄읽음</li>
@@ -795,20 +793,4 @@ function markNotificationsAsRead(functionType) {
 		});
 }
 
-// 안읽음을 읽음으로 처리하는 함수(전자 결재용)
-function markApprovalAsRead(functionType, noficationTypePk) {
-	fetch(`/api/nofication/type/Approval/read/${currentMember}/${functionType}/${noficationTypePk}`)
-		.then(response => response.json())
-		.then(data => {
-			if (data.read) {
-				console.log('읽음 처리 완료');
-				bellUnreadCount();
-			} else {
-				console.error('읽음 처리 실패');
-			}
-		})
-		.catch(error => {
-			console.error('읽음 처리 중 오류 발생:', error);
-		});
-}
 //------ 수정불가 ------
