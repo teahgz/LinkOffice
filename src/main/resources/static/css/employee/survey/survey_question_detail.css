@@ -30,7 +30,7 @@ input[type="radio"], input[type="text"] {
     margin: 0 10px;
     padding: 10px 20px;
     border: none;
-    background-color: #B1C2DD;  
+    background-color: #0056b3;  
     color: white;
     cursor: pointer;
     font-size: 16px;
@@ -38,7 +38,8 @@ input[type="radio"], input[type="text"] {
 }
 
 .submit-buttons button.cancel-btn {
-    background-color: #EEB3B3; 
+    background-color: #dc3545; 
+    color : white
 }
 
 .submit-buttons button:hover {
@@ -100,7 +101,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 body {

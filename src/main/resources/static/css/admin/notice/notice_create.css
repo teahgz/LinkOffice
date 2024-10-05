@@ -15,8 +15,8 @@ input[type="file"] {
 }
 
 input[type="file"]::file-selector-button {
-    background-color: #B1C2DD;
-    color: black;
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;
     padding: 5px 10px; 
@@ -107,14 +107,14 @@ input[type="file"]::file-selector-button {
 }
 
 .buttons .confirm-btn {
-    background-color: #B1C2DD; 
-    color: black;
+    background-color: #0056b3; 
+    color: white;
 }
 
 
 .buttons .cancel-btn {
     background-color: #C0C0C0; 
-    color: black;
+    color: white;
 }
 
 
