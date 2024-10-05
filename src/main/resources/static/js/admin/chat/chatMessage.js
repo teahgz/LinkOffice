@@ -437,7 +437,7 @@ if (sendButton && messageInput) {
                             newChatItem.innerHTML = `
                                 <img src="${profileImage}"
                                      alt="프로필 이미지"
-                                     style="border-radius: 50%; width: 80px; height: 80px; margin: 20px;" />
+                                     style="border-radius: 50%; width: 80px; height: 80px; margin: 20px; margin-left:40px;" />
                                 <h3><p>${memberInfo.roomName}</p></h3>
                                 <input type="hidden" id="memberNo" value="${currentMemberNo}"/>
                                 <input type="hidden" id="chatRoomNo" value="${message.chatRoomNo}" />

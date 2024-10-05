@@ -650,6 +650,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	            const selectedDateEvents = filterEventsByDate(events, selectedDate);
 	            displaySelectedDateEvents(selectedDateEvents, selectedDate);
 	        }, 
+	        eventTimeFormat: {
+			    hour: '2-digit',    
+			    minute: '2-digit',  
+			    meridiem: false,    
+			    hour12: false       
+		    }
 	    });
 	 
 	    const today = new Date();
