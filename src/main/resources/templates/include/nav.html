@@ -5,8 +5,9 @@
 
 	<link th:href="@{/css/include/nav.css}" rel="stylesheet" type="text/css">
 	<nav>
-	<div style="display:none;" th:each = "member : ${memberdto}">
+	<div style="display:block;" th:each = "member : ${memberdto}">
 		<input type ="hidden" id="currentMember" th:value="${member.member_no}"/>
+		<input type ="hidden" id="currentMembers" th:value="${member.member_vacation_count}"/>
 	</div>
 	<div id="nav_wrap" >
 		<ul>

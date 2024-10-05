@@ -36,7 +36,7 @@ public interface VacationMapper {
 
     int checkTypeName( Map<String, Object> map);
 
-    int userVacationCount(Long memberNo);
+    double userVacationCount(Long memberNo);
 
     String memberHireDate(Long memberNo);
 }

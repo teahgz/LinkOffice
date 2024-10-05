@@ -43,13 +43,13 @@ public class AddVacationSchedulerService {
             for (MemberDto dto : underOneYearMembers) {
                 if (dto.getMember_vacation_date() == null || dto.getMember_vacation_date().isEmpty()) {
                     if (firstVacation(dto.getMember_hire_date())) {
-                        int monthDif = (int) Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).toTotalMonths();
+                        double monthDif = (double) Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).toTotalMonths();
                         // 입사 기준 날짜에 따라 3개월 차이가 나면 3개 입력되도록 구성
                         vacationService.incrementVacation(dto.getMember_no(), monthDif);
                     }
                 } else {
                     if (monthVacation(dto.getMember_vacation_date())) {
-                        vacationService.incrementVacation(dto.getMember_no(), 1);
+                        vacationService.incrementVacation(dto.getMember_no(), 1.0);
                     }
                 }
             }
@@ -65,7 +65,8 @@ public class AddVacationSchedulerService {
 
                 if (resetDate(referenceDate, vacationStandardStatus)) {
                     int yearSinceJoin = Period.between(LocalDate.parse(dto.getMember_hire_date()), LocalDate.now()).getYears();
-                    int vacationDay = getVacationDaysByYears(yearSinceJoin);
+                    double vacationDay = getVacationDaysByYears(yearSinceJoin);
+
                     vacationService.resetVacation(dto.getMember_no(), vacationDay);
                 }
             }
