@@ -180,8 +180,7 @@
                         type: 'noticeAlarm',  
                         managerNo: document.getElementById('manager').value  
                     }));
-                    // 공지사항 목록 페이지로 이동
-                    location.href = '/admin/notice/list';
+                    location.href = '/admin/notice/list/'+ memberNo;
                 });
             } else {
                 Swal.fire({

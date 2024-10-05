@@ -730,7 +730,8 @@ $(function () {
 	                        icon: 'warning',
 	                        html: "해당 폴더의 하위 폴더가 모두 삭제되고<br>모든 파일이 최상위 폴더로 이동합니다.<br>폴더를 삭제하시겠습니까?",
 	                        showCancelButton: true,
-	                        confirmButtonText: '확인',
+	                        confirmButtonColor: '#dc3545',
+	                        confirmButtonText: '삭제',
 	                        cancelButtonText: '취소'
 	                    }).then((result) => {
 							if(result.isConfirmed){
@@ -789,7 +790,8 @@ $(function () {
 	                        icon: 'warning',
 	                        html: "해당 폴더의 하위 폴더가 모두 삭제되고<br>모든 파일이 휴지통으로 이동합니다.<br>폴더를 삭제하시겠습니까?",
 	                        showCancelButton: true,
-	                        confirmButtonText: '확인',
+	                        confirmButtonColor: '#dc3545',
+	                        confirmButtonText: '삭제',
 	                        cancelButtonText: '취소'
 	                   }).then((result) => {
 	                    if (result.isConfirmed) {                     
@@ -926,7 +928,8 @@ $(function () {
 			icon: 'warning',
 		    text: '파일을 삭제하시겠습니까?',
 		    showCancelButton: true,
-		    confirmButtonText: '확인',
+		    confirmButtonColor: '#dc3545',
+		    confirmButtonText: '삭제',
 		    cancelButtonText: '취소'
 		}).then((result) => {
 			if (result.isConfirmed) {
@@ -968,7 +971,8 @@ $(function () {
 	        icon: 'warning',
 	        text: '파일을 삭제하시겠습니까?',
 	        showCancelButton: true,
-	        confirmButtonText: '확인',
+	        confirmButtonColor: '#dc3545',
+	        confirmButtonText: '삭제',
 	        cancelButtonText: '취소'
 	    }).then((result) => {
 	        if (result.isConfirmed) {
@@ -1047,13 +1051,6 @@ $(function () {
             this.value = todayStr; 
         }
     });    
-
-    // 파일 검색 
-    $('#search_button').on('click', function(){
-		const searchInput = $('#file_name_input').val();
-		loadFiles(selectedFolderNo, searchInput);
-    });
-
     // 페이지가 로드될 때 폴더 리스트를 불러옴
     $(document).ready(function() {
 		let previousFolderNo = null;

@@ -122,6 +122,10 @@ nav {
 .dropdown > ul > li:hover > ul {
     display: block;
 }
+.dropdown > ul > li > ul > li {
+    background-color: transparent;
+    background-color: transparent;
+}
 #notificationContainer {
     position: fixed;
     z-index: 1000;
