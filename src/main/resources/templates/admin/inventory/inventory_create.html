@@ -109,6 +109,7 @@
 <script>
 const location_text = document.getElementById('header_location_text');
 location_text.innerHTML = '비품관리&emsp;&gt;&emsp;비품등록';
+
 document.getElementById("inventoryForm").addEventListener("submit", function(event) {
     event.preventDefault();  
 
@@ -120,6 +121,17 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     var inventoryQuantity = document.getElementById("inventoryQuantity").value.trim();
     var category = document.getElementById("category").value.trim();
     var department = document.getElementById("department").value;
+
+    // 숫자 유효성 검사 (숫자가 아닌 값이 들어가면 경고)
+    if (isNaN(inventoryPrice) || inventoryPrice === "") {
+        showAlert('가격은 숫자로 입력해주세요.');
+        return;
+    }
+
+    if (isNaN(inventoryQuantity) || inventoryQuantity === "") {
+        showAlert('수량은 숫자로 입력해주세요.');
+        return;
+    }
 
     if (!department) { 
         showAlert('부서를 선택해주세요.');
@@ -146,15 +158,6 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
         return;
     }
 
-    if (!inventoryPrice) {
-    	showAlert('가격을 입력해주세요');   
-        return;
-    }
-
-    if (!inventoryQuantity) {
-    	showAlert('수량을 입력해주세요');    
-        return;
-    }
     var formData = new FormData(this);  
 
     var xhr = new XMLHttpRequest();
@@ -174,7 +177,7 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
             	Swal.fire({
             	    icon: 'error',
             	    text: data.res_msg, 
-            	})
+            	});
             }
         }
     };
@@ -189,6 +192,7 @@ function showAlert(message) {
         confirmButtonText: '확인',
     });
 }
+
 
 // 카테고리 선택 모달
 var modal = document.getElementById("myModal");

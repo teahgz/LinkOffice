@@ -43,7 +43,6 @@ public class NoticeViewController {
         List<MemberDto> memberDto = memberService.getMembersByNo(memberNo);
         model.addAttribute("memberDto", memberDto);
 
-        // 인증 정보에서 사용자 정보 가져오기 (매니저 정보)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String noticeNumber = authentication.getName();
         String noticeName = noticeService.findNoticeNameByNumber(noticeNumber);

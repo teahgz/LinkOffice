@@ -71,6 +71,7 @@
             </div>
         </div>
     </div>
+
     <script>
     const location_text = document.getElementById('header_location_text');
     location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 작성';
@@ -96,7 +97,7 @@
             // 질문 삭제 버튼 추가
             const removeQuestionButton = document.createElement("button");
             removeQuestionButton.type = "button";
-            removeQuestionButton.textContent = "X";
+            removeQuestionButton.textContent = "✕";  // X 표시 추가
             removeQuestionButton.classList.add("remove-question");
             removeQuestionButton.addEventListener("click", function () {
                 questionItem.remove(); // 질문 삭제
@@ -161,7 +162,7 @@
 
                 const removeButton = document.createElement("button");
                 removeButton.type = "button";
-                removeButton.textContent = "X";
+                removeButton.textContent = "✕";  // 보기 삭제 X 표시
                 removeButton.classList.add("remove-option");
                 removeButton.addEventListener("click", function () {
                     optionInputWrapper.remove(); // 보기 삭제
@@ -267,8 +268,7 @@
                 }
             });
         }
-        
-        
+
         // 조직도 모달에서 확인 버튼 클릭 시
         $('#confirmButton').click(function() {
             const selectedMembersContainerOutside = $('#selected-members-outside');
@@ -386,21 +386,16 @@
                 }
             });
         });
-        const location_text = document.getElementById('header_location_text');
-    	location_text.innerHTML = '설문조사';
-    	
-    	
-    	document.addEventListener("DOMContentLoaded", function() {
-    	    window.functionType = 15; 
-    	    console.log("현재 기능 타입: " +window.functionType);
 
-    	    if (window.functionType === 15) {
-    	        markNotificationsAsRead(window.functionType);
-    	    }
-    	});
+        document.addEventListener("DOMContentLoaded", function() {
+            window.functionType = 15; 
+            console.log("현재 기능 타입: " +window.functionType);
 
+            if (window.functionType === 15) {
+                markNotificationsAsRead(window.functionType);
+            }
+        });
     });
-    
     </script>
 
 </th:block>
