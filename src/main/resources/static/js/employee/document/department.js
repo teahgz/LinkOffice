@@ -818,9 +818,7 @@ $(function () {
                                     	$('.document_no_folder').show();
                                     	$('.document_file_list').hide();
                                    	 	$('.folder_buttons').hide();
-                                   	 	$('.box_size').hide();
-	                        			$('.document_folder_tree').hide();
-	                        			$('#document_hr').hide();                                     	 	
+                                   	 	$('.box_size').hide();                                  	 	
 	                                } else {
 	                                    Swal.fire({
 	                                        icon: 'error',

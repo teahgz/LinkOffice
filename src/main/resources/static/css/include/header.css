@@ -79,14 +79,15 @@ a {
 .dropdown_menu {
     display: none;
     position: absolute;
-    top: 28px;
+    top: 55px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     list-style: none;
     padding: 10px;
     border-radius: 5px;
-    min-width: 130px;
+    min-width: 80px;
     z-index: 1000;
 }
 
@@ -102,9 +103,11 @@ a {
 .dropdown_menu li:last-child {
     margin-bottom: 0;
 }
-
+.dropdown_menu li a:hover {
+    color: #007BFF;
+}
 .dropdown_menu a {
-    color: white;
+    color: gray;
     text-decoration: none;
     font-size: 14px;
 }
@@ -122,7 +125,7 @@ a {
 .notification-bell-modal {
     display: none;
     position: absolute;
-    top: 28px;
+    top: 55px;
     left: -80px;
     transform: translateX(-50%);
     background-color: white;
@@ -131,10 +134,11 @@ a {
     list-style: none;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #fff;
     border-radius: 5px;
     min-width: 300px;
     z-index: 1000;
-    color: #fff;
+
 
 }
 .mark-as-read {
