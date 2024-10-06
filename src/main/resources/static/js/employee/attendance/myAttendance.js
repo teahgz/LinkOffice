@@ -184,6 +184,10 @@ function attendanceCalendar(today, attendanceDates, holidays) {
         var holidayName = holidayItem ? holidayItem.dateName : '';
         var isHoliday = holidayItem ? true : false;
 
+	    if (holidayName.includes('(')) {
+	        holidayName = holidayName.replace('(', '<br>(');
+	    }
+    
         // 주말 여부 확인
         var isWeekend = (new Date(currentYear, currentMonth, i).getDay() === 0 || new Date(currentYear, currentMonth, i).getDay() === 6);
         
@@ -196,7 +200,7 @@ function attendanceCalendar(today, attendanceDates, holidays) {
 		    cell.style.backgroundColor = 'rgb(240, 243, 248)';
 		}
         cell.innerHTML = `<div class="date_container">
-                    <span style="color: textColor};">${i}</span>
+                    <span style="color: ${textColor};">${i}</span>
                     ${holidayName ? `<div class="holiday_name">${holidayName}</div>` : ''}
                     ${dateBar}
                   </div>`;
