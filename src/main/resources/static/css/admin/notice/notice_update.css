@@ -24,6 +24,10 @@ input[type="file"]::file-selector-button {
     cursor: pointer;
 }
 
+input[type="file"]::file-selector-button:hover {
+    background-color: #003a82;
+}
+
 .header {
     display: flex;
     align-items: center;
@@ -112,14 +116,19 @@ input[type="file"]::file-selector-button {
 }
 
 .buttons .cancel-btn {
-    background-color: #C0C0C0; 
-    color: white;
+    background-color: #f8f9fa; 
+    color: black;
+    border : 1px solid #ddd;
+	border-radius: 4px;
 }
 
-.buttons .confirm-btn:hover, .buttons .cancel-btn:hover {
-    opacity: 0.8;
+.confirm-btn:hover {
+     background-color: #003a82; 
 }
-
+ .cancel-btn:hover {
+  background-color: #e9ecef; 
+ }
+ 
 label[for="currentFile"] {
     font-weight: bold;
     margin-right: 10px;
@@ -140,6 +149,10 @@ label[for="currentFile"] {
     margin-left: 10px;
     cursor: pointer;
     border-radius: 4px;
+}
+
+#deleteFileButton:hover {
+    background-color: #c82333;
 }
 
 

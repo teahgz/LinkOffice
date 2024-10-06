@@ -35,7 +35,7 @@
 }
 
 .create_button:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .create_button:active {
@@ -77,7 +77,7 @@ select:focus, .search_text:focus {
 }
 
 .search_button:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .search_button:active {
@@ -136,7 +136,10 @@ select:focus, .search_text:focus {
 .pagination button.active {
     background-color: #0056b3;
     color: white;
-    border-color: #0056b3;
+}
+.pagination button.active:hover {
+    background-color: #003a82;
+
 }
 
 a {

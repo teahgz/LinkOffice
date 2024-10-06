@@ -113,11 +113,13 @@ input[type="file"]::file-selector-button {
 
 
 .buttons .cancel-btn {
-    background-color: #C0C0C0; 
-    color: white;
+    background-color: #f8f9fa; 
+    color: black;
+    border : 1px solid #ddd;
+	border-radius: 4px;
 }
 
 
 .buttons .confirm-btn:hover, .buttons .cancel-btn:hover {
-    opacity: 0.8;
+    background-color: #e9ecef; 
 }
