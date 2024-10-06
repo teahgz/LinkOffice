@@ -522,11 +522,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const home_schedule_date = document.getElementById('schedule_home_date');
 	  
 	    home_schedule_date.innerHTML = selectedDate;  
-	
-	    if (selectedDateEvents.length === 0) {
+		 
+	    const filteredEvents = selectedDateEvents.filter(event => event.display !== 'none');
+			 
+		console.log(filteredEvents);
+	    if (filteredEvents.length === 0) {
 	        selectedDateEventsList.innerHTML = '<li>일정이 없습니다.</li>';
 	    } else {
-	        selectedDateEvents.forEach(event => {
+	        filteredEvents.forEach(event => {
 	            const listItem = document.createElement('li');
 	            if (event.allDay) {
 	                listItem.textContent = `[${event.extendedProps.categoryName}] ${event.title}`;					
@@ -664,7 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    const selectedDateEvents = filterEventsByDate(events, formattedToday);
 	    displaySelectedDateEvents(selectedDateEvents, formattedToday);
 	
-	    filterEvents();
+	    filterEvents(); 
 	    calendar.render();
 	}
 
@@ -705,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        else if (event.extendedProps.type === 'vacationResult' || event.extendedProps.type === 'scheduleDtos') {
 				shouldDisplay = true;  
 			}
-	        event.setProp('display', shouldDisplay ? 'auto' : 'none');
+	        event.setProp('display', shouldDisplay ? 'auto' : 'none'); 
 	    });
 	}
 	
@@ -998,4 +1001,31 @@ document.addEventListener('DOMContentLoaded', function() {
 	    document.getElementById('event_modal_vacation').style.height = '500px'; 
    		modal.style.display = 'block';  
 	}   
+	
+	// 휴가 모달
+	function showVacationModal(event) {
+	    const modal = document.getElementById('eventViewModal');
+	    const title = document.getElementById('eventViewTitle'); 
+	    const category = document.getElementById('eventViewCategory'); 
+	    
+	    const categoryname = event.extendedProps.categoryName === "반차" ? "반차" : "휴가";
+	    title.textContent = event.extendedProps.departmentName + ' '+ event.title;
+	    category.textContent = `[` + categoryname + `]`; 
+	    
+		document.getElementById('eventViewDateRange').style.display = 'none';
+		document.getElementById('eventViewComment').style.display = 'none';
+	    document.getElementById('eventViewHr').style.display = 'none';
+	    document.getElementById('eventViewRepeatInfo').style.display = 'none';
+	    document.getElementById('eventViewCreatedDate').style.display = 'none'; 
+		document.getElementById('departmentName').style.display = 'none';
+		document.getElementById('event_modal_vacation').style.height = '150px'; 
+		
+		
+		document.getElementById('par_join').style.display = 'none'; 
+		document.getElementById('par_join_name').style.display = 'none'; 
+	    document.getElementById('par_create_name').style.display = 'none'; 
+		document.getElementById('par_create_name').style.display = 'none';  
+			 
+	    modal.style.display = 'block';  
+	}
 });
