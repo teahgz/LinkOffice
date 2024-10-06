@@ -28,20 +28,19 @@ input[type="radio"], input[type="text"] {
 .submit-buttons button {
 	margin: 0 10px;
 	padding: 10px 20px;
-	border: none;
 	background-color: #0056b3;
 	color: white;
 	cursor: pointer;
 	font-size: 16px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	border: 1px solid #ddd; 
+	border-radius: 6px;     
 }
 
 .submit-buttons button.cancel-btn {
 	background-color: #f8f9fa;
 	color: black;
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	border: 1px solid #ddd; 
+	border-radius: 4px;     
 }
 
 .submit-buttons button:hover {

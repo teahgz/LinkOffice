@@ -154,7 +154,7 @@ body {
 	line-height: 1.6;
 }
 
-/* 수정 버튼을 우측 하단에 고정 */
+
 .btn-edit {
 	display: inline-block;
 	background-color: #0056b3;
@@ -165,9 +165,9 @@ body {
 	border: none;
 	cursor: pointer;
 	font-size: 16px;
-	position: fixed;
 	right: 130px;
 	bottom: 20px;
+	float: right;
 }
 
 .btn-edit:hover {
@@ -183,10 +183,11 @@ body {
 	border: 1px solid #ddd; border-radius : 4px;
 	cursor: pointer;
 	font-size: 16px;
-	position: fixed;
 	right: 20px;
 	bottom: 20px;
 	border-radius: 4px;
+	float: right;
+	margin-left: 15px;
 }
 
 .cancel-btn:hover {

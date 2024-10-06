@@ -23,7 +23,7 @@ import com.fiveLink.linkOffice.notice.repository.NoticeRepository;
 @Service
 public class FileService {
     
-	private final String fileDir = "C:/linkoffice/upload/notice/";
+	private final String fileDir = "C:\\linkoffice\\upload\\notice\\";
 
 
     private final NoticeRepository NoticeRepository;

@@ -27,13 +27,13 @@ public class SurveySchedulerService {
     @Transactional  // 데이터베이스 업데이트를 위한 트랜잭션 처리
     public void updateSurveyStatus() {
         LocalDate today = LocalDate.now();  // 오늘 날짜를 가져옵니다.
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // 날짜 포맷 설정
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); 
 
         // 설문 리스트를 가져와서 직접 날짜 비교를 수행
-        List<Survey> ongoingSurveys = surveyRepository.findBySurveyStatus(0); // 진행중인 설문만 조회
+        List<Survey> ongoingSurveys = surveyRepository.findBySurveyStatus(0); 
 
         for (Survey survey : ongoingSurveys) {
-            LocalDate endDate = LocalDate.parse(survey.getSurveyEndDate(), formatter); // 종료일을 LocalDate로 변환
+            LocalDate endDate = LocalDate.parse(survey.getSurveyEndDate(), formatter); 
             
             // 종료일이 오늘 날짜보다 이전이면 설문 상태를 마감(1)으로 변경
             if (endDate.isBefore(today)) {
