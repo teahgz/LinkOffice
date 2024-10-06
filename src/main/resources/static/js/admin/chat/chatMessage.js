@@ -778,7 +778,10 @@ function createChatListIfNotExists() {
                      Swal.fire({
                          icon: 'warning',
                          text: '동일한 멤버와의 채팅방이 이미 존재합니다.',
-                         confirmButtonText: '확인'
+                         confirmButtonText: '확인',
+                         customClass: {
+                               confirmButton: 'custom-confirm-button'
+                         }
                      });
                  }
              }).catch(error => {

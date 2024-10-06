@@ -21,7 +21,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         });
     });
+
+       // 개수를 업데이트하는 함수를 호출
+        updateVacationCounts();
+
+
+
 });
 
 const location_text = document.getElementById('header_location_text');
 location_text.innerHTML = '휴가&emsp;&gt;&emsp;휴가 신청함';
+
+
+ // 개수를 업데이트하는 함수
+function updateVacationCounts() {
+    fetch(`/user/vacationCount/${headerCurrentMember}`)
+        .then(response => response.json())
+        .then(data => {
+            const vacationTotalElem = document.getElementById('vacationTotal');
+            const vacationRemainElem = document.getElementById('vacationRemain');
+
+            if (vacationTotalElem && vacationRemainElem) {
+                vacationTotalElem.textContent = `${data.count}`;
+                vacationRemainElem.textContent = `${data.remainingVacationDays}`;
+            }
+        })
+}
