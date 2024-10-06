@@ -61,11 +61,7 @@ select {
 }
 
 .search_button:hover {
-    background-color: #9CAFC7;
-}
-
-.search_button:active {
-    transform: scale(0.98);
+    background-color: #003a82;
 }
 
 
@@ -144,7 +140,9 @@ select {
 .pagination button.active {
     background-color: #0056b3;
     color: white;
-    border-color: #0056b3;
+}
+.pagination button.active:hover {
+    background-color: #003a82;
 }
 
 body {

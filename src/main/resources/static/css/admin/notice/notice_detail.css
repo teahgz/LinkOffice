@@ -70,13 +70,23 @@
 }
 
 .notice-buttons .btn-back {
-	background-color: #C0C0C0;
-	color: white;
+	background-color: #f8f9fa;
+	color: black;
+	border : 1px solid #ddd;
+	border-radius: 4px;
 }
 
 
-.notice-buttons .btn:hover {
-	opacity: 0.9;
+.btn-back:hover {
+	background-color: #e9ecef;
+}
+
+.btn-delete:hover {
+	background-color: #c82333;
+}
+
+.btn-edit:hover {
+	background-color: #003a82;
 }
 
 .notice-buttons .btn-edit:hover {

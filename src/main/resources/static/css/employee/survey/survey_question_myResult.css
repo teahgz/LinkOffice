@@ -1,5 +1,5 @@
 .container {
-    position: relative; /* 상대 위치 설정 */
+    position: relative; 
     margin: auto;
     width: 80%;
     padding: 40px;
@@ -78,15 +78,19 @@
     background-color: #0056b3;
     color: white;
 }
+.btn-edit:hover {
+    background-color: #003a82;
+}
 
 .btn-delete {
     background-color: #dc3545;
     color: white;
 }
-
-.btn:hover {
-    opacity: 0.8;
+.btn-delete:hover {
+    background-color: #c82333;
 }
+
+
 
 .button-container {
     position: absolute; 
