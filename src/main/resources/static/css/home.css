@@ -27,12 +27,8 @@ body {
 /* 개별 높이 설정 */
 /* 수정하지 마세요 */
 /* 
-.custom-height-2 { height: 150px; }
-
-.custom-height-4 { height: 200px; }
-
-
-
+.custom-height-2 { height: 150px; } 
+.custom-height-4 { height: 200px; } 
 .custom-height-8 { height: 100px; }
 .custom-height-9 { height: 220px; }
 .custom-height-10 { height: 160px; }
@@ -44,6 +40,7 @@ body {
 .custom-height-7 { height: 1030px; } 
 .custom-height-11 { height: 180px; }
 .custom-height-5 { height: 160px; }
+.custom-height-6 { height: 350px; } 
 
 #main-content {
     display: flex;
