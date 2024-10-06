@@ -290,9 +290,9 @@ public class MeetingReservationController {
 	@GetMapping("/employee/meeting/reservation/detail/{id}")
 	public String getReservationDetail(@PathVariable("id") Long id, Model model) {
 	    MeetingReservationDto reservation = meetingReservationService.getReservationById(id);
-	    List<MeetingParticipantDto> participants = meetingParticipantService.getParticipantsByReservationNo(id);
-	    
 	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MeetingParticipantDto> participants = meetingParticipantService.findParticipantsByReservationNoAndNotMemberNo(id, memberNo);
+	    
 	    List<MemberDto> memberDto = memberService.getMembersByNo(memberNo); 
 	     
 	    model.addAttribute("memberdto", memberDto.get(0));

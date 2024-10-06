@@ -7,6 +7,9 @@
     padding: 40px 60px; 
     width: 1250px;
     margin : auto;
+        background-color: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .container-section {
     margin : auto;
@@ -166,7 +169,7 @@
 .fc .fc-button.fc-button-primary:hover {
     background-color: transparent; 
     border:none;
-    color: #2692f2;
+    color : #0056b3;
 }
  
 .fc-prev-button {
@@ -177,8 +180,8 @@
 
 .fc-prev-button:hover {
     background-color: transparent; 
-    border:none;
-    color: #2692f2;
+    border:none; 
+    color : #0056b3;
 }
  
 .fc-next-button {

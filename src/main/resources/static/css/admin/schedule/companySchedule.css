@@ -13,6 +13,14 @@
 .fc-daygrid-day.fc-day-sat .fc-daygrid-day-number{		
 	color: blue;
 }
+
+.container {
+    background-color: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin:auto;
+    width: 1250px; 
+}
  
 .modal {
     display: none;
@@ -244,10 +252,10 @@ textarea {
 #calendar {
 	margin:auto;
 	flex-grow: 1;
-    padding: 20px; 
+    padding: 20px 30px; 
     overflow-y: auto;   
-    height: 100vh;
-    width : 1400px;
+    height: 100vh; 
+    margin-bottom: 30px; 
 } 
 
 .fc-daygrid-day {
@@ -330,7 +338,7 @@ textarea {
     background-color: transparent; 
     border:none;
     color: #9d9d9d;
-    font-size : 20px;
+    font-size : 18px;
     font-weight: 550;
 }
 
@@ -386,13 +394,7 @@ textarea {
     border:none;
     color: black;
     font-weight: 550;
-}
-#header {
-    display: flex;  
-    justify-content: space-between;  
-    align-items: center;  
-    margin-bottom: 40px;
-}
+} 
 
 #addEventBtn {
     padding: 10px 40px;
@@ -402,7 +404,7 @@ textarea {
     border-radius: 4px;  
     font-size : 15px; 
     cursor: pointer;
-    margin-left: 350px;
+    float: right;
 } 
 
 #addEventBtn:hover { 
@@ -534,12 +536,9 @@ textarea {
 	margin-bottom: 30px;
 }
 
-.search-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 20px;
-    margin-left: 190px;
+.search-container { 
+    gap: 12px; 
+    padding: 40px 40px; 
     margin-bottom: 40px; 
 }
 
@@ -581,9 +580,10 @@ textarea {
 }
 
 .fc .fc-toolbar-title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #333333;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333333; 
+  margin: 0 7px;
 } 
  
 .fc-event {
@@ -602,6 +602,6 @@ textarea {
 }
 
 .fc .fc-toolbar {
-  padding: 1.5rem; 
+  padding-bottom: 1.5rem; 
   border-bottom: 1px solid #e0e0e0;
 }
