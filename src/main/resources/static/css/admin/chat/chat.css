@@ -374,10 +374,10 @@
 .group-modal-header button {
     border: none;
     background-color: white;
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
 }
 .group-modal-header h5 {
     font-weight: 600;
@@ -421,7 +421,7 @@
     background-color: #003a82;
     color:white;
     padding: 10px 15px;
-
+    float:right;
 }
 
 .modal-dialog-centered {
@@ -507,6 +507,7 @@
     border:none;
     font-size: 28px;
     cursor: pointer;
+    background-color:white;
 }
 #chatRoomNameInput{
 margin-top: 10px;
@@ -514,7 +515,7 @@ margin-top: 10px;
     padding: 5px;
 }
 
-#editChatRoomForm button {
+.update-button {
     margin-top: 10px;
     width: 65px;
     border-radius: 5px;
@@ -523,7 +524,7 @@ margin-top: 10px;
     color:white;
     padding: 10px 15px;
 }
-#editChatRoomForm button:disabled {
+.update-button:disabled {
     background-color: #d3d3d3;
     color: #a9a9a9;
     opacity: 0.6;
