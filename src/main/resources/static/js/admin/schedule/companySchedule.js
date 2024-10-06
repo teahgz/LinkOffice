@@ -1409,5 +1409,5 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	
 	const location_text = document.getElementById('header_location_text');
-	location_text.innerHTML = '일정 관리&emsp;&gt;&emsp;사내 일정';
+	location_text.innerHTML = '일정 관리&emsp;&gt;&emsp;전사 일정';
 });

@@ -237,7 +237,12 @@ textarea {
     cursor: pointer;
     transition: background-color 0.3s; 
     margin-top: 40px;    
+    float: right;
 } 
+
+#participate_confirmButton:hover {
+	background-color: #003a82;
+}
 
 .participate_modal-content {
     background-color: #fefefe;
