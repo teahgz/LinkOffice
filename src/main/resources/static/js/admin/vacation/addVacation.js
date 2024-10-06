@@ -10,10 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
             text: '입력되지 않은 연차의 개수는 0으로 지정됩니다. 계속하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#B1C2DD',
-            cancelButtonColor: '#EEB3B3',
             confirmButtonText: '확인',
-            cancelButtonText: '취소'
+            cancelButtonText: '취소',
+            customClass: {
+                 confirmButton: 'custom-confirm-button',
+                 cancelButton: 'custom-cancel-button'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 // 사용자가 확인했을 때 처리 진행
@@ -69,7 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             Swal.fire({
                                 icon: 'success',
                                 text: data.res_msg,
-                                confirmButtonText: "닫기"
+                                confirmButtonText: "닫기",
+                                customClass: {
+                                       confirmButton: 'custom-confirm-button'
+
+                                 }
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     location.reload();
@@ -79,16 +85,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             Swal.fire({
                                 icon: 'error',
                                 text: data.res_msg,
-                                confirmButtonText: "닫기"
+                                confirmButtonText: "닫기",
+                                customClass: {
+                                     confirmButton: 'custom-confirm-button'
+
+                                }
                             });
                         }
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: '오류 발생',
                             text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonText: "닫기"
+                            confirmButtonText: "닫기",
+                            customClass: {
+                                confirmButton: 'custom-confirm-button'
+                            }
                         });
                     });
                 } else {
@@ -125,8 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             Swal.fire({
                                 icon: 'success',
                                 text: data.res_msg,
-                                confirmButtonColor: '#B1C2DD',
-                                confirmButtonText: "확인"
+                                confirmButtonText: "확인",
+                                customClass: {
+                                     confirmButton: 'custom-confirm-button'
+
+                                }
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     location.reload();
@@ -136,17 +151,23 @@ document.addEventListener('DOMContentLoaded', () => {
                             Swal.fire({
                                 icon: 'error',
                                 text: data.res_msg,
-                                confirmButtonColor: '#B1C2DD',
-                                confirmButtonText: "확인"
+                                confirmButtonText: "확인",
+                                customClass: {
+                                      confirmButton: 'custom-confirm-button'
+
+                                }
                             });
                         }
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: '오류 발생',
                             text: '서버와의 통신 중 오류가 발생했습니다.',
-                            confirmButtonText: "닫기"
+                            confirmButtonText: "닫기",
+                            customClass: {
+                                 confirmButton: 'custom-confirm-button'
+
+                            }
                         });
                     });
                 }
@@ -170,10 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!vacationType || !vacationValue) {
             Swal.fire({
                 icon: 'warning',
-                title: '입력 오류',
                 text: '모든 필드를 입력해주세요.',
-                confirmButtonColor: '#B1C2DD',
-                confirmButtonText: "확인"
+                confirmButtonText: "확인",
+                customClass: {
+                     confirmButton: 'custom-confirm-button'
+
+                }
             });
             return;
         }
@@ -196,10 +219,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.exists) {
                 Swal.fire({
                     icon: 'warning',
-                    title: '중복된 휴가 종류',
                     text: '이미 존재하는 휴가 종류입니다. 다른 이름을 입력해주세요.',
-                     confirmButtonColor: '#B1C2DD',
-                     confirmButtonText: "확인"
+                     confirmButtonText: "확인",
+                     customClass: {
+                          confirmButton: 'custom-confirm-button'
+
+                     }
                 });
             } else {
                 console.log(vacationType);
@@ -228,8 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         Swal.fire({
                             icon: 'success',
                             text: '휴가 종류가 성공적으로 추가되었습니다.',
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
+                            confirmButtonText: "확인",
+                            customClass: {
+                                 confirmButton: 'custom-confirm-button'
+
+                            }
                         }).then(() => {
                             location.reload();
                         });
@@ -237,8 +265,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         Swal.fire({
                             icon: 'error',
                             text: data.res_msg,
-                            confirmButtonColor: '#B1C2DD',
-                            confirmButtonText: "확인"
+                            confirmButtonText: "확인",
+                            customClass: {
+                                confirmButton: 'custom-confirm-button'
+
+                            }
                         });
                     }
                 })
@@ -246,8 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     Swal.fire({
                         icon: 'error',
                         text: '서버와의 통신 중 오류가 발생했습니다.',
-                        confirmButtonColor: '#B1C2DD',
-                        confirmButtonText: "확인"
+                        confirmButtonText: "확인",
+                        customClass: {
+                            confirmButton: 'custom-confirm-button'
+
+                         }
                     });
                 });
             }
@@ -256,8 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
             Swal.fire({
                 icon: 'error',
                 text: '서버와의 통신 중 오류가 발생했습니다.',
-                confirmButtonColor: '#B1C2DD',
-                confirmButtonText: "확인"
+                confirmButtonText: "확인",
+                customClass: {
+                    confirmButton: 'custom-confirm-button'
+
+                }
             });
         });
     });
@@ -328,7 +365,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire({
                         icon: 'success',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonText: "닫기",
+                        customClass: {
+                            confirmButton: 'custom-confirm-button'
+
+                        }
                     }).then((result) => {
                         if (result.isConfirmed) {
                             location.reload();
@@ -338,18 +379,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire({
                         icon: 'error',
                         text: data.res_msg,
-                        confirmButtonColor: '#B1C2DD',
-                        confirmButtonText: "확인"
+                        confirmButtonText: "확인",
+                        customClass: {
+                            confirmButton: 'custom-confirm-button'
+
+                        }
                     });
                 }
             })
             .catch(error => {
                 Swal.fire({
                     icon: 'error',
-                    title: '오류 발생',
                     text: '서버와의 통신 중 오류가 발생했습니다.',
-                    confirmButtonColor: '#B1C2DD',
-                    confirmButtonText: "확인"
+                    confirmButtonText: "확인",
+                    customClass: {
+                        confirmButton: 'custom-confirm-button'
+
+                     }
                 });
             });
         });
@@ -392,9 +438,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        title: '성공',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonText: "닫기",
+                        customClass: {
+                            confirmButton: 'custom-confirm-button'
+
+                        }
                     }).then((result) => {
                         if (result.isConfirmed) {
                             row.remove();
@@ -403,18 +452,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: '실패',
                         text: data.res_msg,
-                        confirmButtonText: "닫기"
+                        confirmButtonText: "닫기",
+                        customClass: {
+                            confirmButton: 'custom-confirm-button'
+
+                        }
                     });
                 }
             })
             .catch(() => {
                 Swal.fire({
                     icon: 'error',
-                    title: '오류 발생',
                     text: '서버와의 통신 중 오류가 발생했습니다.',
-                    confirmButtonText: "닫기"
+                    confirmButtonText: "닫기",
+                    customClass: {
+                        confirmButton: 'custom-confirm-button'
+
+                    }
                 });
             });
         });
@@ -434,8 +489,10 @@ document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 text: '1년 미만 월차 지급 여부를 선택하지 않으셨습니다.',
                 icon: 'warning',
-                confirmButtonColor: '#B1C2DD',
-                confirmButtonText: '확인'
+                confirmButtonText: '확인',
+                customClass: {
+                     confirmButton: 'custom-confirm-button'
+                }
             });
             return;
         }
@@ -461,9 +518,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.res_code === '200') {
                 Swal.fire({
                     icon: 'success',
-                    title: '성공',
                     text: data.res_msg,
-                    confirmButtonText: "닫기"
+                    confirmButtonText: "닫기",
+                    customClass: {
+                        confirmButton: 'custom-confirm-button'
+
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         location.reload();
@@ -472,18 +532,24 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '실패',
                     text: data.res_msg,
-                    confirmButtonText: "닫기"
+                    confirmButtonText: "닫기",
+                    customClass: {
+                        confirmButton: 'custom-confirm-button'
+
+                    }
                 });
             }
         })
         .catch(error => {
             Swal.fire({
                 icon: 'error',
-                title: '오류 발생',
                 text: '서버와의 통신 중 오류가 발생했습니다.',
-                confirmButtonText: "닫기"
+                confirmButtonText: "닫기",
+                customClass: {
+                    confirmButton: 'custom-confirm-button'
+
+                }
             });
         });
     });

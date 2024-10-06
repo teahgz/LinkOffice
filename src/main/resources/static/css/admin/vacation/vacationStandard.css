@@ -5,12 +5,12 @@
       flex-direction: column;
       align-items: center;
 }
-.vacationStandardForms { 
-    max-width: 1200px;
-    width: 1200px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+.vacationStandardForms {
+    width: 1250px;
+    height: 700px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #f9f9f9;
     margin-top : 20px;
 } 
@@ -37,12 +37,13 @@
      border-radius : 10px;
      border: none;
      cursor: pointer;
-     background-color: #B1C2DD;
+     background-color: #0056b3;
+     color:white;
  }
 
  .custom-confirm-button {
-      background-color: #B1C2DD;
-      color: black;
+      background-color: #0056b3;
+      color: white;
   }
 
  

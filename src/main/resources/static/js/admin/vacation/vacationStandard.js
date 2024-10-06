@@ -62,8 +62,10 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
             Swal.fire({
                 icon: 'success',
                 text: data.res_msg,
-                confirmButtonColor: '#B1C2DD', 
-                confirmButtonText: "확인"
+                confirmButtonText: "확인",
+                customClass: {
+                     confirmButton: 'custom-confirm-button'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     location.reload();
@@ -82,13 +84,16 @@ document.getElementById('vacationStandard').addEventListener('submit', function(
         Swal.fire({
             icon: 'error',
             text: '서버와의 통신 중 오류가 발생했습니다.',
-            confirmButtonColor: '#B1C2DD', 
-            confirmButtonText: "확인"
+            confirmButtonText: "확인",
+            customClass: {
+                confirmButton: 'custom-confirm-button'
+            }
         });
     });
 });
 
 document.getElementById('designated').addEventListener('change', function() {
+
     const designatedCheckbox = document.getElementById('designated');
     const joinedCheckbox = document.getElementById('joined');
     const designatedDateInput = document.getElementById('designatedDate');
