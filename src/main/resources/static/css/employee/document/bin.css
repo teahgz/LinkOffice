@@ -191,6 +191,10 @@ input[type="checkbox"] {
 	height: 15px;
 	width: 15px;
 }
+#select_all{
+	height: 15px;
+	width: 15px;	
+}
 .file_update_button{
     cursor: pointer;
     width: 15px;
