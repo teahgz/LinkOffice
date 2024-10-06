@@ -118,7 +118,7 @@
     display: none;  
     position: fixed;
     z-index: 9999;
-    right : 20px;
+    right : 400px;
     top: 95px;
     width: 450px;
     height: 400px; 
@@ -136,9 +136,10 @@
     cursor: pointer;
     transition: background-color 0.3s; 
     margin-top: 40px;    
+    float: right;
 } 
 
-#participate_confirmButton { 
+#participate_confirmButton:hover { 
 	background-color: #003a82;
 }
 .participate_modal-content {
