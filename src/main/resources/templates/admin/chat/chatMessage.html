@@ -181,7 +181,9 @@
                 <form id="editChatRoomForm" style="display:flex; flex-direction:column;">
                     <input type="text" id="chatRoomNameInput" value="" />
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="button" class="update-button" id="confirmEditButton" disabled>확인</button>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" class="update-button" id="confirmEditButton" disabled>확인</button>
+                    </div>
 
                 </form>
             </div>
