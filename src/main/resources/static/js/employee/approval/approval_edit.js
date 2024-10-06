@@ -123,17 +123,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const selectedNodes = $('#organization-chart').jstree(true).get_selected(true);
 
-        if (targetId === 'approver-list') {
-            const currentApproverCount = array.length;
-			const totalSelected = selectedNodes.length;
-            if (currentApproverCount > 5) {
-                Swal.fire({
-                    icon: 'warning',
-                    text: '결재자는 최대 6명까지 선택할 수 있습니다.',
-                });
-                return;
-            }
-        }
+		if (targetId === 'approver-list') {
+	        const currentApproverCount = approvers.length;
+	        const totalSelected = selectedNodes.length;
+	        const remainingSlots = 7 - currentApproverCount;
+	        if (totalSelected > remainingSlots) { 
+	            Swal.fire({
+	                icon: 'warning',
+	                text: `결재자는 최대 6명만 추가할 수 있습니다.`,
+	            });
+	            return;
+	        }
+	    }
 
         selectedNodes.forEach(function (node) {
             if (node.original.type === 'member' && !$('#organization-chart').jstree(true).is_disabled(node)) {

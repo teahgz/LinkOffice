@@ -17,17 +17,30 @@ function formatTime(seconds) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
+let sessionExpired = false; 
+
 function updateSessionTime() {
     remainingTime--;
     const formattedTime = formatTime(remainingTime);
     document.getElementById('session-time').innerText = `${formattedTime}`;
 
-    if (remainingTime <= 0) {
-        alert('세션이 만료되었습니다. 로그인 페이지로 이동합니다.');
-        window.location.href = '/';
+    if (remainingTime <= 0 && !sessionExpired) {
+        sessionExpired = true; 
+
+        Swal.fire({
+            icon: 'warning',
+            text: '세션이 만료되었습니다. 로그인 페이지로 이동합니다.',
+	        confirmButtonColor: '#0056b3', 
+	        confirmButtonText: '확인'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/login';
+            }
+        });
     }
 }
-//함수로 따로 설정
+
+
 function fetchSessionTime() {
     fetch('/session-time')
         .then(response => response.json())
