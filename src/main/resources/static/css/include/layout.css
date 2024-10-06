@@ -60,13 +60,14 @@ section {
     font-size: 14px;
     transition: border-color 0.3s;
 }
-
-input:focus {
-    outline: none;
-    border-color: #B1C2DD;
+select:focus, 
+input:focus,
+textarea:focus{
+    outline: none !important;
+    border-color: #B1C2DD !important;
 }
 
-input { 
+input, textarea{ 
     border: 1px solid #ddd;
     border-radius: 6px; 
 
@@ -93,7 +94,10 @@ h1 {
 	color: black;
 	border: 1px solid #ddd;
 }
-
+.swal2-confirm:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
 .header_location_text {
 	font-size: 17px;
 	color:#727272;
