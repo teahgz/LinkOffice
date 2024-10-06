@@ -1,8 +1,9 @@
 @charset "UTF-8";
 
 .vacationapproval_list {
-    width: 80%;
-    margin: auto;
+	margin: auto;
+    width: 1250px;
+    height: 700px; 
     padding: 40px;
     box-sizing: border-box;
 }
@@ -71,10 +72,10 @@ select {
 }
 
 .vacationapproval_list_table th, .vacationapproval_list_table td {
-    padding: 11px 10px;
+	padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .vacationapproval_list_table th {
@@ -82,7 +83,7 @@ select {
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .vacationapproval_list_table tr:last-child td {
@@ -98,6 +99,7 @@ select {
 }
 
 .pagination {
+    margin-top:40px;
     display: flex;
     justify-content: center;
 }

@@ -83,7 +83,7 @@ select {
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .employee_table tr:last-child td {
@@ -91,7 +91,7 @@ select {
 }
 
 .employee_table tbody tr {
-	font-size: 13px;
+	font-size: 15px;
     transition: background-color 0.3s;
 }
 
