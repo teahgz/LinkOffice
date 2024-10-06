@@ -513,8 +513,9 @@ if (sendButton && messageInput) {
                const chatItemDiv = chatItem.closest('.chatItem');
                const chatNameElement = chatItemDiv.querySelector('h3 p');
                chatNameElement.textContent = updatedChatRoomName;
-
-                const firstLetter = updatedChatRoomName.charAt(0).toUpperCase();
+                const title = document.getElementById('chatRoomTitle');
+                title.textContent = updatedChatRoomName;
+                const firstLetter = updatedChatRoomName.charAt(0).toLowerCase();
                 const groupImageElement = chatItemDiv.querySelector('.group-image');
                 if (groupImageElement) {
                     groupImageElement.textContent = firstLetter;

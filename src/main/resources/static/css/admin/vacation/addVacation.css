@@ -11,6 +11,7 @@
     border-radius: 8px;
     background-color: #fff;
     margin-top : 20px;
+    margin-bottom : 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .vacationForm {
@@ -220,7 +221,7 @@ th {
   border-radius: 10px;
 }
 .cancel-btn {
-  background-color: #f8f9fa;
+  background-color: #dc3545;
   border: none;
   width: 5vw;
   padding: 0.5vw;
