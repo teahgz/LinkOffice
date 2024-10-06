@@ -30,7 +30,8 @@ function updateSessionTime() {
         Swal.fire({
             icon: 'warning',
             text: '세션이 만료되었습니다. 로그인 페이지로 이동합니다.',
-            confirmButtonText: '확인'
+	        confirmButtonColor: '#0056b3', 
+	        confirmButtonText: '확인'
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = '/login';
