@@ -45,7 +45,7 @@
             <!-- 질문 추가 버튼 -->
             <button type="button" id="addQuestionButton" class="btn btn-secondary">질문 추가</button><br><br>
 
-            <button type="submit">확인</button>
+            <button type="submit" class="ok-btn">확인</button>
             <button type="button" class="cancel-btn"
 						onclick="window.history.back()">취소</button>
         </form>
@@ -141,7 +141,7 @@
             removeQuestionButton.classList.add("remove-question");
             removeQuestionButton.addEventListener("click", function () {
                 questionItem.remove();
-                updateQuestionNumbers();  // 질문 삭제 후 번호 다시 정렬
+                updateQuestionNumbers();  
             });
             questionItem.appendChild(removeQuestionButton);
 
@@ -175,6 +175,7 @@
             const addOptionButton = document.createElement("button");
             addOptionButton.type = "button";
             addOptionButton.textContent = "보기 추가";
+            addOptionButton.classList.add("btn", "btn-primary"); 
             addOptionButton.style.display = "none";
 	
             const optionList = document.createElement("div");

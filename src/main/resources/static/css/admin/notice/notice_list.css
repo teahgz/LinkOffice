@@ -91,11 +91,12 @@ select:focus, .search_text:focus {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    background-color: white;
 }
 
 .employee_table th, .employee_table td {
-    padding: 18px 15px;
+   padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
@@ -106,7 +107,7 @@ select:focus, .search_text:focus {
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: 13px;
 }
 
 .employee_table tbody tr:hover {
