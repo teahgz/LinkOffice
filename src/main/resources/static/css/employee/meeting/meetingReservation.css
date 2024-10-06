@@ -683,7 +683,7 @@ select option {
 }
  
 .fc-daygrid-day {
-    cursor: pointer;
+    cursor: pointer; 
 } 
 
 .jstree-search { 
