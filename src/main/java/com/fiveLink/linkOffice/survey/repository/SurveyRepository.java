@@ -1,15 +1,21 @@
 package com.fiveLink.linkOffice.survey.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import com.fiveLink.linkOffice.survey.domain.Survey;
 
 @Repository
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
+	
+	 List<Survey> findBySurveyStatus(int surveyStatus);
 
     // 검색어(조건, 제목 또는 내용) + 로그인한 사용자의 설문조사만 조회
     @Query("SELECT DISTINCT s, sp.surveyParticipantStatus FROM Survey s " +

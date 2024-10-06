@@ -6,15 +6,17 @@
 }
 
 .main_container {
-	width: 50%;
-    background-color: #ffffff;
-    border-radius: 10px;
+    width: 1250px;
+    background-color: #ffffffff;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px 30px;
+    padding: 60px 80px 30px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     gap: 20px;
-    position: relative;
+    margin: auto;
 }
 
 .title_button_container{
@@ -66,7 +68,7 @@
 }
 
 .signature_box img, .signature_box .currentSignature {
-    max-height: 25px;
+    max-height: 30px;
 }
 
 .date_box {

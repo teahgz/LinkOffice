@@ -45,7 +45,7 @@ if (canvas) {
 
 function setupCanvas() {
     if (!ctx) return;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = '#000000';

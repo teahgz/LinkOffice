@@ -34,7 +34,7 @@ select, .search_text {
 
 select:focus, .search_text:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 select {
@@ -51,12 +51,13 @@ select {
 
 .search_button {
     padding: 12px 25px;
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 16px;
+    color : white;
 }
 
 .search_button:hover {
@@ -67,7 +68,7 @@ select {
     transform: scale(0.98);
 }
 
-/* 정렬 셀렉트박스 */
+
 #sort {
     padding: 12px 18px;
     border: 1px solid #ddd;
@@ -80,7 +81,7 @@ select {
     appearance: none;
 }
 
-/* 테이블 스타일 */
+
 .survey_table {
     width: 100%;
     border-collapse: separate;
@@ -133,6 +134,7 @@ select {
     cursor: pointer;
     transition: all 0.3s;
     border-radius: 4px;
+    color : white;
 }
 
 .pagination button:hover {
@@ -140,9 +142,9 @@ select {
 }
 
 .pagination button.active {
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     color: white;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 body {
