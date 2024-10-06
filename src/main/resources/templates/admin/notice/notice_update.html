@@ -4,10 +4,8 @@
 	layout:decorate="~{include/layout}">
 <meta charset="UTF-8">
 <th:block layout:fragment="content">
-	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-		rel="stylesheet">
-	<link th:href="@{/css/admin/notice/notice_update.css}" rel="stylesheet"
-		type="text/css">
+	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+	<link th:href="@{/css/admin/notice/notice_update.css}" rel="stylesheet" type="text/css">
 
 	<section>
 		<div class="edit_notice">
@@ -15,45 +13,43 @@
 				th:action="@{/notice/update/{notice_no}(notice_no=${dto.notice_no})}"
 				th:object="${dto}" enctype="multipart/form-data" method="POST">
 				<!-- CSRF 토큰 -->
-				<input type="hidden" name="_csrf" th:value="${_csrf.token}"
-					id="csrfToken" /> <input type="hidden" name="notice_no"
-					th:value="${dto.notice_no}" />
+				<input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken" /> 
+				<input type="hidden" name="notice_no" th:value="${dto.notice_no}" />
 				<input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
+				
 				<!-- 제목 -->
 				<div class="header">
-					<label id="titleLabel">제목 :</label> <span id="importantLabel"
-						style="color: red; display: none;">&lt;중요&gt;</span> <input
-						type="text" id="title" name="notice_title"
-						th:field="*{notice_title}" required>
+					<label id="titleLabel">제목 :</label> 
+					<span id="importantLabel" style="color: red; display: none;">&lt;중요&gt;</span> 
+					<input type="text" id="title" name="notice_title" th:field="*{notice_title}" required>
+					
 					<div class="important-box">
-						<label>중요</label> <input type="checkbox" id="important"
-							name="notice_important_checkbox"
-							th:checked="${dto.notice_importance == 1}"> <input
-							type="hidden" id="notice_important" name="notice_importance"
-							th:field="*{notice_importance}">
+						<label>중요</label> 
+						<input type="checkbox" id="important" name="notice_important_checkbox" th:checked="${dto.notice_importance == 1}"> 
+						<input type="hidden" id="notice_important" name="notice_importance" th:field="*{notice_importance}">
 					</div>
 				</div>
 
 				<div class="info" style="display: none;">
-					<label>작성일자 :</label> <input type="date" id="date"
-						name="notice_update_date" th:field="*{notice_update_date}"
-						required>
+					<label>작성일자 :</label> 
+					<input type="date" id="date" name="notice_update_date" th:field="*{notice_update_date}" required>
 				</div>
-				<label>현재 첨부파일 : </label> <span id="currentFileName"
-					th:text="${dto.notice_ori_img}"></span>
+				
+				<label>현재 첨부파일 : </label> 
+				<span id="currentFileName" th:text="${dto.notice_ori_img}"></span>
 				<button type="button" id="deleteFileButton">이미지 삭제</button>
+				
 				<input type="file" name="file" id="fileInput" accept="image/*">
-				<input type="hidden" name="existing_file" id="existingFile"
-					th:value="${dto.notice_new_img}"> <input type="hidden"
-					name="delete_file_flag" id="deleteFileFlag" value="false">
+				<input type="hidden" name="existing_file" id="existingFile" th:value="${dto.notice_new_img}">
+				<input type="hidden" name="delete_file_flag" id="deleteFileFlag" value="false">
+				
 				<!-- Quill 에디터 -->
 				<div id="editor" th:utext="${dto.notice_content}"></div>
 				<input type="hidden" id="noticeContent" name="notice_content">
 
 				<div class="buttons">
 					<button type="submit" class="confirm-btn">수정</button>
-					<button type="button" class="cancel-btn"
-						onclick="window.history.back()">취소</button>
+					<button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
 				</div>
 			</form>
 		</div>
@@ -63,6 +59,7 @@
 	<script>
 	const location_text = document.getElementById('header_location_text');
 	location_text.innerHTML = '공지사항&emsp;&gt;&emsp;공지사항 수정';
+
     document.addEventListener('DOMContentLoaded', function() {
         var today = new Date();
         var yyyy = today.getFullYear();
@@ -117,7 +114,9 @@
             if (file && !allowedExtensions.includes(file.type)) {
                 Swal.fire({
                     icon: 'error',
-                    text: '이미지 파일만 업로드할 수 있습니다 (JPG, PNG, GIF)'
+                    text: '이미지 파일만 업로드할 수 있습니다 (JPG, PNG, GIF)',
+                    confirmButtonColor: '#0056b3',
+                    confirmButtonText: '확인'
                 });
                 fileInput.value = '';  
                 return false;
@@ -166,23 +165,29 @@
                 if (data.res_code === '200') {
                     Swal.fire({
                         icon: 'success',
-                        text: data.res_msg
+                        text: data.res_msg,
+                        confirmButtonColor: '#0056b3',
+                        confirmButtonText: '확인'
                     }).then(() => {
-                    	location.href = '/admin/notice/list';
+                        location.href = '/admin/notice/list';
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        text: data.res_msg
+                        text: data.res_msg,
+                        confirmButtonColor: '#0056b3',
+                        confirmButtonText: '확인'
                     });
                 }
             })
             .catch(error => {
                 Swal.fire({
                     icon: 'error',
-                    text: '서버 오류가 발생했습니다.'
+                    text: '서버 오류가 발생했습니다.',
+                    confirmButtonColor: '#0056b3',
+                    confirmButtonText: '확인'
                 });
-                console.error('Error:', error);
+                
             });
         });
     });

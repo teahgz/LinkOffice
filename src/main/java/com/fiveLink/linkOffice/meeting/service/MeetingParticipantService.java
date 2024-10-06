@@ -73,6 +73,37 @@ public class MeetingParticipantService {
         }).collect(Collectors.toList());
     }
     
+    public List<MeetingParticipantDto> findParticipantsByReservationNoAndNotMemberNo(Long reservationNo, Long memberNo) { 
+        List<MeetingParticipant> participants = meetingParticipantRepository.findParticipantsByReservationNoExcludingMemberNo(reservationNo, memberNo);
+ 
+        return participants.stream().map(participant -> { 
+            String memberName = memberRepository.findById(participant.getMemberNo())
+                                               .map(Member::getMemberName)
+                                               .orElse("사원");
+            String positionName = "직위";
+            String departmentName = "부서";
+            
+            Long member_No = participant.getMemberNo();
+            
+            List<Object[]> memberInfo = memberRepository.findMemberWithDepartmentAndPosition(member_No); 
+            
+            Object[] row = memberInfo.get(0);  
+            positionName = (String) row[1];   
+            departmentName = (String) row[2]; 
+             
+             
+            return MeetingParticipantDto.builder()
+                    .meeting_participant_no(participant.getMeetingParticipantNo())
+                    .meeting_reservation_no(participant.getMeetingReservationNo())
+                    .member_no(participant.getMemberNo())
+                    .meeting_participant_status(participant.getMeetingParticipantStatus())
+                    .memberName(memberName)  
+                    .positionName(positionName)   
+                    .departmentName(departmentName)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+    
     // 예약 수정
     public void save(MeetingParticipantDto participant) {
         meetingParticipantRepository.save(participant.toEntity());

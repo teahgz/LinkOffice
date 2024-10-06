@@ -96,13 +96,14 @@
 
 .info-row {
     display: flex; 
-    margin-bottom: 25px;
+    margin-bottom: 25px; 
 }
 
 .info-label {
     flex: 0 0 130px; 
     font-weight: bold;
     text-align: left;
+    font-size: 17px;
 }
 
 .info-value {
@@ -117,7 +118,7 @@
     display: none;  
     position: fixed;
     z-index: 9999;
-    right : 20px;
+    right : 400px;
     top: 95px;
     width: 450px;
     height: 400px; 
@@ -135,9 +136,10 @@
     cursor: pointer;
     transition: background-color 0.3s; 
     margin-top: 40px;    
+    float: right;
 } 
 
-#participate_confirmButton { 
+#participate_confirmButton:hover { 
 	background-color: #003a82;
 }
 .participate_modal-content {
@@ -626,16 +628,18 @@ hr {
 }
 
 .reservation_detail {
-  width: 70%;
-  height: 100%;
+  width: 1250px;
+  height : 700px;
+  max-height: 700px;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 12px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 40px 50px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   margin: auto;
+  margin-bottom: 10px;
 }
 
 .selected-participants-container {

@@ -33,13 +33,9 @@
     margin-right: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #0056b3;
     color: white;
     cursor: pointer;
-}
-
-#surveyForm button[type="button"] {
-    background-color: #6c757d;
 }
 
 /* 질문 리스트 영역 */
@@ -70,12 +66,12 @@
     margin-bottom: 10px;
 }
 
-/* 보기 입력 필드와 버튼 간 여백 추가 */
+
 .option-input input[type="text"] {
-    margin-right: 10px; /* 보기 입력 필드 오른쪽 여백 */
+    margin-right: 10px; 
 }
 
-/* 보기 삭제 버튼 스타일 (X 표시만 빨간색) */
+
 .remove-option {
     background: none !important;
     border: none !important;

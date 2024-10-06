@@ -217,7 +217,7 @@
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 15px center;
+    background-position: right 8px center;
     transition: border-color 0.3s;
 }
 .search_name{

@@ -30,6 +30,7 @@ public class InventoryService {
         this.inventoryCategoryRepository = inventoryCategoryRepository;
     }
 
+    // 카테고리와 부서 기준 비품 조회
     public List<InventoryDto> selectInventoryByCategoryAndDepartment(Long inventoryCategoryNo, Long departmentNo) {
         List<Inventory> inventories = inventoryRepository.findByCategoryAndDepartment(inventoryCategoryNo, departmentNo);
         List<InventoryDto> inventoryDtos = new ArrayList<>();
@@ -69,9 +70,6 @@ public class InventoryService {
 
         return inventoryDtoList;
     }
-
-    
-    
     public List<String> findAllCategories() {
         return inventoryRepository.findAllCategoryNames();
     }

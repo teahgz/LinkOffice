@@ -13,6 +13,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 40px;
     flex: 1;
+    height: 700px;
 }
 .list-header, .details-header {
     display: flex;
@@ -55,7 +56,7 @@ button:hover {
     margin-bottom: 20px; 
 }
 .container a, .details a {
-    color: #2994da;
+    color: #0056b3;
     text-decoration: none;
     font-size: 18px;
     transition: color 0.3s;

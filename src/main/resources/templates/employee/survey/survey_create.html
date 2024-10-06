@@ -14,7 +14,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
-    <!-- SweetAlert2 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -96,7 +95,6 @@
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-        let questionCount = 0;
         let selectedMembers = [];
         let selectNames = [];
 
@@ -119,10 +117,20 @@
             document.getElementById("surveyEndDate").setAttribute("min", startDate);
         });
 
+        // 질문 번호 재정렬 함수
+        function updateQuestionNumbers() {
+            const questionItems = document.querySelectorAll(".question-item");
+            questionItems.forEach(function(item, index) {
+                const questionLabel = item.querySelector("label");
+                questionLabel.textContent = `질문 ${index + 1}`;
+            });
+        }
+
         // 질문 추가 버튼 클릭 시
         document.getElementById("addQuestionButton").addEventListener("click", function () {
-            questionCount++;
             const questionList = document.getElementById("questionList");
+            const questionItems = questionList.getElementsByClassName("question-item");  
+            const questionNumber = questionItems.length + 1;  
 
             const questionItem = document.createElement("div");
             questionItem.classList.add("question-item");
@@ -133,20 +141,21 @@
             removeQuestionButton.classList.add("remove-question");
             removeQuestionButton.addEventListener("click", function () {
                 questionItem.remove();
+                updateQuestionNumbers();  // 질문 삭제 후 번호 다시 정렬
             });
             questionItem.appendChild(removeQuestionButton);
 
             const questionLabel = document.createElement("label");
-            questionLabel.textContent = `질문 ${questionCount}`;
+            questionLabel.textContent = `질문 ${questionNumber}`;
             const questionInput = document.createElement("input");
             questionInput.type = "text";
             questionInput.placeholder = "질문을 입력하세요";
-            questionInput.name = `questions[${questionCount - 1}].survey_question_text`;
+            questionInput.name = `questions[${questionNumber - 1}].survey_question_text`;
 
             const questionTypeLabel = document.createElement("label");
             questionTypeLabel.textContent = "질문 유형 선택";
             const questionTypeSelect = document.createElement("select");
-            questionTypeSelect.name = `questions[${questionCount - 1}].survey_question_type`;
+            questionTypeSelect.name = `questions[${questionNumber - 1}].survey_question_type`;
 
             const defaultOption = document.createElement("option");
             defaultOption.value = "";
@@ -186,7 +195,7 @@
                 const optionInput = document.createElement("input");
                 optionInput.type = "text";
                 optionInput.placeholder = "보기를 입력하세요";
-                optionInput.name = `questions[${questionCount - 1}].options[]`;
+                optionInput.name = `questions[${questionNumber - 1}].options[]`;
 
                 const removeButton = document.createElement("button");
                 removeButton.type = "button";

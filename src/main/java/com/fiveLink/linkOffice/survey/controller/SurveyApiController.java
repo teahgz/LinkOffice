@@ -59,14 +59,18 @@ public class SurveyApiController {
 	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    List<MemberDto> members = memberService.getAllMembersChartOut();
 	    SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+	    Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        
+        model.addAttribute("memberdto", memberdto);
 
-	    // 질문 리스트 조회
+
 	    List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
 
 	    model.addAttribute("departments", departments);
 	    model.addAttribute("dto", dto);
 	    model.addAttribute("members", members);
-	    model.addAttribute("questions", questions); // 질문 리스트 추가
+	    model.addAttribute("questions", questions);
 
 	    return "employee/survey/survey_update";
 	}

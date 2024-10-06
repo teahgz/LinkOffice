@@ -3,6 +3,7 @@
 section {
 	margin:0;
 	padding : 0;
+	margin-bottom: 50px;
 }
 #calendar {
     flex-grow: 1;
@@ -33,14 +34,14 @@ section {
     background-color: transparent; 
     border:none;
     color: #9d9d9d;
-    font-size : 20px;
+    font-size : 16px;
     font-weight: 550;
 }
 
 .fc .fc-button.fc-button-primary:hover {
     background-color: transparent; 
     border:none;
-    color: #2692f2;
+    color: #0056b3 !important;
 }
  
 .fc-prev-button {
@@ -52,7 +53,7 @@ section {
 .fc-prev-button:hover {
     background-color: transparent; 
     border:none;
-    color: #2692f2;
+    color: #0056b3 !important;
 }
  
 .fc-next-button {
@@ -61,7 +62,7 @@ section {
     color: #9d9d9d; 
 } 
 .fc-daygrid-day {
-    height: 150px;  
+    height: 180px;  
 }  
 .google-holiday {
 	text-align: right;  
@@ -70,7 +71,7 @@ section {
 .fc-next-button:hover {
     background-color: transparent; 
     border:none;
-    color: #2692f2;
+    color: #0056b3 !important;
 }
 .fc-button, .fc-button:focus, .fc-button:active {
     outline: none !important; 
@@ -89,8 +90,19 @@ section {
     border:none;
     color: black;
     font-weight: 550;
+} 
+
+.fc-event {
+    font-size: 15px !important;  
 }
 
+.fc-daygrid-event {
+    font-size: 15px !important; 
+}
+
+.fc-timegrid-event {
+    font-size: 15px !important; 
+}
 
 /* 등록 모달 */
 .modal {
@@ -225,7 +237,12 @@ textarea {
     cursor: pointer;
     transition: background-color 0.3s; 
     margin-top: 40px;    
+    float: right;
 } 
+
+#participate_confirmButton:hover {
+	background-color: #003a82;
+}
 
 .participate_modal-content {
     background-color: #fefefe;
@@ -597,12 +614,18 @@ textarea{
 .employee_section {
     display: flex;
     flex-direction: column;
-    height: 100vh; 
+    height: 100%; 
+    width : 1250px;
+    background-color: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin:auto;
+    margin-bottom: 50px;
+    
 }
  
 #header {
-    padding: 20px;
-    width : 80%; 
+    padding: 20px; 
 }
 
 #addEventBtn {
@@ -637,7 +660,7 @@ textarea{
 
 label {
 	cursor:pointer;
-	font-size : 19px;
+	font-size : 18px;
 	margin-left: 10px;
 }
   
@@ -646,7 +669,7 @@ label {
     gap: 10px;
     align-items: center;
     padding: 20px;
-    margin-left: 350px;
+    margin-left: 280px;
 }
 
 #searchCategory,
@@ -693,7 +716,7 @@ label {
  
 #calendar {
     flex: 1;
-    padding: 20px 90px;
+    padding: 20px 30px;
     overflow-y: auto; 
 } 
 
@@ -750,20 +773,21 @@ label {
 }
 
 .fc .fc-toolbar.fc-header-toolbar {
-	margin-bottom: 30px;
+	margin-bottom: 30px; 
 }
 
 .fc .fc-toolbar {
-  padding: 1.5rem; 
+  padding-bottom: 1.5rem; 
   border-bottom: 1px solid #e0e0e0;
 }
 
 .fc .fc-toolbar-title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #333333;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333; 
+  margin: 0 7px;
 } 
- 
+
 .fc-event {
   border: none;
   border-radius: 5px; 
@@ -779,7 +803,7 @@ label {
 }
 
 .fc .fc-day-today {
-  background-color: rgb(177, 194, 221, 0.2)!important;
+  background-color: rgb(177, 194, 221, 0.4)!important;
 }
 
 .fc-more-link {

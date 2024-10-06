@@ -3,6 +3,7 @@
     max-width: 1250px;
     margin: 0 auto;
     padding: 20px;
+    width: 1250px;
 }
 
 .content-wrapper {
@@ -15,7 +16,9 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 40px;
-    flex: 1;
+    flex: 1; 
+    height: 700px;
+    max-height: 700px;
 }
 
 .list-header, .details-header {
@@ -69,7 +72,7 @@ button:hover {
 
 .info_content_tag a {
     text-decoration: none;
-    color: #2994da;
+    color: #0056b3;
     transition: color 0.3s;
 }
 
@@ -78,7 +81,7 @@ button:hover {
 }
  
 .container a, .details a {
-    color: #2994da;
+    color: #0056b3;
     text-decoration: none;
     font-size: 18px;
     transition: color 0.3s;
@@ -237,7 +240,7 @@ button:hover {
 
 .selected {
     background-color: #e9ecef;
-    color: #163e65;
+    color: #0056b3;
     text-decoration: none; 
     display: block;
     padding: 10px;

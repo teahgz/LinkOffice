@@ -6,77 +6,47 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <link th:href="@{/css/employee/survey/survey_question_detail.css}" rel="stylesheet" type="text/css">
+    
     <link th:href="@{/css/admin/organization/organizationChart.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/employee/survey/survey_update.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/employee/survey/survey_create.css}" rel="stylesheet" type="text/css">
+
+    <!-- 필요한 라이브러리 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <th:block layout:fragment="content">
     <section>
-        <input type="hidden" id="surveyNo" th:value="${dto.survey_no}">
+    <br>
+        <form id="surveyForm">
+            <label for="surveyTitle">설문 제목</label>
+            <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
+            <input type="text" id="surveyTitle" name="survey_title" placeholder="설문 제목을 입력하세요."><br>
 
-        <form id="surveyForm" th:action="@{/employee/qupdate/{survey_no}(survey_no=${dto.survey_no})}" method="post">
-            <label for="surveyTitle">설문 제목</label><br>
-            <input type="text" id="surveyTitle" name="survey_title" th:value="${dto.survey_title}" placeholder="설문 제목을 입력하세요."><br>
-
-            <label for="surveyPeriod">설문 기간</label><br>
-            <input type="date" id="surveyStartDate" name="survey_start_date" th:value="${dto.survey_start_date}">
-            <input type="date" id="surveyEndDate" name="survey_end_date" th:value="${dto.survey_end_date}"><br>
+            <label for="surveyPeriod">설문 기간</label>
+            <input type="date" id="surveyStartDate" name="survey_start_date">
+            <input type="date" id="surveyEndDate" name="survey_end_date"><br>
 
             <label for="surveyTarget">설문 대상자</label>
             <div></div>
 
             <button type="button" id="openChart" class="btn btn-primary">조직도 열기</button>
 
-            <div id="selected-members-outside">
-                <!-- 기존 참여자 출력 -->
-                <div th:each="participant : ${selectedParticipants}" class="selected-member">
-                    <span th:text="${participant.memberName}"></span>
-                    <button type="button" class="remove-member" data-participant-no="${participant.survey_participant_no}">&times;</button>
-                </div>
-            </div><br>
+            <div id="selected-members-outside"></div><br>
 
-            <label for="surveyDescription">설문 설명</label><br>
-            <input type="text" id="surveyDescription" name="survey_description" th:value="${dto.survey_description}" placeholder="설문 설명을 입력하세요."><br>
+            <label for="surveyDescription">설문 설명</label>
+            <input type="text" id="surveyDescription" name="survey_description" placeholder="설문 설명을 입력하세요."><br>
 
-            <!-- 기존 질문 리스트 -->
-            <div id="questionList">
-                <div th:each="question, iterStat : ${questions}" class="question-item">
-                    <label th:text="'질문 ' + ${iterStat.count}"></label>
-                    <input type="text" name="questions[${iterStat.count - 1}].survey_question_text" th:value="${question.survey_question_text}" placeholder="질문을 입력하세요"><br>
-
-                    <!-- 질문 삭제 버튼 추가 -->
-                    <button type="button" class="remove-question" onclick="removeQuestion(this)">X</button>
-
-                    <!-- 질문 유형 선택 -->
-                    <label for="questionTypeSelect">질문 유형 선택</label><br>
-                    <select name="questions[${iterStat.count - 1}].survey_question_type" class="question-type-select">
-                        <option value="" th:selected="${question.survey_question_type == null}">선택하기</option>
-                        <option value="multiple" th:selected="${question.survey_question_type == 0}">선택형</option>
-                        <option value="text" th:selected="${question.survey_question_type == 1}">텍스트형</option>
-                    </select>
-
-                    <!-- 보기 추가 버튼 (선택형일 경우만 표시) -->
-                    <div class="options-container" th:if="${question.survey_question_type == 0}">
-                        <button type="button" class="btn btn-secondary add-option-btn">보기 추가</button>
-                        <div class="options">
-                            <div th:each="option, optStat : ${question.survey_option_answer}">
-                                <input type="text" name="questions[${iterStat.count - 1}].options[${optStat.count - 1}]" th:value="${option}" placeholder="보기를 입력하세요">
-                                <!-- 보기 삭제 버튼 추가 -->
-                                <button type="button" class="remove-option" onclick="removeOption(this)">X</button>
-                                <br>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- 질문 리스트 -->
+            <div id="questionList"></div>
 
             <!-- 질문 추가 버튼 -->
             <button type="button" id="addQuestionButton" class="btn btn-secondary">질문 추가</button><br><br>
 
             <button type="submit">확인</button>
-            <button type="button">취소</button>
+            <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
         </form>
     </section>
 
@@ -106,61 +76,88 @@
         </div>
     </div>
 
-
     <script>
+    function showAlert(message) {
+        Swal.fire({
+            text: message,
+            icon: 'warning',
+            confirmButtonColor: '#0056b3',
+            confirmButtonText: '확인'
+        });
+    }
+
     const location_text = document.getElementById('header_location_text');
-    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 수정';
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 작성';
     
     document.addEventListener("DOMContentLoaded", function () {
-        // CSRF 토큰 가져오기
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-        // surveyNo 가져오기
-        const surveyNo = document.getElementById('surveyNo').value; 
-
-        let questionCount = document.querySelectorAll('.question-item').length;
         let selectedMembers = [];
         let selectNames = [];
 
+        // 오늘 날짜를 yyyy-mm-dd 형식으로 가져오는 함수
+        function getTodayDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+            const dd = String(today.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // 설문 시작일이 오늘 이후로만 선택 가능하도록 설정
+        const todayDate = getTodayDate();
+        document.getElementById("surveyStartDate").setAttribute("min", todayDate);
+
+        // 설문 종료일을 시작일 이후로만 선택 가능하도록 설정
+        document.getElementById("surveyStartDate").addEventListener("change", function() {
+            const startDate = this.value;
+            document.getElementById("surveyEndDate").setAttribute("min", startDate);
+        });
+
+        // 질문 번호 재정렬 함수
+        function updateQuestionNumbers() {
+            const questionItems = document.querySelectorAll(".question-item");
+            questionItems.forEach(function(item, index) {
+                const questionLabel = item.querySelector("label");
+                questionLabel.textContent = `질문 ${index + 1}`;
+            });
+        }
+
         // 질문 추가 버튼 클릭 시
         document.getElementById("addQuestionButton").addEventListener("click", function () {
-            questionCount++;
             const questionList = document.getElementById("questionList");
+            const questionItems = questionList.getElementsByClassName("question-item");  
+            const questionNumber = questionItems.length + 1;  
 
-            // 질문 항목 생성
             const questionItem = document.createElement("div");
             questionItem.classList.add("question-item");
 
-            // 질문 삭제 버튼 추가
             const removeQuestionButton = document.createElement("button");
             removeQuestionButton.type = "button";
             removeQuestionButton.textContent = "X";
             removeQuestionButton.classList.add("remove-question");
             removeQuestionButton.addEventListener("click", function () {
                 questionItem.remove();
+                updateQuestionNumbers();  // 질문 삭제 후 번호 다시 정렬
             });
             questionItem.appendChild(removeQuestionButton);
 
-            // 질문 텍스트 필드
             const questionLabel = document.createElement("label");
-            questionLabel.textContent = `질문 ${questionCount}`;
+            questionLabel.textContent = `질문 ${questionNumber}`;
             const questionInput = document.createElement("input");
             questionInput.type = "text";
             questionInput.placeholder = "질문을 입력하세요";
-            questionInput.name = `questions[${questionCount - 1}].survey_question_text`;
+            questionInput.name = `questions[${questionNumber - 1}].survey_question_text`;
 
             const questionTypeLabel = document.createElement("label");
             questionTypeLabel.textContent = "질문 유형 선택";
             const questionTypeSelect = document.createElement("select");
-            questionTypeSelect.name = `questions[${questionCount - 1}].survey_question_type`;
-            questionTypeSelect.classList.add('question-type-select');
+            questionTypeSelect.name = `questions[${questionNumber - 1}].survey_question_type`;
 
             const defaultOption = document.createElement("option");
             defaultOption.value = "";
             defaultOption.textContent = "선택하기";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
 
             const option1 = document.createElement("option");
             option1.value = "multiple";
@@ -176,8 +173,8 @@
             const addOptionButton = document.createElement("button");
             addOptionButton.type = "button";
             addOptionButton.textContent = "보기 추가";
-            addOptionButton.style.display = "none"; 
-
+            addOptionButton.style.display = "none";
+	
             const optionList = document.createElement("div");
 
             questionTypeSelect.addEventListener("change", function () {
@@ -196,7 +193,7 @@
                 const optionInput = document.createElement("input");
                 optionInput.type = "text";
                 optionInput.placeholder = "보기를 입력하세요";
-                optionInput.name = `questions[${questionCount - 1}].options[]`;
+                optionInput.name = `questions[${questionNumber - 1}].options[]`;
 
                 const removeButton = document.createElement("button");
                 removeButton.type = "button";
@@ -220,71 +217,12 @@
             questionList.appendChild(questionItem);
         });
 
-        // 선택형/텍스트형 변경 시 처리
-        document.querySelectorAll('.question-type-select').forEach(function(selectElement) {
-            selectElement.addEventListener('change', function () {
-                const questionItem = selectElement.closest('.question-item');
-                const optionsContainer = questionItem.querySelector('.options-container');
-                if (selectElement.value === "multiple") {
-                    if (!optionsContainer) {
-                        const newOptionsContainer = document.createElement("div");
-                        newOptionsContainer.classList.add("options-container");
-                        const addOptionButton = document.createElement("button");
-                        addOptionButton.type = "button";
-                        addOptionButton.textContent = "보기 추가";
-                        newOptionsContainer.appendChild(addOptionButton);
-
-                        const optionsList = document.createElement("div");
-                        newOptionsContainer.appendChild(optionsList);
-                        questionItem.appendChild(newOptionsContainer);
-
-                        addOptionButton.addEventListener("click", function () {
-                            const optionInputWrapper = document.createElement("div");
-                            optionInputWrapper.classList.add("option-input");
-                            const optionInput = document.createElement("input");
-                            optionInput.type = "text";
-                            optionInput.placeholder = "보기를 입력하세요";
-                            optionInputWrapper.appendChild(optionInput);
-
-                            const removeOptionButton = document.createElement("button");
-                            removeOptionButton.type = "button";
-                            removeOptionButton.textContent = "X";
-                            optionInputWrapper.appendChild(removeOptionButton);
-
-                            removeOptionButton.addEventListener("click", function () {
-                                optionInputWrapper.remove();
-                            });
-
-                            optionsList.appendChild(optionInputWrapper);
-                        });
-                    }
-                } else {
-                    if (optionsContainer) {
-                        optionsContainer.remove();
-                    }
-                }
-            });
-        });
-
-        // 질문 삭제 함수
-        window.removeQuestion = function(button) {
-            const questionItem = button.parentElement;
-            questionItem.remove();
-        };
-
-        // 보기 삭제 함수
-        window.removeOption = function(button) {
-            const optionItem = button.parentElement;
-            optionItem.remove();
-        };
-
-        // 조직도 열기 버튼 클릭 시
         $('#openChart').click(function() {
             $('#organizationChartModal').modal('show');
             loadOrganizationChart();
         });
 
-        // 조직도 로딩 함수
+        // 조직도 로딩
         function loadOrganizationChart() {
             $.ajax({
                 url: '/organizationChart/chart',
@@ -327,7 +265,6 @@
             });
         }
 
-        // 선택된 멤버 업데이트 함수
         function updateSelectedMembers(selectedIds, instance) {
             const selectedMembersContainer = $('#selected-members');
             selectedMembersContainer.empty();
@@ -365,7 +302,6 @@
             });
         }
 
-        // 조직도 모달에서 확인 버튼 클릭 시
         $('#confirmButton').click(function() {
             const selectedMembersContainerOutside = $('#selected-members-outside');
             selectedMembersContainerOutside.empty();
@@ -380,8 +316,7 @@
             $('#organizationChartModal').modal('hide');
         });
 
-        // 설문 폼 제출 이벤트
-        document.getElementById("surveyForm").addEventListener("submit", function(event) {
+        document.getElementById("surveyForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
             const surveyTitle = document.getElementById("surveyTitle").value;
@@ -389,13 +324,23 @@
             const surveyStartDate = document.getElementById("surveyStartDate").value;
             const surveyEndDate = document.getElementById("surveyEndDate").value;
 
-            if (!surveyTitle || !surveyDescription) {
-                alert("설문 제목과 설명을 입력해야 합니다.");
+            // 유효성 검사 및 SweetAlert 경고
+            if (!surveyTitle) {
+                showAlert("설문 제목을 입력하세요.");
                 return;
             }
 
             if (!surveyStartDate || !surveyEndDate) {
-                alert("설문 시작일과 종료일을 입력해야 합니다.");
+                showAlert("설문 시작일과 종료일을 입력하세요.");
+                return;
+            }
+
+            if (selectedMembers.length === 0) {
+                showAlert("설문 참여자를 선택하세요.");
+                return;
+            }
+            if (!surveyDescription) {
+                showAlert("설문 설명을 입력하세요.");
                 return;
             }
 
@@ -403,41 +348,37 @@
             const questions = [];
             let hasError = false;
 
-            document.querySelectorAll('.question-item').forEach(function(item, index) {
+            document.querySelectorAll('.question-item').forEach(function (item, index) {
                 const questionText = item.querySelector('input[type="text"]').value;
                 const questionType = item.querySelector('select').value;
                 const options = [];
 
                 if (!questionText) {
-                    alert(`질문 ${index + 1}의 내용을 입력하세요.`);
+                    showAlert(`질문 ${index + 1}의 내용을 입력하세요.`);
                     hasError = true;
                     return;
                 }
 
                 if (!questionType) {
-                    alert(`질문 ${index + 1}의 유형을 선택하세요.`);
+                    showAlert(`질문 ${index + 1}의 유형을 선택하세요.`);
                     hasError = true;
                     return;
                 }
 
-                let surveyQuestionType;
                 if (questionType === 'multiple') {
-                    surveyQuestionType = 0;  
-                    item.querySelectorAll('.option-input input').forEach(function(opt) {
+                    item.querySelectorAll('.option-input input').forEach(function (opt) {
                         if (!opt.value) {
-                            alert(`질문 ${index + 1}의 선택형 보기 내용을 입력하세요.`);
+                            showAlert(`질문 ${index + 1}의 선택형 보기 내용을 입력하세요.`);
                             hasError = true;
                             return;
                         }
                         options.push(opt.value);
                     });
-                } else if (questionType === 'text') {
-                    surveyQuestionType = 1; 
                 }
 
                 questions.push({
                     survey_question_text: questionText,
-                    survey_question_type: surveyQuestionType,
+                    survey_question_type: questionType === 'multiple' ? 0 : 1,
                     options: options
                 });
             });
@@ -453,31 +394,36 @@
                 questions: questions
             };
 
-            console.log(data);
-
             $.ajax({
-                url: '/employee/qupdate/' + surveyNo, 
-                method: 'POST', 
+                url: '/employee/survey/create',
+                method: 'PATCH',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                beforeSend: function(xhr) {
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.res_code === "200") {
-                        alert(response.res_msg);
-                        var memberNo = $('#memberNo').val(); // memberNo 값을 가져옴
-                        location.href = '/employee/survey/myList/' + memberNo;
+                        Swal.fire({
+                            icon: 'success',
+                            text: response.res_msg,
+                            confirmButtonText: '확인'
+                        }).then(() => {
+                            const memberNo = document.getElementById('memberNo').value;
+                            location.href = '/employee/survey/myList/' + memberNo;
+                        });
                     } else {
-                        alert(response.res_msg);
+                        showAlert(response.res_msg);
                     }
                 },
-                error: function(xhr, status, error) {
-                    alert('오류 발생: ' + error);
+                error: function (xhr, status, error) {
+                    showAlert('오류 발생: ' + error);
                 }
             });
         });
+
     });
     </script>
+
 </th:block>
 </html>

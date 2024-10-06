@@ -26,8 +26,8 @@
 
 .create_button {
     padding: 13px 25px;
-    background-color: #B1C2DD;
-    color: black;
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -35,7 +35,7 @@
 }
 
 .create_button:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .create_button:active {
@@ -62,21 +62,22 @@ select {
 
 select:focus, .search_text:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 .search_button {
     padding: 12px 25px;
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 16px;
+    color : white;
 }
 
 .search_button:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 }
 
 .search_button:active {
@@ -133,9 +134,12 @@ select:focus, .search_text:focus {
 }
 
 .pagination button.active {
-    background-color: #B1C2DD;
+    background-color: #0056b3;
     color: white;
-    border-color: #B1C2DD;
+}
+.pagination button.active:hover {
+    background-color: #003a82;
+
 }
 
 a {

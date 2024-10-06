@@ -128,7 +128,10 @@ public class SurveyViewController {
         Long memberNo = memberService.getLoggedInMemberNo();
         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
-
+        Long member_no = memberService.getLoggedInMemberNo();
+		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+		model.addAttribute("memberdto", memberdto);
+		
         // 설문 참여 여부 확인
         boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
 
@@ -169,9 +172,12 @@ public class SurveyViewController {
     @GetMapping("/employee/survey/update/{survey_no}")
 	public String updateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
     	 Long memberNo = memberService.getLoggedInMemberNo();
-         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+         
+         model.addAttribute("memberdto", memberdto);
+    	 SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
          List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
-
+         
          // 기본 데이터 추가
          model.addAttribute("dto", dto);
          model.addAttribute("questions", questions);

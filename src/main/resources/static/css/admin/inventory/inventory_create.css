@@ -6,12 +6,16 @@
 }
 
 #openModalBtn, #openRegisterModalBtn {
-	background-color: #B1C2DD;
-	color: black;
+	background-color: #0056b3;
+	color: white;
 	border: none;
 	border-radius: 4px;
 	padding: 5px 10px;
 	cursor: pointer;
+}
+
+#openModalBtn:hover, #openRegisterModalBtn:hover {
+	background-color: #003a82;
 }
 
 .form-container {
@@ -47,26 +51,31 @@
 
 
 .register-button .confirm-btn {
-	background-color: #B1C2DD; 
-	color: black;
+	background-color: #0056b3; 
+	color: white;
 	padding: 10px 20px;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
 }
+.register-button:hover .confirm-btn:hover {
+	background-color: #003a82;
+}
 
-.register-button .cancel-btn {
-	background-color: #C0C0C0; 
+.cancel-btn {
+	background-color: #f8f9fa; 
 	color: black;
 	padding: 10px 20px;
-	border: none;
+	border : 1px solid #ddd;
 	border-radius: 4px;
 	cursor: pointer;
 }
 
-.register-button button:hover {
-	opacity: 0.8;
+.cancel-btn:hover {
+	background-color: #e9ecef;
 }
+
+
 
 
 .modal {
@@ -124,29 +133,37 @@
 .modal-buttons button {
 	padding: 10px 20px;
 	margin: 5px;
-	cursor: pointer;
 }
 
 .confirm-button, .confirm-register {
-	background-color: #B1C2DD;
-	color: black;
+	background-color: #0056b3;
+	color: white;
 	border: none;
 	border-radius: 4px;
+}
+
+.confirm-button:hover, .confirm-register:hover {
+	background-color: #003a82;
 }
 
 .cancel-button, .cancel-register {
-	background-color: #C0C0C0;
+	background-color: #f8f9fa;
 	color: black;
-	border: none;
+	border : 1px solid #ddd;
 	border-radius: 4px;
 }
 
-.modal-buttons button:hover {
-	opacity: 0.9;
+.cancel-button:hover{
+	background-color: #e9ecef;
 }
 
+ .cancel-register:hover{
+	background-color: #e9ecef;
+}
+
+
 .close, .closeRegisterModal {
-	color: #C0C0C0;
+	color: #f8f9fa;
 	float: right;
 	font-size: 28px;
 	font-weight: bold;
@@ -157,4 +174,5 @@
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
+	background-color : #e9ecef;
 }

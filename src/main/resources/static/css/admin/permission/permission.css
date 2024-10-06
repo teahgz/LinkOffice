@@ -13,8 +13,15 @@
     display: flex;
     flex-direction: row;  
     justify-content: space-between;  
-    gap: 20px;  
-    padding : 20px 60px;
+    gap: 20px;   
+    height: 780px;
+    width: 1250px;
+    margin : auto;
+    margin-bottom: 30px;
+}
+
+.all_sort_select_box {
+	padding : 10px 15px;	
 }
 
 .permission_list_box {
@@ -124,7 +131,7 @@
 
 #openModalButton {
 	width : 110px;
-    padding: 8px 16px;
+    padding: 10px 16px;
     background-color: #0056b3;
     color: white;
     border: none;
@@ -151,7 +158,7 @@
 }
 
 .employee_table th, .employee_table td {
-    padding: 15px;
+    padding: 13px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -216,7 +223,7 @@
 } 
 
 .permission_table th, .permission_table td {
-	padding: 11px 10px;
+	padding: 9px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 13px;

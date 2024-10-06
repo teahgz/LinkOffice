@@ -74,7 +74,6 @@
             <span class="close">&times;</span>
             <h3>카테고리 선택</h3>
             <div id="categoryList">
-                <!-- 카테고리 리스트가 여기 추가됨 -->
             </div>
 
             <div class="modal-buttons">
@@ -120,8 +119,6 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
     var inventoryQuantity = document.getElementById("inventoryQuantity").value.trim();
     var category = document.getElementById("category").value.trim();
     var department = document.getElementById("department").value;
-
-    
 
     if (!department) { 
         showAlert('부서를 선택해주세요.');
@@ -169,7 +166,9 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
             if (data.res_code === "200") {
             	Swal.fire({
             	    icon: 'success',
-            	    text: data.res_msg, 
+            	    text: data.res_msg,
+            	    confirmButtonColor: '#0056b3',
+            	    confirmButtonText: '확인',
             	}).then(function() {
                 	var memberNo = document.getElementById('memberNo').value;
                     window.location.href = '/inventory/list/' + memberNo;
@@ -177,7 +176,9 @@ document.getElementById("inventoryForm").addEventListener("submit", function(eve
             } else {
             	Swal.fire({
             	    icon: 'error',
-            	    text: data.res_msg, 
+            	    text: data.res_msg,
+            	    confirmButtonColor: '#0056b3',
+            	    confirmButtonText: '확인',
             	});
             }
         }
@@ -193,7 +194,6 @@ function showAlert(message) {
         confirmButtonText: '확인',
     });
 }
-
 
 // 카테고리 선택 모달
 var modal = document.getElementById("myModal");
@@ -244,7 +244,12 @@ confirmBtn.onclick = function() {
         document.getElementById("category").value = selectedCategory.value;
         modal.style.display = "none";
     } else {
-        Swal.fire(null, '카테고리를 선택해주세요.', 'info');
+        Swal.fire({
+            icon: 'info',
+            text: '카테고리를 선택해주세요.',
+            confirmButtonColor: '#0056b3',
+            confirmButtonText: '확인',
+        });
     }
 };
 
@@ -307,6 +312,8 @@ function registerCategory() {
                 	Swal.fire({
                 	    icon: 'success',
                 	    text: data.res_msg, 
+                	    confirmButtonColor: '#0056b3',
+                	    confirmButtonText: '확인',
                 	}).then(function() {
                         document.getElementById("newCategory").value = "";  
                         registerModal.style.display = "none";
@@ -315,13 +322,20 @@ function registerCategory() {
                 	Swal.fire({
                 	    icon: 'error',
                 	    text: data.res_msg, 
+                	    confirmButtonColor: '#0056b3',
+                	    confirmButtonText: '확인',
                 	});
                 }
             } 
         };
         xhr.send(JSON.stringify({ inventory_category_name: newCategory }));
     } else {
-        Swal.fire(null, '카테고리 이름을 입력하세요.', 'info');
+        Swal.fire({
+            icon: 'info',
+            text: '카테고리 이름을 입력하세요.',
+            confirmButtonColor: '#0056b3',
+            confirmButtonText: '확인',
+        });
     }
 }
 </script>

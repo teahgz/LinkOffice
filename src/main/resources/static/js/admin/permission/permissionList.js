@@ -484,3 +484,6 @@ function filterMembersBySearch() {
 }
 
 document.getElementById('searchMember').addEventListener('input', filterMembersBySearch);
+
+const location_text = document.getElementById('header_location_text');
+location_text.innerHTML = '통합 권한 관리';

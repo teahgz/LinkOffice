@@ -7,6 +7,8 @@
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link th:href="@{/css/employee/survey/survey_question_detail.css}" rel="stylesheet" type="text/css">
+    <!-- SweetAlert2 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <th:block layout:fragment="content">
@@ -35,7 +37,9 @@
             <!-- 설문 수정 폼 -->
             <form id="surveyDetailForm" method="post" th:object="${dto}" th:action="@{/employee/update/{survey_no}(survey_no=${dto.survey_no})}" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken" />
-
+                <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
+                
+                <!-- 각 질문에 대한 답변 -->
                 <div th:each="question, iterStat : ${questions}" class="question">
                     <p>
                         <strong th:text="${iterStat.count + '.'}">1.</strong>
@@ -57,7 +61,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="confirm-btn">수정 완료</button>
+                <div class="submit-buttons">
+                    <button type="submit" class="confirm-btn">수정 완료</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
+                </div>
             </form>
         </div>
     </section>
@@ -71,13 +78,37 @@
         const csrfToken = document.getElementById('csrfToken').value;
         const formData = new FormData(form);
 
-        // 객관식 응답 처리
-        document.querySelectorAll('input[type="radio"]:checked').forEach((radio) => {
-            const questionNo = radio.name.split('_')[1];
-            formData.append('survey_option_no', radio.value);
-            formData.append('survey_question_no', questionNo);
+        let isValid = true;
+
+        // 객관식 응답 처리 (유효성 검사 추가)
+        document.querySelectorAll('.question').forEach((questionDiv) => {
+            const questionType = questionDiv.querySelector('input[type="radio"]') ? 0 : 1; 
+            const questionNo = questionDiv.querySelector('input[type="radio"], input[type="text"]').name.split('_')[1];
+
+            if (questionType === 0) {
+                const selectedOption = questionDiv.querySelector('input[type="radio"]:checked');
+                if (!selectedOption) {
+                    showAlert('객관식 문항을 선택해 주세요.');
+                    isValid = false;
+                    return false; 
+                }
+                formData.append('survey_option_no', selectedOption.value);
+                formData.append('survey_question_no', questionNo);
+            } else {
+                const textAnswer = questionDiv.querySelector('input[type="text"]').value.trim();
+                if (!textAnswer) {
+                    showAlert('주관식 문항에 답변을 입력해 주세요.');
+                    isValid = false;
+                    return false; 
+                }
+                formData.append('survey_text_answer', textAnswer);
+                formData.append('survey_question_no', questionNo);
+            }
         });
 
+        if (!isValid) return; 
+
+        // 제출 처리
         fetch(form.action, {
             method: 'POST',
             body: formData
@@ -85,17 +116,47 @@
         .then(response => response.json())
         .then(data => {
             if (data.res_code === '200') {
-                alert('설문이 성공적으로 수정되었습니다.');
-                window.location.href = '/employee/survey/ingList/{member_no}';
+                // SweetAlert로 성공 메시지 출력
+                Swal.fire({
+                    title: '수정 완료',
+                    text: '설문이 성공적으로 수정되었습니다.',
+                    icon: 'success',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    const memberNo = document.getElementById('memberNo').value;
+                    location.href = '/employee/survey/ingList/' + memberNo;
+                });
             } else {
-                alert('설문 응답 수정 중 오류가 발생했습니다. 다시 시도해주세요.');
+                // SweetAlert로 오류 메시지 출력
+                Swal.fire({
+                    title: '오류 발생',
+                    text: '설문 응답 수정 중 오류가 발생했습니다. 다시 시도해주세요.',
+                    icon: 'error',
+                    confirmButtonText: '확인'
+                });
             }
         })
         .catch(error => {
             console.error('제출 오류:', error);
-            alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
+            // SweetAlert로 서버 오류 메시지 출력
+            Swal.fire({
+                title: '서버 오류',
+                text: '서버 오류가 발생했습니다. 다시 시도해주세요.',
+                icon: 'error',
+                confirmButtonText: '확인'
+            });
         });
     });
+
+    // SweetAlert 경고창 표시 함수
+    function showAlert(message) {
+        Swal.fire({
+            text: message,
+            icon: 'warning',
+            confirmButtonColor: '#0056b3',
+            confirmButtonText: '확인'
+        });
+    }
     </script>
 
 </th:block>
