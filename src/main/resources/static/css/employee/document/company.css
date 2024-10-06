@@ -395,6 +395,10 @@ input[type="checkbox"] {
 	height: 15px;
 	width: 15px;
 }
+#select_all{
+	height: 15px;
+	width: 15px;	
+}
 .file_show_button{
     cursor: pointer;
     width: 17px;
