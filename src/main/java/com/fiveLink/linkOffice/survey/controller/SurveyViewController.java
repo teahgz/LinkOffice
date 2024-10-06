@@ -189,13 +189,17 @@ public class SurveyViewController {
     
     @GetMapping("/employee/survey/endList/{member_no}")
     public String surveyEndList(
-            @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(value = "sort", defaultValue = "latest") String sort,
-            Model model,
-            SurveyDto searchDto) {
+        @PageableDefault(size = 10, sort = "surveyStartDate", direction = Sort.Direction.DESC) Pageable pageable,
+        @RequestParam(value = "sort", defaultValue = "latest") String sort,
+        Model model,
+        SurveyDto searchDto) {
 
         Long memberNo = memberService.getLoggedInMemberNo();
         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+
+        if (searchDto == null) {
+            searchDto = new SurveyDto();
+        }
 
         model.addAttribute("memberdto", memberdto);
         model.addAttribute("currentSort", sort);
@@ -203,6 +207,7 @@ public class SurveyViewController {
         Sort sortOption = getSortOption(sort);
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOption);
 
+        // 서비스에서 페이징 처리된 마감된 설문조사 리스트 조회
         Page<SurveyDto> surveyPage = surveyService.getEndAllSurveyPage(sortedPageable, searchDto, memberNo);
 
         model.addAttribute("surveyEndList", surveyPage.getContent());

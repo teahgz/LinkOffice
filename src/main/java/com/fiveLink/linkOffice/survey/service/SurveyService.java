@@ -366,7 +366,8 @@ public class SurveyService {
                 Long memberNo = survey.getMember().getMemberNo();
                 List<Object[]> memberDetails = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
 
-                String positionName = (String) memberDetails.get(0)[1]; 
+                // memberDetails가 비어있는 경우를 처리
+                String positionName = memberDetails.isEmpty() || memberDetails.get(0)[1] == null ? "Unknown" : (String) memberDetails.get(0)[1];
 
                 return SurveyDto.builder()
                     .survey_no(survey.getSurveyNo())

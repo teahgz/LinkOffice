@@ -90,22 +90,23 @@ select {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    background-color: white;
 }
 
 .survey_table th, .survey_table td {
-    padding: 18px 15px;
+     padding: 18px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
 }
 
 .survey_table th {
-    background-color: #f8f9fa;
+     background-color: #f8f9fa;
     font-weight: bold;
     color: #333;
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: 13px;
 }
 
 .survey_table tr:last-child td {
