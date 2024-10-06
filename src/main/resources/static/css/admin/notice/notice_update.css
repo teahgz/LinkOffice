@@ -16,8 +16,8 @@ input[type="file"] {
 }
 
 input[type="file"]::file-selector-button {
-    background-color: #B1C2DD;
-    color: black;
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;
     padding: 5px 10px; 
@@ -107,13 +107,13 @@ input[type="file"]::file-selector-button {
 }
 
 .buttons .confirm-btn {
-    background-color: #B1C2DD; 
-    color: black;
+    background-color: #0056b3; 
+    color: white;
 }
 
 .buttons .cancel-btn {
     background-color: #C0C0C0; 
-    color: black;
+    color: white;
 }
 
 .buttons .confirm-btn:hover, .buttons .cancel-btn:hover {
@@ -133,8 +133,8 @@ label[for="currentFile"] {
 
 
 #deleteFileButton {
-    background-color: #EEB3B3; 
-    color: black;
+    background-color: #dc3545; 
+    color: white;
     border: none;
     padding: 5px 12px;
     margin-left: 10px;

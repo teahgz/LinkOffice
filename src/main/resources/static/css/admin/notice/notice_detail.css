@@ -59,19 +59,19 @@
 }
 
 .notice-buttons .btn-edit {
-	background-color: #B3C7EE;
-	color: black;
+	background-color: #0056b3;
+	color: white;
 	text-decoration: none;
 }
 
 .notice-buttons .btn-delete {
-	background-color: #EEB3B3;
-	color: black;
+	background-color: #dc3545;
+	color: white;
 }
 
 .notice-buttons .btn-back {
 	background-color: #C0C0C0;
-	color: black;
+	color: white;
 }
 
 
