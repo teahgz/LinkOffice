@@ -130,7 +130,6 @@
 
 .button_container {
 	display: flex;
-    justify-content: right; 	
     gap: 20px;
     position: relative;
 }

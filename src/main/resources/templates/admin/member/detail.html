@@ -68,10 +68,10 @@
 	                    </li>
 	                </ul>
 	                <div class="button_container">
+						<button type="button" id="list_button" onclick="location.href='/admin/member/list'">목록</button>
 	                	<div th:if="${member.member_status == 0}" id="edit_div">
 						   <a th:href="@{/admin/member/edit/{no}(no=${member.member_no})}" id="edit_button">수정</a> 
 	                	</div>
-						<button type="button" id="list_button" onclick="location.href='/admin/member/list'">목록</button>
 				    </div>
 	            </div>
 	        </div>
