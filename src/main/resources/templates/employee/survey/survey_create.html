@@ -1,83 +1,95 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{include/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{include/layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="_csrf" th:content="${_csrf.token}">
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    
-    <link th:href="@{/css/admin/organization/organizationChart.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/employee/survey/survey_create.css}" rel="stylesheet" type="text/css">
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 
-    <!-- 필요한 라이브러리 추가 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link th:href="@{/css/admin/organization/organizationChart.css}"
+	rel="stylesheet" type="text/css">
+<link th:href="@{/css/employee/survey/survey_create.css}"
+	rel="stylesheet" type="text/css">
+
+<!-- 필요한 라이브러리 추가 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <th:block layout:fragment="content">
-    <section>
-    <br>
-        <form id="surveyForm">
-            <label for="surveyTitle">설문 제목</label>
-            <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
-            <input type="text" id="surveyTitle" name="survey_title" placeholder="설문 제목을 입력하세요."><br>
+	<section>
+		<br>
+		<form id="surveyForm">
+			<label for="surveyTitle">설문 제목</label> <input type="hidden"
+				id="memberNo" th:value="${memberdto[0].member_no}"> <input
+				type="text" id="surveyTitle" name="survey_title"
+				placeholder="설문 제목을 입력하세요."><br> <label
+				for="surveyPeriod">설문 기간</label> <input type="date"
+				id="surveyStartDate" name="survey_start_date"> <span
+				style="margin: 0 10px;">~</span> <input type="date"
+				id="surveyEndDate" name="survey_end_date"><br> <label
+				for="surveyTarget">설문 대상자</label>
+			<div></div>
 
-            <label for="surveyPeriod">설문 기간</label>
-            <input type="date" id="surveyStartDate" name="survey_start_date">
-            <input type="date" id="surveyEndDate" name="survey_end_date"><br>
+			<button type="button" id="openChart" class="btn btn-primary">조직도
+				열기</button>
 
-            <label for="surveyTarget">설문 대상자</label>
-            <div></div>
+			<div id="selected-members-outside"></div>
+			<br> <label for="surveyDescription">설문 설명</label> <input
+				type="text" id="surveyDescription" name="survey_description"
+				placeholder="설문 설명을 입력하세요."><br>
 
-            <button type="button" id="openChart" class="btn btn-primary">조직도 열기</button>
+			<!-- 질문 리스트 -->
+			<div id="questionList"></div>
 
-            <div id="selected-members-outside"></div><br>
+			<!-- 질문 추가 버튼 -->
+			<button type="button" id="addQuestionButton"
+				class="btn btn-secondary">질문 추가</button>
+			<br>
+			<br>
 
-            <label for="surveyDescription">설문 설명</label>
-            <input type="text" id="surveyDescription" name="survey_description" placeholder="설문 설명을 입력하세요."><br>
+			<button type="submit" class="ok-btn">확인</button>
+			<button type="button" class="cancel-btn"
+				onclick="window.history.back()">취소</button>
+		</form>
+	</section>
 
-            <!-- 질문 리스트 -->
-            <div id="questionList"></div>
+	<!-- 조직도 모달 -->
+	<div class="modal" id="organizationChartModal" tabindex="-1"
+		role="dialog" aria-labelledby="organizationChartModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form>
+					<div class="modal-header">
+						<div class="organizationchart_title"
+							id="organizationChartModalLabel">조직도</div>
+						<span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
+					</div>
+					<div class="modal-body">
+						<!-- 선택된 사원 출력 (모달 안) -->
+						<div id="selected-members"></div>
 
-            <!-- 질문 추가 버튼 -->
-            <button type="button" id="addQuestionButton" class="btn btn-secondary">질문 추가</button><br><br>
+						<!-- 검색 -->
+						<input type="text" id="organization_search"
+							placeholder="검색어를 입력하세요." class="organization_search">
 
-            <button type="submit" class="ok-btn">확인</button>
-            <button type="button" class="cancel-btn"
-						onclick="window.history.back()">취소</button>
-        </form>
-    </section>
+						<!-- 조직도 트리 -->
+						<div id="organization-chart"></div>
 
-    <!-- 조직도 모달 -->
-    <div class="modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">
-                        <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div>
-                        <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <!-- 선택된 사원 출력 (모달 안) -->
-                        <div id="selected-members"></div>
+						<button id="confirmButton" type="button" class="modal_btn">확인</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-                        <!-- 검색 -->
-                        <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
-
-                        <!-- 조직도 트리 -->
-                        <div id="organization-chart"></div>
-
-                        <button id="confirmButton" type="button" class="modal_btn">확인</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script>
+	<script>
     // SweetAlert2 경고창 함수
     function showAlert(message) {
         Swal.fire({

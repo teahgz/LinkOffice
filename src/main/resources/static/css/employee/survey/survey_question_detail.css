@@ -1,10 +1,13 @@
-@charset "UTF-8";
-
 .container {
-	margin: auto;
-	width: 80%;
-	padding: 40px;
+	position: relative;
+	width: 90%;
+	max-width: 1200px;
+	margin: 40px auto;
+	padding: 30px;
 	box-sizing: border-box;
+	background-color: #ffffff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
 }
 
 .header h1, .header h3, .header p {
@@ -21,12 +24,25 @@ input[type="radio"], input[type="text"] {
 
 .submit-buttons {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;  /* 양쪽으로 버튼 배치 */
 	margin-top: 20px;
+	width: 100%;
+}
+
+/* 왼쪽에 취소 또는 목록 버튼 */
+.submit-buttons .left-buttons {
+	display: flex;
+	justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 오른쪽에 수정 및 삭제 버튼 */
+.submit-buttons .right-buttons {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽 정렬 */
+	gap: 10px; /* 버튼 간 간격 */
 }
 
 .submit-buttons button {
-	margin: 0 10px;
 	padding: 10px 20px;
 	background-color: #0056b3;
 	color: white;

@@ -53,9 +53,9 @@
 				<thead>
 					<tr>
 						<th>번호</th>
-						<th>상태</th>
 						<th>설문 제목</th>
 						<th>기간</th>
+						<th>상태</th> <!-- 상태 컬럼을 마지막으로 이동 -->
 					</tr>
 				</thead>
 
@@ -71,9 +71,9 @@
 							th:data_survey_no="${survey.survey_no}" class="survey_row"
 							th:onclick="|location.href='@{/employee/survey/result/{survey_no}(survey_no=${survey.survey_no}, member_no=${memberdto[0].member_no})}'|">
 							<td th:text="${status.index + 1}"></td>
-							<td th:text="${survey.survey_status == 0 ? '진행중' : '마감'}"></td>
 							<td th:text="${survey.survey_title}"></td>
 							<td th:text="${survey.survey_start_date} + ' ~ ' + ${survey.survey_end_date}"></td>
+							<td th:text="${survey.survey_status == 0 ? '진행중' : '마감'}"></td> <!-- 상태 컬럼 -->
 						</tr>
 					</th:block>
 

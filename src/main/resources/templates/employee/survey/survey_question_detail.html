@@ -51,8 +51,9 @@
                 </div>
 
                 <div class="submit-buttons">
-                    <button type="submit" class="confirm-btn">제출</button>
+                
                     <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
+                    <button type="submit" class="confirm-btn">제출</button>
                 </div>
             </form>
 
@@ -145,6 +146,9 @@
                 confirmButtonText: '확인'
             });
         }
+        
+        const location_text = document.getElementById('header_location_text');
+        location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 상세';
     </script>
 </th:block>
 </html>
