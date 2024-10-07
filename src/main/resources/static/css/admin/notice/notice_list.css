@@ -1,6 +1,7 @@
 .list_notice {
   	margin: auto;
-    width: 80%;
+    width: 1250px;
+    height: 700px;
     padding: 40px;
     box-sizing: border-box;
 }
@@ -25,7 +26,7 @@
 }
 
 .create_button {
-    padding: 13px 25px;
+    padding: 12px 20px;
     background-color: #0056b3;
     color: white;
     border: none;
@@ -43,7 +44,7 @@
 }
 
 .select, .search_text {
-    padding: 12px 18px;
+    padding: 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 16px;
@@ -57,7 +58,8 @@ select {
     border-radius: 6px;
     font-size: 15px;
     transition: border-color 0.3s;
-    appearance: auto; 
+    appearance: auto;
+    width: 120px;
 }
 
 select:focus, .search_text:focus {
@@ -66,7 +68,7 @@ select:focus, .search_text:focus {
 }
 
 .search_button {
-    padding: 12px 25px;
+    padding: 10px 20px;
     background-color: #0056b3;
     border: none;
     border-radius: 6px;
