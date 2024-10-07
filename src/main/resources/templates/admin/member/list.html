@@ -5,6 +5,9 @@
     <link th:href="@{/css/admin/member/list.css}" rel="stylesheet" type="text/css">
 	    <section>
 	      <div class="list_member">
+			  <div class="download_container">
+				  <button id="excelDownloadBtn" class="download_button">엑셀 다운로드</button>
+			  </div>
 			<div class="search_sort_container">
 			   <!-- 검색 조건이 있을 때 -->
 				<div class="search_container">
@@ -26,9 +29,7 @@
 				    </form>
 				</div>
 	        </div>
-			<div class="download_container">
-		    	<button id="excelDownloadBtn" class="download_button">엑셀 다운로드</button>
-			</div>
+
 	        <table class="employee_table">
 	        	<colgroup>
 					<col width="20%">
