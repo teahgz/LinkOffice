@@ -69,10 +69,10 @@ public class InventoryApiController {
             boolean isUpdated = inventoryService.createOrUpdateInventory(dto);
             if (isUpdated) {
                 resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "비품이 성공적으로 업데이트되었습니다.");
+                resultMap.put("res_msg", "비품이 등록되었습니다.");
             } else {
                 resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "새로운 비품이 성공적으로 등록되었습니다.");
+                resultMap.put("res_msg", "새로운 비품이 등록되었습니다.");
             }
         } catch (Exception e) {
             resultMap.put("res_code", "500");
@@ -103,7 +103,7 @@ public class InventoryApiController {
             inventoryCategoryDto.setInventory_category_name(normalizedCategoryName);
             inventoryService.registerCategory(inventoryCategoryDto);
             responseMap.put("res_code", "200");
-            responseMap.put("res_msg", "카테고리가 성공적으로 등록되었습니다.");
+            responseMap.put("res_msg", "카테고리가 등록되었습니다.");
         }
 
         return responseMap;
@@ -120,7 +120,7 @@ public class InventoryApiController {
             }
             inventoryService.updateInventory(dto);
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "비품이 성공적으로 수정되었습니다.");
+            resultMap.put("res_msg", "비품이 수정되었습니다.");
         } catch (Exception e) {
             resultMap.put("res_code", "500");
             resultMap.put("res_msg", "수정 중 오류가 발생했습니다. " + e.getMessage());
@@ -136,7 +136,7 @@ public class InventoryApiController {
         try {
             inventoryService.deleteInventory(no);
             resultMap.put("res_code", "200");
-            resultMap.put("res_msg", "비품이 성공적으로 삭제되었습니다.");
+            resultMap.put("res_msg", "비품이 삭제되었습니다.");
         } catch (Exception e) {
             resultMap.put("res_code", "500");
             resultMap.put("res_msg", "삭제 중 오류가 발생했습니다.");
