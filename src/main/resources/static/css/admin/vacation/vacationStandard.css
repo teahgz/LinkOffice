@@ -17,6 +17,7 @@
  .standard_click {
      display: flex;
       flex-direction: column;
+      margin-left: 20px;
  }
  .standard_ele1 {
      display: flex;

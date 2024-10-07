@@ -22,16 +22,20 @@
                 </div>
                 <div class="details" th:if="${position}">
                     <div class="details-header">
-                        <h3>직위 정보</h3>
+                        <div>
+                            <h3>직위 정보</h3>
+                        </div>
+
+                        <div class="details-actions">
+                            <button id="editButton" th:data-position-id="${position.position_no}">수정</button>
+                            <button id="deleteButton" th:data-position-id="${position.position_no}">삭제</button>
+                        </div>
                     </div>
                     <div class="details-content">
                         <p><strong>직위명</strong> <span class="th_text1" th:text="${position.position_name}"></span></p>
                         <p><strong>상위 직위명</strong> <span class="th_text2" th:text="${position.position_high_name}"></span></p>
                     </div>
-                    <div class="details-actions">
-                    	<button id="editButton" th:data-position-id="${position.position_no}">수정</button>
-                        <button id="deleteButton" th:data-position-id="${position.position_no}">삭제</button>
-                    </div>
+
                 </div>
             </div>
         </div>

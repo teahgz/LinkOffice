@@ -31,8 +31,16 @@
 	                </div> 
 	               <div class="details" th:if="${department}">
 					    <div class="details-header">
-                            <h3>부서 정보</h3>
+							<div>
+								<h3>부서 정보</h3>
+							</div>
+
+							<div class="info_btn">
+								<button id="editButton" th:data-department-id="${department.department_no}">수정</button>
+								<button id="deleteButton" th:data-department-id="${department.department_no}">삭제</button>
+							</div>
                         </div>
+
 					    <p>
 					    	<span class="department_info">부서명</span> <span class="info_content1" th:text="${department.department_name}"></span>
 					    	<th:block th:if="${#lists.size(department.subDepartments) == 0}">
@@ -59,10 +67,7 @@
 						        </th:block>
 						    </ul>
 						</div>  
-					    <div class="info_btn">
-					    	<button id="editButton" th:data-department-id="${department.department_no}">수정</button>
-					    	<button id="deleteButton" th:data-department-id="${department.department_no}">삭제</button>  
-					    </div>
+
 					</div>
 				</div>
             </div>

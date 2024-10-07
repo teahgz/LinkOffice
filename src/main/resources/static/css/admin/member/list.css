@@ -6,6 +6,8 @@
     height: 700px; 
     padding: 40px;
     box-sizing: border-box;
+    display:flex;
+    flex-direction: column;
 }
 
 .search_sort_container {
@@ -26,7 +28,7 @@ select:focus, .search_text:focus {
 }
 
 select {
-    width: 100px;
+    width: 120px;
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
@@ -138,6 +140,7 @@ select {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
     font-size: 15px;
+    float:right;
 }
 
 .download_button:hover {
