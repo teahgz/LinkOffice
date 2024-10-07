@@ -254,7 +254,7 @@ textarea {
 	flex-grow: 1;
     padding: 20px 30px; 
     overflow-y: auto;   
-    height: 100vh; 
+    height: 90vh;
     margin-bottom: 30px; 
 } 
 
@@ -538,8 +538,7 @@ textarea {
 
 .search-container { 
     gap: 12px; 
-    padding: 40px 40px; 
-    margin-bottom: 40px; 
+    padding: 40px 40px;
 }
 
 #searchCategory,

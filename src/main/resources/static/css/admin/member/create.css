@@ -11,7 +11,7 @@
 }
 
 .member_card {
-    margin-top: 80px;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,14 +21,15 @@
 .member_header {
     display: flex;
     align-items: flex-start;
-    gap: 90px;
+    gap: 100px;
     margin-bottom: 40px;
 }
 
 .profile_header_left {
     display: flex;
     flex-direction: column; 
-    align-items: center; 
+    align-items: center;
+    margin-top: 100px;
 }
 
 .profile_img {
@@ -144,7 +145,7 @@ select option {
 .button_container {
     display: flex;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 80px;
     justify-content: flex-end; 
     width: 100%;
     margin-right:50px;

@@ -6,6 +6,7 @@
 	margin: auto; 
 	height: 700px;
 	margin-bottom: 50px;
+	padding: 40px;
 }
 
 #startDate, #endDate{

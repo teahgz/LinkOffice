@@ -26,6 +26,9 @@
                 <!-- 선택한 기능명 + 권한자 목록 -->
                 <div class="member-section" id="permissionMembersSection">
                     <div id="sectionTitle"> </div>
+                    <div class="sort-buttons">
+                        <button id="openModalButton" type="button" class="modal_btn" onclick="openOrganizationChartModal()">권한자 등록</button>
+                    </div>
                     <div class="button-container"> 
 					    <div class="left-buttons">
 					        <button id="deleteButton" type="button" class="modal_btn" disabled>삭제</button>
@@ -36,9 +39,7 @@
 					        <option value="oldest">과거순</option>
 					    </select>
 					</div>
-					<div class="sort-buttons">
-					    <button id="openModalButton" type="button" class="modal_btn" onclick="openOrganizationChartModal()">권한자 등록</button>
-					</div>
+
 
 
                     <!-- 권한자 목록 -->
