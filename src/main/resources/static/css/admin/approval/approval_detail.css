@@ -67,7 +67,6 @@
 
 .right_buttons {
     display: flex;
-    gap: 15px; /
 }
 
 .delete_button {
