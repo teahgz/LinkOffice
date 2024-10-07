@@ -191,7 +191,7 @@ public class SurveyViewController {
 
                 return "employee/survey/survey_question_result"; // 설문 결과 페이지로 이동
             } else {
-                return "employee/survey/survey_question_detail"; // 설문 상세 페이지로 이동
+                return "employee/survey/survey_question_detail"; 
             }
         }
 

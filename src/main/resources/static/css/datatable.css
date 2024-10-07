@@ -79,16 +79,15 @@
     color: #000 !important;
 }
 
-/* 선택된 페이징 버튼 */
-.dataTables_paginate .current {
-    background-color: #B1C2DD !important;
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background-color: #0056b3 !important;
     color: white !important;
-    border-color: #B1C2DD !important;
 }
 
-/* 페이징 버튼 호버 */
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background-color: #B1C2DD !important;
+/* active 상태에서 hover */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background-color: #003a82 !important;
     color: white !important;
 }
 
