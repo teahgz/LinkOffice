@@ -136,7 +136,7 @@ select {
     cursor: pointer;
     transition: all 0.3s;
     border-radius: 4px;
-    color : white;
+    color : black;
 }
 
 .pagination button:hover {

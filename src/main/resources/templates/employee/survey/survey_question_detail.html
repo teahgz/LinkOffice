@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{include/layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
 <th:block layout:fragment="content">
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}">
@@ -27,7 +27,7 @@
             
             <form id="surveyDetailForm" method="post" th:action="@{/employee/survey/questionDetail}" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" id="csrfToken" />
-				<input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
+                <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
                 <div th:each="question, iterStat : ${questions}" class="question">
                     <p>
                         <strong th:text="${iterStat.count + '.'}">1.</strong> 
@@ -51,7 +51,6 @@
                 </div>
 
                 <div class="submit-buttons">
-                
                     <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
                     <button type="submit" class="confirm-btn">제출</button>
                 </div>
@@ -98,26 +97,26 @@
 
             if (!isValid) return;
 
-            // 제출 처리
             fetch(form.action, {
                 method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.res_code === '200') {
-                    // SweetAlert로 성공 메시지 출력
                     Swal.fire({
                         title: '제출 완료',
-                        text: '설문이 성공적으로 제출되었습니다.',
+                        text: '설문이 제출되었습니다.',
                         icon: 'success',
                         confirmButtonText: '확인'
                     }).then(() => {
-                    	 const memberNo = document.getElementById('memberNo').value;
-                         location.href = '/employee/survey/ingList/' + memberNo;
+                        const memberNo = document.getElementById('memberNo').value;
+                        location.href = '/employee/survey/ingList/' + memberNo;
                     });
                 } else {
-                    // SweetAlert로 오류 메시지 출력
                     Swal.fire({
                         title: '오류 발생',
                         text: '제출 중 오류가 발생했습니다. 다시 시도해주세요.',
