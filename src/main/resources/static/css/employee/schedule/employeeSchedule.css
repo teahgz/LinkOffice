@@ -219,8 +219,8 @@ textarea {
     display: none;  
     position: fixed; 
     z-index: 9999;
-    right : 900px;
-    top: 95px;
+    right : 180px;
+    top: 100px;
     width: 450px;
     height: 400px; 
     padding: 0;   
