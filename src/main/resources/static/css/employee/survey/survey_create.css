@@ -1,24 +1,24 @@
 #surveyForm {
     position: relative;
-	width: 80%; 
-	margin: -10px auto;
-	padding: 70px 30px 70px;
-	box-sizing: border-box;
-	background-color: #ffffff;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	border-radius: 15px;
-	padding-left: 180px; 
-	padding-right: 180px; 
+    width: 80%;
+    margin: -10px auto;
+    padding: 70px 30px 70px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding-left: 180px;
+    padding-right: 180px;
 }
 
 #surveyForm input[type="text"],
 #surveyForm input[type="date"],
 #surveyForm textarea {
     width: 100%;
-    max-width: 600px; 
+    max-width: 600px;
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ccc; 
+    border: 1px solid #ccc;
     border-radius: 5px;
 }
 
@@ -28,7 +28,6 @@
     font-weight: bold;
 }
 
-
 #surveyForm button {
     width: auto;
     padding: 10px 20px;
@@ -36,7 +35,6 @@
     border-radius: 5px;
     cursor: pointer;
 }
-
 
 #openChart {
     background-color: #0056b3;
@@ -47,7 +45,6 @@
 #openChart:hover {
     background-color: #003a82;
 }
-
 
 #addQuestionButton {
     background-color: #0056b3;
@@ -107,10 +104,15 @@
     background-color: #e9ecef;
 }
 
+/* 버튼을 오른쪽 정렬하는 CSS 추가 */
+.button-container {
+    text-align: right;
+}
+
 /* 질문 리스트 영역 */
 .question-item {
     margin-bottom: 20px;
-    border: 1px solid #ccc; 
+    border: 1px solid #ccc;
     padding: 20px;
     border-radius: 5px;
     background-color: #f9f9f9;
@@ -136,7 +138,7 @@
 }
 
 .option-input input[type="text"] {
-    margin-right: 10px; 
+    margin-right: 10px;
 }
 
 /* 보기 삭제 버튼 */
@@ -200,7 +202,20 @@
     background-color: #e0e0e0 !important;
 }
 
-.btn-primary {
+.date-inputs {
+    display: flex;
+    align-items: center;
+}
+
+.date-inputs input[type="date"] {
+    margin-right: 3px;
+}
+
+.date-inputs span {
+    margin: 0 8px;
+    transform: translateY(-10px);
+}
+#surveyForm .btn-primary {
     background-color: #0056b3;
     color: white;
     border: none;
@@ -209,19 +224,7 @@
     cursor: pointer;
 }
 
-.btn-primary:hover {
+#surveyForm .btn-primary:hover {
     background-color: #003a82;
-}
-.date-inputs {
-    display: flex;
-    align-items: center; 
-}
-
-.date-inputs input[type="date"] {
-    margin-right: 3px; 
-}
-
-.date-inputs span {
-    margin: 0 8px; 
-    transform: translateY(-10px); 
+    color: white;
 }

@@ -195,24 +195,29 @@ public class SurveyViewController {
             }
         }
 
-        // 기본적으로 설문 상세 페이지로 이동
         return "employee/survey/survey_question_detail";
     }
+    
     @GetMapping("/employee/survey/update/{survey_no}")
-	public String updateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
-    	 Long memberNo = memberService.getLoggedInMemberNo();
-         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-         
-         model.addAttribute("memberdto", memberdto);
-    	 SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
-         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
-         
-         // 기본 데이터 추가
-         model.addAttribute("dto", dto);
-         model.addAttribute("questions", questions);
+    public String updateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
+        Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        
+        model.addAttribute("memberdto", memberdto);
+        
+        // 설문 데이터와 질문 데이터 가져오기
+        SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+        List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+        
+        // 로그로 데이터 확인
+        LOGGER.info("Survey DTO: {}", dto);
+        LOGGER.info("Survey Questions: {}", questions);
 
-	    return "employee/survey/survey_question_update";
-	}
+        model.addAttribute("dto", dto);
+        model.addAttribute("questions", questions); // 질문 리스트 추가
+
+        return "employee/survey/survey_question_update"; // 수정 페이지 반환
+    }
 
     
     
