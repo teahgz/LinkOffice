@@ -211,7 +211,7 @@ public class MeetingController {
 
             if (deleted) {
                 resultMap.put("res_code", "200");
-                resultMap.put("res_msg", "회의실이 성공적으로 삭제되었습니다.");
+                resultMap.put("res_msg", "회의실이 삭제되었습니다.");
             } else {
                 resultMap.put("res_code", "404");
                 resultMap.put("res_msg", "회의실 삭제 중 오류가 발생했습니다.");

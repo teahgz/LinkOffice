@@ -68,7 +68,7 @@ public class NoticeApiController {
 	        // 공지사항 등록 처리
 	        if (noticeService.createNotice(dto) != null) {
 	            resultMap.put("res_code", "200");
-	            resultMap.put("res_msg", "공지사항이 성공적으로 등록되었습니다.");
+	            resultMap.put("res_msg", "공지사항이 등록되었습니다.");
 	        }
 	    } catch (Exception e) {
 	        resultMap.put("res_msg", "공지사항 등록 중 오류가 발생했습니다.");
@@ -115,7 +115,7 @@ public class NoticeApiController {
 	        // 공지사항 수정
 	        if (noticeService.updateNotice(dto) != null) {
 	            resultMap.put("res_code", "200");
-	            resultMap.put("res_msg", "게시글이 성공적으로 수정되었습니다.");
+	            resultMap.put("res_msg", "공지사항이 수정되었습니다.");
 	        }
 
 	    } catch (Exception e) {
