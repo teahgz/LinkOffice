@@ -91,7 +91,7 @@
 						<ul th:each = "member : ${memberdto}">
 							<li><a th:href="@{/employee/document/personal}">개인 문서함</a></li>
  							<li><a th:href="@{/employee/document/department/{no}(no=${member.department_no})}">부서 문서함</a></li>
-							<li><a th:href="@{/employee/document/company}">사내 문서함</a></li>
+							<li><a th:href="@{/employee/document/company}">전사 문서함</a></li>
 							<li><a th:href="@{/employee/document/bin}">휴지통</a></li>
 						</ul>
 					</div>
