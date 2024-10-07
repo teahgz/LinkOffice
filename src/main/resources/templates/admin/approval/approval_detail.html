@@ -19,10 +19,10 @@
 			                    <div class="table_container" th:utext="${form.approval_form_content}"></div>
 			                </div>
 			                <div class="button_container">
-			                    <button type="submit" class="delete_button">삭제</button>
+			                    <button type="button" class="list_button" onclick="location.href='/admin/approval/form'">목록</button>
 			                    <div class="right_buttons">
 			                        <a th:href="@{/admin/approval/edit/{no}(no=${form.approval_form_no})}" class="edit_button">수정</a>
-			                        <button type="button" class="list_button" onclick="location.href='/admin/approval/form'">목록</button>
+				                    <button type="submit" class="delete_button">삭제</button>
 			                    </div>
 			                </div>
 			            </div>

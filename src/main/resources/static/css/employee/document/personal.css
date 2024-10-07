@@ -2,14 +2,12 @@
 
 .document_div{
 	display: flex;
-    height: 95%;
     width: 100%;
     overflow: hidden; 
     justify-content: center;
 }
 .document_folder_list{
 	display: flex;
-    height: 95%;
     width: 80%;
     overflow: hidden; 
     justify-content: center;
@@ -164,7 +162,7 @@
 .document_file_div{
 	border-radius: 8px;
 	width: 1250px;
-	height: 700px;
+	max-height: 100%;
 	margin-right: 10px;
 }
 .document_no_file{
@@ -247,7 +245,7 @@
 	display: flex;
 	height: 50px;
 	align-items: center;
-	margin-top: 5px;
+	margin-top: 10px;
 }
 #folder_name{
 	margin-right: 10px;
@@ -276,7 +274,7 @@
 	justify-content: space-between;
 	align-items: center;
 	height: 35px;
-	margin-top: 5px;
+	margin-top: 10px;
 }
 .select_button{
 	display: flex;
@@ -382,14 +380,15 @@
 	overflow: hidden;
 }
 .file_table td { 
-	padding: 18px 10px;
+	padding: 13px 10px;
     text-align: center;
 	border-top: 1px solid #ddd;	
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	overflow: hidden;
 }
 .file_table th {
-	padding: 18px 10px;
+	padding: 13px 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;

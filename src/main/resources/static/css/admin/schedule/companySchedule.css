@@ -97,7 +97,7 @@ input[type=checkbox] {
 } 
 
 .plus_detail_option {
-	margin-left: 80px;
+	margin-left: 75px;
 	flex: 1;  
     padding: 5px; 
     border: 1px solid #ccc;  
@@ -108,7 +108,7 @@ input[type=checkbox] {
 }
 
 .plus_detail_option_2 {
-	margin-left: 65px;
+	margin-left: 57px;
 	flex: 1;  
     padding: 5px; 
     border: 1px solid #ccc;  

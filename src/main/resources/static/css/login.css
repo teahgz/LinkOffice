@@ -90,13 +90,12 @@ input[type="password"]:focus {
 }
 
 .button_group {
+	gap: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: absolute;
     bottom: 35px;
-    left: 40px;
-    right: 40px;
 }
 
 input[type=checkbox] { 
@@ -148,10 +147,9 @@ button[type="submit"]:hover {
 }
 
 .error_message {
+	width: 385px;
     position: absolute;
     bottom: 100px;  
-    left: 40px;
-    right: 40px;
     padding: 12px;
     background-color: #ffebee;
     border-radius: 4px;
