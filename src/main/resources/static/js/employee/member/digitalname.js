@@ -45,10 +45,12 @@ if (canvas) {
 
 function setupCanvas() {
     if (!ctx) return;
-    ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = '#000000';
+
+    ctx.beginPath(); 
+    ctx.closePath();
 
     canvas.addEventListener('mousedown', startPainting);
     canvas.addEventListener('mousemove', draw);
@@ -71,6 +73,7 @@ function stopPainting() {
 
 function draw(e) {
     if (!painting) return;
+    ctx.lineWidth = 10;
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(e.offsetX, e.offsetY);
@@ -127,6 +130,7 @@ if (saveBtn) {
     }
 }
 
+
 window.addEventListener('resize', resizeCanvas);
 
 resizeCanvas();
@@ -141,6 +145,7 @@ resizeCanvas();
         const signatureDataUrl = canvas.toDataURL('image/png');
 
         payload.append('signatureData', signatureDataUrl);
+        payload.append('strokeWidth', 10);
 
         fetch('/employee/member/digitalname/' + memberNo, {
             method: 'post',
