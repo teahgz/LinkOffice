@@ -489,7 +489,7 @@ td.available {
     padding: 5px 20px; 
     margin-bottom: 5px;
     font-size: 14px;
-    width : 100px;
+    width : 200px;
     color: #333; 
 }
 
@@ -646,7 +646,7 @@ hr {
 }
 
 .participate_btn {
-	width : 110px;
+	width : 120px;
     padding: 10px 20px;
     background-color: rbg(192, 192, 192);
     color: rgb(0, 0, 0);
