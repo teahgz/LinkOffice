@@ -226,7 +226,7 @@
 
 .send-button {
     border: none;
-   background-color: #0056b3;
+   background-color: #B1C2DD;
     color: black;
     padding: 10px 20px;
     font-size: 1rem;
@@ -299,7 +299,7 @@
 }
 
 .my-message .message-content {
-    background-color: #0056b3;
+    background-color: #B1C2DD;
     margin: 5px;
     max-width: 50%;
     margin-left: auto;
@@ -561,4 +561,3 @@ margin-top: 10px;
     font-weight: bold;
     margin-right: 10px;
 }
-
