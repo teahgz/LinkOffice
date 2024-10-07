@@ -22,12 +22,13 @@
     <br>
         <form id="surveyForm">
             <label for="surveyTitle">설문 제목</label>
-            <input type="hidden" id="memberNo" th:value="${memberdto[0].member_no}">
-            <input type="text" id="surveyTitle" name="survey_title" placeholder="설문 제목을 입력하세요."><br>
+            <!-- 값이 제대로 전달되지 않으면 디폴트 값을 넣도록 처리 -->
+            <input type="hidden" id="memberNo" th:value="${memberdto[0] != null ? memberdto[0].member_no : 0}">
+            <input type="text" id="surveyTitle" name="survey_title" th:value="${dto != null ? dto.survey_title : ''}" placeholder="설문 제목을 입력하세요."><br>
 
             <label for="surveyPeriod">설문 기간</label>
-            <input type="date" id="surveyStartDate" name="survey_start_date">
-            <input type="date" id="surveyEndDate" name="survey_end_date"><br>
+            <input type="date" id="surveyStartDate" name="survey_start_date" th:value="${dto != null ? dto.survey_start_date : ''}">
+            <input type="date" id="surveyEndDate" name="survey_end_date" th:value="${dto != null ? dto.survey_end_date : ''}"><br>
 
             <label for="surveyTarget">설문 대상자</label>
             <div></div>
@@ -37,16 +38,17 @@
             <div id="selected-members-outside"></div><br>
 
             <label for="surveyDescription">설문 설명</label>
-            <input type="text" id="surveyDescription" name="survey_description" placeholder="설문 설명을 입력하세요."><br>
+            <input type="text" id="surveyDescription" name="survey_description" th:value="${dto != null ? dto.survey_description : ''}" placeholder="설문 설명을 입력하세요."><br>
 
             <!-- 질문 리스트 -->
             <div id="questionList"></div>
 
             <!-- 질문 추가 버튼 -->
             <button type="button" id="addQuestionButton" class="btn btn-secondary">질문 추가</button><br><br>
-
+			<div class="button-container">
             <button type="submit" class="ok-btn">수정 완료</button>
             <button type="button" class="cancel-btn" onclick="window.history.back()">목록</button>
+            </div>
         </form>
     </section>
 
@@ -100,7 +102,7 @@
         function getTodayDate() {
             const today = new Date();
             const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); 
             const dd = String(today.getDate()).padStart(2, '0');
             return `${yyyy}-${mm}-${dd}`;
         }
@@ -174,7 +176,7 @@
             addOptionButton.type = "button";
             addOptionButton.textContent = "보기 추가";
             addOptionButton.style.display = "none";
-	
+    
             const optionList = document.createElement("div");
 
             questionTypeSelect.addEventListener("change", function () {

@@ -1,96 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{include/layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{include/layout}">
 <head>
-<meta charset="UTF-8">
-<meta name="_csrf" th:content="${_csrf.token}">
-<meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
 
-<link th:href="@{/css/admin/organization/organizationChart.css}"
-	rel="stylesheet" type="text/css">
-<link th:href="@{/css/employee/survey/survey_create.css}"
-	rel="stylesheet" type="text/css">
+    <link th:href="@{/css/admin/organization/organizationChart.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/employee/survey/survey_create.css}" rel="stylesheet" type="text/css">
 
-<!-- 필요한 라이브러리 추가 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 필요한 라이브러리 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <th:block layout:fragment="content">
-	<section>
-		<br>
-		<form id="surveyForm">
-			<label for="surveyTitle">설문 제목</label> <input type="hidden"
-				id="memberNo" th:value="${memberdto[0].member_no}"> <input
-				type="text" id="surveyTitle" name="survey_title"
-				placeholder="설문 제목을 입력하세요."><br> <label for="surveyPeriod">설문 기간</label>
-<div class="date-inputs">
-    <input type="date" id="surveyStartDate" name="survey_start_date">
-    <span>~</span>
-    <input type="date" id="surveyEndDate" name="survey_end_date">
-</div> <label
-				for="surveyTarget">설문 대상자</label>
-			<div></div>
+    <section>
+    <br>
+        <form id="surveyForm">
+            <label for="surveyTitle">설문 제목</label>
+            <input type="hidden" id="memberNo" th:value="${memberdto[0] != null ? memberdto[0].member_no : 0}">
+            <input type="text" id="surveyTitle" name="survey_title" th:value="${dto != null ? dto.survey_title : ''}" placeholder="설문 제목을 입력하세요."><br>
 
-			<button type="button" id="openChart" class="btn btn-primary">조직도
-				열기</button>
+            <label for="surveyPeriod">설문 기간</label>
+            <input type="date" id="surveyStartDate" name="survey_start_date" th:value="${dto != null ? dto.survey_start_date : ''}">
+            <input type="date" id="surveyEndDate" name="survey_end_date" th:value="${dto != null ? dto.survey_end_date : ''}"><br>
 
-			<div id="selected-members-outside"></div>
-			<br> <label for="surveyDescription">설문 설명</label> <input
-				type="text" id="surveyDescription" name="survey_description"
-				placeholder="설문 설명을 입력하세요."><br>
+            <label for="surveyTarget">설문 대상자</label>
+            <div></div>
 
-			<!-- 질문 리스트 -->
-			<div id="questionList"></div>
+            <button type="button" id="openChart" class="btn btn-primary">조직도 열기</button>
 
-			<!-- 질문 추가 버튼 -->
-			<button type="button" id="addQuestionButton"
-				class="btn btn-secondary">질문 추가</button>
-			<br>
-			<br>
+            <div id="selected-members-outside"></div><br>
 
-			<button type="submit" class="ok-btn">확인</button>
-			<button type="button" class="cancel-btn"
-				onclick="window.history.back()">취소</button>
-		</form>
-	</section>
+            <label for="surveyDescription">설문 설명</label>
+            <input type="text" id="surveyDescription" name="survey_description" th:value="${dto != null ? dto.survey_description : ''}" placeholder="설문 설명을 입력하세요."><br>
 
-	<!-- 조직도 모달 -->
-	<div class="modal" id="organizationChartModal" tabindex="-1"
-		role="dialog" aria-labelledby="organizationChartModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<form>
-					<div class="modal-header">
-						<div class="organizationchart_title"
-							id="organizationChartModalLabel">조직도</div>
-						<span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
-					</div>
-					<div class="modal-body">
-						<!-- 선택된 사원 출력 (모달 안) -->
-						<div id="selected-members"></div>
+            <!-- 질문 리스트 -->
+            <div id="questionList">
+                <div th:each="question, iterStat : ${questions}" class="question-item">
+                    <label th:text="'질문 ' + ${iterStat.index + 1}"></label>
+                    <input type="text" th:value="${question.survey_question_text}" name="questions[${iterStat.index}].survey_question_text" placeholder="질문을 입력하세요">
 
-						<!-- 검색 -->
-						<input type="text" id="organization_search"
-							placeholder="검색어를 입력하세요." class="organization_search">
+                    <label>질문 유형 선택</label>
+                    <select name="questions[${iterStat.index}].survey_question_type">
+                        <option value="multiple" th:selected="${question.survey_question_type == 0}">선택형</option>
+                        <option value="text" th:selected="${question.survey_question_type == 1}">텍스트형</option>
+                    </select>
 
-						<!-- 조직도 트리 -->
-						<div id="organization-chart"></div>
+                    <!-- 선택형 질문일 때만 보기(옵션) 출력 -->
+                    <div th:if="${question.survey_question_type == 0}">
+                        <label>보기 목록</label>
+                        <div th:each="option, optIndex : ${question.survey_option_answer}">
+                            <input type="text" th:value="${option}" name="questions[${iterStat.index}].options[${optIndex}]" placeholder="보기를 입력하세요">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-						<button id="confirmButton" type="button" class="modal_btn">확인</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+            <!-- 질문 추가 버튼 -->
+            <button type="button" id="addQuestionButton" class="btn btn-secondary">질문 추가</button><br><br>
 
-	<script>
+            <div class="button-container">
+    <button type="submit" class="ok-btn">등록</button>
+    <button type="button" class="cancel-btn" onclick="window.history.back()">목록</button>
+</div>
+    </section>
+
+    <!-- 조직도 모달 -->
+    <div class="modal" id="organizationChartModal" tabindex="-1" role="dialog" aria-labelledby="organizationChartModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <div class="organizationchart_title" id="organizationChartModalLabel">조직도</div>
+                        <span class="chart_close" data-dismiss="modal" aria-label="Close">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 선택된 사원 출력 (모달 안) -->
+                        <div id="selected-members"></div>
+
+                        <!-- 검색 -->
+                        <input type="text" id="organization_search" placeholder="검색어를 입력하세요." class="organization_search">
+
+                        <!-- 조직도 트리 -->
+                        <div id="organization-chart"></div>
+
+                        <button id="confirmButton" type="button" class="modal_btn">확인</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
     // SweetAlert2 경고창 함수
     function showAlert(message) {
         Swal.fire({
@@ -102,8 +108,8 @@
     }
 
     const location_text = document.getElementById('header_location_text');
-    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 작성';
-    
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 수정';
+
     document.addEventListener("DOMContentLoaded", function () {
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
@@ -115,7 +121,7 @@
         function getTodayDate() {
             const today = new Date();
             const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); 
             const dd = String(today.getDate()).padStart(2, '0');
             return `${yyyy}-${mm}-${dd}`;
         }
@@ -190,7 +196,7 @@
             addOptionButton.textContent = "보기 추가";
             addOptionButton.classList.add("btn", "btn-primary"); 
             addOptionButton.style.display = "none";
-	
+    
             const optionList = document.createElement("div");
 
             questionTypeSelect.addEventListener("change", function () {
@@ -359,7 +365,6 @@
                 showAlert("설문 설명을 입력하세요.");
                 return;
             }
-
 
             const participantMemberNos = selectedMembers.map(Number);
             const questions = [];
