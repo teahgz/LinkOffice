@@ -288,12 +288,12 @@ textarea {
 
 .event_repeat_btns {
 	margin-top: 20px;
-	margin-left: 130px;
+	float : right;
 }
 .event_repeat-content { 
     background-color: #fefefe;
     margin: 300px auto;
-    padding: 20px 40px;
+    padding: 20px 40px 30px 40px;
     border: 1px solid #888;
     width: 300px;
     height : 220px;
@@ -326,8 +326,7 @@ textarea {
 	border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    margin-left: 20px;
+    transition: background-color 0.3s; 
 }
 
 #event_repeat_close_btn:hover {
