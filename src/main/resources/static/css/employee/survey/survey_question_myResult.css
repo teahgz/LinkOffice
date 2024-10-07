@@ -1,9 +1,13 @@
 .container {
-    position: relative; 
-    margin: auto;
-    width: 80%;
-    padding: 40px;
-    box-sizing: border-box;
+   position: relative;
+   width: 90%;
+   max-width: 1200px;
+   margin: 40px auto;
+   padding: 30px;
+   box-sizing: border-box;
+   background-color: #ffffff;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   border-radius: 8px;
 }
 
 .header {
@@ -78,6 +82,7 @@
     background-color: #0056b3;
     color: white;
 }
+
 .btn-edit:hover {
     background-color: #003a82;
 }
@@ -86,16 +91,30 @@
     background-color: #dc3545;
     color: white;
 }
+
 .btn-delete:hover {
     background-color: #c82333;
 }
 
+.cancel-btn {
+    background-color: #f8f9fa;
+    color: black;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
+.cancel-btn:hover {
+    background-color: #e9ecef;
+}
 
 .button-container {
-    position: absolute; 
-    bottom: 20px;     
-    right: 20px;      
-    display: flex;     
-    gap: 10px;         
+    display: flex;
+    justify-content: space-between; 
+    margin-top: 20px;
+}
+
+.right-buttons {
+    display: flex;
+    gap: 10px;
 }

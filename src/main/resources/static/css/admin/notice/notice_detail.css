@@ -1,9 +1,13 @@
-
 .detail_notice {
-  	margin: auto;
-    width: 80%;
-    padding: 40px;
-    box-sizing: border-box;
+  	position: relative;
+	width: 90%;
+	max-width: 1200px;
+	margin: 40px auto;
+	padding: 30px;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
 }
 
 .notice-header h3 {
@@ -25,7 +29,6 @@
 	margin-right: 10px;
 }
 
-
 .notice-content {
 	margin-top: 20px;
 	border: 1px solid #e0e0e0;
@@ -33,7 +36,6 @@
 	border-radius: 8px;
 	background-color: #f9f9f9;
 }
-
 
 .notice-image img {
 	width: 100%;
@@ -43,19 +45,28 @@
 	margin-bottom: 20px;
 }
 
+/* 버튼 영역 수정 */
 .notice-buttons {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between; /* 왼쪽은 목록, 오른쪽은 수정/삭제 */
+	align-items: center; /* 버튼들 높이를 맞춤 */
 	margin-top: 20px;
 }
 
 .notice-buttons .btn {
 	padding: 10px 20px;
-	margin-right: 10px;
 	border: none;
 	border-radius: 5px;
 	font-size: 14px;
 	cursor: pointer;
+}
+
+.notice-buttons .btn-back {
+	background-color: #f8f9fa;
+	color: black;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-right: auto; /* 목록 버튼을 왼쪽으로 */
 }
 
 .notice-buttons .btn-edit {
@@ -68,14 +79,6 @@
 	background-color: #dc3545;
 	color: white;
 }
-
-.notice-buttons .btn-back {
-	background-color: #f8f9fa;
-	color: black;
-	border : 1px solid #ddd;
-	border-radius: 4px;
-}
-
 
 .btn-back:hover {
 	background-color: #e9ecef;
@@ -101,6 +104,7 @@
 	border-radius: 8px;
 	margin-bottom: 20px;
 }
+
 .file-download-section {
     display: flex;
     align-items: center;
@@ -126,6 +130,7 @@
     cursor: pointer;
     color: #007bff;
 }
+
 .notice-image {
     margin-top: 30px;
 }

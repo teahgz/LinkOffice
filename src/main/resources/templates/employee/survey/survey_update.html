@@ -45,8 +45,8 @@
             <!-- 질문 추가 버튼 -->
             <button type="button" id="addQuestionButton" class="btn btn-secondary">질문 추가</button><br><br>
 
-            <button type="submit">확인</button>
-            <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
+            <button type="submit" class="ok-btn">수정 완료</button>
+            <button type="button" class="cancel-btn" onclick="window.history.back()">목록</button>
         </form>
     </section>
 
@@ -87,7 +87,7 @@
     }
 
     const location_text = document.getElementById('header_location_text');
-    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 작성';
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 수정';
     
     document.addEventListener("DOMContentLoaded", function () {
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
