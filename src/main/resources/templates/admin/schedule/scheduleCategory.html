@@ -4,7 +4,7 @@
      layout:decorate="~{include/layout}"> 
     <th:block layout:fragment="content">
         <link th:href="@{/css/admin/schedule/scheduleCategory.css}" rel="stylesheet" type="text/css">
-        <section> 
+        <section style="display:flex; justify-content: center;">
      		<div class="container">
 			    <!-- 카테고리 목록 -->
 			    <div class="scheduleCategory_list_box list">
@@ -28,7 +28,13 @@
 			    <!-- 상세 정보 --> 
 			    <div class="list" th:if="${selectedCategory}">
 			        <div class="details-header">
-			            <h3>카테고리 정보</h3>
+						<div>
+							<h3>카테고리 정보</h3>
+						</div>
+						<div class="info_btn">
+							<button class="editButton" th:data-category-id="${selectedCategory.schedule_category_no}">수정</button>
+							<button class="deleteButton" id="deleteButton" th:data-category-id="${selectedCategory.schedule_category_no}">삭제</button>
+						</div>
 			        </div>
 			        <div class="details-content"> 
 			            <p><strong>카테고리명</strong> 
@@ -43,10 +49,7 @@
 			            </p>
 			        </div>
 			        
-			        <div class="info_btn"> 
-			            <button class="editButton" th:data-category-id="${selectedCategory.schedule_category_no}">수정</button>
-			            <button class="deleteButton" id="deleteButton" th:data-category-id="${selectedCategory.schedule_category_no}">삭제</button>  
-			        </div>
+
 			    </div>
 			</div> 
         </section>  

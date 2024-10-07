@@ -76,6 +76,7 @@
     gap: 20px;  
     padding : 20px 60px;
     height: 700px;
+    width: 1250px;
 }
 
 .scheduleCategory_list_box {
@@ -132,7 +133,6 @@ button:hover {
 } 
 
 .info_btn {
-	margin-top : 70px;
 	text-align: right;
 }
 

@@ -123,13 +123,13 @@ select:focus, .search_text:focus {
 }
 
 .pagination button {
-    margin: 0 5px;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    background-color: #f8f9fa;
-    cursor: pointer;
-    transition: all 0.3s;
-    border-radius: 4px;
+      margin: 0 5px;
+      padding: 8px 13px;
+      border: 1px solid #ddd;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 4px;
 }
 
 .pagination button:hover {
