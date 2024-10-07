@@ -22,7 +22,7 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-    height: 85vh;
+    height: 94vh;
     border-left: 1px solid #ddd;
 }
 
@@ -59,7 +59,7 @@
     border: none;
     width: 40%;
     background-color: white;
-    height: 85vh;
+    height: 94vh;
 }
 .chatContainer .header{
        border-bottom: 1px solid #ddd;
@@ -133,7 +133,7 @@
     overflow-y: auto;
 }
 .chatList-container {
-    max-height: 879px;
+    max-height:985px;
     overflow-y: auto;
 }
 .chatList-container::-webkit-scrollbar {
