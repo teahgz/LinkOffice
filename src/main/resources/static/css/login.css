@@ -156,3 +156,20 @@ button[type="submit"]:hover {
     color: #d32f2f;
     font-size: 14px;
 }
+
+.capsLockAlert {
+	display: none;
+    position: absolute;
+    background-color: #e0dede;
+    color: #868383;
+    border: 1px solid #7f7878;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 10;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.input_group {
+	position: relative;
+}

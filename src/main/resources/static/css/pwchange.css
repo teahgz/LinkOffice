@@ -169,3 +169,21 @@ button:active {
 .button_link:active {
 	transform: scale(0.98);
 }
+
+.capsLockAlert {
+	display: none;
+    position: absolute;
+    background-color: #e0dede;
+    color: #868383;
+    border: 1px solid #7f7878;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 10;
+    margin-left: 10px;
+    font-weight: bold;
+    top: 40px;
+}
+
+.input_group {
+	position: relative;
+}
