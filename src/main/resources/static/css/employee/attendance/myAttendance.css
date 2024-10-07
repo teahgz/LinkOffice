@@ -254,7 +254,7 @@
 }
 #start_date:focus, #end_date:focus{
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 #attendance_state{
 	width: 100px;
@@ -269,7 +269,7 @@
 }
 #attendance_state:focus{
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 #sort_select{
 	width: 100px;
@@ -284,7 +284,7 @@
 }
 #sort_select:focus{
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 #wave{
 	height: 100%;

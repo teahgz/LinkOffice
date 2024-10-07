@@ -157,7 +157,7 @@
 
 .profile_details input[type="text"]:focus, .profile_details input[type="date"]:focus, .profile_details input[type="tel"]:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 select {

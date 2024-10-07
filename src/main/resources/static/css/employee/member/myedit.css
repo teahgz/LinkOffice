@@ -87,7 +87,7 @@
 
 #pwVerifyFrm input[type="password"]:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 .button-container {
@@ -240,7 +240,7 @@
 
 .input_address:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 .input_pw_container {
@@ -263,7 +263,7 @@
 
 .input_pw:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 .toggle_icon {

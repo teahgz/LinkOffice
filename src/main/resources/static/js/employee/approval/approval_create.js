@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire({
                     icon: 'error',
                     text: 'PNG, JPG, PDF, EXCEL만 등록 가능합니다.',
-                    confirmButtonColor: '#B1C2DD',
+                    confirmButtonColor: '#0056b3',
                     confirmButtonText: '확인'
                 });
                 event.target.value = ''; 

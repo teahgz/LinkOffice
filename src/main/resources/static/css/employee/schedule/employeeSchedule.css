@@ -412,7 +412,7 @@ textarea {
     padding: 15px;  
     font-size: 16px; 
     color: black; 
-    background-color: #B1C2DD;  
+    background-color: #0056b3;  
     border: none; 
     border-radius: 5px; 
     cursor: pointer; 
@@ -577,8 +577,8 @@ textarea{
 #event_repeat_modal_btn {
 	width : 70px;
     padding: 8px 16px;
-    background-color: #B1C2DD;
-    color: rgb(0, 0, 0);
+    background-color: #0056b3;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -586,15 +586,15 @@ textarea{
 }
 
 #event_repeat_modal_btn:hover {
-    background-color: #9CAFC7;
+    background-color: #003a82;
 } 
 
 #event_repeat_close_btn {
 	width : 70px;
     padding: 8px 16px;
-    background-color: #C0C0C0;
-    color: rgb(0, 0, 0);
-    border: none;
+    background-color: #f8f9fa;
+	color: #333;
+	border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -602,7 +602,7 @@ textarea{
 }
 
 #event_repeat_close_btn:hover {
-    background-color: #888888;
+    background-color: #e9ecef;
 } 
 
 .fc-event-title-container {

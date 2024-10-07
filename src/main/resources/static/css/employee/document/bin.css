@@ -48,7 +48,7 @@
 }
 #start_date:focus, #end_date:focus{
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 #start_date{
 	margin-right: 5px;
@@ -73,7 +73,7 @@
 }
 #file_name_input:focus{
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 .upper_list_div{
 	display: flex;
@@ -148,7 +148,7 @@
 }
 #sort_select:focus{
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 .table_div{
 	border-radius: 8px;	
