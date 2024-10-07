@@ -183,10 +183,10 @@ button:hover {
 
 .pardep_div { 
 	margin-top :25px;
+	margin-bottom: 10px;
 }
 
 .info_btn {
-	margin-top : 70px;
 	text-align: right;
 }
 
