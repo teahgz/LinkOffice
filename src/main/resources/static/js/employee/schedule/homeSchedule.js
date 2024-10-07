@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            processMeetingSchedules(meetingSchedules.meetingResult, allEvents)  
 	        ]).then(() => {
 	            initializeCalendar(allEvents); 
-	            filterEvents();
+	            filterEvents(); 
 	        });
 	    });
 	}
@@ -389,6 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
             	filterEvents();  
             });
         }  
+          
         return event;
     }
 
@@ -524,8 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	    home_schedule_date.innerHTML = selectedDate;  
 		 
 	    const filteredEvents = selectedDateEvents.filter(event => event.display !== 'none');
-			 
-		console.log(filteredEvents);
+			  
 	    if (filteredEvents.length === 0) {
 	        selectedDateEventsList.innerHTML = '<li>일정이 없습니다.</li>';
 	    } else {
@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            today: '오늘'
 	        },
 	        eventClick: function(info) { 
-				 
+				console.log(info.event);
 				const eventStart = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000));
 			    pickStartDate = eventStart.toISOString().split('T')[0];
 				 
