@@ -122,30 +122,28 @@ public class SurveyViewController {
         return "employee/survey/survey_question_myResult";
     }
     
-    // 설문 상세 페이지 (참여 여부에 따라 상세 페이지 분기)
     @GetMapping("/employee/survey/detail/{survey_no}")
     public String selectSurveyOne(Model model, @PathVariable("survey_no") Long surveyNo) {
         Long memberNo = memberService.getLoggedInMemberNo();
+
+        // 설문 기본 정보 가져오기
         SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
         Long member_no = memberService.getLoggedInMemberNo();
-		List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
-		model.addAttribute("memberdto", memberdto);
-		
-        // 설문 참여 여부 확인
-        boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
+        List<MemberDto> memberdto = memberService.getMembersByNo(member_no);
+        model.addAttribute("memberdto", memberdto);
 
-        // 기본 데이터 추가
+        // 설문 상태 확인 (진행중 or 마감)
+        int surveyStatus = dto.getSurvey_status(); // 0: 진행중, 1: 마감
         model.addAttribute("dto", dto);
         model.addAttribute("questions", questions);
 
-        if (hasParticipated) {
+        if (surveyStatus == 1) {
+            // 설문이 마감된 경우 결과 페이지로 이동
             int totalParticipants = surveyService.getTotalParticipants(surveyNo);
             int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
             int notParticipatedParticipants = totalParticipants - completedParticipants;
-            
-            
-            
+
             // 참여율 계산 및 추가
             Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
             model.addAttribute("participationRates", participationRates);
@@ -163,27 +161,63 @@ public class SurveyViewController {
             model.addAttribute("completedParticipants", completedParticipants);
             model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
 
-            return "employee/survey/survey_question_result"; 
-        } else {
-            return "employee/survey/survey_question_detail"; 
+            return "employee/survey/survey_question_result"; // 설문 결과 페이지로 이동
+        } else if (surveyStatus == 0) {
+            // 설문이 진행 중인 경우에만 참여 여부를 확인
+            boolean hasParticipated = surveyService.hasUserParticipated(surveyNo, memberNo);
+
+            if (hasParticipated) {
+                // 설문 참여자가 있을 경우
+                int totalParticipants = surveyService.getTotalParticipants(surveyNo);
+                int completedParticipants = surveyService.getCompletedParticipants(surveyNo);
+                int notParticipatedParticipants = totalParticipants - completedParticipants;
+
+                // 참여율 계산 및 추가
+                Map<Long, Integer> participationRates = surveyService.calculateParticipationRates(questions, totalParticipants);
+                model.addAttribute("participationRates", participationRates);
+
+                // 각 질문별 응답 수 가져오기
+                Map<Long, List<Object[]>> optionAnswerCounts = surveyService.getOptionAnswerCountsBySurvey(surveyNo);
+                model.addAttribute("optionAnswerCounts", optionAnswerCounts);
+
+                // 차트 데이터 준비 (각 질문별 옵션 응답 수를 차트 형식으로 변환)
+                Map<Long, List<List<Object>>> chartData = prepareChartData(optionAnswerCounts);
+                model.addAttribute("chartData", chartData);
+
+                // 통계 데이터 추가
+                model.addAttribute("totalParticipants", totalParticipants);
+                model.addAttribute("completedParticipants", completedParticipants);
+                model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
+
+                return "employee/survey/survey_question_result"; // 설문 결과 페이지로 이동
+            } else {
+                return "employee/survey/survey_question_detail"; 
+            }
         }
+
+        return "employee/survey/survey_question_detail";
     }
-
+    
     @GetMapping("/employee/survey/update/{survey_no}")
-	public String updateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
-    	 Long memberNo = memberService.getLoggedInMemberNo();
-         List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-         
-         model.addAttribute("memberdto", memberdto);
-    	 SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
-         List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
-         
-         // 기본 데이터 추가
-         model.addAttribute("dto", dto);
-         model.addAttribute("questions", questions);
+    public String updateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
+        Long memberNo = memberService.getLoggedInMemberNo();
+        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+        
+        model.addAttribute("memberdto", memberdto);
+        
+        // 설문 데이터와 질문 데이터 가져오기
+        SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
+        List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
+        
+        // 로그로 데이터 확인
+        LOGGER.info("Survey DTO: {}", dto);
+        LOGGER.info("Survey Questions: {}", questions);
 
-	    return "employee/survey/survey_question_update";
-	}
+        model.addAttribute("dto", dto);
+        model.addAttribute("questions", questions); // 질문 리스트 추가
+
+        return "employee/survey/survey_question_update"; // 수정 페이지 반환
+    }
 
     
     

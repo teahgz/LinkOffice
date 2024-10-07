@@ -32,7 +32,7 @@ document.getElementById('excelDownloadBtn').addEventListener('click', function (
         Swal.fire({
             icon: 'error',
             text: '파일 다운로드를 실패하였습니다.',
-            confirmButtonColor: '#B1C2DD',
+            confirmButtonColor: '#0056b3',
             confirmButtonText: '확인'
         });
     });

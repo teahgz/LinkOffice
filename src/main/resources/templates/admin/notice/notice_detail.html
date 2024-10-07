@@ -50,12 +50,14 @@
 			</div>
 
 			<div class="notice-buttons">
-
-				<a th:href="@{/admin/notice/update/{no}(no=${dto.notice_no})}" class="btn btn-edit" sec:authorize="hasAuthority('TOTAL_ADMIN')">수정</a>
-
-				<a class="btn btn-delete" th:onclick="noticeDelete([[${dto.notice_no}]])" sec:authorize="hasAuthority('TOTAL_ADMIN')">삭제</a>
-
+				<!-- 목록 버튼을 왼쪽에 배치 -->
 				<a href="/admin/notice/list" class="btn btn-back">목록</a>
+
+				<!-- 수정, 삭제 버튼을 오른쪽에 배치 -->
+				<div class="right-buttons">
+					<a th:href="@{/admin/notice/update/{no}(no=${dto.notice_no})}" class="btn btn-edit" sec:authorize="hasAuthority('TOTAL_ADMIN')">수정</a>
+					<a class="btn btn-delete" th:onclick="noticeDelete([[${dto.notice_no}]])" sec:authorize="hasAuthority('TOTAL_ADMIN')">삭제</a>
+				</div>
 			</div>
 		</div>
 	</section>

@@ -3,7 +3,7 @@ let folderList = [];
 
 $(function () {
 	const location_text = document.getElementById('header_location_text');
-	location_text.innerHTML = '문서함&emsp;&gt;&emsp;사내 문서함';		
+	location_text.innerHTML = '문서함&emsp;&gt;&emsp;전사 문서함';		
 	// 전역 변수로 selectedFolderNo 정의
 	let selectedFolderNo = null;
 	// 폴더 이름 변경 여부 

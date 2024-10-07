@@ -65,7 +65,7 @@ select:focus,
 input:focus,
 textarea:focus{
     outline: none !important;
-    border-color: #B1C2DD !important;
+    border-color: #0056b3 !important;
 }
 
 input, textarea{ 

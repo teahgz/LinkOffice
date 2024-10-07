@@ -35,8 +35,6 @@
 			</div>
 			<br>
 			
-			
-
 			<!-- 질문 출력 (참여 완료가 0이 아닐 경우만 표시) -->
 			<div class="questions" th:if="${completedParticipants != 0}">
 				<div class="question" th:each="question, iterStat : ${questions}">
@@ -73,8 +71,12 @@
 				<p>참여자가 없습니다.</p>
 			</div>
 		
-		<button type="button" class="cancel-btn" onclick="window.history.back()">목록</button>
-		<a th:href="@{/employee/survey/update/{survey_no}(survey_no=${dto.survey_no})}" class="btn-edit">수정</a>
+			<!-- 버튼 영역 -->
+			<div class="button-container">
+				<button type="button" class="cancel-btn" onclick="window.history.back()">목록</button>
+				<a th:href="@{/employee/survey/update/{survey_no}(survey_no=${dto.survey_no})}" 
+				   class="btn-edit" th:if="${dto.survey_status == 0}">수정</a>
+			</div>
 		</div>
 	</section>
 

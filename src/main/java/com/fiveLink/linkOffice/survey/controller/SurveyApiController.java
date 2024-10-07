@@ -263,7 +263,6 @@ public class SurveyApiController {
 			membersByDepartment.put(member.getDepartment_no(), departmentMembers);
 		}
 
-		// 부서 트리 구성
 		for (DepartmentDto dept : departments) {
 			Map<String, Object> node = new HashMap<>();
 			node.put("id", "dept_" + dept.getDepartment_no());

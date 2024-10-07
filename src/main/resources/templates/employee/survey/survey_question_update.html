@@ -13,7 +13,6 @@
 
 <th:block layout:fragment="content">
     <section>
-        <h1>설문 수정</h1>
         <div class="container">
             <div class="header">
                 <div th:if="${dto != null}">
@@ -62,7 +61,7 @@
                 </div>
 
                 <div class="submit-buttons">
-                    <button type="submit" class="confirm-btn">수정 완료</button>
+                    <button id="confirmButton" type="button" class="modal_btn">수정 완료</button>
                     <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
                 </div>
             </form>
@@ -70,6 +69,9 @@
     </section>
 
     <script>
+    const location_text = document.getElementById('header_location_text');
+    location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 수정';
+    
     const form = document.getElementById("surveyDetailForm");
 
     form.addEventListener('submit', async (e) => {

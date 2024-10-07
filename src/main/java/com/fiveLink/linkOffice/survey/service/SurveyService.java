@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -496,34 +495,46 @@ public class SurveyService {
             .build();
     }
 
-    // 설문 질문 (객관식, 주관식) 조회
+ // 설문 질문 (객관식, 주관식) 조회
     public List<SurveyQuestionDto> getSurveyQuestions(Long surveyNo) {
+        LOGGER.info("Fetching questions for surveyNo: {}", surveyNo);
+
+        // 설문에 해당하는 질문 가져오기
         List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
+        LOGGER.info("Fetched questions: {}", questions);
 
         return questions.stream().map(question -> {
-            // 선택지 번호 가져오기
+            LOGGER.info("Processing question: {}", question);
+
+            // 선택형 질문에 대한 옵션 번호 가져오기
             List<Long> optionNo = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(option -> option.getSurveyOptionNo())
                     .collect(Collectors.toList());
+            LOGGER.info("Option No for question {}: {}", question.getSurveyQuestionNo(), optionNo);
 
-            // 선택지 답변 가져오기
+            // 선택형 질문에 대한 옵션 답변 가져오기
             List<String> optionAnswers = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(option -> option.getSurveyOptionAnswer())
                     .collect(Collectors.toList());
+            LOGGER.info("Option Answers for question {}: {}", question.getSurveyQuestionNo(), optionAnswers);
 
-            // 주관식 텍스트 번호와 답변 가져오기
+            // 주관식 질문에 대한 텍스트 번호 가져오기
             List<Long> textNo = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(SurveyText::getSurveyTextNo)
                     .collect(Collectors.toList());
+            LOGGER.info("Text No for question {}: {}", question.getSurveyQuestionNo(), textNo);
 
+            // 주관식 질문에 대한 텍스트 답변 가져오기
             List<String> textAnswers = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(SurveyText::getSurveyTextAnswer)
                     .collect(Collectors.toList());
+            LOGGER.info("Text Answers for question {}: {}", question.getSurveyQuestionNo(), textAnswers);
 
+            // SurveyQuestionDto로 변환하여 리턴
             return SurveyQuestionDto.builder()
                     .survey_question_no(question.getSurveyQuestionNo())
                     .survey_no(question.getSurvey().getSurveyNo())

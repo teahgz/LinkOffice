@@ -306,7 +306,7 @@
     padding: 15px;  
     font-size: 16px; 
     color: black; 
-    background-color: #B1C2DD;  
+    background-color: #0056b3;  
     border: none; 
     border-radius: 5px; 
     cursor: pointer; 
@@ -397,7 +397,7 @@ hr {
 .reservation_row select:focus,
 .reservation_row textarea:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 .time_space {

@@ -69,14 +69,13 @@
 						<tr th:each="notice, iterStat : ${noticeList}"
 							th:data_notice_no="${notice.notice_no}" class="member_row"
 							th:onclick="|location.href='@{/admin/notice/list/{no}(no=${notice.notice_no})}'|">
-							<td th:text="${iterStat.index + 1}"></td>
+							<!-- 수정된 부분: 페이지 번호와 페이지당 항목 수를 고려하여 번호 계산 -->
+							<td th:text="${page.number * page.size + iterStat.index + 1}"></td>
 							<td><span th:if="${notice.notice_importance == 1}"
 								style="color: red; font-weight: bold;">[중요] </span> <span
-								th:text="${notice.notice_title}"></span> 
-							</td>
+								th:text="${notice.notice_title}"></span></td>
 							<td th:text="${notice.notice_create_date}"></td>
-							<td
-								th:text="${notice.member_name}"></td>
+							<td th:text="${notice.member_name}"></td>
 						</tr>
 					</th:block>
 
@@ -112,15 +111,14 @@
 	<script>
 		const location_text = document.getElementById('header_location_text');
 		location_text.innerHTML = '공지사항';
-		
-		
-		document.addEventListener("DOMContentLoaded", function() {
-		    window.functionType = 14; 
-		    console.log("현재 기능 타입: " +window.functionType);
 
-		    if (window.functionType === 1) {
-		        markNotificationsAsRead(window.functionType);
-		    }
+		document.addEventListener("DOMContentLoaded", function() {
+			window.functionType = 14;
+			console.log("현재 기능 타입: " + window.functionType);
+
+			if (window.functionType === 1) {
+				markNotificationsAsRead(window.functionType);
+			}
 		});
 	</script>
 </th:block>

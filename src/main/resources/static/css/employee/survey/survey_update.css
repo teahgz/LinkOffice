@@ -7,7 +7,6 @@
             padding: 0;
         }
 
-        /* 입력 필드 크기 조정 */
         #surveyForm input[type="text"],
         #surveyForm input[type="date"],
         #surveyForm textarea {

@@ -28,4 +28,6 @@ public interface SurveyTextRepository extends JpaRepository<SurveyText, Long> {
 		
 		List<SurveyText> findAllBySurveyParticipantAndSurveyQuestion(SurveyParticipant surveyParticipant, SurveyQuestion surveyQuestion);
 		
+	
+		
 }

@@ -92,17 +92,7 @@
     background-color: #e9ecef !important;
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.current,
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-    background-color: #0056b3 !important;
-    color: white !important;
-}
 
-/* active 상태에서 hover */
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-    background-color: #003a82 !important;
-    color: white !important;
-}
 
 /* 세부 사항 테이블 스타일 */
 td.details-control {

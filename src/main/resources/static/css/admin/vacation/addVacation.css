@@ -280,5 +280,5 @@ input, select, .search_text {
 
 input:focus, select:focus, .search_text:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
