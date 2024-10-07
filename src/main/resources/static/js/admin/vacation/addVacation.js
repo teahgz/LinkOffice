@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.res_code === '200') {
                         Swal.fire({
                             icon: 'success',
-                            text: '휴가 종류가 성공적으로 추가되었습니다.',
+                            text: '휴가 종류가 추가되었습니다.',
                             confirmButtonText: "확인",
                             customClass: {
                                  confirmButton: 'custom-confirm-button'
