@@ -40,7 +40,7 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: #B1C2DD;
+    border-color: #0056b3;
 }
 
 
