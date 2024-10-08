@@ -21,15 +21,16 @@
     <section>
     <br>
         <form id="surveyForm">
-            <label for="surveyTitle">설문 제목</label>
-            <!-- 값이 제대로 전달되지 않으면 디폴트 값을 넣도록 처리 -->
-            <input type="hidden" id="memberNo" th:value="${memberdto[0] != null ? memberdto[0].member_no : 0}">
-            <input type="text" id="surveyTitle" name="survey_title" th:value="${dto != null ? dto.survey_title : ''}" placeholder="설문 제목을 입력하세요."><br>
-
-            <label for="surveyPeriod">설문 기간</label>
-            <input type="date" id="surveyStartDate" name="survey_start_date" th:value="${dto != null ? dto.survey_start_date : ''}">
-            <input type="date" id="surveyEndDate" name="survey_end_date" th:value="${dto != null ? dto.survey_end_date : ''}"><br>
-
+            <label for="surveyTitle">설문 제목</label> <input type="hidden"
+				id="memberNo" th:value="${memberdto[0].member_no}"> <input
+				type="text" id="surveyTitle" name="survey_title"
+				placeholder="설문 제목을 입력하세요."><br> <label
+				for="surveyPeriod">설문 기간</label>
+			<div class="date-inputs">
+				<input type="date" id="surveyStartDate" name="survey_start_date">
+				<span>~</span> <input type="date" id="surveyEndDate"
+					name="survey_end_date">
+			</div>
             <label for="surveyTarget">설문 대상자</label>
             <div></div>
 

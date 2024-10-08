@@ -11,6 +11,12 @@
     padding-right: 180px;
 }
 
+#surveyForm select {
+    border-radius: 5px; 
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
 #surveyForm input[type="text"],
 #surveyForm input[type="date"],
 #surveyForm textarea {
