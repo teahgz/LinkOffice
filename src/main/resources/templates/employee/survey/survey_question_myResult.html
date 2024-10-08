@@ -148,7 +148,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 text: data.res_msg,
-                                confirmButtonText: '닫기'
+                                confirmButtonText: '확인'
                             }).then(() => {
                                 const memberNo = document.getElementById('memberNo').value;
                                 location.href = '/employee/survey/myList/' + memberNo;
@@ -157,7 +157,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 text: data.res_msg,
-                                confirmButtonText: '닫기'
+                                confirmButtonText: '확인'
                             });
                         }
                     })
@@ -165,7 +165,7 @@
                         Swal.fire({
                             icon: 'error',
                             text: '삭제 중 오류가 발생했습니다.',
-                            confirmButtonText: '닫기'
+                            confirmButtonText: '확인'
                         });
                     });
                 }
