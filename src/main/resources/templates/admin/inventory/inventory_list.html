@@ -77,7 +77,6 @@
         <div class="button-container">
             <button type="button" class="button-edit" onclick="saveChanges()">수정</button>
             <button type="button" class="button-delete" onclick="deleteItem()">삭제</button>
-            <button type="button" class="button-cancel" onclick="closeModal()">취소</button>
         </div>
     </div>
 </div>
@@ -218,7 +217,7 @@ $(document).ready(function() {
                 "next": ">",
                 "previous": "<"
             },
-            "search": "검색"
+            "search": ""
         },
         "drawCallback": function(settings) {
             var api = this.api();
@@ -241,7 +240,8 @@ $(document).ready(function() {
             }
         }
     });
-
+ 	// DataTables 검색 필드에 placeholder 설정
+    $('#example_filter input').attr('placeholder', '카테고리명을 입력해주세요.');
     // DataTables 기본 검색 필드에 디바운스 적용
     $('#example_filter input').unbind() 
     .on('input', function() {

@@ -89,7 +89,7 @@ public class SurveyApiController {
 	        // 설문 업데이트 처리
 	        surveyService.updateCompleteSurvey(surveyDto); 
 	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "설문이 성공적으로 업데이트되었습니다.");
+	        resultMap.put("res_msg", "설문이 업데이트되었습니다.");
 	    } catch (Exception e) {
 	        resultMap.put("res_code", "500");
 	        resultMap.put("res_msg", "설문 처리 중 오류가 발생했습니다: " + e.getMessage());
@@ -130,10 +130,10 @@ public class SurveyApiController {
 			// 설문 생성 또는 업데이트
 			surveyService.createCompleteSurvey(surveyDto);
 			resultMap.put("res_code", "200");
-			resultMap.put("res_msg", "설문이 성공적으로 생성.");
+			resultMap.put("res_msg", "설문이 생성되었습니다.");
 		} catch (Exception e) {
 			resultMap.put("res_code", "500");
-			resultMap.put("res_msg", "설문 처리 중 오류가 발생했습니다: " + e.getMessage());
+			resultMap.put("res_msg", "설문 처리 중 오류가 발생했습니다 ");
 			LOGGER.error("Survey creation error: ", e);
 		}
 
@@ -167,7 +167,7 @@ public class SurveyApiController {
 
 	        // 주관식 응답 처리 - 배열로 여러 응답을 수집하여 각각 저장
 	        String[] textAnswers = request.getParameterValues("survey_text_answer");
-	        String[] textQuestionNos = request.getParameterValues("survey_question_no"); // 주관식 질문 번호 수집
+	        String[] textQuestionNos = request.getParameterValues("survey_question_no"); 
 
 	        if (textAnswers != null && textQuestionNos != null) {
 	            for (int i = 0; i < textAnswers.length; i++) {
@@ -178,7 +178,7 @@ public class SurveyApiController {
 	        }
 
 	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "설문 응답이 성공적으로 저장되었습니다.");
+	        resultMap.put("res_msg", "설문 성공적으로 저장되었습니다.");
 	    } catch (Exception e) {
 	        LOGGER.error("Error during survey submission: {}", e.getMessage());
 	        resultMap.put("res_code", "500");
@@ -224,11 +224,11 @@ public class SurveyApiController {
 	        }
 
 	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "설문 응답이 성공적으로 수정되었습니다.");
+	        resultMap.put("res_msg", "설문 수정되었습니다.");
 	    } catch (Exception e) {
 	        LOGGER.error("Error during survey update: {}", e.getMessage());
 	        resultMap.put("res_code", "500");
-	        resultMap.put("res_msg", "설문 응답 수정 중 오류가 발생했습니다: " + e.getMessage());
+	        resultMap.put("res_msg", "설문 수정 중 오류가 발생했습니다: " + e.getMessage());
 	    }
 
 	    return resultMap;
@@ -241,7 +241,7 @@ public class SurveyApiController {
 	    try {
 	        surveyService.deleteSurvey(surveyNo);
 	        resultMap.put("res_code", "200");
-	        resultMap.put("res_msg", "설문이 성공적으로 삭제되었습니다.");
+	        resultMap.put("res_msg", "설문이 삭제되었습니다.");
 	    } catch (Exception e) {
 	        resultMap.put("res_code", "500");
 	        resultMap.put("res_msg", "삭제 중 오류가 발생했습니다: " + e.getMessage());

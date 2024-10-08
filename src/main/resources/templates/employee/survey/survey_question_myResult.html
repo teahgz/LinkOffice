@@ -17,7 +17,7 @@
                     <div class="details">
                         <br>
                         <p>작성자: <span th:text="${dto.member_name} + ' ' + ${dto.position_name}"></span></p>
-                        <p>작성일: <span th:text="${dto.survey_create_date}"></span></p>
+                        <p>작성일: <span th:text="${#temporals.format(dto.survey_create_date, 'yyyy-MM-dd')}"></span></p>
                         <p>설문 기간: <span th:text="${dto.survey_start_date} + ' ~ ' + ${dto.survey_end_date}"></span></p>
                         <p>설문 상태: <span th:text="${dto.survey_status == 0 ? '진행중' : '종료'}"></span></p>
                     </div>
@@ -94,6 +94,7 @@
         <!-- 삭제 버튼은 항상 표시 -->
         <a class="btn btn-delete" th:onclick="surveyDelete([[${dto.survey_no}]]);">삭제</a>
     </div>
+</div>
 </div>
     </section>
 
