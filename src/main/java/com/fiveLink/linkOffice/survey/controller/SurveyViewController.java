@@ -189,7 +189,7 @@ public class SurveyViewController {
                 model.addAttribute("completedParticipants", completedParticipants);
                 model.addAttribute("notParticipatedParticipants", notParticipatedParticipants);
 
-                return "employee/survey/survey_question_result"; // 설문 결과 페이지로 이동
+                return "employee/survey/survey_question_result"; 
             } else {
                 return "employee/survey/survey_question_detail"; 
             }
