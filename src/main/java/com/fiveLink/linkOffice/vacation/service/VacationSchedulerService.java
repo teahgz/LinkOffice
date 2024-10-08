@@ -23,8 +23,8 @@ public class VacationSchedulerService {
         this.vacationCheckRepository = vacationCheckRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    //@Scheduled(cron = "*/5 * * * * *")
+     @Scheduled(cron = "0 0 0 * * ?")
+    // @Scheduled(cron = "*/5 * * * * *")
     @Transactional
     public void updateVacationStatus() {
         LocalDate now = LocalDate.now();
