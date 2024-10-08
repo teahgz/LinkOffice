@@ -62,7 +62,7 @@
 
                 <div class="submit-buttons">
                     <button type="button" class="cancel-btn" onclick="window.history.back()">취소</button>
-                    <button id="confirmButton" type="button" class="modal_btn">수정 완료</button>
+                    <button id="confirmButton" type="submit" class="modal_btn">수정 완료</button>
                 </div>
             </form>
         </div>
@@ -149,7 +149,6 @@
         });
     });
 
-    // SweetAlert 경고창 표시 함수
     function showAlert(message) {
         Swal.fire({
             text: message,
