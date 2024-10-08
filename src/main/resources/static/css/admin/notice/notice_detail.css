@@ -1,7 +1,7 @@
 .detail_notice {
   	position: relative;
-	width: 90%;
-	max-width: 1200px;
+	width: 1250px;
+	min-height: 700px;
 	margin: 40px auto;
 	padding: 30px;
 	box-sizing: border-box;
@@ -50,7 +50,7 @@
 	display: flex;
 	justify-content: space-between; /* 왼쪽은 목록, 오른쪽은 수정/삭제 */
 	align-items: center; /* 버튼들 높이를 맞춤 */
-	margin-top: 20px;
+	margin-top: 340px;
 }
 
 .notice-buttons .btn {

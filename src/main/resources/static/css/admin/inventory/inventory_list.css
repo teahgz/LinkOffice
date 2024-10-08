@@ -2,7 +2,7 @@
 .list_inventory {
     margin: auto;
     width: 1250px;
-    height:700px;
+    min-height:700px;
     padding: 40px;
     box-sizing: border-box;
 }
