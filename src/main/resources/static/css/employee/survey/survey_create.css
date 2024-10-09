@@ -1,7 +1,8 @@
 #surveyForm {
     position: relative;
     width: 1250px;
-    height: 700px;
+    min-height: 700px;
+    height:auto;
     margin: -10px auto;
     padding: 70px 30px 70px;
     box-sizing: border-box;
