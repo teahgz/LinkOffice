@@ -1,5 +1,7 @@
 package com.fiveLink.linkOffice.survey.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -361,11 +363,11 @@ public class SurveyService {
                 Survey survey = (Survey) objects[0];
                 Integer participantStatus = objects[1] != null ? (Integer) objects[1] : 0;
 
-                // memberNo를 이용해 직위 정보 가져오기
+
                 Long memberNo = survey.getMember().getMemberNo();
                 List<Object[]> memberDetails = memberRepository.findMemberWithDepartmentAndPosition(memberNo);
 
-                // memberDetails가 비어있는 경우를 처리
+
                 String positionName = memberDetails.isEmpty() || memberDetails.get(0)[1] == null ? "Unknown" : (String) memberDetails.get(0)[1];
 
                 return SurveyDto.builder()
@@ -442,6 +444,7 @@ public class SurveyService {
         return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
     }
 
+    
     public Page<SurveyDto> getIngAllSurveyPage(Pageable pageable, SurveyDto searchDto, Long memberNo) {
         Page<Object[]> results = null; 
         String searchText = searchDto.getSearch_text();
@@ -469,6 +472,93 @@ public class SurveyService {
         List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent()); 
         return new PageImpl<>(surveyDtoList, pageable, results.getTotalElements());
     }
+    
+    public Page<SurveyDto> getIngAllSurveyPage1(Pageable pageable, SurveyDto searchDto, Long memberNo) {
+        Page<Object[]> results = null;
+        String searchText = searchDto.getSearch_text();
+
+        // 검색 조건에 따른 결과 가져오기
+        if (searchText != null && !searchText.isEmpty()) {
+            int searchType = searchDto.getSearch_type();
+            switch (searchType) {
+                case 1:
+                    results = surveyRepository.findSurveyByTitleOrContentForIngList(searchText, memberNo, pageable);
+                    break;
+                case 2:
+                    results = surveyRepository.findSurveyByTitleForIngList(searchText, memberNo, pageable);
+                    break;
+                case 3:
+                    results = surveyRepository.findSurveyByDescriptionForIngList(searchText, memberNo, pageable);
+                    break;
+                case 4:
+                    results = surveyRepository.findSurveyByAuthorForIngList(searchText, memberNo, pageable);
+                    break;
+            }
+        } else {
+            results = surveyRepository.findAllOngoingSurveysForMember(memberNo, pageable);
+        }
+
+        // Object[]를 SurveyDto로 변환
+        List<SurveyDto> surveyDtoList = convertToDtoList(results.getContent());
+
+        // 오늘 날짜와 비교하여 필터링
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate today = LocalDate.now();  
+
+     
+        List<SurveyDto> filteredSurveyDtoList = surveyDtoList.stream()
+            .filter(survey -> {
+                try {
+                    String startDateStr = survey.getSurvey_start_date();
+                    if (startDateStr == null || startDateStr.isEmpty()) {
+                        return false;  
+                    }
+                    LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+                    return !startDate.isAfter(today); 
+                } catch (Exception e) {
+                    return false;  
+                }
+            })
+            .collect(Collectors.toList());
+
+       
+        if (filteredSurveyDtoList.size() < 5) {
+            int remainingCount = 5 - filteredSurveyDtoList.size();
+
+           
+            List<SurveyDto> additionalSurveys = surveyDtoList.stream()
+                .filter(survey -> {
+                    try {
+                        String startDateStr = survey.getSurvey_start_date();
+                        if (startDateStr == null || startDateStr.isEmpty()) {
+                            return false;  
+                        }
+                        LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+                     
+                        return startDate.isBefore(today) && !filteredSurveyDtoList.contains(survey);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .limit(remainingCount)  
+                .collect(Collectors.toList());
+
+ 
+            filteredSurveyDtoList.addAll(additionalSurveys);
+        }
+
+      
+        List<SurveyDto> finalSurveyList = filteredSurveyDtoList.stream()
+            .limit(5)
+            .collect(Collectors.toList());
+
+      
+        return new PageImpl<>(finalSurveyList, pageable, results.getTotalElements());
+    }
+
+
+    
+    
 
     public SurveyDto selectSurveyOne(Long surveyNo) {
 
@@ -504,35 +594,36 @@ public class SurveyService {
         LOGGER.info("Fetched questions: {}", questions);
 
         return questions.stream().map(question -> {
-            LOGGER.info("Processing question: {}", question);
 
             // 선택형 질문에 대한 옵션 번호 가져오기
             List<Long> optionNo = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(option -> option.getSurveyOptionNo())
                     .collect(Collectors.toList());
-            LOGGER.info("Option No for question {}: {}", question.getSurveyQuestionNo(), optionNo);
 
             // 선택형 질문에 대한 옵션 답변 가져오기
             List<String> optionAnswers = surveyOptionRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(option -> option.getSurveyOptionAnswer())
                     .collect(Collectors.toList());
-            LOGGER.info("Option Answers for question {}: {}", question.getSurveyQuestionNo(), optionAnswers);
+
+            // 각 옵션에 대한 선택된 답변 가져오기 (선택된 옵션 번호)
+            List<Long> selectedOptionNos = surveyAnswerOptionRepository.findAllBySurveyOption_SurveyOptionNoIn(optionNo)
+                    .stream()
+                    .map(answer -> answer.getSurveyOption().getSurveyOptionNo())
+                    .collect(Collectors.toList());
 
             // 주관식 질문에 대한 텍스트 번호 가져오기
             List<Long> textNo = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(SurveyText::getSurveyTextNo)
                     .collect(Collectors.toList());
-            LOGGER.info("Text No for question {}: {}", question.getSurveyQuestionNo(), textNo);
 
             // 주관식 질문에 대한 텍스트 답변 가져오기
             List<String> textAnswers = surveyTextRepository.findByQuestionNo(question.getSurveyQuestionNo())
                     .stream()
                     .map(SurveyText::getSurveyTextAnswer)
                     .collect(Collectors.toList());
-            LOGGER.info("Text Answers for question {}: {}", question.getSurveyQuestionNo(), textAnswers);
 
             // SurveyQuestionDto로 변환하여 리턴
             return SurveyQuestionDto.builder()
@@ -543,8 +634,9 @@ public class SurveyService {
                     .survey_question_essential(question.getSurveyQuestionEssential())
                     .survey_option_no(optionNo)
                     .survey_option_answer(optionAnswers)
-                    .survey_text_no(textNo)
-                    .survey_text_answer(textAnswers)
+                    .selected_option_no(selectedOptionNos) // 선택된 옵션 번호 추가
+                    .survey_text_no(textNo)  // 주관식 질문 텍스트 번호
+                    .survey_text_answer(textAnswers) // 주관식 질문 답변
                     .build();
         }).collect(Collectors.toList());
     }
@@ -585,7 +677,7 @@ public class SurveyService {
         return participationRates;
     }
     
- // 주관식 답변과 참여자 정보(이름, 직위) 가져오기
+    // 주관식 답변과 참여자 정보(이름, 직위) 가져오기
     public Map<Long, List<Object[]>> getTextAnswersBySurvey(Long surveyNo) {
         List<SurveyQuestion> questions = surveyQuestionRepository.findBySurveyNo(surveyNo);
         Map<Long, List<Object[]>> textAnswers = new HashMap<>();

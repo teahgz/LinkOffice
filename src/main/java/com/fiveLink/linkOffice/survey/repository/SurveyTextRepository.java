@@ -26,7 +26,7 @@ public interface SurveyTextRepository extends JpaRepository<SurveyText, Long> {
 		       "WHERE t.surveyQuestion.surveyQuestionNo = :surveyQuestionNo")
 		List<Object[]> findTextAnswersWithParticipant(@Param("surveyQuestionNo") Long surveyQuestionNo);
 		
-		List<SurveyText> findAllBySurveyParticipantAndSurveyQuestion(SurveyParticipant surveyParticipant, SurveyQuestion surveyQuestion);
+	List<SurveyText> findAllBySurveyParticipantAndSurveyQuestion(SurveyParticipant surveyParticipant, SurveyQuestion surveyQuestion);
 		
 	
 		

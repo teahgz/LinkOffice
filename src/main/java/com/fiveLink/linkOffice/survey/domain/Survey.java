@@ -44,7 +44,7 @@ public class Survey {
 	@Column(name="survey_description")
 	private String surveyDescription;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
     private Member member;
 	

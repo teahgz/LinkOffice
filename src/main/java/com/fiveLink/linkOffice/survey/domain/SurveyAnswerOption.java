@@ -2,6 +2,7 @@ package com.fiveLink.linkOffice.survey.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,11 +29,11 @@ public class SurveyAnswerOption {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long surveyAnswerOptionNo;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_participant_no")
     private SurveyParticipant surveyParticipant;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_option_no")
     private SurveyOption surveyOption;
 }
