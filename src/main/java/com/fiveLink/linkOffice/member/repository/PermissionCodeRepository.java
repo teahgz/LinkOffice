@@ -14,7 +14,8 @@ public interface PermissionCodeRepository extends JpaRepository<PermissionCode, 
 	@Query("SELECT pc.permissionCodeName FROM PermissionCode pc "+
 			"JOIN MenuPermission mp ON pc.permissionCodeNo = mp.permissionCodeNo "+
 			"JOIN MemberPermission bp ON mp.menuPermissionNo = bp.menuPermissionNo "+
-			"WHERE bp.memberNo = :memberNo")
+			"WHERE bp.memberNo = :memberNo "+
+			"AND bp.memberPermissionStatus = 0")
 	List<String> findPermissionsByMemberNo(@Param("memberNo") Long memberNo);
 	
 	// [서혜원] 권한 관리 - 기능별 권한자

@@ -34,13 +34,20 @@ public class WebSecurityConfig implements HttpSessionListener {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/login","/css/**", "/img/**", "/js/**").permitAll()
-                    .requestMatchers("/pwchange", "/error", "/error500", "/session-time").permitAll()
-                    .requestMatchers("/").authenticated()
-                    .requestMatchers("/**").authenticated()
-                    .requestMatchers("/employee/member/**").authenticated()
+        .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .requestMatchers("/login", "/css/**", "/img/**", "/js/**").permitAll()
+                .requestMatchers("/pwchange", "/error", "/error500", "/session-time").permitAll()
+                .requestMatchers("/employee/**").hasAuthority("USER")
+                .requestMatchers("/admin/approval/**").hasAnyAuthority("TOTAL_ADMIN", "DOCUMENT_ADMIN")
+                .requestMatchers("/admin/inventory/**").hasAnyAuthority("TOTAL_ADMIN","INVENTORY_ADMIN")
+                .requestMatchers("/admin/meeting/**").hasAnyAuthority("TOTAL_ADMIN","MEETING_ADMIN")
+                .requestMatchers("/admin/member/**").hasAnyAuthority("TOTAL_ADMIN","MEMBER_ADMIN")
+                .requestMatchers("/admin/notice/**").hasAnyAuthority("USER","TOTAL_ADMIN","NOTICE_ADMIN")
+                .requestMatchers("/admin/organization/**").hasAnyAuthority("TOTAL_ADMIN","ORGANIZATION_ADMIN")
+                .requestMatchers("/admin/permission/**").hasAnyAuthority("TOTAL_ADMIN","PERMISSION_ADMIN")
+                .requestMatchers("/admin/schedule/**").hasAnyAuthority("TOTAL_ADMIN","SCHEDULE_ADMIN")
+                .requestMatchers("/admin/vacation/**").hasAnyAuthority("TOTAL_ADMIN","VACATION_ADMIN")
+                .anyRequest().authenticated()
 
             )
             .formLogin(login ->

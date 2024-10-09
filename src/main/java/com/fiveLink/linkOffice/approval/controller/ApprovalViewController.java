@@ -100,7 +100,7 @@ public class ApprovalViewController {
 		model.addAttribute("searchDto", searchdto);
 		model.addAttribute("currentSort", sort);
 
-		return "admin/approval/approval_form";
+		return "/admin/approval/approval_form";
 	}
 
 	// 관리자 전자결재 양식 상세 페이지
@@ -119,7 +119,7 @@ public class ApprovalViewController {
 
 		model.addAttribute("memberdto", memberdto);
 		model.addAttribute("formList", formList);
-		return "admin/approval/approval_detail";
+		return "/admin/approval/approval_detail";
 	}
 
 	// 관리자 전자결재 양식 수정 페이지
