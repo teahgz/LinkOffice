@@ -92,19 +92,9 @@
 	</div>
 
 	<script>
-    // SweetAlert2 경고창 함수
-    function showAlert(message) {
-        Swal.fire({
-            text: message,
-            icon: 'warning',
-            confirmButtonColor: '#0056b3',
-            confirmButtonText: '확인'
-        });
-    }
-
     const location_text = document.getElementById('header_location_text');
     location_text.innerHTML = '설문&emsp;&gt;&emsp;설문 작성';
-    
+
     document.addEventListener("DOMContentLoaded", function () {
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
@@ -112,7 +102,17 @@
         let selectedMembers = [];
         let selectNames = [];
 
-    
+        // SweetAlert2 경고창 함수
+        function showAlert(message) {
+            Swal.fire({
+                text: message,
+                icon: 'warning',
+                confirmButtonColor: '#0056b3',
+                confirmButtonText: '확인'
+            });
+        }
+
+        // 설문 시작일을 오늘 이후로만 선택 가능하도록 설정
         function getTodayDate() {
             const today = new Date();
             const yyyy = today.getFullYear();
@@ -121,12 +121,10 @@
             return `${yyyy}-${mm}-${dd}`;
         }
 
-        // 설문 시작일이 오늘 이후로만 선택 가능하도록 설정
         const todayDate = getTodayDate();
         document.getElementById("surveyStartDate").setAttribute("min", todayDate);
 
-        // 설문 종료일을 시작일 이후로만 선택 가능하도록 설정
-        document.getElementById("surveyStartDate").addEventListener("change", function() {
+        document.getElementById("surveyStartDate").addEventListener("change", function () {
             const startDate = this.value;
             document.getElementById("surveyEndDate").setAttribute("min", startDate);
         });
@@ -134,7 +132,7 @@
         // 질문 번호 재정렬 함수
         function updateQuestionNumbers() {
             const questionItems = document.querySelectorAll(".question-item");
-            questionItems.forEach(function(item, index) {
+            questionItems.forEach(function (item, index) {
                 const questionLabel = item.querySelector("label");
                 questionLabel.textContent = `질문 ${index + 1}`;
             });
@@ -143,8 +141,8 @@
         // 질문 추가 버튼 클릭 시
         document.getElementById("addQuestionButton").addEventListener("click", function () {
             const questionList = document.getElementById("questionList");
-            const questionItems = questionList.getElementsByClassName("question-item");  
-            const questionNumber = questionItems.length + 1;  
+            const questionItems = questionList.getElementsByClassName("question-item");
+            const questionNumber = questionItems.length + 1;
 
             const questionItem = document.createElement("div");
             questionItem.classList.add("question-item");
@@ -189,17 +187,17 @@
             const addOptionButton = document.createElement("button");
             addOptionButton.type = "button";
             addOptionButton.textContent = "보기 추가";
-            addOptionButton.classList.add("btn", "btn-primary"); 
+            addOptionButton.classList.add("btn", "btn-primary");
             addOptionButton.style.display = "none";
-	
+
             const optionList = document.createElement("div");
 
             questionTypeSelect.addEventListener("change", function () {
                 if (questionTypeSelect.value === "multiple") {
-                    addOptionButton.style.display = "inline"; 
+                    addOptionButton.style.display = "inline";
                 } else {
-                    addOptionButton.style.display = "none"; 
-                    optionList.innerHTML = ''; 
+                    addOptionButton.style.display = "none";
+                    optionList.innerHTML = '';
                 }
             });
 
@@ -234,17 +232,17 @@
             questionList.appendChild(questionItem);
         });
 
-        $('#openChart').click(function() {
+        // 조직도 모달 로딩
+        $('#openChart').click(function () {
             $('#organizationChartModal').modal('show');
             loadOrganizationChart();
         });
 
-        // 조직도 로딩
         function loadOrganizationChart() {
             $.ajax({
                 url: '/organizationChart/chart',
                 method: 'GET',
-                success: function(data) {
+                success: function (data) {
                     $('#organization-chart').jstree({
                         'core': {
                             'data': data,
@@ -255,15 +253,9 @@
                         },
                         'plugins': ['checkbox', 'types', 'search'],
                         'types': {
-                            'default': {
-                                'icon': 'fa fa-users'
-                            },
-                            'department': {
-                                'icon': 'fa fa-users'
-                            },
-                            'member': {
-                                'icon': 'fa fa-user'
-                            }
+                            'default': { 'icon': 'fa fa-users' },
+                            'department': { 'icon': 'fa fa-users' },
+                            'member': { 'icon': 'fa fa-user' }
                         }
                     });
 
@@ -271,12 +263,12 @@
                         updateSelectedMembers(data.selected, data.instance);
                     });
 
-                    $('#organization_search').on('keyup', function() {
+                    $('#organization_search').on('keyup', function () {
                         const searchString = $(this).val();
                         $('#organization-chart').jstree(true).search(searchString);
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('조직도 로딩 오류:', error);
                 }
             });
@@ -290,7 +282,7 @@
             selectedMembers = [];
             selectNames = [];
 
-            selectedNodes.forEach(function(node) {
+            selectedNodes.forEach(function (node) {
                 if (node.original.type === 'member') {
                     const memberId = node.id;
                     const memberNumber = memberId.replace('member_', '');
@@ -306,7 +298,7 @@
                     selectedMembers.push(memberNumber);
                     selectNames.push(memberName);
 
-                    removeButton.click(function() {
+                    removeButton.click(function () {
                         instance.uncheck_node(node);
                         memberElement.remove();
                         const index = selectedMembers.indexOf(memberNumber);
@@ -319,10 +311,10 @@
             });
         }
 
-        $('#confirmButton').click(function() {
+        $('#confirmButton').click(function () {
             const selectedMembersContainerOutside = $('#selected-members-outside');
             selectedMembersContainerOutside.empty();
-            selectNames.forEach(function(memberName) {
+            selectNames.forEach(function (memberName) {
                 const memberElement = $('<div></div>').text(memberName);
                 selectedMembersContainerOutside.append(memberElement);
             });
@@ -333,6 +325,7 @@
             $('#organizationChartModal').modal('hide');
         });
 
+        // 설문 폼 제출 이벤트 리스너
         document.getElementById("surveyForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
@@ -341,7 +334,7 @@
             const surveyStartDate = document.getElementById("surveyStartDate").value;
             const surveyEndDate = document.getElementById("surveyEndDate").value;
 
-            // 유효성 검사 및 SweetAlert 경고
+            // 유효성 검사
             if (!surveyTitle) {
                 showAlert("설문 제목을 입력하세요.");
                 return;
@@ -356,11 +349,18 @@
                 showAlert("설문 참여자를 선택하세요.");
                 return;
             }
+
             if (!surveyDescription) {
                 showAlert("설문 설명을 입력하세요.");
                 return;
             }
 
+            // 질문이 없는 경우 처리
+            const questionItems = document.querySelectorAll('.question-item');
+            if (questionItems.length === 0) {
+                showAlert("등록된 질문이 없습니다.");
+                return;
+            }
 
             const participantMemberNos = selectedMembers.map(Number);
             const questions = [];
@@ -384,7 +384,13 @@
                 }
 
                 if (questionType === 'multiple') {
-                    item.querySelectorAll('.option-input input').forEach(function (opt) {
+                    const optionInputs = item.querySelectorAll('.option-input input');
+                    if (optionInputs.length === 0) {
+                        showAlert(`질문 ${index + 1}에 보기를 추가해주세요.`);
+                        hasError = true;
+                        return;
+                    }
+                    optionInputs.forEach(function (opt) {
                         if (!opt.value) {
                             showAlert(`질문 ${index + 1}의 선택형 보기 내용을 입력하세요.`);
                             hasError = true;
@@ -441,7 +447,8 @@
         });
 
     });
-    </script>
+</script>
+
 
 </th:block>
 </html>

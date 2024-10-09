@@ -24,6 +24,7 @@ public class SurveySchedulerService {
 
     // 매일 자정(00:00)에 스케줄러 실행 (cron: 0 0 0 * * ?)
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 00:00에 실행
+    //@Scheduled(cron = "*/5 * * * * *")
     @Transactional  // 데이터베이스 업데이트를 위한 트랜잭션 처리
     public void updateSurveyStatus() {
         LocalDate today = LocalDate.now();  // 오늘 날짜를 가져옵니다.

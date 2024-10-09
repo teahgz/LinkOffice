@@ -364,10 +364,16 @@
                 return;
             }
 
+            const questionItems = document.querySelectorAll('.question-item');
+            if (questionItems.length === 0) {
+                showAlert('등록된 질문이 없습니다.');
+                return;
+            }
+
             const questions = [];
             let hasError = false;
 
-            document.querySelectorAll('.question-item').forEach(function (item, index) {
+            questionItems.forEach(function (item, index) {
                 const questionText = item.querySelector('input[type="text"]').value;
                 const questionType = item.querySelector('select').value;
                 const options = [];
@@ -379,7 +385,13 @@
                 }
 
                 if (questionType === 'multiple') {
-                    item.querySelectorAll('.option-input input').forEach(function (opt) {
+                    const optionInputs = item.querySelectorAll('.option-input input');
+                    if (optionInputs.length === 0) {
+                        showAlert(`질문 ${index + 1}에 보기를 추가해주세요.`);
+                        hasError = true;
+                        return;
+                    }
+                    optionInputs.forEach(function (opt) {
                         if (!opt.value) {
                             showAlert(`질문 ${index + 1}의 선택형 보기 내용을 입력하세요.`);
                             hasError = true;
@@ -520,7 +532,6 @@
             });
         }
 
-       
         $('#confirmButton').click(function () {
             const selectedMembersContainerOutside = $('#selected-members-outside');
             selectedMembersContainerOutside.empty();
@@ -535,7 +546,6 @@
             $('#organizationChartModal').modal('hide');
         });
 
-      
         $('#openChart').click(function () {
             $('#organizationChartModal').modal('show');
             loadOrganizationChart();

@@ -339,7 +339,10 @@
 #vacationapproval_flow_reject_reason div {
     margin-top: 10px;
     font-size: 15px;
-    color: #333; 
+    color: #333;
+    max-width: 1250px;
+    overflow: hidden;  
+    word-wrap: break-word; 
 }
 
 .modal {

@@ -16,17 +16,17 @@
 		<div class="detail_notice">
 			<div class="notice-header">
 				<h3 class="notice-title">
-					제목 : <span th:text="${dto.notice_title}"></span>
+					제목 <span style="margin-left: 5px;" th:text="${dto.notice_title}"></span>
 				</h3>
 				<p class="author" style="margin-bottom: -10px;">
-					작성자 : <span th:text="${dto.member_name}"></span>
+					작성자 <span style="margin-left: 5px;" th:text="${dto.member_name}"></span>
 				</p>
 				<br>
 				<p class="date">
-					작성일 : <span th:text="${dto.notice_create_date}"></span>
+					작성일 <span style="margin-left: 5px;" th:text="${dto.notice_create_date}"></span>
 				</p>
 				<p class="modidate" th:if="${dto.notice_update_date != null}">
-					수정일 : <span th:text="${dto.notice_update_date}"></span>
+					수정일 <span style="margin-left: 5px;" th:text="${dto.notice_update_date}"></span>
 				</p>
 			</div>
 			<div class="notice-content">
