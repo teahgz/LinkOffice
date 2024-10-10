@@ -58,15 +58,19 @@ public class SurveyApiController {
 	public String qupdateSurveyPage(Model model, @PathVariable("survey_no") Long surveyNo) {
 	    List<DepartmentDto> departments = departmentService.getAllDepartments();
 	    List<MemberDto> members = memberService.getAllMembersChartOut();
+	    
+	    // 설문 정보 로깅
 	    SurveyDto dto = surveyService.selectSurveyOne(surveyNo);
-	    Long memberNo = memberService.getLoggedInMemberNo();
-        List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
-        
-        model.addAttribute("memberdto", memberdto);
+	    LOGGER.info("SurveyDto loaded for surveyNo {}: {}", surveyNo, dto);
 
+	    Long memberNo = memberService.getLoggedInMemberNo();
+	    List<MemberDto> memberdto = memberService.getMembersByNo(memberNo);
+	    LOGGER.info("Member Info loaded for memberNo {}: {}", memberNo, memberdto);
 
 	    List<SurveyQuestionDto> questions = surveyService.getSurveyQuestions(surveyNo);
-
+	    LOGGER.info("SurveyQuestions loaded for surveyNo {}: {}", surveyNo, questions);
+	    
+	    model.addAttribute("memberdto", memberdto);
 	    model.addAttribute("departments", departments);
 	    model.addAttribute("dto", dto);
 	    model.addAttribute("members", members);
@@ -75,25 +79,34 @@ public class SurveyApiController {
 	    return "employee/survey/survey_update";
 	}
 	
+	
 	// 설문 데이터 생성 및 업데이트 처리
-	@PostMapping("/employee/qupdate/{survey_no}")
+	@PostMapping("/employee/survey/qupdate/{survey_no}")
 	@ResponseBody
 	public Map<String, String> updateSurvey(@RequestBody SurveyDto surveyDto, @PathVariable("survey_no") Long surveyNo) {
 	    Map<String, String> resultMap = new HashMap<>();
 
 	    Long member_no = memberService.getLoggedInMemberNo();
 	    surveyDto.setMember_no(member_no);
-	    surveyDto.setSurvey_no(surveyNo); 
+	    surveyDto.setSurvey_no(surveyNo);
+
+
+	    LOGGER.info("Received SurveyDto for update: {}", surveyDto);
 
 	    try {
-	        // 설문 업데이트 처리
-	        surveyService.updateCompleteSurvey(surveyDto); 
+	       
+	        surveyService.updateCompleteSurvey(surveyDto);
 	        resultMap.put("res_code", "200");
 	        resultMap.put("res_msg", "설문이 업데이트되었습니다.");
+	        
+
+	        LOGGER.info("Survey updated successfully for surveyNo: {}", surveyNo);
 	    } catch (Exception e) {
 	        resultMap.put("res_code", "500");
 	        resultMap.put("res_msg", "설문 처리 중 오류가 발생했습니다: " + e.getMessage());
-	        LOGGER.error("Survey update error: ", e);
+	        
+
+	        LOGGER.error("Survey update error for surveyNo {}: {}", surveyNo, e.getMessage(), e);
 	    }
 
 	    return resultMap;

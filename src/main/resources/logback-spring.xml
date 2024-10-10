@@ -49,10 +49,10 @@
 	
 		
 	<!-- root레벨 설정 -->
-    <root level="INFO">
+    <!--<root level="INFO">
        <appender-ref ref="CONSOLE"/>
        <appender-ref ref="FILE"/>
-   </root> 
+   </root>-->
    
    <logger name="org.springframework" level="INFO">
    		<appender-ref ref="CONSOLE"/>

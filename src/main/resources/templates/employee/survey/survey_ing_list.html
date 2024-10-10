@@ -129,7 +129,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const surveyRows = document.querySelectorAll('.survey_row');
             const today = new Date(); 
-            today.setHours(0, 0, 0, 0);  // 오늘의 시간을 00:00:00으로 설정하여 날짜만 비교
+            today.setHours(0, 0, 0, 0);  
 
             surveyRows.forEach(row => {
                 const startDateStr = row.querySelector('td:nth-child(3)').textContent.split(' ~ ')[0].trim();

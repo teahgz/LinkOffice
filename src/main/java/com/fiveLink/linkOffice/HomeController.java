@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,14 +144,18 @@ public class HomeController {
 	        Pageable noticePageable = PageRequest.of(0, 5);  
 	        NoticeDto noticeSearchDto = new NoticeDto();
 	        Page<NoticeDto> allNotices = noticeService.getAllNoticePage(noticePageable, "latest", noticeSearchDto);  
-
 	        model.addAttribute("noticeList", allNotices.getContent());
 	        
-	        // 설문 목록 조회 (진행중인 설문)
-	        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("surveyStartDate"))); 
+	    
+	     // 설문 목록 조회 (진행중인 설문)
+	        Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Order.desc("surveyStartDate")));  
 	        SurveyDto searchDto = new SurveyDto();  
-	        Page<SurveyDto> mySurveyList = surveyService.getIngAllSurveyPage(pageable, searchDto, member_no);
-	        model.addAttribute("mySurveyList", mySurveyList.getContent());
+	        Page<SurveyDto> mySurveyList = surveyService.getIngAllSurveyPage1(pageable, searchDto, member_no);
+
+	        // 필터링된 설문 중에서 5개만 반환하도록 처리
+	        model.addAttribute("mySurveyList", mySurveyList.getContent()); 
+	        
+	        
 	        // [전주영] 전자결재 개수 조회
 	        long approvalCount = approvalService.countApprovalHistory(member_no);
 	        long referenceCount = approvalService.countApprovalReferences(member_no);

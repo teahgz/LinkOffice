@@ -27,6 +27,7 @@ public class SurveyQuestionDto {
     private List<Long> survey_text_no;
     private List<String> survey_text_answer;
     private List<String> options;
+    private List<Long> selected_option_no;
     
 	
 	public SurveyQuestion toEntity() {

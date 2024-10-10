@@ -87,12 +87,13 @@
     <button type="button" class="cancel-btn" onclick="window.history.back()">목록</button>
 
     <div class="right-buttons">
-        <!-- completedParticipants가 0일 때만 수정 버튼 표시 -->
         <a th:if="${completedParticipants == 0}" th:href="@{/employee/survey/qupdate/{survey_no}(survey_no=${dto.survey_no})}"
            class="btn btn-edit">수정</a>
         
         <!-- 삭제 버튼은 항상 표시 -->
-        <a class="btn btn-delete" th:onclick="surveyDelete([[${dto.survey_no}]]);">삭제</a>
+       <a th:if="${dto.survey_status != 0 || (dto.survey_status == 0 && completedParticipants == 0)}" 
+   class="btn btn-delete" 
+   th:onclick="surveyDelete([[${dto.survey_no}]]);">삭제</a>
     </div>
 </div>
 </div>

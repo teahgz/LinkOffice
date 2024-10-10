@@ -32,7 +32,7 @@ public class SurveyOption {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long surveyOptionNo;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_question_no")
     private SurveyQuestion surveyQuestion;
 	

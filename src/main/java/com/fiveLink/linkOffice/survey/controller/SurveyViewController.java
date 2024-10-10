@@ -214,9 +214,9 @@ public class SurveyViewController {
         LOGGER.info("Survey Questions: {}", questions);
 
         model.addAttribute("dto", dto);
-        model.addAttribute("questions", questions); // 질문 리스트 추가
+        model.addAttribute("questions", questions); 
 
-        return "employee/survey/survey_question_update"; // 수정 페이지 반환
+        return "employee/survey/survey_question_update"; 
     }
 
     
